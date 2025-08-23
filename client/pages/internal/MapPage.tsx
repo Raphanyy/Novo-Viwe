@@ -964,8 +964,12 @@ const MapPage: React.FC = () => {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                       result.place_type.includes('poi')
                         ? 'bg-green-100'
-                        : result.place_type.includes('place')
+                        : result.place_type.includes('place') || result.place_type.includes('locality')
                         ? 'bg-purple-100'
+                        : result.place_type.includes('region') || result.place_type.includes('district')
+                        ? 'bg-orange-100'
+                        : result.place_type.includes('neighborhood')
+                        ? 'bg-yellow-100'
                         : 'bg-blue-100'
                     }`}>
                       {result.place_type.includes('poi') ? (
@@ -974,8 +978,12 @@ const MapPage: React.FC = () => {
                         <MapPin className={`h-4 w-4 ${
                           result.place_type.includes('poi')
                             ? 'text-green-600'
-                            : result.place_type.includes('place')
+                            : result.place_type.includes('place') || result.place_type.includes('locality')
                             ? 'text-purple-600'
+                            : result.place_type.includes('region') || result.place_type.includes('district')
+                            ? 'text-orange-600'
+                            : result.place_type.includes('neighborhood')
+                            ? 'text-yellow-600'
                             : 'text-blue-600'
                         }`} />
                       )}
@@ -988,6 +996,31 @@ const MapPage: React.FC = () => {
                         {result.place_type.includes('poi') && (
                           <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">
                             Estabelecimento
+                          </span>
+                        )}
+                        {result.place_type.includes('locality') && (
+                          <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Cidade
+                          </span>
+                        )}
+                        {result.place_type.includes('region') && (
+                          <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Estado
+                          </span>
+                        )}
+                        {result.place_type.includes('district') && (
+                          <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Região
+                          </span>
+                        )}
+                        {result.place_type.includes('neighborhood') && (
+                          <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Bairro
+                          </span>
+                        )}
+                        {result.place_type.includes('postcode') && (
+                          <span className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            CEP
                           </span>
                         )}
                       </div>
