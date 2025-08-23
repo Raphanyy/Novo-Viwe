@@ -180,9 +180,17 @@ const MapPage: React.FC = () => {
 
       // Add comprehensive error handling for map loading
       map.current.on("error", (e) => {
-        // Filter out non-critical AbortErrors
-        if (e.error && e.error.message && e.error.message.includes("aborted")) {
-          return; // Silently ignore abort errors as they're expected during normal operation
+        // Filter out AbortErrors and other expected errors
+        if (e.error && e.error.message) {
+          const errorMessage = e.error.message.toLowerCase();
+          if (
+            errorMessage.includes("abort") ||
+            errorMessage.includes("cancelled") ||
+            errorMessage.includes("signal is aborted") ||
+            errorMessage.includes("operation was aborted")
+          ) {
+            return; // Silently ignore abort-related errors
+          }
         }
         console.warn("Mapbox error (non-critical):", e.error);
       });
