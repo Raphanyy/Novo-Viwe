@@ -574,15 +574,20 @@ const MapPage: React.FC = () => {
       // Strategy 2: Enhanced business search (only if we need more results)
       if (allFeatures.length < 3 && businessQuery !== query) {
         try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
+
           const enhancedResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               businessQuery
             )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`,
             {
-              timeout: 8000,
+              signal: controller2.signal,
               headers: { 'Accept': 'application/json' }
             }
           );
+
+          clearTimeout(timeoutId2);
 
           if (enhancedResponse.ok) {
             const enhancedData = await enhancedResponse.json();
@@ -606,15 +611,20 @@ const MapPage: React.FC = () => {
       // Strategy 3: General search as fallback (only if we still need results)
       if (allFeatures.length < 2) {
         try {
+          const controller3 = new AbortController();
+          const timeoutId3 = setTimeout(() => controller3.abort(), 8000);
+
           const generalResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               query
             )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`,
             {
-              timeout: 8000,
+              signal: controller3.signal,
               headers: { 'Accept': 'application/json' }
             }
           );
+
+          clearTimeout(timeoutId3);
 
           if (generalResponse.ok) {
             const generalData = await generalResponse.json();
