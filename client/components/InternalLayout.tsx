@@ -58,12 +58,6 @@ const InternalLayout: React.FC = () => {
       icon: Bell,
       color: "text-indigo-600",
     },
-    {
-      name: "Ajustes",
-      path: "/app/ajustes",
-      icon: Settings,
-      color: "text-gray-600",
-    },
   ];
 
   const getCurrentPageName = () => {
