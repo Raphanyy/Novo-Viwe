@@ -111,7 +111,7 @@ const DesktopInternalLayout: React.FC = () => {
     return location.pathname === path;
   };
 
-  const shouldShowHeader = location.pathname === "/app" || location.pathname === "/app/mapa";
+  const shouldShowHeader = location.pathname === "/app";
 
   return (
     <div
