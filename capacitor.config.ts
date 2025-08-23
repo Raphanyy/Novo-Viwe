@@ -1,11 +1,11 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.viwe.app',
-  appName: 'Viwe',
-  webDir: 'dist/spa',
+  appId: "com.viwe.app",
+  appName: "Viwe",
+  webDir: "dist/spa",
   server: {
-    androidScheme: 'https'
+    androidScheme: "https",
   },
   plugins: {
     SplashScreen: {
