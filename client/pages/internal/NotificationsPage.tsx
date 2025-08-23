@@ -328,91 +328,25 @@ const NotificationsPage: React.FC = () => {
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="px-3 pb-3">
-                    <div className="ml-8">
-                      {/* Selection and Summary Info */}
-                      <div className="flex items-start space-x-3 mb-3 pb-3 border-b border-border">
-                        {/* Selection Checkbox */}
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleNotificationSelection(notification.id);
-                          }}
-                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer mt-1 ${
-                            isSelected
-                              ? "bg-blue-500 border-blue-500"
-                              : "border-border hover:border-muted-foreground"
-                          }`}
-                        >
-                          {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
-                        </div>
-
-                        <div className="flex-1">
-                          {/* Message */}
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {notification.message}
-                          </p>
-
-                          {/* Route and Time */}
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            {notification.route && (
-                              <div className="flex items-center space-x-1">
-                                <Route className="h-3 w-3" />
-                                <span>{notification.route}</span>
-                              </div>
-                            )}
-                            <span>{notification.time}</span>
-                          </div>
-                        </div>
-                      </div>
-
+                  <AccordionContent className="px-4 pb-4">
+                    {/* Main Content */}
+                    <div className="space-y-4">
                       {/* Detailed message */}
-                      <p className="text-sm text-foreground mb-3 leading-relaxed">
+                      <p className="text-sm text-foreground leading-relaxed">
                         {notification.details}
                       </p>
 
-                      {/* Action buttons */}
-                      {renderActionButtons(notification)}
-
-                      {/* Management buttons */}
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                        <div className="flex items-center space-x-1">
-                          <button
-                            onClick={() =>
-                              notification.read
-                                ? markAsUnread(notification.id)
-                                : markAsRead(notification.id)
-                            }
-                            className="flex items-center space-x-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
-                          >
-                            {notification.read ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                            <span>
-                              {notification.read
-                                ? "Marcar como não lida"
-                                : "Marcar como lida"}
-                            </span>
-                          </button>
+                      {/* Action buttons and time */}
+                      <div className="flex items-center justify-between">
+                        {/* Action buttons */}
+                        <div className="flex-1">
+                          {renderActionButtons(notification)}
                         </div>
 
-                        <div className="flex items-center space-x-1">
-                          <button
-                            onClick={() => archiveNotification(notification.id)}
-                            className="p-1.5 hover:bg-muted rounded-lg transition-colors duration-200"
-                            title="Arquivar"
-                          >
-                            <Archive className="h-4 w-4 text-muted-foreground" />
-                          </button>
-                          <button
-                            onClick={() => deleteNotification(notification.id)}
-                            className="p-1.5 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                            title="Excluir"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-600" />
-                          </button>
+                        {/* Time */}
+                        <div className="flex items-center space-x-1 text-xs text-muted-foreground ml-4">
+                          <Clock className="h-3 w-3" />
+                          <span>{notification.time}</span>
                         </div>
                       </div>
                     </div>
