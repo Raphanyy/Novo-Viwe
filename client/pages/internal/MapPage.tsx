@@ -216,11 +216,34 @@ const MapPage: React.FC = () => {
           try {
             // Clear all event listeners first
             map.current.off();
-            // Remove the map safely
-            map.current.remove();
+
+            // Stop any ongoing operations before removing the map
+            map.current.stop();
+
+            // Remove the map safely with a small delay to allow cleanup
+            setTimeout(() => {
+              try {
+                if (map.current) {
+                  map.current.remove();
+                  map.current = null;
+                }
+              } catch (cleanupError) {
+                // Silently handle cleanup errors (often AbortErrors from pending tile requests)
+                if (!(cleanupError instanceof Error) ||
+                    (!cleanupError.message.includes('aborted') &&
+                     !cleanupError.message.includes('AbortError'))) {
+                  console.warn("Map cleanup warning:", cleanupError);
+                }
+              }
+            }, 100);
           } catch (error) {
             // Suppress AbortError and other cleanup errors
-            console.warn("Map cleanup warning:", error);
+            if (error instanceof Error &&
+                (error.message.includes('aborted') || error.message.includes('AbortError'))) {
+              // Silently ignore AbortErrors during cleanup
+            } else {
+              console.warn("Map cleanup warning:", error);
+            }
           }
           map.current = null;
         }
