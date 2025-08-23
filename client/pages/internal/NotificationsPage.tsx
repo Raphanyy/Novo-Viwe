@@ -162,14 +162,14 @@ const NotificationsPage: React.FC = () => {
     if (!notification.actionable) return null;
 
     return (
-      <div className="flex flex-wrap gap-1.5">
-        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
+      <div className="flex items-center gap-2">
+        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap">
           Ação Principal
         </button>
-        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
           Ver Detalhes
         </button>
-        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
           Dispensar
         </button>
       </div>
