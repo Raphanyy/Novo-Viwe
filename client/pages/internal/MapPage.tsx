@@ -1021,7 +1021,10 @@ const MapPage: React.FC = () => {
       // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
       if (
         event.message.includes("AbortError") ||
-        event.message.includes("aborted without reason")
+        event.message.includes("aborted without reason") ||
+        event.message.includes("signal is aborted") ||
+        event.message.includes("operation was aborted") ||
+        event.message.includes("cancelled")
       ) {
         event.preventDefault(); // Prevent the error from being logged to console
         return;
