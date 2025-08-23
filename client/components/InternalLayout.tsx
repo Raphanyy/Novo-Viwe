@@ -176,7 +176,7 @@ const InternalLayout: React.FC = () => {
       </main>
 
       {/* Bottom Navigation (Mobile) */}
-      <nav className="bg-white border-t border-gray-200 px-2 py-2 sm:hidden">
+      <nav className="bg-card border-t border-border px-2 py-2 sm:hidden">
         <div className="flex items-center justify-around">
           {navigationItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
@@ -186,22 +186,15 @@ const InternalLayout: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 ${
-                  active ? "bg-blue-50" : "hover:bg-gray-50"
+                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 ${
+                  active ? "" : "hover:bg-muted"
                 }`}
               >
                 <Icon
                   className={`h-5 w-5 ${
-                    active ? "text-blue-600" : "text-gray-600"
+                    active ? "text-blue-600" : "text-muted-foreground"
                   }`}
                 />
-                <span
-                  className={`text-xs font-medium ${
-                    active ? "text-blue-600" : "text-gray-600"
-                  }`}
-                >
-                  {item.name}
-                </span>
               </Link>
             );
           })}
