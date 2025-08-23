@@ -181,8 +181,12 @@ const MapPage: React.FC = () => {
     // Check if Mapbox token is available
     if (!mapboxToken) {
       console.error("Mapbox token not available. Map cannot be initialized.");
+      setMapError("Token do Mapbox não configurado. Entre em contato com o suporte.");
       return;
     }
+
+    // Reset error state when attempting to initialize
+    setMapError(null);
 
     try {
       map.current = new mapboxgl.Map({
