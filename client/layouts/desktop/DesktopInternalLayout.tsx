@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Search,
   HelpCircle,
+  Plus,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
@@ -35,11 +36,11 @@ const DesktopInternalLayout: React.FC = () => {
 
   const navigationItems = [
     {
-      name: "Dashboard",
+      name: "Início",
       path: "/app",
       icon: Home,
       color: "text-blue-600",
-      description: "Visão geral da aplicação",
+      description: "Painel principal",
     },
     {
       name: "Mapa",
@@ -56,11 +57,11 @@ const DesktopInternalLayout: React.FC = () => {
       description: "Gerenciamento de rotas",
     },
     {
-      name: "Perfil",
-      path: "/app/opcoes",
-      icon: Sliders,
-      color: "text-yellow-600",
-      description: "Configurações avançadas",
+      name: "Menu",
+      path: "/app/ajustes",
+      icon: Plus,
+      color: "text-orange-600",
+      description: "Configurações do sistema",
     },
     {
       name: "Atividade",
@@ -70,18 +71,18 @@ const DesktopInternalLayout: React.FC = () => {
       description: "Histórico de atividades",
     },
     {
-      name: "Notificações",
+      name: "Notas",
       path: "/app/notificacoes",
       icon: Bell,
-      color: "text-indigo-600",
+      color: "text-pink-600",
       description: "Central de notificações",
     },
     {
-      name: "Ajustes",
-      path: "/app/ajustes",
-      icon: Settings,
-      color: "text-gray-600",
-      description: "Configurações do sistema",
+      name: "Perfil",
+      path: "/app/opcoes",
+      icon: User,
+      color: "text-indigo-600",
+      description: "Configurações do perfil",
     },
   ];
 
@@ -112,7 +113,7 @@ const DesktopInternalLayout: React.FC = () => {
 
   return (
     <div
-      className="h-screen bg-gray-50 flex font-sans"
+      className="h-screen bg-background flex font-sans"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <link
@@ -121,22 +122,22 @@ const DesktopInternalLayout: React.FC = () => {
       />
 
       {/* Persistent Sidebar for Desktop */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <aside className="w-64 bg-card border-r border-border flex flex-col">
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-border">
           <div className="flex items-center">
             <Rocket className="h-8 w-8 text-blue-600" />
             <div className="ml-3">
-              <h1 className="font-bold text-xl text-gray-900">Viwe</h1>
-              <p className="text-xs text-gray-500">Route Planner</p>
+              <h1 className="font-bold text-xl text-foreground">Viwe</h1>
+              <p className="text-xs text-muted-foreground">Route Planner</p>
             </div>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-border">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Buscar..."
@@ -159,13 +160,13 @@ const DesktopInternalLayout: React.FC = () => {
                   className={`flex items-center p-3 rounded-xl transition-all duration-200 group relative ${
                     active
                       ? "bg-blue-50 text-blue-600 shadow-sm"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
                   <div className="ml-3 flex-1">
                     <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">
+                    <div className="text-xs text-muted-foreground mt-0.5">
                       {item.description}
                     </div>
                   </div>
@@ -179,10 +180,10 @@ const DesktopInternalLayout: React.FC = () => {
         </nav>
 
         {/* Help Section */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-border">
           <Link
             to="/help"
-            className="flex items-center p-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+            className="flex items-center p-3 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200"
           >
             <HelpCircle className="h-5 w-5" />
             <span className="ml-3 font-medium">Ajuda & Suporte</span>
@@ -190,11 +191,11 @@ const DesktopInternalLayout: React.FC = () => {
         </div>
 
         {/* User Section */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-border">
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center w-full p-3 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+              className="flex items-center w-full p-3 rounded-xl hover:bg-muted transition-colors duration-200"
             >
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                 {user?.avatar ? (
@@ -208,28 +209,30 @@ const DesktopInternalLayout: React.FC = () => {
                 )}
               </div>
               <div className="ml-3 text-left min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-foreground truncate">
                   {user?.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
               </div>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </button>
 
             {/* User Dropdown */}
             {isUserMenuOpen && (
-              <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">
+              <div className="absolute bottom-full left-0 right-0 mb-2 bg-card rounded-xl shadow-xl border border-border py-2 z-50">
+                <div className="px-4 py-3 border-b border-border">
+                  <p className="text-sm font-medium text-foreground">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
 
                 <div className="py-2">
                   <Link
                     to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4 mr-3" />
@@ -238,7 +241,7 @@ const DesktopInternalLayout: React.FC = () => {
 
                   <Link
                     to="/app/notificacoes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Bell className="h-4 w-4 mr-3" />
@@ -267,13 +270,13 @@ const DesktopInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Breadcrumb and Actions */}
-        <header className="bg-white border-b border-gray-200 px-8 py-6">
+        <header className="bg-card border-b border-border px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-foreground">
                 {getCurrentPageName()}
               </h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {getCurrentPageDescription()}
               </p>
             </div>
@@ -284,7 +287,7 @@ const DesktopInternalLayout: React.FC = () => {
                 to="/app/notificacoes"
                 className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
               >
-                <Bell className="h-5 w-5 text-gray-600" />
+                <Bell className="h-5 w-5 text-muted-foreground" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
               </Link>
 
@@ -299,7 +302,7 @@ const DesktopInternalLayout: React.FC = () => {
         </header>
 
         {/* Main Content with Padding */}
-        <main className="flex-1 overflow-hidden bg-gray-50">
+        <main className="flex-1 overflow-hidden bg-background">
           <div className="h-full p-8 overflow-y-auto">
             <Outlet />
           </div>

@@ -150,7 +150,7 @@ const ActivityPage: React.FC = () => {
       case "heavy":
         return "text-red-600 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-muted-foreground bg-gray-100";
     }
   };
 
@@ -161,21 +161,21 @@ const ActivityPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full overflow-auto bg-gray-50">
+    <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Header with Period Selector */}
-        <div className="bg-white rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-gray-900">Atividade</h1>
+            <h1 className="text-xl font-bold text-foreground">Atividade</h1>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
               >
-                <Filter className="h-5 w-5 text-gray-600" />
+                <Filter className="h-5 w-5 text-muted-foreground" />
               </button>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                <Download className="h-5 w-5 text-gray-600" />
+                <Download className="h-5 w-5 text-muted-foreground" />
               </button>
             </div>
           </div>
@@ -188,7 +188,7 @@ const ActivityPage: React.FC = () => {
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                   selectedPeriod === period.id
                     ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 text-muted-foreground hover:bg-gray-200"
                 }`}
               >
                 {period.name}
@@ -197,7 +197,7 @@ const ActivityPage: React.FC = () => {
           </div>
 
           {showFilters && (
-            <div className="border-t border-gray-200 pt-4">
+            <div className="border-t border-border pt-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
@@ -212,75 +212,77 @@ const ActivityPage: React.FC = () => {
 
         {/* Statistics Overview */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <Route className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Viagens</span>
+              <span className="text-sm font-medium text-foreground">
+                Viagens
+              </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               {stats.totalTrips}
             </p>
             <p className="text-xs text-green-600">+12% este mês</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <MapPin className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-foreground">
                 Distância
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               {stats.totalDistance} km
             </p>
             <p className="text-xs text-green-600">+8% este mês</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <Clock className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-medium text-gray-700">Tempo</span>
+              <span className="text-sm font-medium text-foreground">Tempo</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               {stats.totalTime}h
             </p>
             <p className="text-xs text-green-600">-5% este mês</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <Fuel className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-foreground">
                 Combustível
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               {stats.fuelSaved}L
             </p>
             <p className="text-xs text-green-600">economizados</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <DollarSign className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-foreground">
                 Economia
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               R$ {stats.moneySaved}
             </p>
             <p className="text-xs text-green-600">economizados</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-foreground">
                 Eficiência
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-foreground">
               {stats.efficiency}%
             </p>
             <p className="text-xs text-green-600">+3% este mês</p>
@@ -288,8 +290,8 @@ const ActivityPage: React.FC = () => {
         </div>
 
         {/* Achievements */}
-        <div className="bg-white rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-card rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Conquistas
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -307,10 +309,10 @@ const ActivityPage: React.FC = () => {
                   >
                     <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="font-medium text-sm text-gray-900">
+                  <h3 className="font-medium text-sm text-foreground">
                     {achievement.name}
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {achievement.description}
                   </p>
                   {achievement.earned && (
@@ -325,9 +327,9 @@ const ActivityPage: React.FC = () => {
         </div>
 
         {/* Trip History */}
-        <div className="bg-white rounded-2xl p-6">
+        <div className="bg-card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-foreground">
               Histórico de Viagens
             </h2>
             <button className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors duration-200">
@@ -339,18 +341,18 @@ const ActivityPage: React.FC = () => {
             {trips.map((trip) => (
               <div
                 key={trip.id}
-                className="border border-gray-200 rounded-2xl overflow-hidden"
+                className="border border-border rounded-2xl overflow-hidden"
               >
                 <button
                   onClick={() =>
                     setExpandedTrip(expandedTrip === trip.id ? null : trip.id)
                   }
-                  className="w-full p-4 hover:bg-gray-50 transition-colors duration-200"
+                  className="w-full p-4 hover:bg-muted transition-colors duration-200"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1 text-left">
                       <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold text-gray-900">
+                        <h3 className="font-semibold text-foreground">
                           {trip.name}
                         </h3>
                         <span
@@ -362,7 +364,7 @@ const ActivityPage: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <span className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
                           <span>
@@ -395,22 +397,22 @@ const ActivityPage: React.FC = () => {
                 </button>
 
                 {expandedTrip === trip.id && (
-                  <div className="border-t border-gray-200 p-4 bg-gray-50">
+                  <div className="border-t border-border p-4 bg-background">
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-500 mb-1">Origem</p>
-                          <p className="text-gray-900">{trip.startAddress}</p>
+                          <p className="text-muted-foreground mb-1">Origem</p>
+                          <p className="text-foreground">{trip.startAddress}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500 mb-1">Destino</p>
-                          <p className="text-gray-900">{trip.endAddress}</p>
+                          <p className="text-muted-foreground mb-1">Destino</p>
+                          <p className="text-foreground">{trip.endAddress}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-500 mb-1">
+                          <p className="text-muted-foreground mb-1">
                             Economia de Tempo
                           </p>
                           <p className="text-green-600 font-medium">
@@ -418,7 +420,7 @@ const ActivityPage: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-500 mb-1">
+                          <p className="text-muted-foreground mb-1">
                             Combustível Poupado
                           </p>
                           <p className="text-green-600 font-medium">
@@ -426,14 +428,14 @@ const ActivityPage: React.FC = () => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-500 mb-1">Economia</p>
+                          <p className="text-muted-foreground mb-1">Economia</p>
                           <p className="text-green-600 font-medium">
                             {trip.savings.money}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-between pt-3 border-t border-border">
                         <div className="flex items-center space-x-4">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-medium ${getTrafficColor(trip.traffic)}`}
@@ -442,7 +444,7 @@ const ActivityPage: React.FC = () => {
                             {trip.traffic === "normal" && "Trânsito Normal"}
                             {trip.traffic === "heavy" && "Trânsito Intenso"}
                           </span>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-muted-foreground">
                             Custo: {trip.cost}
                           </span>
                         </div>
@@ -476,13 +478,13 @@ const ActivityPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4 p-4 bg-white/10 rounded-xl">
+          <div className="mt-4 p-4 bg-card/10 rounded-xl">
             <p className="text-sm text-blue-100 mb-2">Meta do próximo mês</p>
             <p className="font-medium">
               Alcançar 50 viagens com 90%+ de eficiência
             </p>
-            <div className="mt-2 bg-white/20 rounded-full h-2">
-              <div className="bg-white rounded-full h-2 w-3/4"></div>
+            <div className="mt-2 bg-card/20 rounded-full h-2">
+              <div className="bg-card rounded-full h-2 w-3/4"></div>
             </div>
           </div>
         </div>

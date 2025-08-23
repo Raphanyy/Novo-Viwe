@@ -130,7 +130,7 @@ const RoutesPage: React.FC = () => {
       case "heavy":
         return "text-red-600 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-muted-foreground bg-muted";
     }
   };
 
@@ -143,11 +143,11 @@ const RoutesPage: React.FC = () => {
   const currentRoutes = routes[activeTab] || [];
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-background">
       {/* Header with Search */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-card border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-gray-900">Minhas Rotas</h1>
+          <h1 className="text-xl font-bold text-foreground">Minhas Rotas</h1>
           <button
             onClick={openRouteModal}
             className="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700 transition-colors duration-200"
@@ -159,7 +159,7 @@ const RoutesPage: React.FC = () => {
         {/* Search Bar */}
         <div className="relative mb-4">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
+            <Search className="h-5 w-5 text-muted-foreground" />
           </div>
           <input
             type="text"
@@ -171,15 +171,15 @@ const RoutesPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 bg-gray-100 rounded-2xl p-1">
+        <div className="flex space-x-1 bg-muted rounded-2xl p-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-card text-blue-600 shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab.name}
@@ -198,7 +198,7 @@ const RoutesPage: React.FC = () => {
       {/* Routes List */}
       <div className="flex-1 overflow-auto p-4">
         {currentRoutes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <RouteIcon className="h-12 w-12 mb-4" />
             <h3 className="text-lg font-medium mb-2">
               Nenhuma rota encontrada
@@ -222,12 +222,12 @@ const RoutesPage: React.FC = () => {
             {currentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-foreground">
                         {route.name}
                       </h3>
                       {route.isFavorite && (
@@ -235,7 +235,7 @@ const RoutesPage: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span>{route.from}</span>
@@ -247,20 +247,24 @@ const RoutesPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <button className="p-1 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                    <MoreVertical className="h-4 w-4 text-gray-400" />
+                  <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
+                    <MoreVertical className="h-4 w-4 text-muted-foreground" />
                   </button>
                 </div>
 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-4 text-sm">
                     <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="text-gray-600">{route.duration}</span>
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        {route.duration}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <MapPin className="h-4 w-4 text-gray-500" />
-                      <span className="text-gray-600">{route.distance}</span>
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        {route.distance}
+                      </span>
                     </div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
@@ -279,18 +283,18 @@ const RoutesPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {activeTab === "planned"
                       ? `Agendada para ${(route as any).scheduledFor}`
                       : `Última vez: ${(route as any).lastUsed}`}
                   </span>
 
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                      <Share2 className="h-4 w-4 text-gray-600" />
+                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                      <Share2 className="h-4 w-4 text-muted-foreground" />
                     </button>
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                      <Edit3 className="h-4 w-4 text-gray-600" />
+                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                      <Edit3 className="h-4 w-4 text-muted-foreground" />
                     </button>
                     <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
                       <Navigation className="h-4 w-4" />
@@ -305,22 +309,22 @@ const RoutesPage: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white border-t border-gray-200 p-4">
+      <div className="bg-card border-t border-gray-200 p-4">
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={openRouteModal}
-            className="flex flex-col items-center space-y-2 p-3 bg-blue-50 rounded-2xl hover:bg-blue-100 transition-colors duration-200"
+            className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200"
           >
             <Plus className="h-5 w-5 text-blue-600" />
             <span className="text-xs font-medium text-blue-600">Nova Rota</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-2 p-3 bg-green-50 rounded-2xl hover:bg-green-100 transition-colors duration-200">
+          <button className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200">
             <Zap className="h-5 w-5 text-green-600" />
             <span className="text-xs font-medium text-green-600">Otimizar</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-2 p-3 bg-purple-50 rounded-2xl hover:bg-purple-100 transition-colors duration-200">
+          <button className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200">
             <Calendar className="h-5 w-5 text-purple-600" />
             <span className="text-xs font-medium text-purple-600">Agendar</span>
           </button>

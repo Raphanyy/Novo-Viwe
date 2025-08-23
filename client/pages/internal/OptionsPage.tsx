@@ -337,7 +337,7 @@ const OptionsPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-foreground mb-1"
                     >
                       Nome Completo
                     </label>
@@ -352,7 +352,7 @@ const OptionsPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-foreground mb-1"
                     >
                       Endereço de E-mail
                     </label>
@@ -367,7 +367,7 @@ const OptionsPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="company"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-foreground mb-1"
                     >
                       Nome da Empresa
                     </label>
@@ -382,7 +382,7 @@ const OptionsPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="country"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-foreground mb-1"
                     >
                       País
                     </label>
@@ -397,7 +397,7 @@ const OptionsPage: React.FC = () => {
                   <div>
                     <label
                       htmlFor="city"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-foreground mb-1"
                     >
                       Cidade
                     </label>
@@ -458,7 +458,10 @@ const OptionsPage: React.FC = () => {
                         />
                         <span className="font-medium">{item.title}</span>
                       </div>
-                      <ChevronRight size={20} className="text-gray-400" />
+                      <ChevronRight
+                        size={20}
+                        className="text-muted-foreground"
+                      />
                     </button>
                   </div>
                 ))}
@@ -505,7 +508,7 @@ const OptionsPage: React.FC = () => {
                       className={`p-4 rounded-2xl border-2 transition-all duration-200 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-border bg-white"
+                          : "border-border hover:border-border bg-card"
                       }`}
                     >
                       <Icon
@@ -561,7 +564,7 @@ const OptionsPage: React.FC = () => {
                       className={`w-full p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-border bg-white"
+                          : "border-border hover:border-border bg-card"
                       }`}
                     >
                       <div
@@ -591,7 +594,7 @@ const OptionsPage: React.FC = () => {
                         }`}
                       >
                         {isSelected && (
-                          <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                          <div className="w-full h-full rounded-full bg-card scale-50"></div>
                         )}
                       </div>
                     </button>
@@ -697,7 +700,7 @@ const OptionsPage: React.FC = () => {
                               setting.key as keyof typeof navigationSettings
                             ]
                               ? "text-blue-600"
-                              : "text-gray-400"
+                              : "text-muted-foreground"
                           }`}
                         >
                           {navigationSettings[
@@ -739,7 +742,7 @@ const OptionsPage: React.FC = () => {
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Tipo de Combustível
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -777,11 +780,11 @@ const OptionsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Consumo Médio (km/l)
                   </label>
                   <div className="relative">
-                    <Fuel className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Fuel className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <input
                       type="number"
                       value={fuelConsumption}
@@ -845,7 +848,7 @@ const OptionsPage: React.FC = () => {
                       className={`transition-colors duration-200 ${
                         avoidOptions[option.key as keyof typeof avoidOptions]
                           ? "text-blue-600"
-                          : "text-gray-400"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {avoidOptions[option.key as keyof typeof avoidOptions] ? (
@@ -893,10 +896,10 @@ const OptionsPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleDarkModeToggle}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${isDarkMode ? "bg-blue-600" : "bg-gray-200"}`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${isDarkMode ? "bg-blue-600" : "bg-muted"}`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isDarkMode ? "translate-x-6" : "translate-x-1"}`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isDarkMode ? "translate-x-6" : "translate-x-1"}`}
                     />
                   </div>
                 </div>
@@ -908,10 +911,10 @@ const OptionsPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleIgnoreConsumptionToggle}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${ignoreConsumption ? "bg-blue-600" : "bg-gray-200"}`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${ignoreConsumption ? "bg-blue-600" : "bg-muted"}`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${ignoreConsumption ? "translate-x-6" : "translate-x-1"}`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${ignoreConsumption ? "translate-x-6" : "translate-x-1"}`}
                     />
                   </div>
                 </div>
@@ -925,7 +928,7 @@ const OptionsPage: React.FC = () => {
                         Restaurar configurações padrão
                       </span>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </button>
                 </div>
               </div>

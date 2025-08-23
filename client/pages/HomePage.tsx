@@ -66,7 +66,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <h1 className="text-4xl md:text-7xl font-extrabold text-gray-900 leading-[1.05] tracking-[-0.05em]">
+            <h1 className="text-4xl md:text-7xl font-extrabold text-foreground leading-[1.05] tracking-[-0.05em]">
               Sua jornada, <br /> planejada de forma inteligente.
             </h1>
             <p className="mt-8 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto tracking-[-0.01em]">
@@ -79,7 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
             <button className="bg-blue-600 text-white px-7 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-lg transform hover:-translate-y-0.5">
               Começar a planejar
             </button>
-            <button className="text-gray-900 px-7 py-3 rounded-full border border-gray-300 font-semibold hover:bg-gray-100 transition-colors duration-200">
+            <button className="text-foreground px-7 py-3 rounded-full border border-border font-semibold hover:bg-muted transition-colors duration-200">
               Saiba mais
             </button>
           </div>
@@ -142,11 +142,11 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
       {/* Features Section */}
       <section
         ref={featuresRef}
-        className={`bg-gray-50 py-16 md:py-24 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
+        className={`bg-background py-16 md:py-24 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
       >
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
               Recursos para otimizar sua viagem
             </h2>
             <p className="mt-2 text-lg text-gray-600">
@@ -156,7 +156,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div
               ref={(el) => (cardRefs.current[0] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-8 rounded-2xl shadow-xl transition-all duration-300"
               onMouseMove={(e) => handleCardMouseMove(e, 0)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 0)}
             >
@@ -173,7 +173,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
             </div>
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-8 rounded-2xl shadow-xl transition-all duration-300"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
@@ -190,7 +190,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
             </div>
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-8 rounded-2xl shadow-xl transition-all duration-300"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
@@ -207,7 +207,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
             </div>
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-8 rounded-2xl shadow-xl transition-all duration-300"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >

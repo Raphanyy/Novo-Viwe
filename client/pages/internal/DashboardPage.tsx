@@ -113,12 +113,12 @@ const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="h-full overflow-auto bg-gray-50">
+    <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
             </div>
             <button
               onClick={openRouteModal}
-              className="bg-white/20 hover:bg-white/30 transition-colors duration-200 rounded-xl p-3"
+              className="bg-card/20 hover:bg-card/30 transition-colors duration-200 rounded-xl p-3"
             >
               <Plus className="h-5 w-5" />
             </button>
@@ -153,7 +153,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Quick Actions */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <h3 className="text-lg font-semibold text-foreground mb-3">
             Ações Rápidas
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -166,17 +166,17 @@ const DashboardPage: React.FC = () => {
                   <button
                     key={action.name}
                     onClick={action.action}
-                    className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-border"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1">
                       {action.name}
                     </h4>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {action.description}
                     </p>
                   </button>
@@ -187,17 +187,17 @@ const DashboardPage: React.FC = () => {
                   <Link
                     key={action.name}
                     to={action.path}
-                    className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-border"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1">
                       {action.name}
                     </h4>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {action.description}
                     </p>
                   </Link>
@@ -209,24 +209,27 @@ const DashboardPage: React.FC = () => {
 
         {/* Statistics */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <h3 className="text-lg font-semibold text-foreground mb-3">
             Estatísticas
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="bg-white rounded-2xl p-4">
+                <div
+                  key={stat.label}
+                  className="bg-card rounded-2xl p-4 border border-border"
+                >
                   <div className="flex items-center justify-between mb-2">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
                       {stat.change}
                     </span>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-foreground">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-gray-500">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
                 </div>
               );
             })}
@@ -236,7 +239,7 @@ const DashboardPage: React.FC = () => {
         {/* Recent Routes */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Rotas Recentes
             </h3>
             <Link
@@ -251,19 +254,19 @@ const DashboardPage: React.FC = () => {
             {recentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-border"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-semibold text-foreground">
                         {route.name}
                       </h4>
                       <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
                         -{route.savings}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <span className="flex items-center space-x-1">
                         <Clock className="h-4 w-4" />
                         <span>{route.duration}</span>
@@ -278,7 +281,7 @@ const DashboardPage: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </div>
               </div>
             ))}
@@ -286,20 +289,22 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Tips & Insights */}
-        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-200">
+        <div className="bg-gradient-to-r from-muted to-secondary rounded-2xl p-6 border border-border">
           <div className="flex items-start space-x-3">
-            <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Zap className="h-5 w-5 text-yellow-600" />
+            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Zap className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-gray-900 mb-1">Dica do Dia</h4>
-              <p className="text-sm text-gray-600 mb-3">
+              <h4 className="font-semibold text-foreground mb-1">
+                Dica do Dia
+              </h4>
+              <p className="text-sm text-muted-foreground mb-3">
                 Evite a Rua das Palmeiras entre 17h-19h. Trânsito intenso pode
                 aumentar seu tempo de viagem em até 15 minutos.
               </p>
               <Link
                 to="/app/mapa"
-                className="text-yellow-700 text-sm font-medium hover:text-yellow-800 transition-colors duration-200"
+                className="text-primary text-sm font-medium hover:text-primary/80 transition-colors duration-200"
               >
                 Ver rotas alternativas →
               </Link>
@@ -309,27 +314,29 @@ const DashboardPage: React.FC = () => {
 
         {/* Weather & Traffic (Simplified) */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4 border border-border">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">☀️</span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Clima</p>
-                <p className="text-xs text-gray-500">Bom para viajar</p>
+                <p className="text-sm font-medium text-foreground">Clima</p>
+                <p className="text-xs text-muted-foreground">Bom para viajar</p>
               </div>
             </div>
-            <p className="text-lg font-bold text-gray-900">24°C</p>
+            <p className="text-lg font-bold text-foreground">24°C</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4 border border-border">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <Car className="h-4 w-4 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Trânsito</p>
-                <p className="text-xs text-gray-500">Condições normais</p>
+                <p className="text-sm font-medium text-foreground">Trânsito</p>
+                <p className="text-xs text-muted-foreground">
+                  Condições normais
+                </p>
               </div>
             </div>
             <p className="text-lg font-bold text-green-600">Fluindo</p>
