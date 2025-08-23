@@ -317,20 +317,20 @@ const NotificationsPage: React.FC = () => {
                           e.stopPropagation();
                           toggleNotificationSelection(notification.id);
                         }}
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
+                        className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
                           isSelected
                             ? "bg-blue-500 border-blue-500"
                             : "border-border hover:border-muted-foreground"
                         }`}
                       >
-                        {isSelected && <Check className="h-3 w-3 text-white" />}
+                        {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
                       </div>
 
                       {/* Icon */}
                       <div
-                        className={`p-2 rounded-xl ${notification.color} flex-shrink-0`}
+                        className={`p-1.5 rounded-lg ${notification.color} flex-shrink-0`}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-4 w-4" />
                       </div>
 
                       {/* Content */}
@@ -342,12 +342,12 @@ const NotificationsPage: React.FC = () => {
                             >
                               {notification.title}
                             </h3>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
                               {notification.message}
                             </p>
 
                             {notification.route && (
-                              <div className="flex items-center space-x-1 mt-2">
+                              <div className="flex items-center space-x-1 mt-1">
                                 <Route className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-xs text-muted-foreground">
                                   {notification.route}
