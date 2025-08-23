@@ -69,8 +69,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "account",
       title: "Sua conta",
-      subtitle:
-        "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativa��ão de conta.",
+      subtitle: "Gerencie suas informações pessoais e dados da conta.",
       icon: User,
       items: [
         {
@@ -105,8 +104,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "security",
       title: "Segurança e acesso à conta",
-      subtitle:
-        "Gerencie a segurança da sua conta e monitore o uso dela, inclusive os aplicativos conectados a ela.",
+      subtitle: "Configure senha e segurança da sua conta.",
       icon: Shield,
       items: [
         {
@@ -135,7 +133,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "privacy",
       title: "Privacidade e segurança",
-      subtitle: "Gerencie as informações que você vê e compartilha no app.",
+      subtitle: "Configure suas preferências de privacidade.",
       icon: Eye,
       items: [
         {
@@ -157,8 +155,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "notifications",
       title: "Notificações",
-      subtitle:
-        "Selecione os tipos de notificação que você recebe sobre atividades, interesses e recomendações.",
+      subtitle: "Configure suas notificações e alertas.",
       icon: Bell,
       items: [
         {
@@ -181,7 +178,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "appearance",
       title: "Acessibilidade, exibição e idiomas",
-      subtitle: "Gerencie a forma como o conteúdo é exibido para você.",
+      subtitle: "Personalize aparência e idioma do app.",
       icon: Palette,
       items: [
         {
@@ -211,8 +208,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "support",
       title: "Recursos adicionais",
-      subtitle:
-        "Verifique em outros lugares informações úteis para saber mais sobre os produtos e serviços.",
+      subtitle: "Acesse ajuda e suporte técnico.",
       icon: HelpCircle,
       items: [
         {
