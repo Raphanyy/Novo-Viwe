@@ -372,23 +372,21 @@ const TabletInternalLayout: React.FC = () => {
                         <Link
                           key={item.action}
                           to="/app"
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-accent transition-colors duration-200"
+                          className="flex items-center justify-center p-3 rounded-xl hover:bg-accent transition-colors duration-200"
+                          title={item.name}
                         >
                           <Icon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm font-medium text-muted-foreground">
-                            {item.name}
-                          </span>
+                          <span className="sr-only">{item.name}</span>
                         </Link>
                       ) : (
                         <button
                           key={item.action}
                           onClick={() => handleMapNavigation(item.action)}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-accent transition-colors duration-200"
+                          className="flex items-center justify-center p-3 rounded-xl hover:bg-accent transition-colors duration-200"
+                          title={item.name}
                         >
                           <Icon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm font-medium text-muted-foreground">
-                            {item.name}
-                          </span>
+                          <span className="sr-only">{item.name}</span>
                         </button>
                       );
                     })}
