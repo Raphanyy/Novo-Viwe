@@ -569,7 +569,9 @@ const MapPage: React.FC = () => {
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           variationQuery
         )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=poi&proximity=-46.6333,-23.5505`
-      ) : Promise.resolve({ json: () => ({ features: [] }) });
+      ) : Promise.resolve({
+          json: async () => ({ features: [] })
+        });
 
       // Strategy 4: Fallback general search
       const generalResponse = await fetch(
