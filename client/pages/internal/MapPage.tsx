@@ -181,12 +181,12 @@ const MapPage: React.FC = () => {
           map.current.remove();
         } catch (error) {
           // Suppress AbortError and other cleanup errors
-          console.warn('Map cleanup warning:', error);
+          console.warn("Map cleanup warning:", error);
         }
         map.current = null;
       }
     };
-  }, []);  // Remove setMapCleanupCallback from dependencies
+  }, []); // Remove setMapCleanupCallback from dependencies
 
   // Manage center pin tracking when tracing starts/stops
   useEffect(() => {
@@ -286,88 +286,88 @@ const MapPage: React.FC = () => {
   }, [mapMode]);
 
   // Function to trace route between stops
-  const traceRouteOnMap = useCallback(async (
-    stops: Array<{ coordinates: [number, number] }>,
-  ) => {
-    if (!map.current || stops.length < 2) return;
+  const traceRouteOnMap = useCallback(
+    async (stops: Array<{ coordinates: [number, number] }>) => {
+      if (!map.current || stops.length < 2) return;
 
-    setIsTracingRoute(true);
+      setIsTracingRoute(true);
 
-    try {
-      // Convert stops to coordinates string for Mapbox Directions API
-      const coordinates = stops
-        .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
-        .join(";");
+      try {
+        // Convert stops to coordinates string for Mapbox Directions API
+        const coordinates = stops
+          .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
+          .join(";");
 
-      // Call Mapbox Directions API
-      const response = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-      );
+        // Call Mapbox Directions API
+        const response = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.routes && data.routes.length > 0) {
-        const route = data.routes[0];
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
 
-        // Remove existing route if any
-        if (map.current.getSource("route")) {
-          map.current.removeLayer("route");
-          map.current.removeSource("route");
+          // Remove existing route if any
+          if (map.current.getSource("route")) {
+            map.current.removeLayer("route");
+            map.current.removeSource("route");
+          }
+
+          // Add route to map
+          map.current.addSource("route", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: route.geometry,
+            },
+          });
+
+          map.current.addLayer({
+            id: "route",
+            type: "line",
+            source: "route",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": "#3b82f6",
+              "line-width": 5,
+              "line-opacity": 0.8,
+            },
+          });
+
+          // Fit map to show entire route
+          const coordinates = route.geometry.coordinates;
+          const bounds = new mapboxgl.LngLatBounds();
+          coordinates.forEach((coord: [number, number]) => {
+            bounds.extend(coord);
+          });
+
+          map.current.fitBounds(bounds, {
+            padding: 50,
+            duration: 1000,
+          });
+
+          console.log("Rota traçada com sucesso:", {
+            distance: route.distance,
+            duration: route.duration,
+            stops: stops.length,
+          });
+
+          // Marcar rota como traçada no contexto
+          setRouteTraced(true);
         }
-
-        // Add route to map
-        map.current.addSource("route", {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: route.geometry,
-          },
-        });
-
-        map.current.addLayer({
-          id: "route",
-          type: "line",
-          source: "route",
-          layout: {
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#3b82f6",
-            "line-width": 5,
-            "line-opacity": 0.8,
-          },
-        });
-
-        // Fit map to show entire route
-        const coordinates = route.geometry.coordinates;
-        const bounds = new mapboxgl.LngLatBounds();
-        coordinates.forEach((coord: [number, number]) => {
-          bounds.extend(coord);
-        });
-
-        map.current.fitBounds(bounds, {
-          padding: 50,
-          duration: 1000,
-        });
-
-        console.log("Rota traçada com sucesso:", {
-          distance: route.distance,
-          duration: route.duration,
-          stops: stops.length,
-        });
-
-        // Marcar rota como traçada no contexto
-        setRouteTraced(true);
+      } catch (error) {
+        console.error("Erro ao traçar rota:", error);
+      } finally {
+        setIsTracingRoute(false);
       }
-    } catch (error) {
-      console.error("Erro ao traçar rota:", error);
-    } finally {
-      setIsTracingRoute(false);
-    }
-  }, [setRouteTraced]);
-
+    },
+    [setRouteTraced],
+  );
 
   // Update POI markers
   useEffect(() => {

@@ -136,7 +136,9 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   });
 
   // Callback para limpeza do mapa
-  const [mapCleanupCallback, setMapCleanupCallback] = useState<(() => void) | null>(null);
+  const [mapCleanupCallback, setMapCleanupCallback] = useState<
+    (() => void) | null
+  >(null);
 
   const startTracing = () => {
     setState((prev) => ({
@@ -678,7 +680,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     openFinalSummaryModal,
     closeFinalSummaryModal,
     saveAndCompleteRoute,
-    setMapCleanupCallback: (callback: () => void) => setMapCleanupCallback(() => callback),
+    setMapCleanupCallback: (callback: () => void) =>
+      setMapCleanupCallback(() => callback),
   };
 
   return (
