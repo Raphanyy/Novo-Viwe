@@ -870,15 +870,24 @@ const MapPage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {selectedPOI.name}
                 </h3>
-                <div className="flex items-center space-x-4 mt-1">
-                  <span className="text-sm text-gray-500">
-                    {selectedPOI.distance}
-                  </span>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-yellow-500">★</span>
-                    <span className="text-sm text-gray-600">
-                      {selectedPOI.rating}
+                <div className="space-y-1 mt-1">
+                  {selectedPOI.fullAddress && (
+                    <p className="text-sm text-gray-600">
+                      {selectedPOI.fullAddress}
+                    </p>
+                  )}
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm text-gray-500">
+                      {selectedPOI.distance}
                     </span>
+                    {selectedPOI.rating && (
+                      <div className="flex items-center space-x-1">
+                        <span className="text-yellow-500">★</span>
+                        <span className="text-sm text-gray-600">
+                          {selectedPOI.rating}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
