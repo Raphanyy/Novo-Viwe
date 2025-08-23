@@ -286,16 +286,25 @@ const NotificationsPage: React.FC = () => {
                         <Icon className="h-5 w-5" />
                       </div>
 
-                      {/* Title Only */}
-                      <h3
-                        className={`font-semibold text-left flex-1 ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
-                      >
-                        {notification.title}
-                      </h3>
+                      {/* Title and Time */}
+                      <div className="flex-1 flex items-center justify-between">
+                        <h3
+                          className={`font-semibold text-left ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
+                        >
+                          {notification.title}
+                        </h3>
+
+                        {/* Time indicator */}
+                        <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                          {notification.read
+                            ? `Visto à ${notification.time}`
+                            : notification.time}
+                        </span>
+                      </div>
 
                       {/* Status indicator */}
                       {!notification.read && (
-                        <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full flex-shrink-0">
+                        <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full flex-shrink-0 ml-2">
                           Novo
                         </span>
                       )}
