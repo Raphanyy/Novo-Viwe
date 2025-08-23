@@ -159,19 +159,14 @@ const DesktopInternalLayout: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center p-3 rounded-xl transition-all duration-200 group relative ${
+                  className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 group relative ${
                     active
-                      ? "bg-blue-50 text-blue-600 shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "text-blue-600"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <div className="ml-3 flex-1">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {item.description}
-                    </div>
-                  </div>
+                  <span className="sr-only">{item.name}</span>
                   {active && (
                     <div className="absolute right-3 w-1 h-8 bg-blue-600 rounded-full"></div>
                   )}
