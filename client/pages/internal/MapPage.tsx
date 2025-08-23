@@ -124,6 +124,32 @@ const MapPage: React.FC = () => {
     (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
   );
 
+  // Function to clear route from map
+  const clearRouteFromMap = useCallback(() => {
+    if (!map.current) return;
+
+    if (map.current.getSource("route")) {
+      map.current.removeLayer("route");
+      map.current.removeSource("route");
+    }
+
+    // Resetar estado de rota traçada
+    setRouteTraced(false);
+  }, [setRouteTraced]);
+
+  // Function to clear all markers and routes from map
+  const clearAllMarkersAndRoutes = useCallback(() => {
+    // Clear route from map
+    clearRouteFromMap();
+
+    // Clear stop markers
+    stopMarkers.current.forEach((marker) => marker.remove());
+    stopMarkers.current = [];
+
+    // Reset route traced state
+    setRouteTraced(false);
+  }, [clearRouteFromMap, setRouteTraced]);
+
   // Initialize Mapbox
   useEffect(() => {
     if (!mapRef.current) return;
@@ -349,31 +375,6 @@ const MapPage: React.FC = () => {
     }
   }, [setRouteTraced]);
 
-  // Function to clear route from map
-  const clearRouteFromMap = useCallback(() => {
-    if (!map.current) return;
-
-    if (map.current.getSource("route")) {
-      map.current.removeLayer("route");
-      map.current.removeSource("route");
-    }
-
-    // Resetar estado de rota traçada
-    setRouteTraced(false);
-  }, [setRouteTraced]);
-
-  // Function to clear all markers and routes from map
-  const clearAllMarkersAndRoutes = useCallback(() => {
-    // Clear route from map
-    clearRouteFromMap();
-
-    // Clear stop markers
-    stopMarkers.current.forEach((marker) => marker.remove());
-    stopMarkers.current = [];
-
-    // Reset route traced state
-    setRouteTraced(false);
-  }, [setRouteTraced]);
 
   // Update POI markers
   useEffect(() => {
