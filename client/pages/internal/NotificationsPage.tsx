@@ -59,7 +59,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
       details:
-        "Nossa IA analisou seus padrões de viagem e encontrou uma nova rota que pode economizar 8 minutos e 2km de distância. A nova rota evita 3 semáforos principais.",
+        "Nova rota Casa→Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
       time: "1h atrás",
       read: false,
       icon: Route,
