@@ -212,6 +212,55 @@ const MapPage: React.FC = () => {
         setMapCleanupCallback(clearAllMarkersAndRoutes);
       }, 0);
 
+      // Auto-activate find my location when entering the map page
+      const autoLocationTimeout = setTimeout(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+
+              if (map.current) {
+                // Smooth fly to user's actual location
+                map.current.flyTo({
+                  center: [longitude, latitude],
+                  zoom: 15,
+                  duration: 3000
+                });
+
+                // Update the current location marker
+                const currentLocationEl = document.createElement("div");
+                currentLocationEl.className =
+                  "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
+                currentLocationEl.innerHTML =
+                  '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
+
+                // Remove default marker and add user's actual location
+                const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
+                existingMarkers.forEach(marker => {
+                  const markerEl = marker.querySelector('.w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600');
+                  if (markerEl) {
+                    marker.remove();
+                  }
+                });
+
+                new mapboxgl.Marker(currentLocationEl)
+                  .setLngLat([longitude, latitude])
+                  .addTo(map.current);
+              }
+            },
+            (error) => {
+              // Silently handle geolocation errors on auto-detect
+              console.debug('Auto-location failed (user can still use manual button):', error.message);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 300000 // 5 minutes cache
+            }
+          );
+        }
+      }, 1500); // Wait 1.5s for map to fully initialize
+
       return () => {
         clearTimeout(timeoutId);
         if (map.current) {
