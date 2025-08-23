@@ -14,6 +14,10 @@ import {
   Route as RouteIcon,
   X,
   AlertTriangle,
+  MoveRight,
+  BookmarkPlus,
+  RotateCcw,
+  Loader2,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
@@ -25,10 +29,26 @@ import "mapbox-gl/dist/mapbox-gl.css";
 mapboxgl.accessToken =
   "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
 
+interface SearchResult {
+  id: string;
+  place_name: string;
+  text: string;
+  center: [number, number];
+  place_type: string[];
+  properties: {
+    category?: string;
+    address?: string;
+  };
+}
+
 const MapPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<any>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [mapMode, setMapMode] = useState<"normal" | "satellite" | "traffic">(
     "normal",
@@ -140,52 +160,172 @@ const MapPage: React.FC = () => {
     setRouteTraced(false);
   }, [setRouteTraced]);
 
-  // Initialize Mapbox
+  // Initialize Mapbox with error handling
   useEffect(() => {
     if (!mapRef.current) return;
 
-    map.current = new mapboxgl.Map({
-      container: mapRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [-46.6333, -23.5505], // São Paulo center
-      zoom: 12,
-      attributionControl: false,
-    });
+    try {
+      map.current = new mapboxgl.Map({
+        container: mapRef.current,
+        style: "mapbox://styles/mapbox/streets-v12",
+        center: [-46.6333, -23.5505], // São Paulo center
+        zoom: 12,
+        attributionControl: false,
+        optimizeForTerrain: false, // Reduce complex tile operations
+        fadeDuration: 100, // Reduce animation time to minimize abort scenarios
+      });
 
-    // Add current location marker
-    const currentLocationEl = document.createElement("div");
-    currentLocationEl.className =
-      "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
-    currentLocationEl.innerHTML =
-      '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
-
-    new mapboxgl.Marker(currentLocationEl)
-      .setLngLat([-46.6333, -23.5505])
-      .addTo(map.current);
-
-    // No event listeners needed here - will be added when tracing starts
-
-    // Register cleanup callback after map is initialized
-    // Use setTimeout to avoid immediate execution during render
-    const timeoutId = setTimeout(() => {
-      setMapCleanupCallback(clearAllMarkersAndRoutes);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (map.current) {
-        try {
-          // Clear all event listeners first
-          map.current.off();
-          // Remove the map safely
-          map.current.remove();
-        } catch (error) {
-          // Suppress AbortError and other cleanup errors
-          console.warn("Map cleanup warning:", error);
+      // Add comprehensive error handling for map loading
+      map.current.on("error", (e) => {
+        // Filter out non-critical AbortErrors
+        if (e.error && e.error.message && e.error.message.includes("aborted")) {
+          return; // Silently ignore abort errors as they're expected during normal operation
         }
-        map.current = null;
+        console.warn("Mapbox error (non-critical):", e.error);
+      });
+
+      // Add handling for source errors (including tile loading issues)
+      map.current.on("sourcedataloading", () => {
+        // Track source loading to help debug issues
+      });
+
+      map.current.on("sourcedata", (e) => {
+        if (e.sourceDataType === "content" && e.isSourceLoaded) {
+          // Source loaded successfully
+        }
+      });
+
+      // Add current location marker
+      const currentLocationEl = document.createElement("div");
+      currentLocationEl.className =
+        "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
+      currentLocationEl.innerHTML =
+        '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
+
+      new mapboxgl.Marker(currentLocationEl)
+        .setLngLat([-46.6333, -23.5505])
+        .addTo(map.current);
+
+      // Register cleanup callback after map is initialized
+      // Use setTimeout to avoid immediate execution during render
+      const timeoutId = setTimeout(() => {
+        setMapCleanupCallback(clearAllMarkersAndRoutes);
+      }, 0);
+
+      // Auto-activate find my location when entering the map page
+      const autoLocationTimeout = setTimeout(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+
+              if (map.current) {
+                // Smooth fly to user's actual location
+                map.current.flyTo({
+                  center: [longitude, latitude],
+                  zoom: 15,
+                  duration: 3000,
+                });
+
+                // Update the current location marker
+                const currentLocationEl = document.createElement("div");
+                currentLocationEl.className =
+                  "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
+                currentLocationEl.innerHTML =
+                  '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
+
+                // Remove default marker and add user's actual location
+                const existingMarkers =
+                  document.querySelectorAll(".mapboxgl-marker");
+                existingMarkers.forEach((marker) => {
+                  const markerEl = marker.querySelector(
+                    ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
+                  );
+                  if (markerEl) {
+                    marker.remove();
+                  }
+                });
+
+                new mapboxgl.Marker(currentLocationEl)
+                  .setLngLat([longitude, latitude])
+                  .addTo(map.current);
+              }
+            },
+            (error) => {
+              // Silently handle geolocation errors on auto-detect
+              console.debug(
+                "Auto-location failed (user can still use manual button):",
+                error.message,
+              );
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 300000, // 5 minutes cache
+            },
+          );
+        }
+      }, 1500); // Wait 1.5s for map to fully initialize
+
+      return () => {
+        clearTimeout(timeoutId);
+        clearTimeout(autoLocationTimeout);
+        if (map.current) {
+          try {
+            // Clear all event listeners first
+            map.current.off();
+
+            // Stop any ongoing operations before removing the map
+            map.current.stop();
+
+            // Remove the map safely with a small delay to allow cleanup
+            setTimeout(() => {
+              try {
+                if (map.current) {
+                  map.current.remove();
+                  map.current = null;
+                }
+              } catch (cleanupError) {
+                // Silently handle cleanup errors (often AbortErrors from pending tile requests)
+                if (
+                  !(cleanupError instanceof Error) ||
+                  (!cleanupError.message.includes("aborted") &&
+                    !cleanupError.message.includes("AbortError"))
+                ) {
+                  console.warn("Map cleanup warning:", cleanupError);
+                }
+              }
+            }, 100);
+          } catch (error) {
+            // Suppress AbortError and other cleanup errors
+            if (
+              error instanceof Error &&
+              (error.message.includes("aborted") ||
+                error.message.includes("AbortError"))
+            ) {
+              // Silently ignore AbortErrors during cleanup
+            } else {
+              console.warn("Map cleanup warning:", error);
+            }
+          }
+          map.current = null;
+        }
+      };
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.message.includes("aborted") ||
+          error.message.includes("AbortError"))
+      ) {
+        // Silently handle AbortErrors during map initialization
+        console.debug(
+          "Map initialization AbortError (expected):",
+          error.message,
+        );
+      } else {
+        console.error("Failed to initialize map:", error);
       }
-    };
+    }
   }, []); // Remove setMapCleanupCallback from dependencies
 
   // Manage center pin tracking when tracing starts/stops
@@ -417,6 +557,441 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
+  const findMyLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      alert("Geolocalização não é suportada por este navegador.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        if (map.current) {
+          // Voa para a localização atual do usuário
+          map.current.flyTo({
+            center: [longitude, latitude],
+            zoom: 16,
+            duration: 2000,
+          });
+
+          // Atualiza o marcador de localização atual com melhor visual
+          const currentLocationEl = document.createElement("div");
+          currentLocationEl.className =
+            "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
+          currentLocationEl.innerHTML =
+            '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
+
+          // Remove marcador anterior se existir
+          const existingMarkers = document.querySelectorAll(".mapboxgl-marker");
+          existingMarkers.forEach((marker) => {
+            const markerEl = marker.querySelector(
+              ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
+            );
+            if (markerEl) {
+              marker.remove();
+            }
+          });
+
+          // Adiciona novo marcador na localização atual
+          new mapboxgl.Marker(currentLocationEl)
+            .setLngLat([longitude, latitude])
+            .addTo(map.current);
+        }
+      },
+      (error) => {
+        let errorMessage = "Erro ao obter localização: ";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage += "Permissão negada pelo usuário.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage += "Localização indisponível.";
+            break;
+          case error.TIMEOUT:
+            errorMessage += "Tempo esgotado para obter localização.";
+            break;
+          default:
+            errorMessage += "Erro desconhecido.";
+            break;
+        }
+        alert(errorMessage);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      },
+    );
+  }, []);
+
+  // Enhanced search with business name recognition and robust error handling
+  const searchBusinesses = useCallback(async (query: string) => {
+    if (!query.trim() || query.length < 3) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      // Enhanced context recognition for nationwide search including cities, states, and establishments
+      let businessQuery = query;
+      const lowerQuery = query.toLowerCase();
+
+      // Specific establishment recognition
+      if (
+        lowerQuery.includes("ilha plaza") ||
+        lowerQuery.includes("ilha shopping")
+      ) {
+        businessQuery = "Ilha Plaza Shopping São Paulo";
+      } else if (
+        lowerQuery.includes("quiosque zero oito") ||
+        lowerQuery.includes("quiosque 08")
+      ) {
+        businessQuery = `Quiosque 08 loja comércio São Paulo`;
+      } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
+        businessQuery = "Escola Municipal Alvaro Moreira São Paulo";
+      }
+      // Brazilian cities and states recognition
+      else if (lowerQuery.includes("são paulo") || lowerQuery.includes("sp")) {
+        businessQuery = query.includes("SP") ? query : `${query} São Paulo`;
+      } else if (
+        lowerQuery.includes("rio de janeiro") ||
+        lowerQuery.includes("rj")
+      ) {
+        businessQuery = query.includes("RJ")
+          ? query
+          : `${query} Rio de Janeiro`;
+      } else if (
+        lowerQuery.includes("belo horizonte") ||
+        lowerQuery.includes("mg")
+      ) {
+        businessQuery = query.includes("MG") ? query : `${query} Minas Gerais`;
+      } else if (lowerQuery.includes("brasília") || lowerQuery.includes("df")) {
+        businessQuery = query.includes("DF") ? query : `${query} Brasília DF`;
+      } else if (lowerQuery.includes("salvador") || lowerQuery.includes("ba")) {
+        businessQuery = query.includes("BA")
+          ? query
+          : `${query} Salvador Bahia`;
+      }
+      // Neighborhood and district recognition
+      else if (
+        lowerQuery.includes("bairro") ||
+        lowerQuery.includes("vila") ||
+        lowerQuery.includes("jardim")
+      ) {
+        businessQuery = `${query} bairro`;
+      }
+      // Business type recognition
+      else if (
+        lowerQuery.includes("shopping") &&
+        !lowerQuery.includes("center")
+      ) {
+        businessQuery = `${query} shopping center`;
+      } else if (
+        lowerQuery.includes("escola") &&
+        !lowerQuery.includes("municipal")
+      ) {
+        businessQuery = `${query} escola`;
+      } else if (lowerQuery.includes("quiosque")) {
+        businessQuery = `${query} comercio loja estabelecimento`;
+      }
+
+      let allFeatures: any[] = [];
+
+      // Strategy 1: Direct POI search with error handling and timeout
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        const poiResponse = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            query,
+          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi`,
+          {
+            signal: controller.signal,
+            headers: { Accept: "application/json" },
+          },
+        );
+
+        clearTimeout(timeoutId);
+
+        if (poiResponse.ok) {
+          const poiData = await poiResponse.json();
+          if (poiData.features) {
+            allFeatures = [...poiData.features];
+          }
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          console.warn("POI search timed out");
+        } else {
+          console.warn(
+            "POI search failed, continuing with other strategies:",
+            error,
+          );
+        }
+      }
+
+      // Strategy 2: Enhanced business search (only if we need more results)
+      if (allFeatures.length < 3 && businessQuery !== query) {
+        try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
+
+          const enhancedResponse = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+              businessQuery,
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
+            {
+              signal: controller2.signal,
+              headers: { Accept: "application/json" },
+            },
+          );
+
+          clearTimeout(timeoutId2);
+
+          if (enhancedResponse.ok) {
+            const enhancedData = await enhancedResponse.json();
+            if (enhancedData.features) {
+              enhancedData.features.forEach((feature: any) => {
+                if (
+                  !allFeatures.find(
+                    (f) =>
+                      f.text === feature.text ||
+                      (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+                        Math.abs(f.center[1] - feature.center[1]) < 0.001),
+                  )
+                ) {
+                  allFeatures.push(feature);
+                }
+              });
+            }
+          }
+        } catch (error) {
+          if (error instanceof Error && error.name === "AbortError") {
+            console.warn("Enhanced search timed out");
+          } else {
+            console.warn("Enhanced search failed:", error);
+          }
+        }
+      }
+
+      // Strategy 3: General search as fallback (only if we still need results)
+      if (allFeatures.length < 2) {
+        try {
+          const controller3 = new AbortController();
+          const timeoutId3 = setTimeout(() => controller3.abort(), 8000);
+
+          const generalResponse = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+              query,
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
+            {
+              signal: controller3.signal,
+              headers: { Accept: "application/json" },
+            },
+          );
+
+          clearTimeout(timeoutId3);
+
+          if (generalResponse.ok) {
+            const generalData = await generalResponse.json();
+            if (generalData.features) {
+              const remainingSlots = 5 - allFeatures.length;
+              generalData.features
+                .slice(0, remainingSlots)
+                .forEach((feature: any) => {
+                  if (
+                    !allFeatures.find(
+                      (f) =>
+                        f.text === feature.text ||
+                        (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+                          Math.abs(f.center[1] - feature.center[1]) < 0.001),
+                    )
+                  ) {
+                    allFeatures.push(feature);
+                  }
+                });
+            }
+          }
+        } catch (error) {
+          if (error instanceof Error && error.name === "AbortError") {
+            console.warn("General search timed out");
+          } else {
+            console.warn("General search failed:", error);
+          }
+        }
+      }
+
+      if (allFeatures.length > 0) {
+        const results: SearchResult[] = allFeatures
+          .slice(0, 5)
+          .map((feature: any) => ({
+            id: feature.id,
+            place_name: feature.place_name,
+            text: feature.text,
+            center: feature.center,
+            place_type: feature.place_type,
+            properties: feature.properties || {},
+          }));
+
+        setSearchResults(results);
+        setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+        setShowSearchResults(false);
+      }
+    } catch (error) {
+      console.error("Erro geral na busca:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  // Debounced search
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      searchTimeoutRef.current = setTimeout(() => {
+        searchBusinesses(query);
+      }, 300);
+    },
+    [searchBusinesses],
+  );
+
+  // Navigate to selected search result
+  const handleSelectSearchResult = useCallback((result: SearchResult) => {
+    if (map.current) {
+      map.current.flyTo({
+        center: result.center,
+        zoom: 16,
+        duration: 2000,
+      });
+
+      // Add a marker for the selected place
+      const el = document.createElement("div");
+      el.className =
+        "w-8 h-8 bg-red-500 rounded-full shadow-lg border-2 border-white cursor-pointer flex items-center justify-center";
+      el.innerHTML =
+        '<svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>';
+
+      // Remove existing search marker
+      const existingSearchMarkers = document.querySelectorAll(".search-marker");
+      existingSearchMarkers.forEach((marker) => marker.remove());
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat(result.center)
+        .addTo(map.current);
+
+      // Add class for easy removal
+      el.classList.add("search-marker");
+
+      // Create a temporary POI object to show details
+      setSelectedPOI({
+        id: result.id,
+        name: result.text,
+        type: result.place_type[0] || "place",
+        distance: "0 km",
+        rating: null,
+        coordinates: result.center,
+        color: "bg-red-500",
+        fullAddress: result.place_name,
+      });
+    }
+
+    setSearchQuery(result.text);
+    setShowSearchResults(false);
+  }, []);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowSearchResults(false);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  // Clear search timeout on unmount and add comprehensive error filtering
+  useEffect(() => {
+    // Store original console.error to restore later
+    const originalConsoleError = console.error;
+
+    // Override console.error temporarily to filter Mapbox AbortErrors
+    console.error = (...args: any[]) => {
+      const message = args.join(" ");
+      if (
+        message.includes("AbortError") &&
+        (message.includes("signal is aborted") || message.includes("mapbox"))
+      ) {
+        // Silently ignore Mapbox AbortErrors
+        return;
+      }
+      // Call original console.error for other errors
+      originalConsoleError.apply(console, args);
+    };
+
+    // Add global error handler for network issues and filter out expected AbortErrors
+    const handleGlobalError = (event: ErrorEvent) => {
+      // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
+      if (
+        event.message.includes("AbortError") ||
+        event.message.includes("aborted without reason")
+      ) {
+        event.preventDefault(); // Prevent the error from being logged to console
+        return;
+      }
+
+      if (
+        event.message.includes("Failed to fetch") ||
+        event.message.includes("NetworkError")
+      ) {
+        console.warn(
+          "Network error detected, search may be affected:",
+          event.message,
+        );
+      }
+    };
+
+    // Handle unhandled promise rejections (including AbortErrors from async operations)
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      if (
+        event.reason &&
+        (event.reason.name === "AbortError" ||
+          (event.reason.message && event.reason.message.includes("aborted")))
+      ) {
+        event.preventDefault(); // Prevent the error from being logged
+        return;
+      }
+    };
+
+    window.addEventListener("error", handleGlobalError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      // Restore original console.error
+      console.error = originalConsoleError;
+
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      window.removeEventListener("error", handleGlobalError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
+    };
+  }, []);
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Search and Controls */}
@@ -429,10 +1004,21 @@ const MapPage: React.FC = () => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => {
+              if (searchResults.length > 0) {
+                setShowSearchResults(true);
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
             className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-            placeholder="Buscar locais, endereços..."
+            placeholder="Buscar cidades, bairros, estabelecimentos..."
           />
+          <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
+            {isSearching && (
+              <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+            )}
+          </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
@@ -441,6 +1027,111 @@ const MapPage: React.FC = () => {
               className={`h-5 w-5 transition-colors duration-200 ${showFilters ? "text-blue-600" : "text-gray-400"}`}
             />
           </button>
+
+          {/* Search Results Dropdown */}
+          {showSearchResults && searchResults.length > 0 && (
+            <div
+              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {searchResults.map((result) => (
+                <button
+                  key={result.id}
+                  onClick={() => handleSelectSearchResult(result)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                >
+                  <div className="flex items-start space-x-3">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                        result.place_type.includes("poi")
+                          ? "bg-green-100"
+                          : result.place_type.includes("place") ||
+                              result.place_type.includes("locality")
+                            ? "bg-purple-100"
+                            : result.place_type.includes("region") ||
+                                result.place_type.includes("district")
+                              ? "bg-orange-100"
+                              : result.place_type.includes("neighborhood")
+                                ? "bg-yellow-100"
+                                : "bg-blue-100"
+                      }`}
+                    >
+                      {result.place_type.includes("poi") ? (
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                      ) : (
+                        <MapPin
+                          className={`h-4 w-4 ${
+                            result.place_type.includes("poi")
+                              ? "text-green-600"
+                              : result.place_type.includes("place") ||
+                                  result.place_type.includes("locality")
+                                ? "text-purple-600"
+                                : result.place_type.includes("region") ||
+                                    result.place_type.includes("district")
+                                  ? "text-orange-600"
+                                  : result.place_type.includes("neighborhood")
+                                    ? "text-yellow-600"
+                                    : "text-blue-600"
+                          }`}
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <p className="font-medium text-gray-900 truncate">
+                          {result.text}
+                        </p>
+                        {result.place_type.includes("poi") && (
+                          <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Estabelecimento
+                          </span>
+                        )}
+                        {result.place_type.includes("locality") && (
+                          <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Cidade
+                          </span>
+                        )}
+                        {result.place_type.includes("region") && (
+                          <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Estado
+                          </span>
+                        )}
+                        {result.place_type.includes("district") && (
+                          <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Região
+                          </span>
+                        )}
+                        {result.place_type.includes("neighborhood") && (
+                          <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Bairro
+                          </span>
+                        )}
+                        {result.place_type.includes("postcode") && (
+                          <span className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            CEP
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500 truncate">
+                        {result.place_name}
+                      </p>
+                      {result.properties.category && (
+                        <p className="text-xs text-gray-400 capitalize">
+                          {result.properties.category.replace(/[_,]/g, " ")}
+                        </p>
+                      )}
+                      {!result.properties.category &&
+                        result.place_type.length > 0 && (
+                          <p className="text-xs text-gray-400 capitalize">
+                            {result.place_type[0].replace("_", " ")}
+                          </p>
+                        )}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Filters */}
@@ -502,7 +1193,7 @@ const MapPage: React.FC = () => {
             onClick={handleRecenter}
             className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200"
           >
-            <Target className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -543,10 +1234,13 @@ const MapPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Compass */}
-        <div className="absolute left-4 top-4 bg-white rounded-full p-3 shadow-lg z-10">
-          <Navigation2 className="h-5 w-5 text-gray-600" />
-        </div>
+        {/* Find My Location Button */}
+        <button
+          onClick={findMyLocation}
+          className="absolute left-4 top-4 bg-white rounded-full p-3 shadow-lg z-10 hover:bg-gray-50 transition-colors duration-200"
+        >
+          <Target className="h-5 w-5 text-gray-600" />
+        </button>
 
         {/* Route Suggestion Button - Hidden when tracing */}
         {!traceState.isTracing && (
@@ -624,15 +1318,24 @@ const MapPage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {selectedPOI.name}
                 </h3>
-                <div className="flex items-center space-x-4 mt-1">
-                  <span className="text-sm text-gray-500">
-                    {selectedPOI.distance}
-                  </span>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-yellow-500">★</span>
-                    <span className="text-sm text-gray-600">
-                      {selectedPOI.rating}
+                <div className="space-y-1 mt-1">
+                  {selectedPOI.fullAddress && (
+                    <p className="text-sm text-gray-600">
+                      {selectedPOI.fullAddress}
+                    </p>
+                  )}
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm text-gray-500">
+                      {selectedPOI.distance}
                     </span>
+                    {selectedPOI.rating && (
+                      <div className="flex items-center space-x-1">
+                        <span className="text-yellow-500">★</span>
+                        <span className="text-sm text-gray-600">
+                          {selectedPOI.rating}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -646,11 +1349,11 @@ const MapPage: React.FC = () => {
 
             <div className="flex space-x-3">
               <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <Navigation className="h-4 w-4" />
+                <MoveRight className="h-4 w-4" />
                 <span>Ir para lá</span>
               </button>
               <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <Clock className="h-4 w-4" />
+                <BookmarkPlus className="h-4 w-4" />
                 <span>Mais tarde</span>
               </button>
             </div>
