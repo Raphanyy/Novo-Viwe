@@ -1,7 +1,7 @@
 import React from "react";
-import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { usePlatform } from "../../contexts/PlatformContext";
+import ModalHeader from "./ModalHeader";
 
 interface AdaptiveModalProps {
   isOpen: boolean;
@@ -10,6 +10,9 @@ interface AdaptiveModalProps {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
+  showBackButton?: boolean;
+  onBack?: () => void;
+  rightContent?: React.ReactNode;
 }
 
 const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
@@ -19,6 +22,9 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
   children,
   size = "md",
   className = "",
+  showBackButton = false,
+  onBack,
+  rightContent,
 }) => {
   const { isMobile } = usePlatform();
 
@@ -55,35 +61,18 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          className={cn(
-            "flex items-center justify-between border-b border-gray-200",
-            isMobile ? "p-4 flex-shrink-0" : "p-6",
-          )}
-        >
-          {title && (
-            <h2
-              className={cn(
-                "font-semibold text-gray-900",
-                isMobile ? "text-lg" : "text-xl",
-              )}
-            >
-              {title}
-            </h2>
-          )}
-          <button
-            onClick={onClose}
-            className={cn(
-              "rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors",
-              isMobile ? "p-2" : "p-1.5",
-            )}
-          >
-            <X className={isMobile ? "h-6 w-6" : "h-5 w-5"} />
-          </button>
-        </div>
+        {title && (
+          <ModalHeader
+            title={title}
+            showBackButton={showBackButton}
+            onBack={onBack}
+            onClose={onClose}
+            rightContent={rightContent}
+          />
+        )}
 
         {/* Content */}
-        <div className={cn("overflow-y-auto", isMobile ? "flex-1 p-4" : "p-6")}>
+        <div className={cn("overflow-y-auto", isMobile ? "flex-1" : "", title ? "" : "p-4")}>
           {children}
         </div>
       </div>
