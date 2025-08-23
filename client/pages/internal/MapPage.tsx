@@ -59,6 +59,7 @@ const MapPage: React.FC = () => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<any>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [mapMode, setMapMode] = useState<"normal" | "satellite" | "traffic">(
