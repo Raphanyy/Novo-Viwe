@@ -287,11 +287,11 @@ const MapPage: React.FC = () => {
             map.current.stop();
 
             // Clear specific event listeners to avoid issues
-            map.current.off("error");
-            map.current.off("sourcedataloading");
-            map.current.off("sourcedata");
-            map.current.off("move");
-            map.current.off("zoom");
+            try {
+              map.current.off();
+            } catch (e) {
+              // Ignore errors during cleanup
+            }
 
             // Remove the map safely with a small delay to allow cleanup
             setTimeout(() => {
