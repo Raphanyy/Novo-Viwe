@@ -44,7 +44,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Congestionamento detectado na Av. Paulista. Rota alternativa disponível com economia de 12 minutos.",
       details:
-        "O congestionamento foi causado por um acidente na altura do número 1500. O desvio pela Rua Augusta pode economizar até 12 minutos no seu trajeto atual.",
+        "Acidente detectado na Av. Paulista altura 1500. Desvio pela Rua Augusta economiza 12 minutos.",
       time: "2 min atrás",
       read: false,
       icon: AlertTriangle,
