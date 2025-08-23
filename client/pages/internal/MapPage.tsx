@@ -578,6 +578,113 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
+  // Enhanced search with business name recognition
+  const searchBusinesses = useCallback(async (query: string) => {
+    if (!query.trim() || query.length < 3) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      // Strategy 1: Direct POI search
+      const poiResponse = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          query
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`
+      );
+
+      // Strategy 2: Search with common business terms
+      const businessQuery = query.toLowerCase().includes('shopping') ||
+                           query.toLowerCase().includes('escola') ||
+                           query.toLowerCase().includes('hospital') ||
+                           query.toLowerCase().includes('posto') ||
+                           query.toLowerCase().includes('banco') ||
+                           query.toLowerCase().includes('farmacia') ||
+                           query.toLowerCase().includes('supermercado') ||
+                           query.toLowerCase().includes('quiosque') ||
+                           query.toLowerCase().includes('loja') ||
+                           query.toLowerCase().includes('restaurante')
+                           ? query
+                           : `${query} estabelecimento comercial`;
+
+      const enhancedResponse = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          businessQuery
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`
+      );
+
+      // Strategy 3: Fallback general search
+      const generalResponse = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          query
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`
+      );
+
+      const [poiData, enhancedData, generalData] = await Promise.all([
+        poiResponse.json(),
+        enhancedResponse.json(),
+        generalResponse.json()
+      ]);
+
+      let allFeatures: any[] = [];
+
+      // Combine and prioritize results
+      if (poiData.features) {
+        allFeatures = [...poiData.features];
+      }
+
+      if (enhancedData.features) {
+        enhancedData.features.forEach((feature: any) => {
+          if (!allFeatures.find(f =>
+            f.text === feature.text ||
+            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+             Math.abs(f.center[1] - feature.center[1]) < 0.001)
+          )) {
+            allFeatures.push(feature);
+          }
+        });
+      }
+
+      // Add general results only if we don't have enough establishments
+      if (generalData.features && allFeatures.length < 3) {
+        const remainingSlots = 5 - allFeatures.length;
+        generalData.features.slice(0, remainingSlots).forEach((feature: any) => {
+          if (!allFeatures.find(f =>
+            f.text === feature.text ||
+            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+             Math.abs(f.center[1] - feature.center[1]) < 0.001)
+          )) {
+            allFeatures.push(feature);
+          }
+        });
+      }
+
+      if (allFeatures.length > 0) {
+        const results: SearchResult[] = allFeatures.slice(0, 5).map((feature: any) => ({
+          id: feature.id,
+          place_name: feature.place_name,
+          text: feature.text,
+          center: feature.center,
+          place_type: feature.place_type,
+          properties: feature.properties || {},
+        }));
+
+        setSearchResults(results);
+        setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+        setShowSearchResults(false);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar estabelecimentos:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
   // Debounced search
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
@@ -587,9 +694,9 @@ const MapPage: React.FC = () => {
     }
 
     searchTimeoutRef.current = setTimeout(() => {
-      searchPlaces(query);
+      searchBusinesses(query);
     }, 300);
-  }, [searchPlaces]);
+  }, [searchBusinesses]);
 
   // Navigate to selected search result
   const handleSelectSearchResult = useCallback((result: SearchResult) => {
