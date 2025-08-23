@@ -58,12 +58,6 @@ const InternalLayout: React.FC = () => {
       icon: Bell,
       color: "text-indigo-600",
     },
-    {
-      name: "Ajustes",
-      path: "/app/ajustes",
-      icon: Settings,
-      color: "text-gray-600",
-    },
   ];
 
   const getCurrentPageName = () => {
@@ -154,12 +148,12 @@ const InternalLayout: React.FC = () => {
 
                 <div className="py-2">
                   <Link
-                    to="/app/ajustes"
+                    to="/app/opcoes"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Settings className="h-4 w-4 mr-3" />
-                    Configurações
+                    <User className="h-4 w-4 mr-3" />
+                    Perfil
                   </Link>
 
                   <button

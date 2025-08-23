@@ -50,9 +50,9 @@ const navigationItems: NavigationItem[] = [
   {
     name: "Perfil",
     path: "/app/opcoes",
-    icon: Sliders,
+    icon: User,
     color: "text-yellow-600",
-    description: "Configurações avançadas",
+    description: "Configurações do perfil",
   },
   {
     name: "Atividade",
@@ -67,13 +67,6 @@ const navigationItems: NavigationItem[] = [
     icon: Bell,
     color: "text-indigo-600",
     description: "Central de notificações",
-  },
-  {
-    name: "Ajustes",
-    path: "/app/ajustes",
-    icon: Settings,
-    color: "text-gray-600",
-    description: "Configurações do sistema",
   },
 ];
 

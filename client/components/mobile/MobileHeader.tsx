@@ -77,6 +77,15 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
 
                   <div className="py-2">
                     <Link
+                      to="/app/opcoes"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="h-4 w-4 mr-3" />
+                      Perfil
+                    </Link>
+
+                    <Link
                       to="/app/notificacoes"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                       onClick={() => setIsMenuOpen(false)}
@@ -86,15 +95,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
                       <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                         3
                       </span>
-                    </Link>
-
-                    <Link
-                      to="/app/ajustes"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Settings className="h-4 w-4 mr-3" />
-                      Configurações
                     </Link>
 
                     <button
