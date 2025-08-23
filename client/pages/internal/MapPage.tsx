@@ -628,10 +628,21 @@ const MapPage: React.FC = () => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => {
+              if (searchResults.length > 0) {
+                setShowSearchResults(true);
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
             className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             placeholder="Buscar locais, endereços..."
           />
+          <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
+            {isSearching && (
+              <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+            )}
+          </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="absolute inset-y-0 right-0 pr-3 flex items-center"
@@ -640,6 +651,39 @@ const MapPage: React.FC = () => {
               className={`h-5 w-5 transition-colors duration-200 ${showFilters ? "text-blue-600" : "text-gray-400"}`}
             />
           </button>
+
+          {/* Search Results Dropdown */}
+          {showSearchResults && searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
+                 onClick={(e) => e.stopPropagation()}>
+              {searchResults.map((result) => (
+                <button
+                  key={result.id}
+                  onClick={() => handleSelectSearchResult(result)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <MapPin className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 truncate">
+                        {result.text}
+                      </p>
+                      <p className="text-sm text-gray-500 truncate">
+                        {result.place_name}
+                      </p>
+                      {result.place_type.length > 0 && (
+                        <p className="text-xs text-gray-400 capitalize">
+                          {result.place_type[0].replace('_', ' ')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Filters */}
