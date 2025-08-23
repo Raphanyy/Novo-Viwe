@@ -429,7 +429,7 @@ const OptionsPage: React.FC = () => {
                       }`}
                     >
                       <div
-                        className={`p-2 rounded-xl ${isSelected ? "bg-blue-100" : "bg-gray-100"}`}
+                        className={`p-2 rounded-xl ${isSelected ? "bg-blue-100" : "bg-secondary"}`}
                       >
                         <Icon
                           className={`h-5 w-5 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`}
@@ -484,7 +484,7 @@ const OptionsPage: React.FC = () => {
                 <div>
                   <h4 className="font-medium mb-3">App de Navegação</h4>
                   <div className="flex flex-wrap gap-2">
-                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-muted">
                       <input
                         type="radio"
                         name="navigation"
@@ -496,7 +496,7 @@ const OptionsPage: React.FC = () => {
                       <MapPin size={20} className="ml-2" />
                       <span className="ml-2 text-sm">Integrada</span>
                     </label>
-                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-muted">
                       <input
                         type="radio"
                         name="navigation"
@@ -508,7 +508,7 @@ const OptionsPage: React.FC = () => {
                       <Map size={20} className="ml-2" />
                       <span className="ml-2 text-sm">Google Maps</span>
                     </label>
-                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-muted">
                       <input
                         type="radio"
                         name="navigation"
@@ -583,7 +583,7 @@ const OptionsPage: React.FC = () => {
                         className={`p-3 rounded-xl text-left transition-all duration-200 ${
                           selectedFuel === fuel.id
                             ? "bg-blue-50 border-2 border-blue-200"
-                            : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+                            : "bg-muted border-2 border-transparent hover:bg-secondary"
                         }`}
                       >
                         <p
@@ -724,7 +724,7 @@ const OptionsPage: React.FC = () => {
 
                 {/* Restore Defaults */}
                 <div className="pt-4 border-t border-border">
-                  <button className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-200">
+                  <button className="w-full flex items-center justify-between p-4 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200">
                     <div className="flex items-center space-x-3">
                       <RefreshCcw className="h-5 w-5 text-muted-foreground" />
                       <span className="font-medium text-foreground">
