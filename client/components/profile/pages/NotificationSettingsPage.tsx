@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import SettingsToggle from "../SettingsToggle";
-import { Bell, Mail, MessageSquare, Route, Award, DollarSign } from "lucide-react";
+import {
+  Bell,
+  Mail,
+  MessageSquare,
+  Route,
+  Award,
+  DollarSign,
+} from "lucide-react";
 
 interface NotificationSettingsPageProps {
   onBack: () => void;
 }
 
-const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onBack }) => {
+const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({
+  onBack,
+}) => {
   const [settings, setSettings] = useState({
     pushNotifications: true,
     emailNotifications: false,
@@ -19,7 +28,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
   });
 
   const updateSetting = (key: keyof typeof settings, value: boolean) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       [key]: value,
     }));
@@ -40,7 +49,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
             isEnabled={settings.pushNotifications}
             onChange={(value) => updateSetting("pushNotifications", value)}
           />
-          
+
           <SettingsToggle
             title="Alertas de trânsito"
             subtitle="Congestionamentos e incidentes"
@@ -49,7 +58,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
             onChange={(value) => updateSetting("trafficAlerts", value)}
             disabled={!settings.pushNotifications}
           />
-          
+
           <SettingsToggle
             title="Atualizações de rota"
             subtitle="Novas rotas sugeridas"
@@ -58,7 +67,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
             onChange={(value) => updateSetting("routeUpdates", value)}
             disabled={!settings.pushNotifications}
           />
-          
+
           <SettingsToggle
             title="Conquistas"
             subtitle="Marcos e realizações"
@@ -83,7 +92,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
             isEnabled={settings.emailNotifications}
             onChange={(value) => updateSetting("emailNotifications", value)}
           />
-          
+
           <SettingsToggle
             title="Marketing"
             subtitle="Novidades e promoções"
@@ -107,7 +116,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
             isEnabled={settings.soundEnabled}
             onChange={(value) => updateSetting("soundEnabled", value)}
           />
-          
+
           <SettingsToggle
             title="Vibração"
             subtitle="Vibrar ao receber notificações"
@@ -123,7 +132,7 @@ const NotificationSettingsPage: React.FC<NotificationSettingsPageProps> = ({ onB
         <p className="text-sm text-muted-foreground mb-4">
           Configure horários em que não deseja receber notificações
         </p>
-        
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">

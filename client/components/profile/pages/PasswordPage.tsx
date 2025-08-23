@@ -11,7 +11,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
     newPassword: "",
     confirmPassword: "",
   });
-  
+
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -21,14 +21,14 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev) => ({
       ...prev,
       [field]: !prev[field],
     }));
@@ -36,7 +36,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.newPassword !== formData.confirmPassword) {
       alert("As senhas não coincidem!");
       return;
@@ -46,7 +46,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
     console.log("Senha alterada");
     setShowSuccessMessage(true);
     setTimeout(() => setShowSuccessMessage(false), 3000);
-    
+
     // Limpar formulário
     setFormData({
       currentPassword: "",
@@ -59,7 +59,11 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
     if (password.length === 0) return { strength: 0, label: "" };
     if (password.length < 6) return { strength: 1, label: "Fraca" };
     if (password.length < 10) return { strength: 2, label: "Média" };
-    if (password.length >= 10 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+    if (
+      password.length >= 10 &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password)
+    ) {
       return { strength: 3, label: "Forte" };
     }
     return { strength: 2, label: "Média" };
@@ -102,7 +106,9 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
               <input
                 type={showPasswords.current ? "text" : "password"}
                 value={formData.currentPassword}
-                onChange={(e) => handleInputChange("currentPassword", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("currentPassword", e.target.value)
+                }
                 className="w-full pl-10 pr-12 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                 required
               />
@@ -130,7 +136,9 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
               <input
                 type={showPasswords.new ? "text" : "password"}
                 value={formData.newPassword}
-                onChange={(e) => handleInputChange("newPassword", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("newPassword", e.target.value)
+                }
                 className="w-full pl-10 pr-12 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                 required
               />
@@ -146,7 +154,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
                 )}
               </button>
             </div>
-            
+
             {/* Indicador de força da senha */}
             {formData.newPassword && (
               <div className="mt-2">
@@ -157,10 +165,10 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
                         passwordStrength.strength === 1
                           ? "w-1/3 bg-red-500"
                           : passwordStrength.strength === 2
-                          ? "w-2/3 bg-yellow-500"
-                          : passwordStrength.strength === 3
-                          ? "w-full bg-green-500"
-                          : "w-0"
+                            ? "w-2/3 bg-yellow-500"
+                            : passwordStrength.strength === 3
+                              ? "w-full bg-green-500"
+                              : "w-0"
                       }`}
                     />
                   </div>
@@ -182,7 +190,9 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
               <input
                 type={showPasswords.confirm ? "text" : "password"}
                 value={formData.confirmPassword}
-                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("confirmPassword", e.target.value)
+                }
                 className="w-full pl-10 pr-12 py-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                 required
               />
@@ -198,7 +208,7 @@ const PasswordPage: React.FC<PasswordPageProps> = ({ onBack }) => {
                 )}
               </button>
             </div>
-            
+
             {/* Verificação de coincidência */}
             {formData.confirmPassword && (
               <div className="mt-1">

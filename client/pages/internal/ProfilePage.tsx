@@ -34,7 +34,7 @@ import ThemeSettingsPage from "../../components/profile/pages/ThemeSettingsPage"
 // Enum para os níveis de navegação
 enum NavigationLevel {
   PRIMARY = "primary",
-  SECONDARY = "secondary", 
+  SECONDARY = "secondary",
   TERTIARY = "tertiary",
 }
 
@@ -60,14 +60,17 @@ const ProfilePage: React.FC = () => {
   const { user, logout } = useAuth();
   const [currentLevel, setCurrentLevel] = useState(NavigationLevel.PRIMARY);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [selectedSubSection, setSelectedSubSection] = useState<string | null>(null);
+  const [selectedSubSection, setSelectedSubSection] = useState<string | null>(
+    null,
+  );
 
   // Configuração das seções principais do perfil (Nível 1)
   const profileSections: ProfileSection[] = [
     {
       id: "account",
-      title: "Sua conta", 
-      subtitle: "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativa��ão de conta.",
+      title: "Sua conta",
+      subtitle:
+        "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativa��ão de conta.",
       icon: User,
       items: [
         {
@@ -80,7 +83,7 @@ const ProfilePage: React.FC = () => {
         },
         {
           id: "plan-billing",
-          title: "Plano e faturamento", 
+          title: "Plano e faturamento",
           subtitle: "Gerencie sua assinatura e pagamentos",
           icon: CreditCard,
           hasSettings: true,
@@ -102,7 +105,8 @@ const ProfilePage: React.FC = () => {
     {
       id: "security",
       title: "Segurança e acesso à conta",
-      subtitle: "Gerencie a segurança da sua conta e monitore o uso dela, inclusive os aplicativos conectados a ela.",
+      subtitle:
+        "Gerencie a segurança da sua conta e monitore o uso dela, inclusive os aplicativos conectados a ela.",
       icon: Shield,
       items: [
         {
@@ -153,7 +157,8 @@ const ProfilePage: React.FC = () => {
     {
       id: "notifications",
       title: "Notificações",
-      subtitle: "Selecione os tipos de notificação que você recebe sobre atividades, interesses e recomendações.",
+      subtitle:
+        "Selecione os tipos de notificação que você recebe sobre atividades, interesses e recomendações.",
       icon: Bell,
       items: [
         {
@@ -165,7 +170,7 @@ const ProfilePage: React.FC = () => {
           component: NotificationSettingsPage,
         },
         {
-          id: "email-notifications", 
+          id: "email-notifications",
           title: "Notificações por email",
           subtitle: "Configure notificações por email",
           icon: Mail,
@@ -206,7 +211,8 @@ const ProfilePage: React.FC = () => {
     {
       id: "support",
       title: "Recursos adicionais",
-      subtitle: "Verifique em outros lugares informações úteis para saber mais sobre os produtos e serviços.",
+      subtitle:
+        "Verifique em outros lugares informações úteis para saber mais sobre os produtos e serviços.",
       icon: HelpCircle,
       items: [
         {
@@ -247,12 +253,12 @@ const ProfilePage: React.FC = () => {
   };
 
   const getCurrentSection = () => {
-    return profileSections.find(section => section.id === selectedSection);
+    return profileSections.find((section) => section.id === selectedSection);
   };
 
   const getCurrentSubSection = () => {
     const section = getCurrentSection();
-    return section?.items?.find(item => item.id === selectedSubSection);
+    return section?.items?.find((item) => item.id === selectedSubSection);
   };
 
   // Renderização condicional baseada no nível atual
@@ -304,7 +310,9 @@ const ProfilePage: React.FC = () => {
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
             <Icon className="h-4 w-4 text-primary" />
           </div>
-          <h2 className="text-lg font-semibold text-foreground">{section.title}</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            {section.title}
+          </h2>
         </div>
 
         {/* Itens da seção */}
@@ -315,7 +323,11 @@ const ProfilePage: React.FC = () => {
               title={item.title}
               subtitle={item.subtitle}
               icon={item.icon}
-              onClick={item.hasSettings ? () => navigateToSubSection(item.id) : undefined}
+              onClick={
+                item.hasSettings
+                  ? () => navigateToSubSection(item.id)
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -338,9 +350,12 @@ const ProfilePage: React.FC = () => {
     return (
       <div className="p-4">
         <div className="bg-card rounded-xl p-6 border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-4">{subSection.title}</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">
+            {subSection.title}
+          </h3>
           <p className="text-muted-foreground">
-            Configurações para {subSection.title.toLowerCase()} serão implementadas aqui.
+            Configurações para {subSection.title.toLowerCase()} serão
+            implementadas aqui.
           </p>
         </div>
       </div>
@@ -349,8 +364,10 @@ const ProfilePage: React.FC = () => {
 
   const getHeaderTitle = () => {
     if (currentLevel === NavigationLevel.PRIMARY) return "Configurações";
-    if (currentLevel === NavigationLevel.SECONDARY) return getCurrentSection()?.title;
-    if (currentLevel === NavigationLevel.TERTIARY) return getCurrentSubSection()?.title;
+    if (currentLevel === NavigationLevel.SECONDARY)
+      return getCurrentSection()?.title;
+    if (currentLevel === NavigationLevel.TERTIARY)
+      return getCurrentSubSection()?.title;
     return "Configurações";
   };
 
@@ -364,9 +381,7 @@ const ProfilePage: React.FC = () => {
       />
 
       {/* Conteúdo principal */}
-      <div className="flex-1 overflow-y-auto">
-        {renderContent()}
-      </div>
+      <div className="flex-1 overflow-y-auto">{renderContent()}</div>
     </div>
   );
 };

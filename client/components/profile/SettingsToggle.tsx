@@ -35,12 +35,8 @@ const SettingsToggle: React.FC<SettingsToggleProps> = ({
         onClick={() => !disabled && onChange(!isEnabled)}
         disabled={disabled}
         className={`transition-colors duration-200 ${
-          disabled 
-            ? "opacity-50 cursor-not-allowed" 
-            : "hover:opacity-80"
-        } ${
-          isEnabled ? "text-primary" : "text-muted-foreground"
-        }`}
+          disabled ? "opacity-50 cursor-not-allowed" : "hover:opacity-80"
+        } ${isEnabled ? "text-primary" : "text-muted-foreground"}`}
       >
         {isEnabled ? (
           <ToggleRight className="h-8 w-8" />

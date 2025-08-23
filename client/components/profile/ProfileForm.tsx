@@ -22,7 +22,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   isLoading = false,
 }) => {
   const { user, updateUser } = useAuth();
-  
+
   const [formData, setFormData] = useState<ProfileFormData>({
     name: user?.name || "",
     email: user?.email || "",
@@ -39,14 +39,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         name: user.name,
         email: user.email,
         company: "",
-        country: "Brasil", 
+        country: "Brasil",
         city: "",
       });
     }
   }, [user]);
 
   const handleInputChange = (field: keyof ProfileFormData, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -54,7 +54,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Atualiza o usuário no contexto
     updateUser({
       name: formData.name,
@@ -81,7 +81,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             Nome Completo
           </label>
           <input
@@ -95,7 +98,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             Endereço de E-mail
           </label>
           <input
@@ -109,7 +115,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="company" className="block text-sm font-medium text-foreground mb-2">
+          <label
+            htmlFor="company"
+            className="block text-sm font-medium text-foreground mb-2"
+          >
             Nome da Empresa
           </label>
           <input
@@ -123,7 +132,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="country"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               País
             </label>
             <input
@@ -136,7 +148,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="city" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="city"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Cidade
             </label>
             <input

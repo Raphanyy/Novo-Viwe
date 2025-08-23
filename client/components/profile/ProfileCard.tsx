@@ -85,7 +85,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
         <div className="flex-1">
           <h2 className="text-xl font-bold text-foreground">{user?.name}</h2>
-          <p className="text-muted-foreground">@{user?.name?.toLowerCase().replace(/\s+/g, '')}</p>
+          <p className="text-muted-foreground">
+            @{user?.name?.toLowerCase().replace(/\s+/g, "")}
+          </p>
           <p className="text-sm text-muted-foreground mt-1">{user?.email}</p>
           {showEditButton && (
             <button

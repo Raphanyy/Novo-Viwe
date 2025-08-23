@@ -10,23 +10,23 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("pt-BR");
 
   const themeOptions = [
-    { 
-      id: "auto", 
-      name: "Automático", 
+    {
+      id: "auto",
+      name: "Automático",
       description: "Segue configuração do sistema",
-      icon: Smartphone 
+      icon: Smartphone,
     },
-    { 
-      id: "light", 
-      name: "Claro", 
+    {
+      id: "light",
+      name: "Claro",
       description: "Sempre usar tema claro",
-      icon: Sun 
+      icon: Sun,
     },
-    { 
-      id: "dark", 
-      name: "Escuro", 
+    {
+      id: "dark",
+      name: "Escuro",
       description: "Sempre usar tema escuro",
-      icon: Moon 
+      icon: Moon,
     },
   ];
 
@@ -45,7 +45,7 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
           <Palette className="h-5 w-5 text-primary" />
           <span>Tema do Aplicativo</span>
         </h3>
-        
+
         <div className="grid grid-cols-1 gap-3">
           {themeOptions.map((theme) => {
             const Icon = theme.icon;
@@ -62,30 +62,38 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg ${
-                    isSelected ? "bg-primary/10" : "bg-secondary"
-                  }`}>
-                    <Icon className={`h-5 w-5 ${
-                      isSelected ? "text-primary" : "text-muted-foreground"
-                    }`} />
+                  <div
+                    className={`p-2 rounded-lg ${
+                      isSelected ? "bg-primary/10" : "bg-secondary"
+                    }`}
+                  >
+                    <Icon
+                      className={`h-5 w-5 ${
+                        isSelected ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    />
                   </div>
                   <div className="flex-1">
-                    <h4 className={`font-medium ${
-                      isSelected ? "text-primary" : "text-foreground"
-                    }`}>
+                    <h4
+                      className={`font-medium ${
+                        isSelected ? "text-primary" : "text-foreground"
+                      }`}
+                    >
                       {theme.name}
                     </h4>
-                    <p className={`text-sm ${
-                      isSelected ? "text-primary/70" : "text-muted-foreground"
-                    }`}>
+                    <p
+                      className={`text-sm ${
+                        isSelected ? "text-primary/70" : "text-muted-foreground"
+                      }`}
+                    >
                       {theme.description}
                     </p>
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    isSelected
-                      ? "border-primary bg-primary"
-                      : "border-border"
-                  }`}>
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      isSelected ? "border-primary bg-primary" : "border-border"
+                    }`}
+                  >
                     {isSelected && (
                       <div className="w-2 h-2 rounded-full bg-primary-foreground"></div>
                     )}
@@ -103,7 +111,7 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
           <Globe className="h-5 w-5 text-primary" />
           <span>Idioma</span>
         </h3>
-        
+
         <div className="space-y-3">
           {languageOptions.map((language) => (
             <button
@@ -117,11 +125,13 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
             >
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">{language.flag}</span>
-                <span className={`font-medium ${
-                  selectedLanguage === language.id
-                    ? "text-primary"
-                    : "text-foreground"
-                }`}>
+                <span
+                  className={`font-medium ${
+                    selectedLanguage === language.id
+                      ? "text-primary"
+                      : "text-foreground"
+                  }`}
+                >
                   {language.name}
                 </span>
               </div>
@@ -136,7 +146,7 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
       {/* Personalização Adicional */}
       <div className="bg-card rounded-xl p-6 border border-border">
         <h3 className="font-medium text-foreground mb-4">Personalização</h3>
-        
+
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
@@ -162,7 +172,9 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
             </label>
             <select className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
               <option value="compact">Compacto</option>
-              <option value="normal" selected>Normal</option>
+              <option value="normal" selected>
+                Normal
+              </option>
               <option value="comfortable">Confortável</option>
             </select>
           </div>
@@ -177,11 +189,14 @@ const ThemeSettingsPage: React.FC<ThemeSettingsPageProps> = ({ onBack }) => {
             <div className="w-8 h-8 bg-primary rounded-full"></div>
             <div>
               <p className="font-medium text-foreground">Exemplo de texto</p>
-              <p className="text-sm text-muted-foreground">Subtítulo de exemplo</p>
+              <p className="text-sm text-muted-foreground">
+                Subtítulo de exemplo
+              </p>
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
-            Este é um exemplo de como o texto aparecerá com suas configurações atuais.
+            Este é um exemplo de como o texto aparecerá com suas configurações
+            atuais.
           </p>
         </div>
       </div>
