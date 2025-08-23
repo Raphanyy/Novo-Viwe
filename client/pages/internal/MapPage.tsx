@@ -718,7 +718,7 @@ const MapPage: React.FC = () => {
           const generalResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               query
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`,
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
             {
               signal: controller3.signal,
               headers: { 'Accept': 'application/json' }
