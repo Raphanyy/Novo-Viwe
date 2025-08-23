@@ -568,7 +568,11 @@ const MapPage: React.FC = () => {
           }
         }
       } catch (error) {
-        console.warn('POI search failed, continuing with other strategies:', error);
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn('POI search timed out');
+        } else {
+          console.warn('POI search failed, continuing with other strategies:', error);
+        }
       }
 
       // Strategy 2: Enhanced business search (only if we need more results)
@@ -604,7 +608,11 @@ const MapPage: React.FC = () => {
             }
           }
         } catch (error) {
-          console.warn('Enhanced search failed:', error);
+          if (error instanceof Error && error.name === 'AbortError') {
+            console.warn('Enhanced search timed out');
+          } else {
+            console.warn('Enhanced search failed:', error);
+          }
         }
       }
 
@@ -642,7 +650,11 @@ const MapPage: React.FC = () => {
             }
           }
         } catch (error) {
-          console.warn('General search failed:', error);
+          if (error instanceof Error && error.name === 'AbortError') {
+            console.warn('General search timed out');
+          } else {
+            console.warn('General search failed:', error);
+          }
         }
       }
 
