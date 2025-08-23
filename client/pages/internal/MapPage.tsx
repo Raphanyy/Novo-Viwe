@@ -617,17 +617,36 @@ const MapPage: React.FC = () => {
 
     setIsSearching(true);
     try {
-      // Enhanced context recognition for better establishment search
+      // Enhanced context recognition for nationwide search including cities, states, and establishments
       let businessQuery = query;
       const lowerQuery = query.toLowerCase();
 
+      // Specific establishment recognition
       if (lowerQuery.includes('ilha plaza') || lowerQuery.includes('ilha shopping')) {
         businessQuery = 'Ilha Plaza Shopping São Paulo';
       } else if (lowerQuery.includes('quiosque zero oito') || lowerQuery.includes('quiosque 08')) {
         businessQuery = `Quiosque 08 loja comércio São Paulo`;
       } else if (lowerQuery.includes('escola municipal alvaro moreira')) {
         businessQuery = 'Escola Municipal Alvaro Moreira São Paulo';
-      } else if (lowerQuery.includes('shopping') && !lowerQuery.includes('center')) {
+      }
+      // Brazilian cities and states recognition
+      else if (lowerQuery.includes('são paulo') || lowerQuery.includes('sp')) {
+        businessQuery = query.includes('SP') ? query : `${query} São Paulo`;
+      } else if (lowerQuery.includes('rio de janeiro') || lowerQuery.includes('rj')) {
+        businessQuery = query.includes('RJ') ? query : `${query} Rio de Janeiro`;
+      } else if (lowerQuery.includes('belo horizonte') || lowerQuery.includes('mg')) {
+        businessQuery = query.includes('MG') ? query : `${query} Minas Gerais`;
+      } else if (lowerQuery.includes('brasília') || lowerQuery.includes('df')) {
+        businessQuery = query.includes('DF') ? query : `${query} Brasília DF`;
+      } else if (lowerQuery.includes('salvador') || lowerQuery.includes('ba')) {
+        businessQuery = query.includes('BA') ? query : `${query} Salvador Bahia`;
+      }
+      // Neighborhood and district recognition
+      else if (lowerQuery.includes('bairro') || lowerQuery.includes('vila') || lowerQuery.includes('jardim')) {
+        businessQuery = `${query} bairro`;
+      }
+      // Business type recognition
+      else if (lowerQuery.includes('shopping') && !lowerQuery.includes('center')) {
         businessQuery = `${query} shopping center`;
       } else if (lowerQuery.includes('escola') && !lowerQuery.includes('municipal')) {
         businessQuery = `${query} escola`;
