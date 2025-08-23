@@ -191,9 +191,9 @@ const OptionsPage: React.FC = () => {
   }, [name]);
 
   return (
-    <div className="h-full overflow-auto bg-gray-50">
+    <div className="h-full overflow-auto bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
+      <header className="bg-card border-b border-border shadow-sm sticky top-0 z-10">
         <h1 className="text-xl font-bold text-center p-4">Perfil</h1>
       </header>
 
@@ -214,7 +214,7 @@ const OptionsPage: React.FC = () => {
         >
           
           {/* Seção do Perfil */}
-          <AccordionItem value="profile" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="profile" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
