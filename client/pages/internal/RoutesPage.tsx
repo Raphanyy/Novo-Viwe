@@ -145,7 +145,7 @@ const RoutesPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col bg-background">
       {/* Header with Search */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-card border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-foreground">Minhas Rotas</h1>
           <button
@@ -178,7 +178,7 @@ const RoutesPage: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-white text-blue-600 shadow-sm"
+                  ? "bg-card text-blue-600 shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -222,7 +222,7 @@ const RoutesPage: React.FC = () => {
             {currentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
@@ -305,7 +305,7 @@ const RoutesPage: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white border-t border-gray-200 p-4">
+      <div className="bg-card border-t border-gray-200 p-4">
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={openRouteModal}
