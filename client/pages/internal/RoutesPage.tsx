@@ -309,7 +309,7 @@ const RoutesPage: React.FC = () => {
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={openRouteModal}
-            className="flex flex-col items-center space-y-2 p-3 bg-blue-50 rounded-2xl hover:bg-blue-100 transition-colors duration-200"
+            className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200"
           >
             <Plus className="h-5 w-5 text-blue-600" />
             <span className="text-xs font-medium text-blue-600">Nova Rota</span>
