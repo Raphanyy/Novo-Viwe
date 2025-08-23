@@ -333,7 +333,43 @@ const NotificationsPage: React.FC = () => {
                   </AccordionTrigger>
 
                   <AccordionContent className="px-3 pb-3">
-                    <div className="ml-6">
+                    <div className="ml-8">
+                      {/* Selection and Summary Info */}
+                      <div className="flex items-start space-x-3 mb-3 pb-3 border-b border-border">
+                        {/* Selection Checkbox */}
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleNotificationSelection(notification.id);
+                          }}
+                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer mt-1 ${
+                            isSelected
+                              ? "bg-blue-500 border-blue-500"
+                              : "border-border hover:border-muted-foreground"
+                          }`}
+                        >
+                          {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
+                        </div>
+
+                        <div className="flex-1">
+                          {/* Message */}
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {notification.message}
+                          </p>
+
+                          {/* Route and Time */}
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            {notification.route && (
+                              <div className="flex items-center space-x-1">
+                                <Route className="h-3 w-3" />
+                                <span>{notification.route}</span>
+                              </div>
+                            )}
+                            <span>{notification.time}</span>
+                          </div>
+                        </div>
+                      </div>
+
                       {/* Detailed message */}
                       <p className="text-sm text-foreground mb-3 leading-relaxed">
                         {notification.details}
