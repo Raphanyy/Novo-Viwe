@@ -130,7 +130,7 @@ const RoutesPage: React.FC = () => {
       case "heavy":
         return "text-red-600 bg-red-100";
       default:
-        return "text-muted-foreground bg-gray-100";
+        return "text-muted-foreground bg-muted";
     }
   };
 
@@ -143,7 +143,7 @@ const RoutesPage: React.FC = () => {
   const currentRoutes = routes[activeTab] || [];
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-background">
       {/* Header with Search */}
       <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-4">
@@ -171,7 +171,7 @@ const RoutesPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 bg-gray-100 rounded-2xl p-1">
+        <div className="flex space-x-1 bg-muted rounded-2xl p-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -247,7 +247,7 @@ const RoutesPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <button className="p-1 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                  <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
                     <MoreVertical className="h-4 w-4 text-muted-foreground" />
                   </button>
                 </div>
@@ -286,10 +286,10 @@ const RoutesPage: React.FC = () => {
                   </span>
 
                   <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
                       <Share2 className="h-4 w-4 text-muted-foreground" />
                     </button>
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
                       <Edit3 className="h-4 w-4 text-muted-foreground" />
                     </button>
                     <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
