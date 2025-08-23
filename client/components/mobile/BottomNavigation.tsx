@@ -72,22 +72,15 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 ${
-                  active ? "bg-primary/10" : "hover:bg-muted"
+                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 ${
+                  active ? "" : "hover:bg-muted"
                 }`}
               >
                 <Icon
                   className={`h-5 w-5 ${
-                    active ? "text-blue-600" : "text-gray-600"
+                    active ? "text-blue-600" : "text-muted-foreground"
                   }`}
                 />
-                <span
-                  className={`text-xs font-medium truncate ${
-                    active ? "text-blue-600" : "text-gray-600"
-                  }`}
-                >
-                  {item.name}
-                </span>
               </Link>
             );
           })}
