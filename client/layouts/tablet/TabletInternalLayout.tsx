@@ -92,7 +92,7 @@ const TabletInternalLayout: React.FC = () => {
   };
 
   const isMapPage = location.pathname === "/app/mapa";
-  const isProfileSettingsPage = location.pathname === "/app/opcoes" || location.pathname === "/app/ajustes";
+  const shouldShowHeader = location.pathname === "/app" || location.pathname === "/app/mapa";
 
   const {
     state: traceState,
@@ -362,7 +362,7 @@ const TabletInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Page Title */}
-        {!isProfileSettingsPage && (
+        {shouldShowHeader && (
           <header
             className="fixed top-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-4"
             style={{ left: isSidebarOpen ? "256px" : "64px" }}
@@ -430,7 +430,7 @@ const TabletInternalLayout: React.FC = () => {
 
         {/* Main Content */}
         <main className={`flex-1 overflow-hidden ${
-          isProfileSettingsPage ? "pt-0" : "pt-[81px]"
+          shouldShowHeader ? "pt-[81px]" : "pt-0"
         }`}>
           <Outlet />
         </main>
