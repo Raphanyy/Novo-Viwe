@@ -50,10 +50,10 @@ const TabletInternalLayout: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      name: "Perfil",
-      path: "/app/opcoes",
-      icon: Sliders,
-      color: "text-yellow-600",
+      name: "Menu",
+      path: "/app/ajustes",
+      icon: Settings,
+      color: "text-orange-600",
     },
     {
       name: "Atividade",
@@ -62,16 +62,16 @@ const TabletInternalLayout: React.FC = () => {
       color: "text-red-600",
     },
     {
-      name: "Notificações",
+      name: "Notas",
       path: "/app/notificacoes",
       icon: Bell,
-      color: "text-indigo-600",
+      color: "text-pink-600",
     },
     {
-      name: "Ajustes",
-      path: "/app/ajustes",
-      icon: Settings,
-      color: "text-gray-600",
+      name: "Perfil",
+      path: "/app/opcoes",
+      icon: User,
+      color: "text-indigo-600",
     },
   ];
 
