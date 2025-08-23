@@ -330,10 +330,10 @@ const MobileInternalLayout: React.FC = () => {
           <Link
             key={item.action}
             to="/app"
-            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-gray-50"
+            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-gray-600" />
-            <span className="text-xs font-medium truncate text-gray-600">
+            <Icon className="h-5 w-5 text-muted-foreground" />
+            <span className="text-xs font-medium truncate text-muted-foreground">
               {item.name}
             </span>
           </Link>
@@ -341,10 +341,10 @@ const MobileInternalLayout: React.FC = () => {
           <button
             key={item.action}
             onClick={() => handleMapNavigation(item.action)}
-            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-gray-50"
+            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-gray-600" />
-            <span className="text-xs font-medium truncate text-gray-600">
+            <Icon className="h-5 w-5 text-muted-foreground" />
+            <span className="text-xs font-medium truncate text-muted-foreground">
               {item.name}
             </span>
           </button>
@@ -361,17 +361,17 @@ const MobileInternalLayout: React.FC = () => {
             key={item.path}
             to={item.path}
             className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 ${
-              active ? "bg-blue-50" : "hover:bg-gray-50"
+              active ? "bg-blue-50" : "hover:bg-muted"
             }`}
           >
             <Icon
               className={`h-5 w-5 ${
-                active ? "text-blue-600" : "text-gray-600"
+                active ? "text-blue-600" : "text-muted-foreground"
               }`}
             />
             <span
               className={`text-xs font-medium truncate ${
-                active ? "text-blue-600" : "text-gray-600"
+                active ? "text-blue-600" : "text-muted-foreground"
               }`}
             >
               {item.name}
@@ -410,9 +410,9 @@ const MobileInternalLayout: React.FC = () => {
           {/* Quick Notifications */}
           <Link
             to="/app/notificacoes"
-            className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+            className="p-2 rounded-xl hover:bg-muted transition-colors duration-200 relative"
           >
-            <Bell className="h-5 w-5 text-gray-600" />
+            <Bell className="h-5 w-5 text-muted-foreground" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
           </Link>
 
@@ -420,7 +420,7 @@ const MobileInternalLayout: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-muted transition-colors duration-200"
             >
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                 {user?.avatar ? (
@@ -437,18 +437,18 @@ const MobileInternalLayout: React.FC = () => {
 
             {/* Mobile Dropdown Menu */}
             {isMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-200 py-2 z-50">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">
+              <div className="absolute right-0 top-full mt-2 w-56 bg-card rounded-2xl shadow-xl border border-border py-2 z-50">
+                <div className="px-4 py-3 border-b border-border">
+                  <p className="text-sm font-medium text-foreground">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
 
                 <div className="py-2">
                   <Link
                     to="/app/notificacoes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Bell className="h-4 w-4 mr-3" />
@@ -457,7 +457,7 @@ const MobileInternalLayout: React.FC = () => {
 
                   <Link
                     to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4 mr-3" />
@@ -479,14 +479,14 @@ const MobileInternalLayout: React.FC = () => {
       </header>
 
       {/* Main Content - Optimized for mobile */}
-      <main className="flex-1 overflow-hidden bg-gray-50 pt-[73px] pb-[73px]">
+      <main className="flex-1 overflow-hidden bg-background pt-[73px] pb-[73px]">
         <div className="h-full overflow-y-auto">
           <Outlet />
         </div>
       </main>
 
       {/* Bottom Navigation - Mobile Only */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-2 py-2 safe-area-bottom">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 py-2 safe-area-bottom">
         <div className="flex items-center justify-around">
           {renderBottomNavigation()}
         </div>
