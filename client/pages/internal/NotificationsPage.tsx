@@ -100,7 +100,7 @@ const NotificationsPage: React.FC = () => {
       time: "2 dias atrás",
       read: true,
       icon: Info,
-      color: "text-gray-600 bg-gray-100",
+      color: "text-muted-foreground bg-gray-100",
       actionable: true,
     },
   ];
@@ -155,11 +155,11 @@ const NotificationsPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-background">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-gray-900">Notificações</h1>
+          <h1 className="text-xl font-bold text-foreground">Notificações</h1>
           <div className="flex items-center space-x-2">
             <button
               onClick={markAllAsRead}
@@ -168,7 +168,7 @@ const NotificationsPage: React.FC = () => {
               Marcar todas como lidas
             </button>
             <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-              <Settings className="h-5 w-5 text-gray-600" />
+              <Settings className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -182,7 +182,7 @@ const NotificationsPage: React.FC = () => {
               className={`flex items-center space-x-2 px-3 py-2 rounded-full whitespace-nowrap transition-all duration-200 ${
                 selectedFilter === filter.id
                   ? "bg-blue-100 text-blue-700 border border-blue-200"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-muted-foreground hover:bg-gray-200"
               }`}
             >
               <span className="text-sm font-medium">{filter.name}</span>
@@ -221,7 +221,7 @@ const NotificationsPage: React.FC = () => {
       {/* Notifications List */}
       <div className="flex-1 overflow-auto p-4">
         {filteredNotifications.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <BellOff className="h-12 w-12 mb-4" />
             <h3 className="text-lg font-medium mb-2">Nenhuma notificação</h3>
             <p className="text-sm text-center">
@@ -272,12 +272,12 @@ const NotificationsPage: React.FC = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3
-                            className={`font-semibold ${!notification.read ? "text-gray-900" : "text-gray-700"}`}
+                            className={`font-semibold ${!notification.read ? "text-foreground" : "text-gray-700"}`}
                           >
                             {notification.title}
                           </h3>
                           <p
-                            className={`text-sm mt-1 ${!notification.read ? "text-gray-700" : "text-gray-600"}`}
+                            className={`text-sm mt-1 ${!notification.read ? "text-gray-700" : "text-muted-foreground"}`}
                           >
                             {notification.message}
                           </p>
@@ -285,7 +285,7 @@ const NotificationsPage: React.FC = () => {
                           {notification.route && (
                             <div className="flex items-center space-x-1 mt-2">
                               <Route className="h-4 w-4 text-gray-400" />
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-muted-foreground">
                                 {notification.route}
                               </span>
                             </div>
@@ -293,7 +293,7 @@ const NotificationsPage: React.FC = () => {
                         </div>
 
                         <div className="flex items-center space-x-2 ml-2">
-                          <span className="text-xs text-gray-500 whitespace-nowrap">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
                             {notification.time}
                           </span>
                           {!notification.read && (
@@ -313,7 +313,7 @@ const NotificationsPage: React.FC = () => {
                               <button className="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
                                 Ver rota alternativa
                               </button>
-                              <button className="text-gray-600 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
+                              <button className="text-muted-foreground px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
                                 Dispensar
                               </button>
                             </>
@@ -324,7 +324,7 @@ const NotificationsPage: React.FC = () => {
                               <button className="bg-green-600 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors duration-200">
                                 Usar nova rota
                               </button>
-                              <button className="text-gray-600 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
+                              <button className="text-muted-foreground px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
                                 Ver detalhes
                               </button>
                             </>
@@ -335,7 +335,7 @@ const NotificationsPage: React.FC = () => {
                               <button className="bg-purple-600 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
                                 Verificar trânsito
                               </button>
-                              <button className="text-gray-600 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
+                              <button className="text-muted-foreground px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
                                 Adiar lembrete
                               </button>
                             </>
@@ -354,7 +354,7 @@ const NotificationsPage: React.FC = () => {
                               <button className="bg-blue-600 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
                                 Atualizar agora
                               </button>
-                              <button className="text-gray-600 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
+                              <button className="text-muted-foreground px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors duration-200">
                                 Mais tarde
                               </button>
                             </>
@@ -380,14 +380,14 @@ const NotificationsPage: React.FC = () => {
             </span>
           </button>
 
-          <button className="flex flex-col items-center space-y-1 p-3 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-200">
-            <Filter className="h-5 w-5 text-gray-600" />
-            <span className="text-xs font-medium text-gray-600">Filtros</span>
+          <button className="flex flex-col items-center space-y-1 p-3 bg-background rounded-2xl hover:bg-gray-100 transition-colors duration-200">
+            <Filter className="h-5 w-5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Filtros</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-1 p-3 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-200">
-            <Archive className="h-5 w-5 text-gray-600" />
-            <span className="text-xs font-medium text-gray-600">Arquivar</span>
+          <button className="flex flex-col items-center space-y-1 p-3 bg-background rounded-2xl hover:bg-gray-100 transition-colors duration-200">
+            <Archive className="h-5 w-5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Arquivar</span>
           </button>
         </div>
       </div>
