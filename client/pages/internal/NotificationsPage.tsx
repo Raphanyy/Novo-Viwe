@@ -268,7 +268,7 @@ const NotificationsPage: React.FC = () => {
                       : ""
                   }`}
                 >
-                  <AccordionTrigger className="hover:no-underline px-3 py-2">
+                  <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start">
                     <div className="flex items-center space-x-3 w-full">
                       {/* Icon */}
                       <div
