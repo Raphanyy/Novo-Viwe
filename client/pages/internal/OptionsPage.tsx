@@ -249,7 +249,7 @@ const OptionsPage: React.FC = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -261,7 +261,7 @@ const OptionsPage: React.FC = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -273,7 +273,7 @@ const OptionsPage: React.FC = () => {
                       type="text"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -285,7 +285,7 @@ const OptionsPage: React.FC = () => {
                       type="text"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                   <div>
@@ -297,7 +297,7 @@ const OptionsPage: React.FC = () => {
                       type="text"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                     />
                   </div>
                   <button
@@ -312,7 +312,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Configurações da Conta */}
-          <AccordionItem value="account" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="account" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -327,7 +327,7 @@ const OptionsPage: React.FC = () => {
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-3">
                 {ACCOUNT_ACTIONS.map((item, index) => (
-                  <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div key={index} className="bg-muted rounded-lg p-4 border border-border">
                     <button
                       onClick={() => handleAction(item.action)}
                       className="flex items-center justify-between w-full text-left"
@@ -351,7 +351,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Preferências de Veículo */}
-          <AccordionItem value="vehicle" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="vehicle" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -376,7 +376,7 @@ const OptionsPage: React.FC = () => {
                       className={`p-4 rounded-2xl border-2 transition-all duration-200 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
+                          : "border-border hover:border-gray-300 bg-white"
                       }`}
                     >
                       <Icon
@@ -400,7 +400,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Preferências de Rota */}
-          <AccordionItem value="routes" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="routes" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
@@ -425,7 +425,7 @@ const OptionsPage: React.FC = () => {
                       className={`w-full p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
+                          : "border-border hover:border-gray-300 bg-white"
                       }`}
                     >
                       <div
@@ -466,7 +466,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Navegação */}
-          <AccordionItem value="navigation" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="navigation" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
@@ -557,7 +557,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Combustível */}
-          <AccordionItem value="fuel" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="fuel" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -632,7 +632,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Opções para Evitar */}
-          <AccordionItem value="avoid" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="avoid" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
@@ -674,7 +674,7 @@ const OptionsPage: React.FC = () => {
           </AccordionItem>
 
           {/* Seção de Outras Configurações */}
-          <AccordionItem value="other" className="bg-white rounded-xl shadow-md border border-gray-200">
+          <AccordionItem value="other" className="bg-card rounded-xl shadow-md border border-border">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -723,7 +723,7 @@ const OptionsPage: React.FC = () => {
                 </div>
 
                 {/* Restore Defaults */}
-                <div className="pt-4 border-t border-gray-200">
+                <div className="pt-4 border-t border-border">
                   <button className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-200">
                     <div className="flex items-center space-x-3">
                       <RefreshCcw className="h-5 w-5 text-gray-600" />
