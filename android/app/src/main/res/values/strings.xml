@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Viwe</string>
+    <string name="title_activity_main">Viwe</string>
+    <string name="package_name">com.viwe.app</string>
+    <string name="custom_url_scheme">com.viwe.app</string>
+</resources>
