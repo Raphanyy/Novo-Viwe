@@ -645,7 +645,7 @@ const MapPage: React.FC = () => {
         const poiResponse = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             query
-          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`,
+          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi`,
           {
             signal: controller.signal,
             headers: { 'Accept': 'application/json' }
@@ -677,7 +677,7 @@ const MapPage: React.FC = () => {
           const enhancedResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               businessQuery
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`,
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
             {
               signal: controller2.signal,
               headers: { 'Accept': 'application/json' }
