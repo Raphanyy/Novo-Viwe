@@ -44,7 +44,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-white to-gray-50 font-sans"
+      className="min-h-screen bg-gradient-to-br from-background to-muted font-sans"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <link
@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center text-gray-700 hover:text-gray-900 transition-colors duration-200"
+            className="flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Voltar
@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
 
           <div className="flex items-center">
             <Rocket className="h-8 w-8 text-blue-600" />
-            <span className="font-bold text-xl ml-2 text-gray-900">Viwe</span>
+            <span className="font-bold text-xl ml-2 text-foreground">Viwe</span>
           </div>
         </div>
       </header>
@@ -76,10 +76,10 @@ const LoginPage: React.FC = () => {
           <div className="w-full max-w-md">
             {/* Cabeçalho */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-2">
                 Bem-vindo de volta
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-muted-foreground">
                 Faça login para continuar sua jornada
               </p>
             </div>
@@ -90,20 +90,20 @@ const LoginPage: React.FC = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
+                  className="block text-sm font-semibold text-muted-foreground mb-2"
                 >
                   Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                    <Mail className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full pl-10 pr-4 py-3 border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-foreground placeholder-muted-foreground"
                     placeholder="seu@email.com"
                     required
                   />
@@ -114,20 +114,20 @@ const LoginPage: React.FC = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
+                  className="block text-sm font-semibold text-muted-foreground mb-2"
                 >
                   Senha
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full pl-10 pr-12 py-3 border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-foreground placeholder-muted-foreground"
                     placeholder="Sua senha"
                     required
                   />
@@ -137,9 +137,9 @@ const LoginPage: React.FC = () => {
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <EyeOff className="h-5 w-5 text-muted-foreground hover:text-muted-foreground" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <Eye className="h-5 w-5 text-muted-foreground hover:text-muted-foreground" />
                     )}
                   </button>
                 </div>
@@ -170,7 +170,7 @@ const LoginPage: React.FC = () => {
                   Esqueceu sua senha?
                 </a>
 
-                <div className="text-gray-600 text-sm">
+                <div className="text-muted-foreground text-sm">
                   Não tem uma conta?{" "}
                   <a
                     href="#"
@@ -183,8 +183,8 @@ const LoginPage: React.FC = () => {
             </form>
 
             {/* Divider */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <p className="text-center text-xs text-gray-500">
+            <div className="mt-8 pt-8 border-t border-border">
+              <p className="text-center text-xs text-muted-foreground">
                 Para demonstração, use qualquer email e senha
               </p>
             </div>
