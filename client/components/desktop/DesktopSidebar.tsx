@@ -49,10 +49,10 @@ const navigationItems: NavigationItem[] = [
   },
   {
     name: "Perfil",
-    path: "/app/opcoes",
-    icon: Sliders,
+    path: "/app/perfil",
+    icon: User,
     color: "text-yellow-600",
-    description: "Configurações avançadas",
+    description: "Configurações do perfil",
   },
   {
     name: "Atividade",
