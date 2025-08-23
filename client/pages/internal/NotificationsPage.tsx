@@ -119,16 +119,6 @@ const NotificationsPage: React.FC = () => {
       name: "Não lidas",
       count: notifications.filter((n) => !n.read).length,
     },
-    {
-      id: "traffic",
-      name: "Trânsito",
-      count: notifications.filter((n) => n.type === "traffic").length,
-    },
-    {
-      id: "route",
-      name: "Rotas",
-      count: notifications.filter((n) => n.type === "route").length,
-    },
   ];
 
   const filteredNotifications = notifications.filter((notification) => {
