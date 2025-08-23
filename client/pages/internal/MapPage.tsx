@@ -188,13 +188,6 @@ const MapPage: React.FC = () => {
     };
   }, []);  // Remove setMapCleanupCallback from dependencies
 
-  // Register cleanup callback in separate useEffect to avoid dependency issues
-  useEffect(() => {
-    if (map.current && clearAllMarkersAndRoutes) {
-      setMapCleanupCallback(clearAllMarkersAndRoutes);
-    }
-  }, []); // Remove dependencies to prevent infinite loop
-
   // Manage center pin tracking when tracing starts/stops
   useEffect(() => {
     if (!map.current) return;
