@@ -363,6 +363,17 @@ const MapPage: React.FC = () => {
         );
       } else {
         console.error("Failed to initialize map:", error);
+        if (error instanceof Error) {
+          if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+            setMapError("Problema de conexão. Verifique sua internet e tente novamente.");
+          } else if (error.message.includes("token") || error.message.includes("unauthorized")) {
+            setMapError("Token do Mapbox inválido. Entre em contato com o suporte.");
+          } else {
+            setMapError("Erro ao carregar o mapa. Tente atualizar a página.");
+          }
+        } else {
+          setMapError("Erro desconhecido ao carregar o mapa.");
+        }
       }
     }
   }, []); // Remove setMapCleanupCallback from dependencies
@@ -1407,7 +1418,7 @@ const MapPage: React.FC = () => {
                 <button
                   onClick={async () => {
                     confirmTrace();
-                    // Traçar a rota no mapa
+                    // Tra��ar a rota no mapa
                     await traceRouteOnMap(traceState.stops);
                   }}
                   disabled={isTracingRoute}
