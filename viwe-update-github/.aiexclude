@@ -1,0 +1,31 @@
+# AI Exclude Configuration
+# Allow access to essential mobile development folders
+
+# Exclude only large generated files and cache
+node_modules/
+dist/
+*.log
+.cache/
+.temp/
+.npm/
+
+# Allow access to mobile platforms
+!android/
+!ios/
+!android/**
+!ios/**
+
+# Allow access to source code
+!client/
+!server/
+!shared/
+!client/**
+!server/**
+!shared/**
+
+# Allow configuration files
+!*.config.*
+!package.json
+!capacitor.config.ts
+!README.md
+!MOBILE_BUILD_GUIDE.md
