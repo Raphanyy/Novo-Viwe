@@ -796,10 +796,15 @@ const MapPage: React.FC = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
+        if (!mapboxToken) {
+          console.warn("Mapbox token not available for search");
+          return;
+        }
+
         const poiResponse = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             query,
-          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi`,
+          )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=10&types=poi`,
           {
             signal: controller.signal,
             headers: { Accept: "application/json" },
@@ -834,7 +839,7 @@ const MapPage: React.FC = () => {
           const enhancedResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               businessQuery,
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
+            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
             {
               signal: controller2.signal,
               headers: { Accept: "application/json" },
@@ -878,7 +883,7 @@ const MapPage: React.FC = () => {
           const generalResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               query,
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
+            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
             {
               signal: controller3.signal,
               headers: { Accept: "application/json" },
