@@ -1,16 +1,4 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { VisuallyHidden } from "../ui/visually-hidden";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
@@ -21,13 +9,9 @@ import {
   Play,
   Trash2,
   StopCircle,
-  Settings,
   MapPin,
   AlertTriangle,
   CheckCircle,
-  Navigation2,
-  Route,
-  Shield,
 } from "lucide-react";
 
 interface NavigationAdjustmentsModalProps {
@@ -39,7 +23,6 @@ interface NavigationAdjustmentsModalProps {
 enum NavigationLevel {
   PRIMARY = "primary",
   SECONDARY = "secondary",
-  TERTIARY = "tertiary",
 }
 
 // Interface para as seções principais
@@ -216,14 +199,6 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
       setShowRemoveStopConfirm(true);
     };
 
-    const confirmRemoveStop = () => {
-      if (selectedStopToRemove) {
-        removeStop(selectedStopToRemove);
-        setSelectedStopToRemove(null);
-        setShowRemoveStopConfirm(false);
-      }
-    };
-
     return (
       <div className="p-4 space-y-4">
         <div className="bg-card rounded-xl p-6 border border-border">
@@ -290,12 +265,6 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
       setShowEndRouteConfirm(true);
     };
 
-    const confirmEndRoute = () => {
-      endRoute();
-      setShowEndRouteConfirm(false);
-      onClose();
-    };
-
     return (
       <div className="p-4 space-y-4">
         <div className="bg-red-50 rounded-xl p-6 border border-red-200">
@@ -331,97 +300,95 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
     );
   }
 
+  if (!isOpen) return null;
+
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-hidden flex flex-col p-0">
-          <VisuallyHidden>
-            <DialogTitle>Ajustes da Navegação</DialogTitle>
-          </VisuallyHidden>
-          {/* Header */}
-          <ModalHeader
-            title={getHeaderTitle()}
-            showBackButton={currentLevel !== NavigationLevel.PRIMARY}
-            onBack={goBack}
-            onClose={onClose}
-          />
+      {/* Full Page Modal */}
+      <div className="fixed inset-0 z-50 bg-background flex flex-col">
+        {/* Header */}
+        <ModalHeader
+          title={getHeaderTitle()}
+          showBackButton={currentLevel !== NavigationLevel.PRIMARY}
+          onBack={currentLevel === NavigationLevel.PRIMARY ? onClose : goBack}
+        />
 
-          {/* Conteúdo principal */}
-          <div className="flex-1 overflow-y-auto">{renderContent()}</div>
-        </DialogContent>
-      </Dialog>
+        {/* Conteúdo principal */}
+        <div className="flex-1 overflow-y-auto">{renderContent()}</div>
+      </div>
 
-      {/* Confirmação de Remoção de Parada */}
-      <AlertDialog
-        open={showRemoveStopConfirm}
-        onOpenChange={setShowRemoveStopConfirm}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center space-x-2">
+      {/* Confirmation Overlays */}
+      {showRemoveStopConfirm && (
+        <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-lg p-6 max-w-sm w-full">
+            <div className="flex items-center space-x-2 mb-4">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
-              <span>Remover Parada</span>
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja remover esta parada da sua rota? Esta ação
-              não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowRemoveStopConfirm(false)}>
-              Cancelar
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (selectedStopToRemove) {
-                  removeStop(selectedStopToRemove);
-                  setSelectedStopToRemove(null);
-                  setShowRemoveStopConfirm(false);
-                }
-              }}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Remover
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              <h3 className="text-lg font-semibold text-foreground">Remover Parada</h3>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Tem certeza que deseja remover esta parada da sua rota? Esta ação não pode ser desfeita.
+            </p>
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowRemoveStopConfirm(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  if (selectedStopToRemove) {
+                    removeStop(selectedStopToRemove);
+                    setSelectedStopToRemove(null);
+                    setShowRemoveStopConfirm(false);
+                  }
+                }}
+                className="flex-1"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Remover
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Confirmação de Encerramento */}
-      <AlertDialog
-        open={showEndRouteConfirm}
-        onOpenChange={setShowEndRouteConfirm}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center space-x-2">
+      {showEndRouteConfirm && (
+        <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-lg p-6 max-w-sm w-full">
+            <div className="flex items-center space-x-2 mb-4">
               <StopCircle className="h-5 w-5 text-red-600" />
-              <span>Encerrar Trajeto</span>
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja encerrar este trajeto? Toda a navegação
-              será finalizada e você retornará ao início.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowEndRouteConfirm(false)}>
-              Cancelar
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                endRoute();
-                setShowEndRouteConfirm(false);
-                onClose();
-              }}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              <StopCircle className="h-4 w-4 mr-2" />
-              Encerrar Trajeto
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              <h3 className="text-lg font-semibold text-foreground">Encerrar Trajeto</h3>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Tem certeza que deseja encerrar este trajeto? Toda a navegação será finalizada e você retornará ao início.
+            </p>
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowEndRouteConfirm(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  endRoute();
+                  setShowEndRouteConfirm(false);
+                  onClose();
+                }}
+                className="flex-1"
+              >
+                <StopCircle className="h-4 w-4 mr-2" />
+                Encerrar Trajeto
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
