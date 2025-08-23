@@ -1046,7 +1046,10 @@ const MapPage: React.FC = () => {
       if (
         event.reason &&
         (event.reason.name === "AbortError" ||
-          (event.reason.message && event.reason.message.includes("aborted")))
+          (event.reason.message &&
+           (event.reason.message.includes("aborted") ||
+            event.reason.message.includes("cancelled") ||
+            event.reason.message.includes("signal is aborted"))))
       ) {
         event.preventDefault(); // Prevent the error from being logged
         return;
