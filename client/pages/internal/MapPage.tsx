@@ -283,11 +283,15 @@ const MapPage: React.FC = () => {
         clearTimeout(autoLocationTimeout);
         if (map.current) {
           try {
-            // Clear all event listeners first
-            map.current.off();
-
             // Stop any ongoing operations before removing the map
             map.current.stop();
+
+            // Clear specific event listeners to avoid issues
+            map.current.off("error");
+            map.current.off("sourcedataloading");
+            map.current.off("sourcedata");
+            map.current.off("move");
+            map.current.off("zoom");
 
             // Remove the map safely with a small delay to allow cleanup
             setTimeout(() => {
