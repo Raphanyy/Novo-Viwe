@@ -251,7 +251,13 @@ const MapPage: React.FC = () => {
         }
       };
     } catch (error) {
-      console.error('Failed to initialize map:', error);
+      if (error instanceof Error &&
+          (error.message.includes('aborted') || error.message.includes('AbortError'))) {
+        // Silently handle AbortErrors during map initialization
+        console.debug('Map initialization AbortError (expected):', error.message);
+      } else {
+        console.error('Failed to initialize map:', error);
+      }
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
