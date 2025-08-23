@@ -8,6 +8,9 @@ project(':capacitor-geolocation').projectDir = new File('../node_modules/.pnpm/@
 include ':capacitor-network'
 project(':capacitor-network').projectDir = new File('../node_modules/.pnpm/@capacitor+network@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/network/android')
 
+include ':capacitor-preferences'
+project(':capacitor-preferences').projectDir = new File('../node_modules/.pnpm/@capacitor+preferences@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/preferences/android')
+
 include ':capacitor-push-notifications'
 project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/push-notifications/android')
 
@@ -16,6 +19,3 @@ project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capaci
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@7.0.2_@capacitor+core@7.4.3/node_modules/@capacitor/status-bar/android')
-
-include ':capacitor-storage'
-project(':capacitor-storage').projectDir = new File('../node_modules/.pnpm/@capacitor+storage@1.2.5_@capacitor+core@7.4.3/node_modules/@capacitor/storage/android')
