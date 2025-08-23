@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "account",
       title: "Sua conta",
-      subtitle: "Gerencie suas informações pessoais e dados da conta.",
+      subtitle: "Dados pessoais.",
       icon: User,
       items: [
         {
@@ -104,7 +104,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "security",
       title: "Segurança e acesso à conta",
-      subtitle: "Configure senha e segurança da sua conta.",
+      subtitle: "Senha e segurança.",
       icon: Shield,
       items: [
         {
@@ -133,7 +133,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "privacy",
       title: "Privacidade e segurança",
-      subtitle: "Configure suas preferências de privacidade.",
+      subtitle: "Controle de privacidade.",
       icon: Eye,
       items: [
         {
@@ -155,7 +155,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "notifications",
       title: "Notificações",
-      subtitle: "Configure suas notificações e alertas.",
+      subtitle: "Alertas e avisos.",
       icon: Bell,
       items: [
         {
@@ -178,7 +178,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "appearance",
       title: "Acessibilidade, exibição e idiomas",
-      subtitle: "Personalize aparência e idioma do app.",
+      subtitle: "Tema e idioma.",
       icon: Palette,
       items: [
         {
@@ -208,7 +208,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "support",
       title: "Recursos adicionais",
-      subtitle: "Acesse ajuda e suporte técnico.",
+      subtitle: "Ajuda e suporte.",
       icon: HelpCircle,
       items: [
         {
