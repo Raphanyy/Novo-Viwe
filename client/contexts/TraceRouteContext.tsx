@@ -36,7 +36,7 @@ export interface TraceRouteState {
   navigationMode: "traced" | "active" | null;
   showTraceConfirmed: boolean; // Nova: mostra se a rota foi confirmada e está pronta para navegar
   isInActiveNavigation: boolean; // Nova: indica se está navegando ativamente
-  navigationData: NavigationData; // Dados da navegaç��o ativa
+  navigationData: NavigationData; // Dados da navegação ativa
   showDetailsModal: boolean; // Modal de detalhes da navegação
   showAdjustmentsModal: boolean; // Modal de ajustes da navegação
   isPaused: boolean; // Se a navegação está pausada
@@ -151,6 +151,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const stopTracing = () => {
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
+
     setState((prev) => ({
       ...prev,
       isTracing: false,
