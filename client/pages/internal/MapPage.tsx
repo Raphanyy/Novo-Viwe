@@ -544,17 +544,22 @@ const MapPage: React.FC = () => {
 
       let allFeatures: any[] = [];
 
-      // Strategy 1: Direct POI search with error handling
+      // Strategy 1: Direct POI search with error handling and timeout
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
         const poiResponse = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             query
           )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`,
           {
-            timeout: 8000,
+            signal: controller.signal,
             headers: { 'Accept': 'application/json' }
           }
         );
+
+        clearTimeout(timeoutId);
 
         if (poiResponse.ok) {
           const poiData = await poiResponse.json();
