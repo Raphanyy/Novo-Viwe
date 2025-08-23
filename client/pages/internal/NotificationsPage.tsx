@@ -356,7 +356,7 @@ const NotificationsPage: React.FC = () => {
                             )}
                           </div>
 
-                          <div className="flex items-center space-x-2 ml-2">
+                          <div className="flex items-center space-x-1 ml-2">
                             <span className="text-xs text-muted-foreground whitespace-nowrap">
                               {notification.time}
                             </span>
@@ -369,10 +369,10 @@ const NotificationsPage: React.FC = () => {
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="ml-8">
+                  <AccordionContent className="px-3 pb-3">
+                    <div className="ml-6">
                       {/* Detailed message */}
-                      <p className="text-sm text-foreground mb-4 leading-relaxed">
+                      <p className="text-sm text-foreground mb-3 leading-relaxed">
                         {notification.details}
                       </p>
 
@@ -380,7 +380,7 @@ const NotificationsPage: React.FC = () => {
                       {renderActionButtons(notification)}
 
                       {/* Management buttons */}
-                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() =>
