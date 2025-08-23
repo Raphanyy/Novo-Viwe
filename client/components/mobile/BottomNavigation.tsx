@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Map, Route, Activity, Sliders } from "lucide-react";
+import { Home, Map, Route, Activity, User } from "lucide-react";
 
 interface NavigationItem {
   name: string;
@@ -36,8 +36,8 @@ const navigationItems: NavigationItem[] = [
   },
   {
     name: "Perfil",
-    path: "/app/opcoes",
-    icon: Sliders,
+    path: "/app/perfil",
+    icon: User,
     color: "text-yellow-600",
   },
 ];
