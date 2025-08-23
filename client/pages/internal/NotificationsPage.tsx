@@ -321,18 +321,9 @@ const NotificationsPage: React.FC = () => {
                           : notification.details}
                       </p>
 
-                      {/* Action buttons and time */}
-                      <div className="flex items-center justify-between gap-4">
-                        {/* Action buttons */}
-                        <div className="flex-shrink-0">
-                          {renderActionButtons(notification)}
-                        </div>
-
-                        {/* Time */}
-                        <div className="flex items-center space-x-1 text-xs text-muted-foreground flex-shrink-0">
-                          <Clock className="h-3 w-3" />
-                          <span>{notification.time}</span>
-                        </div>
+                      {/* Action buttons */}
+                      <div className="flex justify-start">
+                        {renderActionButtons(notification)}
                       </div>
                     </div>
                   </AccordionContent>
