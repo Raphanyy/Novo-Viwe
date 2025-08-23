@@ -161,8 +161,8 @@ const DesktopInternalLayout: React.FC = () => {
                   to={item.path}
                   className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 group relative ${
                     active
-                    ? "text-blue-600"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "text-blue-600"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
