@@ -48,7 +48,7 @@ const navigationItems: NavigationItem[] = [
     description: "Gerenciamento de rotas",
   },
   {
-    name: "Opções",
+    name: "Perfil",
     path: "/app/opcoes",
     icon: Sliders,
     color: "text-yellow-600",

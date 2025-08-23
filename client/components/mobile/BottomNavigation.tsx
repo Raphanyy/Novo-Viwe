@@ -35,7 +35,7 @@ const navigationItems: NavigationItem[] = [
     color: "text-red-600",
   },
   {
-    name: "Opções",
+    name: "Perfil",
     path: "/app/opcoes",
     icon: Sliders,
     color: "text-yellow-600",
