@@ -907,13 +907,20 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
-  // Debounced search
+  // Optimized debounced search with stable reference
   const handleSearchChange = useCallback(
     (query: string) => {
       setSearchQuery(query);
 
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
+      }
+
+      // Only search if query has meaningful content
+      if (query.trim().length < 2) {
+        setSearchResults([]);
+        setShowSearchResults(false);
+        return;
       }
 
       searchTimeoutRef.current = setTimeout(() => {
