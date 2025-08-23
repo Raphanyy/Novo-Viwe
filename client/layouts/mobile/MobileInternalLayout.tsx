@@ -30,6 +30,7 @@ import {
   Cog,
   Compass,
   PenTool,
+  Menu,
 } from "lucide-react";
 
 const MobileInternalLayout: React.FC = () => {
@@ -57,16 +58,28 @@ const MobileInternalLayout: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      name: "Perfil",
-      path: "/app/opcoes",
-      icon: Sliders,
-      color: "text-yellow-600",
+      name: "Menu",
+      path: "/app/ajustes",
+      icon: Settings,
+      color: "text-orange-600",
     },
     {
       name: "Atividade",
       path: "/app/atividade",
       icon: Activity,
       color: "text-red-600",
+    },
+    {
+      name: "Notas",
+      path: "/app/notificacoes",
+      icon: Bell,
+      color: "text-pink-600",
+    },
+    {
+      name: "Perfil",
+      path: "/app/opcoes",
+      icon: User,
+      color: "text-indigo-600",
     },
   ];
 
