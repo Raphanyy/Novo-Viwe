@@ -503,6 +503,119 @@ const MapPage: React.FC = () => {
     );
   }, []);
 
+  // Search functionality with Mapbox Geocoding API
+  const searchPlaces = useCallback(async (query: string) => {
+    if (!query.trim() || query.length < 3) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          query
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=poi,address,place`
+      );
+
+      const data = await response.json();
+
+      if (data.features) {
+        const results: SearchResult[] = data.features.map((feature: any) => ({
+          id: feature.id,
+          place_name: feature.place_name,
+          text: feature.text,
+          center: feature.center,
+          place_type: feature.place_type,
+          properties: feature.properties || {},
+        }));
+
+        setSearchResults(results);
+        setShowSearchResults(true);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar lugares:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  // Debounced search
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      searchPlaces(query);
+    }, 300);
+  }, [searchPlaces]);
+
+  // Navigate to selected search result
+  const handleSelectSearchResult = useCallback((result: SearchResult) => {
+    if (map.current) {
+      map.current.flyTo({
+        center: result.center,
+        zoom: 16,
+        duration: 2000
+      });
+
+      // Add a marker for the selected place
+      const el = document.createElement('div');
+      el.className = 'w-8 h-8 bg-red-500 rounded-full shadow-lg border-2 border-white cursor-pointer flex items-center justify-center';
+      el.innerHTML = '<svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>';
+
+      // Remove existing search marker
+      const existingSearchMarkers = document.querySelectorAll('.search-marker');
+      existingSearchMarkers.forEach(marker => marker.remove());
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat(result.center)
+        .addTo(map.current);
+
+      // Add class for easy removal
+      el.classList.add('search-marker');
+
+      // Create a temporary POI object to show details
+      setSelectedPOI({
+        id: result.id,
+        name: result.text,
+        type: result.place_type[0] || 'place',
+        distance: '0 km',
+        rating: null,
+        coordinates: result.center,
+        color: 'bg-red-500',
+        fullAddress: result.place_name
+      });
+    }
+
+    setSearchQuery(result.text);
+    setShowSearchResults(false);
+  }, []);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowSearchResults(false);
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Clear search timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Search and Controls */}
