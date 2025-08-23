@@ -132,19 +132,21 @@ const MapPage: React.FC = () => {
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  const toggleFilter = (filterId: string) => {
+  const toggleFilter = useCallback((filterId: string) => {
     setActiveFilters((prev) =>
       prev.includes(filterId)
         ? prev.filter((f) => f !== filterId)
         : [...prev, filterId],
     );
-  };
+  }, []);
 
-  const filteredPOIs = pointsOfInterest.filter(
-    (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
-  );
+  const filteredPOIs = useMemo(() => {
+    return pointsOfInterest.filter(
+      (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
+    );
+  }, [activeFilters]);
 
-  // Function to clear all markers and routes from map
+  // Function to clear all markers and routes from map (optimized)
   const clearAllMarkersAndRoutes = useCallback(() => {
     // Clear route from map inline to avoid circular dependency
     if (map.current && map.current.getSource("route")) {
@@ -443,27 +445,25 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.showConfigModal, openRouteModal]);
 
-  // Update map style based on mode
-  useEffect(() => {
-    if (!map.current) return;
-
-    let style = "mapbox://styles/mapbox/streets-v12";
-
+  // Memoized map style to prevent unnecessary updates
+  const mapStyle = useMemo(() => {
     switch (mapMode) {
       case "satellite":
-        style = "mapbox://styles/mapbox/satellite-v9";
-        break;
+        return "mapbox://styles/mapbox/satellite-v9";
       case "traffic":
-        style = "mapbox://styles/mapbox/navigation-day-v1";
-        break;
+        return "mapbox://styles/mapbox/navigation-day-v1";
       default:
-        style = "mapbox://styles/mapbox/streets-v12";
+        return "mapbox://styles/mapbox/streets-v12";
     }
-
-    map.current.setStyle(style);
   }, [mapMode]);
 
-  // Function to trace route between stops
+  // Update map style based on mode (optimized)
+  useEffect(() => {
+    if (!map.current) return;
+    map.current.setStyle(mapStyle);
+  }, [mapStyle]);
+
+  // Function to trace route between stops (optimized with better error handling)
   const traceRouteOnMap = useCallback(
     async (stops: Array<{ coordinates: [number, number] }>) => {
       if (!map.current || stops.length < 2) return;
@@ -476,10 +476,21 @@ const MapPage: React.FC = () => {
           .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
           .join(";");
 
+        // Add timeout to prevent hanging requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         // Call Mapbox Directions API
         const response = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          { signal: controller.signal }
         );
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
 
@@ -539,7 +550,11 @@ const MapPage: React.FC = () => {
           setRouteTraced(true);
         }
       } catch (error) {
-        console.error("Erro ao traçar rota:", error);
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn('Requisição de rota cancelada por timeout');
+        } else {
+          console.error("Erro ao traçar rota:", error);
+        }
       } finally {
         setIsTracingRoute(false);
       }
