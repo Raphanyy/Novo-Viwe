@@ -59,7 +59,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
       details:
-        "Nova rota Casa���Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
+        "Nova rota Casa→Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
       time: "1h atrás",
       read: false,
       icon: Route,
@@ -102,7 +102,7 @@ const NotificationsPage: React.FC = () => {
       title: "Atualização Disponível",
       message: "Nova versão do app com melhorias na navegação.",
       details:
-        "A versão 2.1.5 está disponível com correções de bugs, melhor precisão GPS e novos recursos de economia de bateria. A atualização leva aproximadamente 2 minutos.",
+        "Versão 2.1.5 disponível: correções, GPS melhorado e economia de bateria. Atualização em 2 min.",
       time: "2 dias atrás",
       read: true,
       icon: Info,
