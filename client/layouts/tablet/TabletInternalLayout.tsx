@@ -321,13 +321,13 @@ const TabletInternalLayout: React.FC = () => {
               {/* User Dropdown */}
               {isUserMenuOpen && (
                 <div
-                  className={`absolute bottom-full mb-2 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 ${
+                  className={`absolute bottom-full mb-2 bg-card rounded-xl shadow-xl border border-border py-2 z-50 ${
                     isSidebarOpen ? "left-0 right-0" : "left-full ml-2 w-48"
                   }`}
                 >
                   <Link
                     to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4 mr-3" />
