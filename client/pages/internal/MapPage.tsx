@@ -182,22 +182,14 @@ const MapPage: React.FC = () => {
         map.current = null;
       }
     };
-
-    return () => {
-      if (map.current) {
-        try {
-          // Clear all event listeners first
-          map.current.off();
-          // Remove the map safely
-          map.current.remove();
-        } catch (error) {
-          // Suppress AbortError and other cleanup errors
-          console.warn('Map cleanup warning:', error);
-        }
-        map.current = null;
-      }
-    };
   }, []);  // Remove setMapCleanupCallback from dependencies
+
+  // Register cleanup callback in separate useEffect to avoid dependency issues
+  useEffect(() => {
+    if (map.current) {
+      setMapCleanupCallback(clearAllMarkersAndRoutes);
+    }
+  }, [clearAllMarkersAndRoutes, setMapCleanupCallback]);
 
   // Initialize center coordinates when tracing starts
   useEffect(() => {
