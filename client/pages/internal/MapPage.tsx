@@ -267,7 +267,7 @@ const MapPage: React.FC = () => {
   }, [mapMode]);
 
   // Function to trace route between stops
-  const traceRouteOnMap = async (
+  const traceRouteOnMap = useCallback(async (
     stops: Array<{ coordinates: [number, number] }>,
   ) => {
     if (!map.current || stops.length < 2) return;
@@ -347,10 +347,10 @@ const MapPage: React.FC = () => {
     } finally {
       setIsTracingRoute(false);
     }
-  };
+  }, [setRouteTraced]);
 
   // Function to clear route from map
-  const clearRouteFromMap = () => {
+  const clearRouteFromMap = useCallback(() => {
     if (!map.current) return;
 
     if (map.current.getSource("route")) {
@@ -360,7 +360,7 @@ const MapPage: React.FC = () => {
 
     // Resetar estado de rota traçada
     setRouteTraced(false);
-  };
+  }, [setRouteTraced]);
 
   // Function to clear all markers and routes from map
   const clearAllMarkersAndRoutes = useCallback(() => {
@@ -402,26 +402,26 @@ const MapPage: React.FC = () => {
     });
   }, [filteredPOIs]);
 
-  const handleZoomIn = () => {
+  const handleZoomIn = useCallback(() => {
     if (map.current) {
       map.current.zoomIn();
     }
-  };
+  }, []);
 
-  const handleZoomOut = () => {
+  const handleZoomOut = useCallback(() => {
     if (map.current) {
       map.current.zoomOut();
     }
-  };
+  }, []);
 
-  const handleRecenter = () => {
+  const handleRecenter = useCallback(() => {
     if (map.current) {
       map.current.flyTo({
         center: [-46.6333, -23.5505],
         zoom: 12,
       });
     }
-  };
+  }, []);
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
