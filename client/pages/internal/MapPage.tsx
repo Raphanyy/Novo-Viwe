@@ -31,9 +31,14 @@ import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-// Configure Mapbox token
-mapboxgl.accessToken =
-  "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
+// Configure Mapbox token from environment variable
+const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+
+if (!mapboxToken) {
+  console.error("VITE_MAPBOX_ACCESS_TOKEN environment variable is not set");
+}
+
+mapboxgl.accessToken = mapboxToken || "";
 
 interface SearchResult {
   id: string;
