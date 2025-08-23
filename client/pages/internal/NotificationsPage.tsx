@@ -310,62 +310,25 @@ const NotificationsPage: React.FC = () => {
                   } ${isSelected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}
                 >
                   <AccordionTrigger className="hover:no-underline px-3 py-2">
-                    <div className="flex items-center space-x-2 w-full">
-                      {/* Selection Checkbox */}
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleNotificationSelection(notification.id);
-                        }}
-                        className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
-                          isSelected
-                            ? "bg-blue-500 border-blue-500"
-                            : "border-border hover:border-muted-foreground"
-                        }`}
-                      >
-                        {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
-                      </div>
-
+                    <div className="flex items-center space-x-3 w-full">
                       {/* Icon */}
                       <div
-                        className={`p-1.5 rounded-lg ${notification.color} flex-shrink-0`}
+                        className={`p-2 rounded-lg ${notification.color} flex-shrink-0`}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-5 w-5" />
                       </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0 text-left">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3
-                              className={`font-semibold ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
-                            >
-                              {notification.title}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                              {notification.message}
-                            </p>
+                      {/* Title Only */}
+                      <h3
+                        className={`font-semibold text-left flex-1 ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
+                      >
+                        {notification.title}
+                      </h3>
 
-                            {notification.route && (
-                              <div className="flex items-center space-x-1 mt-1">
-                                <Route className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-xs text-muted-foreground">
-                                  {notification.route}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex items-center space-x-1 ml-2">
-                            <span className="text-xs text-muted-foreground whitespace-nowrap">
-                              {notification.time}
-                            </span>
-                            {!notification.read && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      {/* Status indicator */}
+                      {!notification.read && (
+                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                      )}
                     </div>
                   </AccordionTrigger>
 
