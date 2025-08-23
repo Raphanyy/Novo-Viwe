@@ -43,8 +43,12 @@ interface SearchResult {
 
 const MapPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<any>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [mapMode, setMapMode] = useState<"normal" | "satellite" | "traffic">(
     "normal",
