@@ -558,17 +558,17 @@ const MapPage: React.FC = () => {
             duration: 2000
           });
 
-          // Atualiza o marcador de localização atual
+          // Atualiza o marcador de localização atual com melhor visual
           const currentLocationEl = document.createElement("div");
           currentLocationEl.className =
-            "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
+            "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
           currentLocationEl.innerHTML =
-            '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
+            '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
 
           // Remove marcador anterior se existir
           const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
           existingMarkers.forEach(marker => {
-            const markerEl = marker.querySelector('.w-4.h-4.bg-blue-600');
+            const markerEl = marker.querySelector('.w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600');
             if (markerEl) {
               marker.remove();
             }
