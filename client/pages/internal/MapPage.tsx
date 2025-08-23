@@ -14,6 +14,8 @@ import {
   Route as RouteIcon,
   X,
   AlertTriangle,
+  MoveRight,
+  BookmarkPlus,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
@@ -715,11 +717,11 @@ const MapPage: React.FC = () => {
 
             <div className="flex space-x-3">
               <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <Navigation className="h-4 w-4" />
+                <MoveRight className="h-4 w-4" />
                 <span>Ir para lá</span>
               </button>
               <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <Clock className="h-4 w-4" />
+                <BookmarkPlus className="h-4 w-4" />
                 <span>Mais tarde</span>
               </button>
             </div>
