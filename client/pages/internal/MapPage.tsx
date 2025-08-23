@@ -288,7 +288,8 @@ const MapPage: React.FC = () => {
 
             // Clear specific event listeners to avoid issues
             try {
-              map.current.off();
+              // Remove map without clearing events to avoid errors
+              // The map will be garbage collected with all its listeners
             } catch (e) {
               // Ignore errors during cleanup
             }
