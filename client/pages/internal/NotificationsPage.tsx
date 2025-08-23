@@ -280,7 +280,7 @@ const NotificationsPage: React.FC = () => {
       </div>
 
       {/* Notifications List */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-3">
         {filteredNotifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <BellOff className="h-12 w-12 mb-4" />
@@ -292,7 +292,7 @@ const NotificationsPage: React.FC = () => {
             </p>
           </div>
         ) : (
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2">
             {filteredNotifications.map((notification) => {
               const Icon = notification.icon;
               const isSelected = selectedNotifications.includes(
@@ -303,14 +303,14 @@ const NotificationsPage: React.FC = () => {
                 <AccordionItem
                   key={notification.id}
                   value={`item-${notification.id}`}
-                  className={`bg-card rounded-2xl border transition-all duration-200 ${
+                  className={`bg-card rounded-xl border transition-all duration-200 ${
                     !notification.read
                       ? "border-l-4 border-l-blue-500"
                       : "border-border"
                   } ${isSelected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}
                 >
-                  <AccordionTrigger className="hover:no-underline px-4 py-3">
-                    <div className="flex items-center space-x-3 w-full">
+                  <AccordionTrigger className="hover:no-underline px-3 py-2">
+                    <div className="flex items-center space-x-2 w-full">
                       {/* Selection Checkbox */}
                       <div
                         onClick={(e) => {
