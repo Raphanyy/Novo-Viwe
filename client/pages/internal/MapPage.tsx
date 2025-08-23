@@ -338,6 +338,19 @@ const MapPage: React.FC = () => {
     setRouteTraced(false);
   };
 
+  // Function to clear all markers and routes from map
+  const clearAllMarkersAndRoutes = () => {
+    // Clear route from map
+    clearRouteFromMap();
+
+    // Clear stop markers
+    stopMarkers.current.forEach((marker) => marker.remove());
+    stopMarkers.current = [];
+
+    // Reset route traced state
+    setRouteTraced(false);
+  };
+
   // Update POI markers
   useEffect(() => {
     if (!map.current) return;
@@ -559,7 +572,7 @@ const MapPage: React.FC = () => {
                 <button
                   onClick={() => {
                     cancelTrace();
-                    clearRouteFromMap();
+                    clearAllMarkersAndRoutes();
                   }}
                   className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200"
                 >
