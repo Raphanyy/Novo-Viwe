@@ -181,7 +181,9 @@ const MapPage: React.FC = () => {
     // Check if Mapbox token is available
     if (!mapboxToken) {
       console.error("Mapbox token not available. Map cannot be initialized.");
-      setMapError("Token do Mapbox não configurado. Entre em contato com o suporte.");
+      setMapError(
+        "Token do Mapbox não configurado. Entre em contato com o suporte.",
+      );
       return;
     }
 
@@ -364,10 +366,20 @@ const MapPage: React.FC = () => {
       } else {
         console.error("Failed to initialize map:", error);
         if (error instanceof Error) {
-          if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
-            setMapError("Problema de conexão. Verifique sua internet e tente novamente.");
-          } else if (error.message.includes("token") || error.message.includes("unauthorized")) {
-            setMapError("Token do Mapbox inválido. Entre em contato com o suporte.");
+          if (
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("NetworkError")
+          ) {
+            setMapError(
+              "Problema de conexão. Verifique sua internet e tente novamente.",
+            );
+          } else if (
+            error.message.includes("token") ||
+            error.message.includes("unauthorized")
+          ) {
+            setMapError(
+              "Token do Mapbox inválido. Entre em contato com o suporte.",
+            );
           } else {
             setMapError("Erro ao carregar o mapa. Tente atualizar a página.");
           }

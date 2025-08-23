@@ -113,9 +113,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
         title="Rota Concluída!"
         showBackButton={true}
         onBack={handleClose}
-        rightContent={
-          <Trophy className="h-5 w-5 text-yellow-600" />
-        }
+        rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
       />
       <div className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="space-y-6">
@@ -222,7 +220,9 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                   <TrendingUp className="h-4 w-4 text-blue-600" />
                   <div>
                     <span className="font-medium">Desempenho da Viagem</span>
-                    <p className="text-sm text-muted-foreground">Eficiência e créditos.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Eficiência e créditos.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -272,7 +272,9 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <div className="flex-1">
                     <span className="font-medium">Paradas Realizadas</span>
-                    <p className="text-sm text-muted-foreground">Detalhes das paradas.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Detalhes das paradas.
+                    </p>
                   </div>
                   <Badge variant="secondary">{completedStops.length}</Badge>
                 </div>
@@ -331,8 +333,12 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                 <div className="flex items-center space-x-2">
                   <Fuel className="h-4 w-4 text-orange-600" />
                   <div>
-                    <span className="font-medium">Economia e Sustentabilidade</span>
-                    <p className="text-sm text-muted-foreground">Consumo de combustível.</p>
+                    <span className="font-medium">
+                      Economia e Sustentabilidade
+                    </span>
+                    <p className="text-sm text-muted-foreground">
+                      Consumo de combustível.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>

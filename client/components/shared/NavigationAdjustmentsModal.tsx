@@ -323,10 +323,13 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
           <div className="bg-card rounded-lg p-6 max-w-sm w-full">
             <div className="flex items-center space-x-2 mb-4">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
-              <h3 className="text-lg font-semibold text-foreground">Remover Parada</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Remover Parada
+              </h3>
             </div>
             <p className="text-muted-foreground mb-6">
-              Tem certeza que deseja remover esta parada da sua rota? Esta ação não pode ser desfeita.
+              Tem certeza que deseja remover esta parada da sua rota? Esta ação
+              não pode ser desfeita.
             </p>
             <div className="flex space-x-3">
               <Button
@@ -360,10 +363,13 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
           <div className="bg-card rounded-lg p-6 max-w-sm w-full">
             <div className="flex items-center space-x-2 mb-4">
               <StopCircle className="h-5 w-5 text-red-600" />
-              <h3 className="text-lg font-semibold text-foreground">Encerrar Trajeto</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Encerrar Trajeto
+              </h3>
             </div>
             <p className="text-muted-foreground mb-6">
-              Tem certeza que deseja encerrar este trajeto? Toda a navegação será finalizada e você retornará ao início.
+              Tem certeza que deseja encerrar este trajeto? Toda a navegação
+              será finalizada e você retornará ao início.
             </p>
             <div className="flex space-x-3">
               <Button

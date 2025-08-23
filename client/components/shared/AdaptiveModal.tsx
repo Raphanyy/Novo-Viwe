@@ -75,7 +75,13 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
         )}
 
         {/* Content */}
-        <div className={cn("overflow-y-auto", useFullScreen ? "flex-1" : "", title ? "" : "p-4")}>
+        <div
+          className={cn(
+            "overflow-y-auto",
+            useFullScreen ? "flex-1" : "",
+            title ? "" : "p-4",
+          )}
+        >
           {children}
         </div>
       </div>

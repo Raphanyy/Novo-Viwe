@@ -28,9 +28,7 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({
         <h1 className="text-lg font-semibold text-foreground">{title}</h1>
       </div>
       {rightContent && (
-        <div className="flex items-center space-x-2">
-          {rightContent}
-        </div>
+        <div className="flex items-center space-x-2">{rightContent}</div>
       )}
     </div>
   );

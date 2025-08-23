@@ -9,7 +9,7 @@ const VisuallyHidden = React.forwardRef<
     ref={ref}
     className={cn(
       "absolute w-px h-px p-0 -m-px overflow-hidden clip-rect-0 whitespace-nowrap border-0",
-      className
+      className,
     )}
     style={{
       clipPath: "inset(50%)",

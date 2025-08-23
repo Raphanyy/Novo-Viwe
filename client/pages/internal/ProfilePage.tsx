@@ -307,9 +307,7 @@ const ProfilePage: React.FC = () => {
             subtitle={item.subtitle}
             icon={item.icon}
             onClick={
-              item.hasSettings
-                ? () => navigateToSubSection(item.id)
-                : undefined
+              item.hasSettings ? () => navigateToSubSection(item.id) : undefined
             }
           />
         ))}

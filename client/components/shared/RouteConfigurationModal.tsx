@@ -24,9 +24,9 @@ interface ConfigurationSection {
   title: string;
   subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
-  component?: React.ComponentType<{ 
-    onBack: () => void; 
-    formData: any; 
+  component?: React.ComponentType<{
+    onBack: () => void;
+    formData: any;
     saveData: (data: any) => void;
   }>;
 }
@@ -122,7 +122,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   };
 
   const getCurrentSection = () => {
-    return configurationSections.find((section) => section.id === selectedSection);
+    return configurationSections.find(
+      (section) => section.id === selectedSection,
+    );
   };
 
   // Salvar dados de seção
@@ -134,7 +136,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const isSectionConfigured = (section: string) => {
     switch (section) {
       case "info":
-        return formData.info.routeName !== "" || formData.info.responsible !== "";
+        return (
+          formData.info.routeName !== "" || formData.info.responsible !== ""
+        );
       case "clients":
         return formData.clients.length > 0;
       case "routeSet":
@@ -156,7 +160,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     console.log("Dados salvos:", formData);
     setIsSuccess(true);
     setIsLoading(false);
-    
+
     setTimeout(() => {
       setIsSuccess(false);
       onClose();
@@ -183,9 +187,12 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         <div className="flex justify-between items-center text-sm font-medium text-muted-foreground mb-2">
           <span>Progresso da Configuração</span>
           <span>
-            {configurationSections.filter((section) => 
-              isSectionConfigured(section.id)
-            ).length} / {configurationSections.length}
+            {
+              configurationSections.filter((section) =>
+                isSectionConfigured(section.id),
+              ).length
+            }{" "}
+            / {configurationSections.length}
           </span>
         </div>
         <div className="w-full bg-muted rounded-full h-2">
@@ -193,9 +200,11 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{
               width: `${
-                (configurationSections.filter((section) => 
-                  isSectionConfigured(section.id)
-                ).length / configurationSections.length) * 100
+                (configurationSections.filter((section) =>
+                  isSectionConfigured(section.id),
+                ).length /
+                  configurationSections.length) *
+                100
               }%`,
             }}
           />
@@ -208,7 +217,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           <div className="flex items-center space-x-2">
             <Calendar className="h-5 w-5 text-orange-600" />
             <div>
-              <span className="font-semibold text-orange-800">Rota Imediata</span>
+              <span className="font-semibold text-orange-800">
+                Rota Imediata
+              </span>
               <p className="text-sm text-orange-700">
                 Esta rota é válida por 24 horas a partir do início.
               </p>
@@ -297,18 +308,20 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 };
 
 // Página de Informações da Rota
-function RouteInfoPage({ 
-  onBack, 
-  formData, 
-  saveData 
-}: { 
-  onBack: () => void; 
-  formData: any; 
+function RouteInfoPage({
+  onBack,
+  formData,
+  saveData,
+}: {
+  onBack: () => void;
+  formData: any;
   saveData: (data: any) => void;
 }) {
   const [data, setData] = useState(formData);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     const newData = { ...data, [name]: value };
     setData(newData);
@@ -367,13 +380,13 @@ function RouteInfoPage({
 }
 
 // Página de Clientes (simplificada)
-function ClientsPage({ 
-  onBack, 
-  formData, 
-  saveData 
-}: { 
-  onBack: () => void; 
-  formData: any; 
+function ClientsPage({
+  onBack,
+  formData,
+  saveData,
+}: {
+  onBack: () => void;
+  formData: any;
   saveData: (data: any) => void;
 }) {
   const [clients, setClients] = useState(formData);
@@ -404,7 +417,9 @@ function ClientsPage({
           <input
             type="text"
             value={newClient.name}
-            onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+            onChange={(e) =>
+              setNewClient({ ...newClient, name: e.target.value })
+            }
             className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Nome do cliente"
           />
@@ -417,7 +432,9 @@ function ClientsPage({
           <input
             type="tel"
             value={newClient.phone}
-            onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
+            onChange={(e) =>
+              setNewClient({ ...newClient, phone: e.target.value })
+            }
             className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Telefone do cliente"
           />
@@ -467,7 +484,7 @@ function ClientsPage({
 // Placeholder para outras páginas
 function RouteSetPage({ onBack, formData, saveData }: any) {
   const routeSets = ["Zona Sul", "Centro", "Zona Norte", "Zona Oeste"];
-  
+
   return (
     <div className="p-4 space-y-3">
       {routeSets.map((set) => (
@@ -494,10 +511,9 @@ function StopsPage({ onBack, formData, saveData }: any) {
         <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
         <h3 className="font-medium text-foreground mb-2">Paradas da Rota</h3>
         <p className="text-sm text-muted-foreground">
-          {formData.length > 0 
+          {formData.length > 0
             ? `${formData.length} parada(s) configurada(s)`
-            : "Use o mapa para adicionar paradas"
-          }
+            : "Use o mapa para adicionar paradas"}
         </p>
       </div>
     </div>

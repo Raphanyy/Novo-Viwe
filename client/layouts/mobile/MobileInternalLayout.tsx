@@ -409,95 +409,101 @@ const MobileInternalLayout: React.FC = () => {
       {/* Mobile Header - Simplified */}
       {shouldShowHeader && (
         <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center">
-            <Rocket className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center">
+              <Rocket className="h-6 w-6 text-blue-600" />
+              <span className="font-bold text-lg ml-2 text-foreground">
+                Viwe
+              </span>
+            </div>
+            <div className="w-px h-6 bg-border"></div>
+            <h1 className="text-lg font-semibold text-foreground">
+              {getCurrentPageName()}
+            </h1>
           </div>
-          <div className="w-px h-6 bg-border"></div>
-          <h1 className="text-lg font-semibold text-foreground">
-            {getCurrentPageName()}
-          </h1>
-        </div>
 
-        {/* Mobile User Menu */}
-        <div className="flex items-center space-x-3">
-          {/* Quick Notifications */}
-          <Link
-            to="/app/notificacoes"
-            className="p-2 rounded-xl hover:bg-muted transition-colors duration-200 relative"
-          >
-            <Bell className="h-5 w-5 text-muted-foreground" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-          </Link>
-
-          {/* User Avatar */}
-          <div className="relative">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-muted transition-colors duration-200"
+          {/* Mobile User Menu */}
+          <div className="flex items-center space-x-3">
+            {/* Quick Notifications */}
+            <Link
+              to="/app/notificacoes"
+              className="p-2 rounded-xl hover:bg-muted transition-colors duration-200 relative"
             >
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <User className="h-4 w-4 text-blue-600" />
-                )}
-              </div>
-            </button>
+              <Bell className="h-5 w-5 text-muted-foreground" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+            </Link>
 
-            {/* Mobile Dropdown Menu */}
-            {isMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-card rounded-2xl shadow-xl border border-border py-2 z-50">
-                <div className="px-4 py-3 border-b border-border">
-                  <p className="text-sm font-medium text-foreground">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+            {/* User Avatar */}
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="flex items-center space-x-2 p-1 rounded-xl hover:bg-muted transition-colors duration-200"
+              >
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="h-4 w-4 text-blue-600" />
+                  )}
                 </div>
+              </button>
 
-                <div className="py-2">
-                  <Link
-                    to="/app/notificacoes"
-                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Bell className="h-4 w-4 mr-3" />
-                    Notificações
-                  </Link>
+              {/* Mobile Dropdown Menu */}
+              {isMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-card rounded-2xl shadow-xl border border-border py-2 z-50">
+                  <div className="px-4 py-3 border-b border-border">
+                    <p className="text-sm font-medium text-foreground">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.email}
+                    </p>
+                  </div>
 
-                  <Link
-                    to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Settings className="h-4 w-4 mr-3" />
-                    Configurações
-                  </Link>
+                  <div className="py-2">
+                    <Link
+                      to="/app/notificacoes"
+                      className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Bell className="h-4 w-4 mr-3" />
+                      Notificações
+                    </Link>
 
-                  <button
-                    onClick={logout}
-                    className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                  >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Sair
-                  </button>
+                    <Link
+                      to="/app/ajustes"
+                      className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Settings className="h-4 w-4 mr-3" />
+                      Configurações
+                    </Link>
+
+                    <button
+                      onClick={logout}
+                      className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
+                    >
+                      <LogOut className="h-4 w-4 mr-3" />
+                      Sair
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
         </header>
       )}
 
       {/* Main Content - Optimized for mobile */}
-      <main className={`flex-1 overflow-hidden bg-background pb-[73px] ${
-        shouldShowHeader ? "pt-[73px]" : "pt-0"
-      }`}>
+      <main
+        className={`flex-1 overflow-hidden bg-background pb-[73px] ${
+          shouldShowHeader ? "pt-[73px]" : "pt-0"
+        }`}
+      >
         <div className="h-full overflow-y-auto">
           <Outlet />
         </div>

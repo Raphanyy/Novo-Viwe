@@ -70,9 +70,7 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
         title="Detalhes da Navegação"
         showBackButton={true}
         onBack={onClose}
-        rightContent={
-          <Navigation className="h-5 w-5 text-blue-600" />
-        }
+        rightContent={<Navigation className="h-5 w-5 text-blue-600" />}
       />
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
@@ -84,7 +82,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <div className="flex-1">
                     <span className="font-medium">Paradas Concluídas</span>
-                    <p className="text-sm text-muted-foreground">Histórico de paradas.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Histórico de paradas.
+                    </p>
                   </div>
                   <Badge variant="secondary">{completedStops.length}</Badge>
                 </div>
@@ -138,7 +138,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
                   <Clock className="h-4 w-4 text-blue-600" />
                   <div>
                     <span className="font-medium">Tempo em Atividade</span>
-                    <p className="text-sm text-muted-foreground">Duração total.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Duração total.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -179,7 +181,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
                   <Fuel className="h-4 w-4 text-orange-600" />
                   <div>
                     <span className="font-medium">Consumo de Combustível</span>
-                    <p className="text-sm text-muted-foreground">Estimado vs real.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Estimado vs real.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -222,7 +226,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
                   <Route className="h-4 w-4 text-purple-600" />
                   <div>
                     <span className="font-medium">Distância Total</span>
-                    <p className="text-sm text-muted-foreground">Percorrida e restante.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Percorrida e restante.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -266,7 +272,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
                   <MapPin className="h-4 w-4 text-red-600" />
                   <div>
                     <span className="font-medium">Próxima Parada</span>
-                    <p className="text-sm text-muted-foreground">Distância e detalhes.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Distância e detalhes.
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
