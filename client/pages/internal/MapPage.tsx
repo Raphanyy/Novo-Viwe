@@ -50,6 +50,7 @@ const MapPage: React.FC = () => {
     setRouteTraced,
     startNavigation,
     stopNavigation,
+    setMapCleanupCallback,
   } = useTraceRoute();
 
   // Pontos de interesse com coordenadas reais de São Paulo
@@ -160,12 +161,15 @@ const MapPage: React.FC = () => {
     // Initialize center pin coordinates
     updateCenterCoords();
 
+    // Registrar callback de limpeza no contexto
+    setMapCleanupCallback(clearAllMarkersAndRoutes);
+
     return () => {
       if (map.current) {
         map.current.remove();
       }
     };
-  }, []);
+  }, [setMapCleanupCallback]);
 
   // Initialize center coordinates when tracing starts
   useEffect(() => {
