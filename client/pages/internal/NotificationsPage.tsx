@@ -4,7 +4,6 @@ import {
   BellOff,
   Check,
   X,
-  Clock,
   MapPin,
   Route,
   AlertTriangle,
@@ -44,7 +43,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Congestionamento detectado na Av. Paulista. Rota alternativa disponível com economia de 12 minutos.",
       details:
-        "O congestionamento foi causado por um acidente na altura do número 1500. O desvio pela Rua Augusta pode economizar até 12 minutos no seu trajeto atual.",
+        "Acidente detectado na Av. Paulista altura 1500. Desvio pela Rua Augusta economiza 12 minutos.",
       time: "2 min atrás",
       read: false,
       icon: AlertTriangle,
@@ -59,7 +58,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
       details:
-        "Nossa IA analisou seus padrões de viagem e encontrou uma nova rota que pode economizar 8 minutos e 2km de distância. A nova rota evita 3 semáforos principais.",
+        "Nova rota Casa→Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
       time: "1h atrás",
       read: false,
       icon: Route,
@@ -74,7 +73,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Sua viagem para o aeroporto está agendada para amanhã às 15:00.",
       details:
-        "Tempo estimado: 45 minutos. Sugestão: sair às 14:00 para chegar com folga. Verificamos o trânsito e não há congestionamentos previstos para o horário.",
+        "Viagem de 45 min para aeroporto. Saia às 14:00 com folga. Trânsito normal previsto para amanhã.",
       time: "3h atrás",
       read: true,
       icon: Calendar,
@@ -88,7 +87,7 @@ const NotificationsPage: React.FC = () => {
       title: "Meta Atingida!",
       message: "Você economizou 2 horas de trânsito este mês!",
       details:
-        "Parabéns! Suas escolhas inteligentes de rota economizaram 2h14min em tempo de viagem e R$ 45,30 em combustível neste mês. Continue assim!",
+        "Economizou 2h14min e R$ 45,30 em combustível este mês com rotas inteligentes. Parabéns!",
       time: "1 dia atrás",
       read: true,
       icon: Star,
@@ -102,7 +101,7 @@ const NotificationsPage: React.FC = () => {
       title: "Atualização Disponível",
       message: "Nova versão do app com melhorias na navegação.",
       details:
-        "A versão 2.1.5 está disponível com correções de bugs, melhor precisão GPS e novos recursos de economia de bateria. A atualização leva aproximadamente 2 minutos.",
+        "Versão 2.1.5 disponível: correções, GPS melhorado e economia de bateria. Atualização em 2 min.",
       time: "2 dias atrás",
       read: true,
       icon: Info,
@@ -118,16 +117,6 @@ const NotificationsPage: React.FC = () => {
       id: "unread",
       name: "Não lidas",
       count: notifications.filter((n) => !n.read).length,
-    },
-    {
-      id: "traffic",
-      name: "Trânsito",
-      count: notifications.filter((n) => n.type === "traffic").length,
-    },
-    {
-      id: "route",
-      name: "Rotas",
-      count: notifications.filter((n) => n.type === "route").length,
     },
   ];
 
@@ -171,54 +160,19 @@ const NotificationsPage: React.FC = () => {
   const renderActionButtons = (notification: any) => {
     if (!notification.actionable) return null;
 
-    switch (notification.type) {
-      case "traffic":
-        return (
-          <div className="flex flex-wrap gap-2 mt-4">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
-              Ver rota alternativa
-            </button>
-            <button className="text-muted-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Dispensar
-            </button>
-          </div>
-        );
-      case "route":
-        return (
-          <div className="flex flex-wrap gap-2 mt-4">
-            <button className="bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors duration-200">
-              Usar nova rota
-            </button>
-            <button className="text-muted-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Ver detalhes
-            </button>
-          </div>
-        );
-      case "scheduled":
-        return (
-          <div className="flex flex-wrap gap-2 mt-4">
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
-              Verificar trânsito
-            </button>
-            <button className="text-muted-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Adiar lembrete
-            </button>
-          </div>
-        );
-      case "system":
-        return (
-          <div className="flex flex-wrap gap-2 mt-4">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
-              Atualizar agora
-            </button>
-            <button className="text-muted-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Lembrar depois
-            </button>
-          </div>
-        );
-      default:
-        return null;
-    }
+    return (
+      <div className="flex items-center gap-2">
+        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap">
+          Ação Principal
+        </button>
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
+          Ver Detalhes
+        </button>
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
+          Dispensar
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -280,7 +234,7 @@ const NotificationsPage: React.FC = () => {
       </div>
 
       {/* Notifications List */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-3">
         {filteredNotifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <BellOff className="h-12 w-12 mb-4" />
@@ -292,7 +246,7 @@ const NotificationsPage: React.FC = () => {
             </p>
           </div>
         ) : (
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2">
             {filteredNotifications.map((notification) => {
               const Icon = notification.icon;
               const isSelected = selectedNotifications.includes(
@@ -303,122 +257,72 @@ const NotificationsPage: React.FC = () => {
                 <AccordionItem
                   key={notification.id}
                   value={`item-${notification.id}`}
-                  className={`bg-card rounded-2xl border transition-all duration-200 ${
+                  className={`bg-card rounded-xl border border-l-4 transition-all duration-200 relative overflow-hidden ${
                     !notification.read
-                      ? "border-l-4 border-l-blue-500"
-                      : "border-border"
-                  } ${isSelected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}
+                      ? "border-l-green-500"
+                      : "border-l-blue-500"
+                  } ${
+                    isSelected
+                      ? `ring-2 ${!notification.read ? "ring-green-500" : "ring-blue-500"}`
+                      : ""
+                  }`}
                 >
-                  <AccordionTrigger className="hover:no-underline px-4 py-3">
-                    <div className="flex items-center space-x-3 w-full">
-                      {/* Selection Checkbox */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleNotificationSelection(notification.id);
-                        }}
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
-                          isSelected
-                            ? "bg-blue-500 border-blue-500"
-                            : "border-border hover:border-muted-foreground"
-                        }`}
-                      >
-                        {isSelected && <Check className="h-3 w-3 text-white" />}
-                      </button>
+                  {/* Gradient overlay */}
+                  <div
+                    className={`absolute inset-0 pointer-events-none rounded-xl ${
+                      !notification.read
+                        ? "bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent"
+                        : "bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent"
+                    }`}
+                  />
 
+                  <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start relative z-10">
+                    <div className="flex items-center space-x-3 w-full">
                       {/* Icon */}
                       <div
-                        className={`p-2 rounded-xl ${notification.color} flex-shrink-0`}
+                        className={`p-2 rounded-lg ${notification.color} flex-shrink-0`}
                       >
                         <Icon className="h-5 w-5" />
                       </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0 text-left">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3
-                              className={`font-semibold ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
-                            >
-                              {notification.title}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {notification.message}
-                            </p>
+                      {/* Title and Time */}
+                      <div className="flex-1 flex items-center justify-between">
+                        <h3
+                          className={`font-semibold text-left ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
+                        >
+                          {notification.title}
+                        </h3>
 
-                            {notification.route && (
-                              <div className="flex items-center space-x-1 mt-2">
-                                <Route className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-xs text-muted-foreground">
-                                  {notification.route}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex items-center space-x-2 ml-2">
-                            <span className="text-xs text-muted-foreground whitespace-nowrap">
-                              {notification.time}
-                            </span>
-                            {!notification.read && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            )}
-                          </div>
-                        </div>
+                        {/* Time indicator */}
+                        <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                          {notification.read
+                            ? `Visto à ${notification.time}`
+                            : notification.time}
+                        </span>
                       </div>
+
+                      {/* Status indicator */}
+                      {!notification.read && (
+                        <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full flex-shrink-0 ml-2">
+                          Novo
+                        </span>
+                      )}
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="ml-8">
+                  <AccordionContent className="px-4 pb-4 relative z-10">
+                    {/* Main Content */}
+                    <div className="space-y-4">
                       {/* Detailed message */}
-                      <p className="text-sm text-foreground mb-4 leading-relaxed">
-                        {notification.details}
+                      <p className="text-sm text-foreground leading-relaxed">
+                        {notification.details.length > 100
+                          ? notification.details.substring(0, 100) + "..."
+                          : notification.details}
                       </p>
 
                       {/* Action buttons */}
-                      {renderActionButtons(notification)}
-
-                      {/* Management buttons */}
-                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() =>
-                              notification.read
-                                ? markAsUnread(notification.id)
-                                : markAsRead(notification.id)
-                            }
-                            className="flex items-center space-x-1 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
-                          >
-                            {notification.read ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                            <span>
-                              {notification.read
-                                ? "Marcar como não lida"
-                                : "Marcar como lida"}
-                            </span>
-                          </button>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => archiveNotification(notification.id)}
-                            className="p-2 hover:bg-muted rounded-lg transition-colors duration-200"
-                            title="Arquivar"
-                          >
-                            <Archive className="h-4 w-4 text-muted-foreground" />
-                          </button>
-                          <button
-                            onClick={() => deleteNotification(notification.id)}
-                            className="p-2 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                            title="Excluir"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-600" />
-                          </button>
-                        </div>
+                      <div className="flex justify-start">
+                        {renderActionButtons(notification)}
                       </div>
                     </div>
                   </AccordionContent>
