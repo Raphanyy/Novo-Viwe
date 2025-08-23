@@ -111,6 +111,8 @@ const DesktopInternalLayout: React.FC = () => {
     return location.pathname === path;
   };
 
+  const isProfileSettingsPage = location.pathname === "/app/opcoes" || location.pathname === "/app/ajustes";
+
   return (
     <div
       className="h-screen bg-background flex font-sans"
@@ -270,7 +272,8 @@ const DesktopInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Breadcrumb and Actions */}
-        <header className="bg-card border-b border-border px-8 py-6">
+        {!isProfileSettingsPage && (
+          <header className="bg-card border-b border-border px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">
@@ -299,11 +302,14 @@ const DesktopInternalLayout: React.FC = () => {
               </button>
             </div>
           </div>
-        </header>
+          </header>
+        )}
 
         {/* Main Content with Padding */}
         <main className="flex-1 overflow-hidden bg-background">
-          <div className="h-full p-8 overflow-y-auto">
+          <div className={`h-full overflow-y-auto ${
+            isProfileSettingsPage ? "p-0" : "p-8"
+          }`}>
             <Outlet />
           </div>
         </main>
