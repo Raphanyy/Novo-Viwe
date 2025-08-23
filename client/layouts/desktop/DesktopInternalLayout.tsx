@@ -111,7 +111,7 @@ const DesktopInternalLayout: React.FC = () => {
     return location.pathname === path;
   };
 
-  const isProfileSettingsPage = location.pathname === "/app/opcoes" || location.pathname === "/app/ajustes";
+  const shouldShowHeader = location.pathname === "/app" || location.pathname === "/app/mapa";
 
   return (
     <div
@@ -272,7 +272,7 @@ const DesktopInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Breadcrumb and Actions */}
-        {!isProfileSettingsPage && (
+        {shouldShowHeader && (
           <header className="bg-card border-b border-border px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -308,7 +308,7 @@ const DesktopInternalLayout: React.FC = () => {
         {/* Main Content with Padding */}
         <main className="flex-1 overflow-hidden bg-background">
           <div className={`h-full overflow-y-auto ${
-            isProfileSettingsPage ? "p-0" : "p-8"
+            shouldShowHeader ? "p-8" : "p-0"
           }`}>
             <Outlet />
           </div>
