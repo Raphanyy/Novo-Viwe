@@ -194,10 +194,8 @@ const MapPage: React.FC = () => {
 
     if (traceState.isTracing) {
       // Initialize center coordinates when tracing starts
-      if (!traceState.centerPin) {
-        const center = map.current.getCenter();
-        updateCenterPin([center.lng, center.lat]);
-      }
+      const center = map.current.getCenter();
+      updateCenterPin([center.lng, center.lat]);
 
       // Add event listeners for dynamic tracking
       const updateCenterCoords = () => {
@@ -218,7 +216,7 @@ const MapPage: React.FC = () => {
         }
       };
     }
-  }, [traceState.isTracing]); // Only depend on isTracing
+  }, [traceState.isTracing, updateCenterPin]); // Include updateCenterPin dependency
 
   // Update stop markers
   useEffect(() => {
