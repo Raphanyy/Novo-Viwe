@@ -45,5 +45,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+
+	<!-- Location permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses location services to show your position on the map and provide navigation.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses location services to provide real-time navigation and route tracking.</string>
+
+	<!-- Push notifications -->
+	<key>aps-environment</key>
+	<string>development</string>
 </dict>
 </plist>
