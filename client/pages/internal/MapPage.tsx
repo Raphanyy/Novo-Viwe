@@ -598,6 +598,18 @@ const MapPage: React.FC = () => {
         });
       }
 
+      if (variationData.features) {
+        variationData.features.forEach((feature: any) => {
+          if (!allFeatures.find(f =>
+            f.text === feature.text ||
+            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+             Math.abs(f.center[1] - feature.center[1]) < 0.001)
+          )) {
+            allFeatures.push(feature);
+          }
+        });
+      }
+
       // Add general results only if we don't have enough establishments
       if (generalData.features && allFeatures.length < 3) {
         const remainingSlots = 5 - allFeatures.length;
