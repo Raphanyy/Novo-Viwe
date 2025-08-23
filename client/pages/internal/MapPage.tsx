@@ -139,8 +139,11 @@ const MapPage: React.FC = () => {
 
   // Function to clear all markers and routes from map
   const clearAllMarkersAndRoutes = useCallback(() => {
-    // Clear route from map
-    clearRouteFromMap();
+    // Clear route from map inline to avoid circular dependency
+    if (map.current && map.current.getSource("route")) {
+      map.current.removeLayer("route");
+      map.current.removeSource("route");
+    }
 
     // Clear stop markers
     stopMarkers.current.forEach((marker) => marker.remove());
@@ -148,7 +151,7 @@ const MapPage: React.FC = () => {
 
     // Reset route traced state
     setRouteTraced(false);
-  }, [clearRouteFromMap, setRouteTraced]);
+  }, [setRouteTraced]);
 
   // Initialize Mapbox
   useEffect(() => {
