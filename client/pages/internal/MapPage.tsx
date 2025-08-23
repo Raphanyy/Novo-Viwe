@@ -1470,11 +1470,6 @@ const MapPage: React.FC = () => {
             setInPreparation(true);
           }
         }}
-        onSave={() => {
-          if (traceState.isTracing) {
-            setInPreparation(true);
-          }
-        }}
         prefilledStops={traceState.isTracing ? traceState.stops : undefined}
         isTemporary={traceState.isTracing}
       />
