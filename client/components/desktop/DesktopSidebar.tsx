@@ -186,7 +186,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
                 <div className="py-2">
                   <Link
                     to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4 mr-3" />
@@ -195,7 +195,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
 
                   <Link
                     to="/app/notificacoes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Bell className="h-4 w-4 mr-3" />
