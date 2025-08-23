@@ -175,12 +175,12 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
           {/* User Dropdown */}
           {isUserMenuOpen && (
             <>
-              <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">
+              <div className="absolute bottom-full left-0 right-0 mb-2 bg-card rounded-xl shadow-xl border border-border py-2 z-50">
+                <div className="px-4 py-3 border-b border-border">
+                  <p className="text-sm font-medium text-foreground">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
 
                 <div className="py-2">
