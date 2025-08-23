@@ -302,7 +302,7 @@ const NotificationsPage: React.FC = () => {
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="px-4 pb-4">
+                  <AccordionContent className="px-4 pb-4 relative z-10">
                     {/* Main Content */}
                     <div className="space-y-4">
                       {/* Detailed message */}
