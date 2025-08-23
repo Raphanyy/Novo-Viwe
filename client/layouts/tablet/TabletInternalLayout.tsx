@@ -364,7 +364,7 @@ const TabletInternalLayout: React.FC = () => {
         {/* Top Header with Page Title */}
         {shouldShowHeader && (
           <header
-            className="fixed top-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-4"
+            className="fixed top-0 right-0 z-50 bg-card border-b border-border px-6 py-4"
             style={{ left: isSidebarOpen ? "256px" : "64px" }}
           >
             <div className="flex items-center justify-between">
