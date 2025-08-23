@@ -260,13 +260,13 @@ const NotificationsPage: React.FC = () => {
                   value={`item-${notification.id}`}
                   className={`rounded-xl border border-l-4 transition-all duration-200 relative overflow-hidden ${
                     !notification.read
-                      ? "border-l-green-500 bg-gradient-to-r from-green-50 via-green-25 to-card"
-                      : "border-l-blue-500 bg-gradient-to-r from-blue-50 via-blue-25 to-card"
+                      ? "border-l-green-500 bg-gradient-to-r from-green-50/80 via-green-50/30 to-transparent"
+                      : "border-l-blue-500 bg-gradient-to-r from-blue-50/80 via-blue-50/30 to-transparent"
                   } ${
                     isSelected
                       ? `ring-2 ${!notification.read ? "ring-green-500" : "ring-blue-500"}`
                       : ""
-                  }`}
+                  } bg-card`}
                 >
                   <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start">
                     <div className="flex items-center space-x-3 w-full">
