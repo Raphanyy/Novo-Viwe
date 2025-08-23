@@ -100,7 +100,7 @@ const MobileInternalLayout: React.FC = () => {
   };
 
   const isMapPage = location.pathname === "/app/mapa";
-  const shouldShowHeader = location.pathname === "/app" || location.pathname === "/app/mapa";
+  const shouldShowHeader = location.pathname === "/app";
 
   const {
     state: traceState,
