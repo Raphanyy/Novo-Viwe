@@ -315,12 +315,12 @@ const RoutesPage: React.FC = () => {
             <span className="text-xs font-medium text-blue-600">Nova Rota</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-2 p-3 bg-green-50 rounded-2xl hover:bg-green-100 transition-colors duration-200">
+          <button className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200">
             <Zap className="h-5 w-5 text-green-600" />
             <span className="text-xs font-medium text-green-600">Otimizar</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-2 p-3 bg-purple-50 rounded-2xl hover:bg-purple-100 transition-colors duration-200">
+          <button className="flex flex-col items-center space-y-2 p-3 bg-muted rounded-2xl hover:bg-secondary transition-colors duration-200">
             <Calendar className="h-5 w-5 text-purple-600" />
             <span className="text-xs font-medium text-purple-600">Agendar</span>
           </button>
