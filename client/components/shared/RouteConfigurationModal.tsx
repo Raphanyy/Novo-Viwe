@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { VisuallyHidden } from "../ui/visually-hidden";
 import { Button } from "../ui/button";
 import ModalHeader from "./ModalHeader";
 import SettingsSection from "../profile/SettingsSection";
@@ -285,6 +286,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-hidden flex flex-col p-0">
+        <VisuallyHidden>
+          <DialogTitle>Configurar Rota</DialogTitle>
+        </VisuallyHidden>
         {/* Header */}
         <ModalHeader
           title={getHeaderTitle()}
