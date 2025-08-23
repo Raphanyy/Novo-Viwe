@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { VisuallyHidden } from "../ui/visually-hidden";
 import { Button } from "../ui/button";
 import ModalHeader from "./ModalHeader";
 import SettingsSection from "../profile/SettingsSection";
@@ -284,23 +282,17 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-hidden flex flex-col p-0">
-        <VisuallyHidden>
-          <DialogTitle>Configurar Rota</DialogTitle>
-        </VisuallyHidden>
-        {/* Header */}
-        <ModalHeader
-          title={getHeaderTitle()}
-          showBackButton={currentLevel !== NavigationLevel.PRIMARY}
-          onBack={goBack}
-          onClose={onClose}
-        />
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Header */}
+      <ModalHeader
+        title={getHeaderTitle()}
+        showBackButton={currentLevel !== NavigationLevel.PRIMARY}
+        onBack={currentLevel === NavigationLevel.PRIMARY ? onClose : goBack}
+      />
 
-        {/* Conteúdo principal */}
-        <div className="flex-1 overflow-y-auto">{renderContent()}</div>
-      </DialogContent>
-    </Dialog>
+      {/* Conteúdo principal */}
+      <div className="flex-1 overflow-y-auto">{renderContent()}</div>
+    </div>
   );
 };
 
