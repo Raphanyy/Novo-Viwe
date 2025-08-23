@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { VisuallyHidden } from "../ui/visually-hidden";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -334,6 +335,9 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-hidden flex flex-col p-0">
+          <VisuallyHidden>
+            <DialogTitle>Ajustes da Navegação</DialogTitle>
+          </VisuallyHidden>
           {/* Header */}
           <ModalHeader
             title={getHeaderTitle()}
