@@ -333,7 +333,9 @@ const NotificationsPage: React.FC = () => {
                     <div className="space-y-4">
                       {/* Detailed message */}
                       <p className="text-sm text-foreground leading-relaxed">
-                        {notification.details}
+                        {notification.details.length > 100
+                          ? notification.details.substring(0, 100) + "..."
+                          : notification.details}
                       </p>
 
                       {/* Action buttons and time */}
