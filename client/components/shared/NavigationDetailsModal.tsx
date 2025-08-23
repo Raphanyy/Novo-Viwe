@@ -1,5 +1,6 @@
 import React from "react";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { VisuallyHidden } from "../ui/visually-hidden";
 import ModalHeader from "./ModalHeader";
 import {
   Accordion,
@@ -65,7 +66,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto p-0">
+        <VisuallyHidden>
+          <DialogTitle>Detalhes da Navegação</DialogTitle>
+        </VisuallyHidden>
         <ModalHeader
           title="Detalhes da Navegação"
           onClose={onClose}
@@ -73,8 +77,8 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
             <Navigation className="h-5 w-5 text-blue-600" />
           }
         />
-
-        <div className="space-y-4">
+        <div className="p-4">
+          <div className="space-y-4">
           <Accordion type="multiple" className="w-full">
             {/* Paradas Concluídas */}
             <AccordionItem value="completed-stops">
@@ -309,6 +313,7 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
