@@ -268,7 +268,16 @@ const NotificationsPage: React.FC = () => {
                       : ""
                   } bg-card`}
                 >
-                  <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start">
+                  {/* Gradient overlay */}
+                  <div
+                    className={`absolute inset-0 pointer-events-none rounded-xl ${
+                      !notification.read
+                        ? "bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent"
+                        : "bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent"
+                    }`}
+                  />
+
+                  <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start relative z-10">
                     <div className="flex items-center space-x-3 w-full">
                       {/* Icon */}
                       <div
