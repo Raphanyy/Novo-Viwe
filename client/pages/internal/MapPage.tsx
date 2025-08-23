@@ -509,8 +509,8 @@ const MapPage: React.FC = () => {
         {/* Mapbox Container */}
         <div ref={mapRef} className="w-full h-full" />
 
-        {/* Fixed Center Pin - Only visible when tracing and in preparation mode */}
-        {traceState.isTracing && traceState.isInPreparation && (
+        {/* Fixed Center Pin - Visible from "Traçar" until "Navegar" button appears */}
+        {traceState.isTracing && !traceState.showTraceConfirmed && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
             <div className="relative">
               <div className="w-8 h-8 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
