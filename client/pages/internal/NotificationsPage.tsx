@@ -196,11 +196,11 @@ const NotificationsPage: React.FC = () => {
         );
       case "scheduled":
         return (
-          <div className="flex flex-wrap gap-2 mt-4">
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            <button className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
               Verificar trânsito
             </button>
-            <button className="text-muted-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
+            <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
               Adiar lembrete
             </button>
           </div>
