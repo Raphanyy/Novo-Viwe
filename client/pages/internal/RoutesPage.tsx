@@ -159,7 +159,7 @@ const RoutesPage: React.FC = () => {
         {/* Search Bar */}
         <div className="relative mb-4">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
+            <Search className="h-5 w-5 text-muted-foreground" />
           </div>
           <input
             type="text"
@@ -198,7 +198,7 @@ const RoutesPage: React.FC = () => {
       {/* Routes List */}
       <div className="flex-1 overflow-auto p-4">
         {currentRoutes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <RouteIcon className="h-12 w-12 mb-4" />
             <h3 className="text-lg font-medium mb-2">
               Nenhuma rota encontrada
@@ -248,18 +248,18 @@ const RoutesPage: React.FC = () => {
                   </div>
 
                   <button className="p-1 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                    <MoreVertical className="h-4 w-4 text-gray-400" />
+                    <MoreVertical className="h-4 w-4 text-muted-foreground" />
                   </button>
                 </div>
 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-4 text-sm">
                     <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4 text-gray-500" />
+                      <Clock className="h-4 w-4 text-muted-foreground" />
                       <span className="text-muted-foreground">{route.duration}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="text-muted-foreground">{route.distance}</span>
                     </div>
                     <span
@@ -279,7 +279,7 @@ const RoutesPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {activeTab === "planned"
                       ? `Agendada para ${(route as any).scheduledFor}`
                       : `Última vez: ${(route as any).lastUsed}`}
