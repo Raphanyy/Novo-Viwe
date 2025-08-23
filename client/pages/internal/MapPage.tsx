@@ -177,6 +177,12 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
+    // Check if Mapbox token is available
+    if (!mapboxToken) {
+      console.error("Mapbox token not available. Map cannot be initialized.");
+      return;
+    }
+
     try {
       map.current = new mapboxgl.Map({
         container: mapRef.current,
@@ -187,6 +193,7 @@ const MapPage: React.FC = () => {
         fadeDuration: 100, // Reduce animation time to minimize abort scenarios
         preserveDrawingBuffer: false, // Improve performance
         antialias: false, // Reduce GPU usage
+        crossSourceCollisions: false, // Reduce conflicts between sources
       });
 
       // Add comprehensive error handling for map loading
