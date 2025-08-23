@@ -525,13 +525,19 @@ const MapPage: React.FC = () => {
       let businessQuery = query;
       const lowerQuery = query.toLowerCase();
 
-      // Add context for better establishment search
-      if (lowerQuery.includes('shopping') && !lowerQuery.includes('center')) {
+      // Enhanced context recognition for better establishment search
+      if (lowerQuery.includes('ilha plaza') || lowerQuery.includes('ilha shopping')) {
+        businessQuery = 'Ilha Plaza Shopping São Paulo';
+      } else if (lowerQuery.includes('quiosque zero oito') || lowerQuery.includes('quiosque 08')) {
+        businessQuery = `Quiosque 08 loja comércio São Paulo`;
+      } else if (lowerQuery.includes('escola municipal alvaro moreira')) {
+        businessQuery = 'Escola Municipal Alvaro Moreira São Paulo';
+      } else if (lowerQuery.includes('shopping') && !lowerQuery.includes('center')) {
         businessQuery = `${query} shopping center`;
       } else if (lowerQuery.includes('escola') && !lowerQuery.includes('municipal')) {
         businessQuery = `${query} escola`;
       } else if (lowerQuery.includes('quiosque')) {
-        businessQuery = `${query} comercio loja`;
+        businessQuery = `${query} comercio loja estabelecimento`;
       } else if (!lowerQuery.includes('shopping') &&
                  !lowerQuery.includes('escola') &&
                  !lowerQuery.includes('hospital') &&
