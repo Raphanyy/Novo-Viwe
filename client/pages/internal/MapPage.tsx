@@ -160,52 +160,62 @@ const MapPage: React.FC = () => {
     setRouteTraced(false);
   }, [setRouteTraced]);
 
-  // Initialize Mapbox
+  // Initialize Mapbox with error handling
   useEffect(() => {
     if (!mapRef.current) return;
 
-    map.current = new mapboxgl.Map({
-      container: mapRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [-46.6333, -23.5505], // São Paulo center
-      zoom: 12,
-      attributionControl: false,
-    });
+    try {
+      map.current = new mapboxgl.Map({
+        container: mapRef.current,
+        style: "mapbox://styles/mapbox/streets-v12",
+        center: [-46.6333, -23.5505], // São Paulo center
+        zoom: 12,
+        attributionControl: false,
+        crossSourceCollisions: false, // Reduces network conflicts
+        maxTileCacheSize: 50, // Limit tile cache to prevent memory issues
+        refreshExpiredTiles: false, // Prevent automatic tile refresh
+      });
 
-    // Add current location marker
-    const currentLocationEl = document.createElement("div");
-    currentLocationEl.className =
-      "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
-    currentLocationEl.innerHTML =
-      '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
+      // Add error handling for map loading
+      map.current.on('error', (e) => {
+        console.warn('Mapbox error (non-critical):', e.error);
+      });
 
-    new mapboxgl.Marker(currentLocationEl)
-      .setLngLat([-46.6333, -23.5505])
-      .addTo(map.current);
+      // Add current location marker
+      const currentLocationEl = document.createElement("div");
+      currentLocationEl.className =
+        "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
+      currentLocationEl.innerHTML =
+        '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
 
-    // No event listeners needed here - will be added when tracing starts
+      new mapboxgl.Marker(currentLocationEl)
+        .setLngLat([-46.6333, -23.5505])
+        .addTo(map.current);
 
-    // Register cleanup callback after map is initialized
-    // Use setTimeout to avoid immediate execution during render
-    const timeoutId = setTimeout(() => {
-      setMapCleanupCallback(clearAllMarkersAndRoutes);
-    }, 0);
+      // Register cleanup callback after map is initialized
+      // Use setTimeout to avoid immediate execution during render
+      const timeoutId = setTimeout(() => {
+        setMapCleanupCallback(clearAllMarkersAndRoutes);
+      }, 0);
 
-    return () => {
-      clearTimeout(timeoutId);
-      if (map.current) {
-        try {
-          // Clear all event listeners first
-          map.current.off();
-          // Remove the map safely
-          map.current.remove();
-        } catch (error) {
-          // Suppress AbortError and other cleanup errors
-          console.warn("Map cleanup warning:", error);
+      return () => {
+        clearTimeout(timeoutId);
+        if (map.current) {
+          try {
+            // Clear all event listeners first
+            map.current.off();
+            // Remove the map safely
+            map.current.remove();
+          } catch (error) {
+            // Suppress AbortError and other cleanup errors
+            console.warn("Map cleanup warning:", error);
+          }
+          map.current = null;
         }
-        map.current = null;
-      }
-    };
+      };
+    } catch (error) {
+      console.error('Failed to initialize map:', error);
+    }
   }, []); // Remove setMapCleanupCallback from dependencies
 
   // Manage center pin tracking when tracing starts/stops
