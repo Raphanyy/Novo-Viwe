@@ -35,11 +35,11 @@ const DesktopInternalLayout: React.FC = () => {
 
   const navigationItems = [
     {
-      name: "Dashboard",
+      name: "Início",
       path: "/app",
       icon: Home,
       color: "text-blue-600",
-      description: "Visão geral da aplicação",
+      description: "Painel principal",
     },
     {
       name: "Mapa",
@@ -56,11 +56,11 @@ const DesktopInternalLayout: React.FC = () => {
       description: "Gerenciamento de rotas",
     },
     {
-      name: "Perfil",
-      path: "/app/opcoes",
-      icon: Sliders,
-      color: "text-yellow-600",
-      description: "Configurações avançadas",
+      name: "Menu",
+      path: "/app/ajustes",
+      icon: Settings,
+      color: "text-orange-600",
+      description: "Configurações do sistema",
     },
     {
       name: "Atividade",
@@ -70,18 +70,18 @@ const DesktopInternalLayout: React.FC = () => {
       description: "Histórico de atividades",
     },
     {
-      name: "Notificações",
+      name: "Notas",
       path: "/app/notificacoes",
       icon: Bell,
-      color: "text-indigo-600",
+      color: "text-pink-600",
       description: "Central de notificações",
     },
     {
-      name: "Ajustes",
-      path: "/app/ajustes",
-      icon: Settings,
-      color: "text-muted-foreground",
-      description: "Configurações do sistema",
+      name: "Perfil",
+      path: "/app/opcoes",
+      icon: User,
+      color: "text-indigo-600",
+      description: "Configurações do perfil",
     },
   ];
 
