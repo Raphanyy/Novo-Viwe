@@ -221,8 +221,8 @@ const OptionsPage: React.FC = () => {
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Informações do Perfil</h3>
-                  <p className="text-sm text-gray-600">Nome, email e dados pessoais</p>
+                  <h3 className="font-semibold text-foreground">Informações do Perfil</h3>
+                  <p className="text-sm text-muted-foreground">Nome, email e dados pessoais</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -319,8 +319,8 @@ const OptionsPage: React.FC = () => {
                   <Settings className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Configurações da Conta</h3>
-                  <p className="text-sm text-gray-600">Planos, pagamentos e suporte</p>
+                  <h3 className="font-semibold text-foreground">Configurações da Conta</h3>
+                  <p className="text-sm text-muted-foreground">Planos, pagamentos e suporte</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -333,7 +333,7 @@ const OptionsPage: React.FC = () => {
                       className="flex items-center justify-between w-full text-left"
                     >
                       <div className="flex items-center gap-4">
-                        <item.icon size={20} className="text-gray-500" />
+                        <item.icon size={20} className="text-muted-foreground" />
                         <span className="font-medium">{item.title}</span>
                       </div>
                       <ChevronRight size={20} className="text-gray-400" />
@@ -342,7 +342,7 @@ const OptionsPage: React.FC = () => {
                 ))}
 
                 {/* App Version Info */}
-                <div className="text-center mt-4 text-sm text-gray-500 flex items-center justify-center gap-2">
+                <div className="text-center mt-4 text-sm text-muted-foreground flex items-center justify-center gap-2">
                   <Info size={16} />
                   <p>Versão do aplicativo: 1.0.0</p>
                 </div>
@@ -358,8 +358,8 @@ const OptionsPage: React.FC = () => {
                   <Car className="w-5 h-5 text-purple-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Tipo de Veículo</h3>
-                  <p className="text-sm text-gray-600">Configure seu meio de transporte</p>
+                  <h3 className="font-semibold text-foreground">Tipo de Veículo</h3>
+                  <p className="text-sm text-muted-foreground">Configure seu meio de transporte</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -376,19 +376,19 @@ const OptionsPage: React.FC = () => {
                       className={`p-4 rounded-2xl border-2 transition-all duration-200 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-gray-300 bg-white"
+                          : "border-border hover:border-border bg-white"
                       }`}
                     >
                       <Icon
-                        className={`h-8 w-8 mb-2 mx-auto ${isSelected ? "text-blue-600" : "text-gray-600"}`}
+                        className={`h-8 w-8 mb-2 mx-auto ${isSelected ? "text-blue-600" : "text-muted-foreground"}`}
                       />
                       <h4
-                        className={`font-medium text-sm ${isSelected ? "text-blue-900" : "text-gray-900"}`}
+                        className={`font-medium text-sm ${isSelected ? "text-blue-900" : "text-foreground"}`}
                       >
                         {vehicle.name}
                       </h4>
                       <p
-                        className={`text-xs mt-1 ${isSelected ? "text-blue-600" : "text-gray-500"}`}
+                        className={`text-xs mt-1 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`}
                       >
                         {vehicle.description}
                       </p>
@@ -407,8 +407,8 @@ const OptionsPage: React.FC = () => {
                   <Route className="w-5 h-5 text-orange-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Preferências de Rota</h3>
-                  <p className="text-sm text-gray-600">Como calcular suas rotas</p>
+                  <h3 className="font-semibold text-foreground">Preferências de Rota</h3>
+                  <p className="text-sm text-muted-foreground">Como calcular suas rotas</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -425,24 +425,24 @@ const OptionsPage: React.FC = () => {
                       className={`w-full p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-gray-300 bg-white"
+                          : "border-border hover:border-border bg-white"
                       }`}
                     >
                       <div
                         className={`p-2 rounded-xl ${isSelected ? "bg-blue-100" : "bg-gray-100"}`}
                       >
                         <Icon
-                          className={`h-5 w-5 ${isSelected ? "text-blue-600" : "text-gray-600"}`}
+                          className={`h-5 w-5 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`}
                         />
                       </div>
                       <div className="flex-1 text-left">
                         <h4
-                          className={`font-medium ${isSelected ? "text-blue-900" : "text-gray-900"}`}
+                          className={`font-medium ${isSelected ? "text-blue-900" : "text-foreground"}`}
                         >
                           {type.name}
                         </h4>
                         <p
-                          className={`text-sm ${isSelected ? "text-blue-600" : "text-gray-500"}`}
+                          className={`text-sm ${isSelected ? "text-blue-600" : "text-muted-foreground"}`}
                         >
                           {type.description}
                         </p>
@@ -451,7 +451,7 @@ const OptionsPage: React.FC = () => {
                         className={`w-5 h-5 rounded-full border-2 ${
                           isSelected
                             ? "border-blue-500 bg-blue-500"
-                            : "border-gray-300"
+                            : "border-border"
                         }`}
                       >
                         {isSelected && (
@@ -473,8 +473,8 @@ const OptionsPage: React.FC = () => {
                   <MapPin className="w-5 h-5 text-teal-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Configurações de Navegação</h3>
-                  <p className="text-sm text-gray-600">App preferido e configurações</p>
+                  <h3 className="font-semibold text-foreground">Configurações de Navegação</h3>
+                  <p className="text-sm text-muted-foreground">App preferido e configurações</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -484,7 +484,7 @@ const OptionsPage: React.FC = () => {
                 <div>
                   <h4 className="font-medium mb-3">App de Navegação</h4>
                   <div className="flex flex-wrap gap-2">
-                    <label className="flex items-center p-3 rounded-lg border border-gray-300 cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
                       <input
                         type="radio"
                         name="navigation"
@@ -496,7 +496,7 @@ const OptionsPage: React.FC = () => {
                       <MapPin size={20} className="ml-2" />
                       <span className="ml-2 text-sm">Integrada</span>
                     </label>
-                    <label className="flex items-center p-3 rounded-lg border border-gray-300 cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
                       <input
                         type="radio"
                         name="navigation"
@@ -508,7 +508,7 @@ const OptionsPage: React.FC = () => {
                       <Map size={20} className="ml-2" />
                       <span className="ml-2 text-sm">Google Maps</span>
                     </label>
-                    <label className="flex items-center p-3 rounded-lg border border-gray-300 cursor-pointer transition-colors hover:bg-gray-50">
+                    <label className="flex items-center p-3 rounded-lg border border-border cursor-pointer transition-colors hover:bg-gray-50">
                       <input
                         type="radio"
                         name="navigation"
@@ -530,10 +530,10 @@ const OptionsPage: React.FC = () => {
                     {NAVIGATION_SETTINGS_CONFIG.map((setting) => (
                       <div key={setting.key} className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <setting.icon className="h-5 w-5 text-gray-600" />
+                          <setting.icon className="h-5 w-5 text-muted-foreground" />
                           <div>
-                            <p className="font-medium text-gray-900">{setting.title}</p>
-                            <p className="text-sm text-gray-500">{setting.subtitle}</p>
+                            <p className="font-medium text-foreground">{setting.title}</p>
+                            <p className="text-sm text-muted-foreground">{setting.subtitle}</p>
                           </div>
                         </div>
                         <button
@@ -564,8 +564,8 @@ const OptionsPage: React.FC = () => {
                   <Fuel className="w-5 h-5 text-red-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Configuração de Combustível</h3>
-                  <p className="text-sm text-gray-600">Tipo e consumo do seu veículo</p>
+                  <h3 className="font-semibold text-foreground">Configuração de Combustível</h3>
+                  <p className="text-sm text-muted-foreground">Tipo e consumo do seu veículo</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -590,7 +590,7 @@ const OptionsPage: React.FC = () => {
                           className={`font-medium text-sm ${
                             selectedFuel === fuel.id
                               ? "text-blue-900"
-                              : "text-gray-900"
+                              : "text-foreground"
                           }`}
                         >
                           {fuel.name}
@@ -599,7 +599,7 @@ const OptionsPage: React.FC = () => {
                           className={`text-xs ${
                             selectedFuel === fuel.id
                               ? "text-blue-600"
-                              : "text-gray-500"
+                              : "text-muted-foreground"
                           }`}
                         >
                           {fuel.price}
@@ -619,11 +619,11 @@ const OptionsPage: React.FC = () => {
                       type="number"
                       value={fuelConsumption}
                       onChange={(e) => setFuelConsumption(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="12"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Usado para calcular custos estimados da viagem
                   </p>
                 </div>
@@ -639,8 +639,8 @@ const OptionsPage: React.FC = () => {
                   <Shield className="w-5 h-5 text-yellow-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Evitar nas Rotas</h3>
-                  <p className="text-sm text-gray-600">Configure o que evitar</p>
+                  <h3 className="font-semibold text-foreground">Evitar nas Rotas</h3>
+                  <p className="text-sm text-muted-foreground">Configure o que evitar</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -649,10 +649,10 @@ const OptionsPage: React.FC = () => {
                 {AVOID_OPTIONS_CONFIG.map((option) => (
                   <div key={option.key} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <option.icon className="h-5 w-5 text-gray-600" />
+                      <option.icon className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="font-medium text-gray-900">{option.title}</p>
-                        <p className="text-sm text-gray-500">{option.subtitle}</p>
+                        <p className="font-medium text-foreground">{option.title}</p>
+                        <p className="text-sm text-muted-foreground">{option.subtitle}</p>
                       </div>
                     </div>
                     <button
@@ -681,8 +681,8 @@ const OptionsPage: React.FC = () => {
                   <Sliders className="w-5 h-5 text-indigo-600" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-gray-900">Outras Configurações</h3>
-                  <p className="text-sm text-gray-600">Tema e configurações gerais</p>
+                  <h3 className="font-semibold text-foreground">Outras Configurações</h3>
+                  <p className="text-sm text-muted-foreground">Tema e configurações gerais</p>
                 </div>
               </div>
             </AccordionTrigger>
@@ -691,9 +691,9 @@ const OptionsPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {isDarkMode ? (
-                      <Moon size={20} className="text-gray-500" />
+                      <Moon size={20} className="text-muted-foreground" />
                     ) : (
-                      <Sun size={20} className="text-gray-500" />
+                      <Sun size={20} className="text-muted-foreground" />
                     )}
                     <span className="font-medium">Tema Escuro</span>
                   </div>
@@ -709,7 +709,7 @@ const OptionsPage: React.FC = () => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <Gauge size={20} className="text-gray-500" />
+                    <Gauge size={20} className="text-muted-foreground" />
                     <span className="font-medium">Ignorar Consumo</span>
                   </div>
                   <div
@@ -726,8 +726,8 @@ const OptionsPage: React.FC = () => {
                 <div className="pt-4 border-t border-border">
                   <button className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-200">
                     <div className="flex items-center space-x-3">
-                      <RefreshCcw className="h-5 w-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">
+                      <RefreshCcw className="h-5 w-5 text-muted-foreground" />
+                      <span className="font-medium text-foreground">
                         Restaurar configurações padrão
                       </span>
                     </div>
