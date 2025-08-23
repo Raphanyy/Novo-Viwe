@@ -324,9 +324,7 @@ const NotificationsPage: React.FC = () => {
                       </h3>
 
                       {/* Status indicator */}
-                      {!notification.read && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                      )}
+                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
                     </div>
                   </AccordionTrigger>
 
