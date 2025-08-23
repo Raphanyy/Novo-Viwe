@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   MoveRight,
   BookmarkPlus,
+  RotateCcw,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
@@ -570,7 +571,7 @@ const MapPage: React.FC = () => {
             onClick={handleRecenter}
             className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200"
           >
-            <Target className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4" />
           </button>
         </div>
       </div>
