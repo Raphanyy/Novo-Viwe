@@ -29,6 +29,18 @@ import "mapbox-gl/dist/mapbox-gl.css";
 mapboxgl.accessToken =
   "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
 
+interface SearchResult {
+  id: string;
+  place_name: string;
+  text: string;
+  center: [number, number];
+  place_type: string[];
+  properties: {
+    category?: string;
+    address?: string;
+  };
+}
+
 const MapPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
