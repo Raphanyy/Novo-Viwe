@@ -202,10 +202,10 @@ const MapPage: React.FC = () => {
 
   // Register cleanup callback in separate useEffect to avoid dependency issues
   useEffect(() => {
-    if (map.current) {
+    if (map.current && clearAllMarkersAndRoutes) {
       setMapCleanupCallback(clearAllMarkersAndRoutes);
     }
-  }, [clearAllMarkersAndRoutes, setMapCleanupCallback]);
+  }, []); // Remove dependencies to prevent infinite loop
 
   // Initialize center coordinates when tracing starts
   useEffect(() => {
@@ -213,7 +213,7 @@ const MapPage: React.FC = () => {
       const center = map.current.getCenter();
       updateCenterPin([center.lng, center.lat]);
     }
-  }, [traceState.isTracing, traceState.centerPin]); // Remove updateCenterPin from dependencies
+  }, [traceState.isTracing]); // Only depend on isTracing to prevent loop
 
   // Update stop markers
   useEffect(() => {
