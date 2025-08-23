@@ -124,7 +124,7 @@ const MapPage: React.FC = () => {
 
   const filterOptions = [
     { id: "restaurant", name: "Restaurantes", icon: "🍽️" },
-    { id: "gas", name: "Postos", icon: "⛽" },
+    { id: "gas", name: "Postos", icon: "��" },
     { id: "hospital", name: "Hospitais", icon: "🏥" },
     { id: "shopping", name: "Shopping", icon: "🛍️" },
     { id: "park", name: "Parques", icon: "🌳" },
@@ -521,19 +521,29 @@ const MapPage: React.FC = () => {
         )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`
       );
 
-      // Strategy 2: Search with common business terms
-      const businessQuery = query.toLowerCase().includes('shopping') ||
-                           query.toLowerCase().includes('escola') ||
-                           query.toLowerCase().includes('hospital') ||
-                           query.toLowerCase().includes('posto') ||
-                           query.toLowerCase().includes('banco') ||
-                           query.toLowerCase().includes('farmacia') ||
-                           query.toLowerCase().includes('supermercado') ||
-                           query.toLowerCase().includes('quiosque') ||
-                           query.toLowerCase().includes('loja') ||
-                           query.toLowerCase().includes('restaurante')
-                           ? query
-                           : `${query} estabelecimento comercial`;
+      // Strategy 2: Enhanced query with business context
+      let businessQuery = query;
+      const lowerQuery = query.toLowerCase();
+
+      // Add context for better establishment search
+      if (lowerQuery.includes('shopping') && !lowerQuery.includes('center')) {
+        businessQuery = `${query} shopping center`;
+      } else if (lowerQuery.includes('escola') && !lowerQuery.includes('municipal')) {
+        businessQuery = `${query} escola`;
+      } else if (lowerQuery.includes('quiosque')) {
+        businessQuery = `${query} comercio loja`;
+      } else if (!lowerQuery.includes('shopping') &&
+                 !lowerQuery.includes('escola') &&
+                 !lowerQuery.includes('hospital') &&
+                 !lowerQuery.includes('posto') &&
+                 !lowerQuery.includes('banco') &&
+                 !lowerQuery.includes('farmacia') &&
+                 !lowerQuery.includes('supermercado') &&
+                 !lowerQuery.includes('quiosque') &&
+                 !lowerQuery.includes('loja') &&
+                 !lowerQuery.includes('restaurante')) {
+        businessQuery = `${query} estabelecimento`;
+      }
 
       const enhancedResponse = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
