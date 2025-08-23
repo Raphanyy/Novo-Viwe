@@ -735,12 +735,22 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Clear search timeout on unmount
+  // Clear search timeout on unmount and add global error handler
   useEffect(() => {
+    // Add global error handler for network issues
+    const handleGlobalError = (event: ErrorEvent) => {
+      if (event.message.includes('Failed to fetch') || event.message.includes('NetworkError')) {
+        console.warn('Network error detected, search may be affected:', event.message);
+      }
+    };
+
+    window.addEventListener('error', handleGlobalError);
+
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
+      window.removeEventListener('error', handleGlobalError);
     };
   }, []);
 
