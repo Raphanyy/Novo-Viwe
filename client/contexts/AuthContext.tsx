@@ -12,6 +12,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
+  updateAvatar: (avatarUrl: string) => void;
   isLoading: boolean;
 }
 
