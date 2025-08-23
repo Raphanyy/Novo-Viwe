@@ -609,10 +609,13 @@ const MapPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Compass */}
-        <div className="absolute left-4 top-4 bg-white rounded-full p-3 shadow-lg z-10">
-          <Navigation2 className="h-5 w-5 text-gray-600" />
-        </div>
+        {/* Find My Location Button */}
+        <button
+          onClick={findMyLocation}
+          className="absolute left-4 top-4 bg-white rounded-full p-3 shadow-lg z-10 hover:bg-gray-50 transition-colors duration-200"
+        >
+          <Target className="h-5 w-5 text-gray-600" />
+        </button>
 
         {/* Route Suggestion Button - Hidden when tracing */}
         {!traceState.isTracing && (
