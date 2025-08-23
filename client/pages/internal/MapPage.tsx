@@ -513,16 +513,49 @@ const MapPage: React.FC = () => {
 
     setIsSearching(true);
     try {
-      const response = await fetch(
+      // Primary search: Focus on POIs and establishments
+      const poiResponse = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           query
-        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=poi,address,place`
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi&proximity=-46.6333,-23.5505`
       );
 
-      const data = await response.json();
+      // Secondary search: General places and addresses as fallback
+      const generalResponse = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          query
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`
+      );
 
-      if (data.features) {
-        const results: SearchResult[] = data.features.map((feature: any) => ({
+      const [poiData, generalData] = await Promise.all([
+        poiResponse.json(),
+        generalResponse.json()
+      ]);
+
+      let allFeatures: any[] = [];
+
+      // Prioritize POI results (businesses, establishments)
+      if (poiData.features) {
+        allFeatures = [...poiData.features];
+      }
+
+      // Add general results if we don't have enough POIs
+      if (generalData.features && allFeatures.length < 5) {
+        const remainingSlots = 5 - allFeatures.length;
+        allFeatures = [...allFeatures, ...generalData.features.slice(0, remainingSlots)];
+      }
+
+      // Remove duplicates based on text and coordinates
+      const uniqueFeatures = allFeatures.filter((feature, index, self) =>
+        index === self.findIndex(f =>
+          f.text === feature.text ||
+          (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+           Math.abs(f.center[1] - feature.center[1]) < 0.001)
+        )
+      );
+
+      if (uniqueFeatures.length > 0) {
+        const results: SearchResult[] = uniqueFeatures.slice(0, 5).map((feature: any) => ({
           id: feature.id,
           place_name: feature.place_name,
           text: feature.text,
@@ -533,6 +566,9 @@ const MapPage: React.FC = () => {
 
         setSearchResults(results);
         setShowSearchResults(true);
+      } else {
+        setSearchResults([]);
+        setShowSearchResults(false);
       }
     } catch (error) {
       console.error('Erro ao buscar lugares:', error);
