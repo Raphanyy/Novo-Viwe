@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   MapPin,
   Navigation,
@@ -161,15 +161,43 @@ const MapPage: React.FC = () => {
     // Initialize center pin coordinates
     updateCenterCoords();
 
-    // Registrar callback de limpeza no contexto
-    setMapCleanupCallback(clearAllMarkersAndRoutes);
+    // Register cleanup callback after map is initialized
+    // Use setTimeout to avoid immediate execution during render
+    const timeoutId = setTimeout(() => {
+      setMapCleanupCallback(clearAllMarkersAndRoutes);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (map.current) {
+        try {
+          // Clear all event listeners first
+          map.current.off();
+          // Remove the map safely
+          map.current.remove();
+        } catch (error) {
+          // Suppress AbortError and other cleanup errors
+          console.warn('Map cleanup warning:', error);
+        }
+        map.current = null;
+      }
+    };
 
     return () => {
       if (map.current) {
-        map.current.remove();
+        try {
+          // Clear all event listeners first
+          map.current.off();
+          // Remove the map safely
+          map.current.remove();
+        } catch (error) {
+          // Suppress AbortError and other cleanup errors
+          console.warn('Map cleanup warning:', error);
+        }
+        map.current = null;
       }
     };
-  }, [setMapCleanupCallback]);
+  }, []);  // Remove setMapCleanupCallback from dependencies
 
   // Initialize center coordinates when tracing starts
   useEffect(() => {
@@ -177,7 +205,7 @@ const MapPage: React.FC = () => {
       const center = map.current.getCenter();
       updateCenterPin([center.lng, center.lat]);
     }
-  }, [traceState.isTracing, traceState.centerPin, updateCenterPin]);
+  }, [traceState.isTracing, traceState.centerPin]); // Remove updateCenterPin from dependencies
 
   // Update stop markers
   useEffect(() => {
@@ -343,7 +371,7 @@ const MapPage: React.FC = () => {
   };
 
   // Function to clear all markers and routes from map
-  const clearAllMarkersAndRoutes = () => {
+  const clearAllMarkersAndRoutes = useCallback(() => {
     // Clear route from map
     clearRouteFromMap();
 
@@ -353,7 +381,7 @@ const MapPage: React.FC = () => {
 
     // Reset route traced state
     setRouteTraced(false);
-  };
+  }, [setRouteTraced]);
 
   // Update POI markers
   useEffect(() => {
