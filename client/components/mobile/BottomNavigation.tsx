@@ -36,7 +36,7 @@ const navigationItems: NavigationItem[] = [
   },
   {
     name: "Perfil",
-    path: "/app/perfil",
+    path: "/app/opcoes",
     icon: User,
     color: "text-yellow-600",
   },
