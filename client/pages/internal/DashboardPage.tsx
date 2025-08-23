@@ -118,7 +118,7 @@ const DashboardPage: React.FC = () => {
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
             </div>
             <button
               onClick={openRouteModal}
-              className="bg-white/20 hover:bg-white/30 transition-colors duration-200 rounded-xl p-3"
+              className="bg-card/20 hover:bg-card/30 transition-colors duration-200 rounded-xl p-3"
             >
               <Plus className="h-5 w-5" />
             </button>
@@ -166,7 +166,7 @@ const DashboardPage: React.FC = () => {
                   <button
                     key={action.name}
                     onClick={action.action}
-                    className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
@@ -187,7 +187,7 @@ const DashboardPage: React.FC = () => {
                   <Link
                     key={action.name}
                     to={action.path}
-                    className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
@@ -216,7 +216,7 @@ const DashboardPage: React.FC = () => {
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="bg-white rounded-2xl p-4">
+                <div key={stat.label} className="bg-card rounded-2xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
@@ -251,7 +251,7 @@ const DashboardPage: React.FC = () => {
             {recentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-white rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -286,10 +286,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Tips & Insights */}
-        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 border border-yellow-200">
+        <div className="bg-gradient-to-r from-muted to-secondary rounded-2xl p-6 border border-border">
           <div className="flex items-start space-x-3">
-            <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Zap className="h-5 w-5 text-yellow-600" />
+            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Zap className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-foreground mb-1">Dica do Dia</h4>
@@ -299,7 +299,7 @@ const DashboardPage: React.FC = () => {
               </p>
               <Link
                 to="/app/mapa"
-                className="text-yellow-700 text-sm font-medium hover:text-yellow-800 transition-colors duration-200"
+                className="text-primary text-sm font-medium hover:text-primary/80 transition-colors duration-200"
               >
                 Ver rotas alternativas →
               </Link>
@@ -309,7 +309,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Weather & Traffic (Simplified) */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">☀️</span>
@@ -322,7 +322,7 @@ const DashboardPage: React.FC = () => {
             <p className="text-lg font-bold text-foreground">24°C</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <Car className="h-4 w-4 text-green-600" />
