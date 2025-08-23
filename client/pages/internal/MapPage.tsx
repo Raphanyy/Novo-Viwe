@@ -517,7 +517,7 @@ const MapPage: React.FC = () => {
 
         // Call Mapbox Directions API
         const response = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxToken}`,
           { signal: controller.signal },
         );
 
