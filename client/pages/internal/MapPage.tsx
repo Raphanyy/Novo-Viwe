@@ -504,7 +504,7 @@ const MapPage: React.FC = () => {
   }, []);
 
 
-  // Enhanced search with business name recognition
+  // Enhanced search with business name recognition and robust error handling
   const searchBusinesses = useCallback(async (query: string) => {
     if (!query.trim() || query.length < 3) {
       setSearchResults([]);
@@ -514,18 +514,10 @@ const MapPage: React.FC = () => {
 
     setIsSearching(true);
     try {
-      // Strategy 1: Direct POI search
-      const poiResponse = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          query
-        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`
-      );
-
-      // Strategy 2: Enhanced query with business context
+      // Enhanced context recognition for better establishment search
       let businessQuery = query;
       const lowerQuery = query.toLowerCase();
 
-      // Enhanced context recognition for better establishment search
       if (lowerQuery.includes('ilha plaza') || lowerQuery.includes('ilha shopping')) {
         businessQuery = 'Ilha Plaza Shopping São Paulo';
       } else if (lowerQuery.includes('quiosque zero oito') || lowerQuery.includes('quiosque 08')) {
@@ -538,98 +530,95 @@ const MapPage: React.FC = () => {
         businessQuery = `${query} escola`;
       } else if (lowerQuery.includes('quiosque')) {
         businessQuery = `${query} comercio loja estabelecimento`;
-      } else if (!lowerQuery.includes('shopping') &&
-                 !lowerQuery.includes('escola') &&
-                 !lowerQuery.includes('hospital') &&
-                 !lowerQuery.includes('posto') &&
-                 !lowerQuery.includes('banco') &&
-                 !lowerQuery.includes('farmacia') &&
-                 !lowerQuery.includes('supermercado') &&
-                 !lowerQuery.includes('quiosque') &&
-                 !lowerQuery.includes('loja') &&
-                 !lowerQuery.includes('restaurante')) {
-        businessQuery = `${query} estabelecimento`;
       }
-
-      const enhancedResponse = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          businessQuery
-        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`
-      );
-
-      // Strategy 3: Try with name variations for specific cases
-      let variationQuery = query;
-      if (lowerQuery.includes('zero oito')) {
-        variationQuery = query.replace(/zero oito/gi, '08').replace(/zeor oito/gi, '08');
-      } else if (lowerQuery.includes('08')) {
-        variationQuery = query.replace(/08/g, 'zero oito');
-      }
-
-      const variationResponse = variationQuery !== query ? await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          variationQuery
-        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=poi&proximity=-46.6333,-23.5505`
-      ) : Promise.resolve({
-          json: async () => ({ features: [] })
-        });
-
-      // Strategy 4: Fallback general search
-      const generalResponse = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          query
-        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`
-      );
-
-      const [poiData, enhancedData, variationData, generalData] = await Promise.all([
-        poiResponse.json(),
-        enhancedResponse.json(),
-        variationResponse.json(),
-        generalResponse.json()
-      ]);
 
       let allFeatures: any[] = [];
 
-      // Combine and prioritize results
-      if (poiData.features) {
-        allFeatures = [...poiData.features];
+      // Strategy 1: Direct POI search with error handling
+      try {
+        const poiResponse = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            query
+          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi&proximity=-46.6333,-23.5505`,
+          {
+            timeout: 8000,
+            headers: { 'Accept': 'application/json' }
+          }
+        );
+
+        if (poiResponse.ok) {
+          const poiData = await poiResponse.json();
+          if (poiData.features) {
+            allFeatures = [...poiData.features];
+          }
+        }
+      } catch (error) {
+        console.warn('POI search failed, continuing with other strategies:', error);
       }
 
-      if (enhancedData.features) {
-        enhancedData.features.forEach((feature: any) => {
-          if (!allFeatures.find(f =>
-            f.text === feature.text ||
-            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-             Math.abs(f.center[1] - feature.center[1]) < 0.001)
-          )) {
-            allFeatures.push(feature);
+      // Strategy 2: Enhanced business search (only if we need more results)
+      if (allFeatures.length < 3 && businessQuery !== query) {
+        try {
+          const enhancedResponse = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+              businessQuery
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`,
+            {
+              timeout: 8000,
+              headers: { 'Accept': 'application/json' }
+            }
+          );
+
+          if (enhancedResponse.ok) {
+            const enhancedData = await enhancedResponse.json();
+            if (enhancedData.features) {
+              enhancedData.features.forEach((feature: any) => {
+                if (!allFeatures.find(f =>
+                  f.text === feature.text ||
+                  (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+                   Math.abs(f.center[1] - feature.center[1]) < 0.001)
+                )) {
+                  allFeatures.push(feature);
+                }
+              });
+            }
           }
-        });
+        } catch (error) {
+          console.warn('Enhanced search failed:', error);
+        }
       }
 
-      if (variationData.features) {
-        variationData.features.forEach((feature: any) => {
-          if (!allFeatures.find(f =>
-            f.text === feature.text ||
-            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-             Math.abs(f.center[1] - feature.center[1]) < 0.001)
-          )) {
-            allFeatures.push(feature);
-          }
-        });
-      }
+      // Strategy 3: General search as fallback (only if we still need results)
+      if (allFeatures.length < 2) {
+        try {
+          const generalResponse = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+              query
+            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=place,address&proximity=-46.6333,-23.5505`,
+            {
+              timeout: 8000,
+              headers: { 'Accept': 'application/json' }
+            }
+          );
 
-      // Add general results only if we don't have enough establishments
-      if (generalData.features && allFeatures.length < 3) {
-        const remainingSlots = 5 - allFeatures.length;
-        generalData.features.slice(0, remainingSlots).forEach((feature: any) => {
-          if (!allFeatures.find(f =>
-            f.text === feature.text ||
-            (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-             Math.abs(f.center[1] - feature.center[1]) < 0.001)
-          )) {
-            allFeatures.push(feature);
+          if (generalResponse.ok) {
+            const generalData = await generalResponse.json();
+            if (generalData.features) {
+              const remainingSlots = 5 - allFeatures.length;
+              generalData.features.slice(0, remainingSlots).forEach((feature: any) => {
+                if (!allFeatures.find(f =>
+                  f.text === feature.text ||
+                  (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
+                   Math.abs(f.center[1] - feature.center[1]) < 0.001)
+                )) {
+                  allFeatures.push(feature);
+                }
+              });
+            }
           }
-        });
+        } catch (error) {
+          console.warn('General search failed:', error);
+        }
       }
 
       if (allFeatures.length > 0) {
@@ -649,7 +638,7 @@ const MapPage: React.FC = () => {
         setShowSearchResults(false);
       }
     } catch (error) {
-      console.error('Erro ao buscar estabelecimentos:', error);
+      console.error('Erro geral na busca:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
