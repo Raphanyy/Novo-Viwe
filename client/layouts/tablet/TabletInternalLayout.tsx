@@ -92,6 +92,7 @@ const TabletInternalLayout: React.FC = () => {
   };
 
   const isMapPage = location.pathname === "/app/mapa";
+  const shouldShowHeader = location.pathname === "/app";
 
   const {
     state: traceState,
@@ -361,72 +362,78 @@ const TabletInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Page Title */}
-        <header
-          className="fixed top-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-4"
-          style={{ left: isSidebarOpen ? "256px" : "64px" }}
-        >
-          <div className="flex items-center justify-between">
-            {getCurrentNavigationItems() ? (
-              // Map-specific header (dynamic based on trace state)
-              <div className="flex items-center space-x-4">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {getCurrentPageName()}
-                </h1>
-                <div className="flex items-center space-x-2">
-                  {getCurrentNavigationItems()!.map((item) => {
-                    const Icon = item.icon;
-                    const isBackButton = item.action === "back";
+        {shouldShowHeader && (
+          <header
+            className="fixed top-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-4"
+            style={{ left: isSidebarOpen ? "256px" : "64px" }}
+          >
+            <div className="flex items-center justify-between">
+              {getCurrentNavigationItems() ? (
+                // Map-specific header (dynamic based on trace state)
+                <div className="flex items-center space-x-4">
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    {getCurrentPageName()}
+                  </h1>
+                  <div className="flex items-center space-x-2">
+                    {getCurrentNavigationItems()!.map((item) => {
+                      const Icon = item.icon;
+                      const isBackButton = item.action === "back";
 
-                    return isBackButton ? (
-                      <Link
-                        key={item.action}
-                        to="/app"
-                        className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
-                      >
-                        <Icon className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-600">
-                          {item.name}
-                        </span>
-                      </Link>
-                    ) : (
-                      <button
-                        key={item.action}
-                        onClick={() => handleMapNavigation(item.action)}
-                        className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
-                      >
-                        <Icon className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-600">
-                          {item.name}
-                        </span>
-                      </button>
-                    );
-                  })}
+                      return isBackButton ? (
+                        <Link
+                          key={item.action}
+                          to="/app"
+                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                        >
+                          <Icon className="h-4 w-4 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-600">
+                            {item.name}
+                          </span>
+                        </Link>
+                      ) : (
+                        <button
+                          key={item.action}
+                          onClick={() => handleMapNavigation(item.action)}
+                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                        >
+                          <Icon className="h-4 w-4 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-600">
+                            {item.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              // Default header
-              <>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {getCurrentPageName()}
-                </h1>
+              ) : (
+                // Default header
+                <>
+                  <h1 className="text-xl font-semibold text-gray-900">
+                    {getCurrentPageName()}
+                  </h1>
 
-                {/* Quick Actions */}
-                <div className="flex items-center space-x-3">
-                  <Link
-                    to="/app/notificacoes"
-                    className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
-                  >
-                    <Bell className="h-5 w-5 text-gray-600" />
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
-        </header>
+                  {/* Quick Actions */}
+                  <div className="flex items-center space-x-3">
+                    <Link
+                      to="/app/notificacoes"
+                      className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+                    >
+                      <Bell className="h-5 w-5 text-gray-600" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+          </header>
+        )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-hidden pt-[81px]">
+        <main
+          className={`flex-1 overflow-hidden ${
+            shouldShowHeader ? "pt-[81px]" : "pt-0"
+          }`}
+        >
           <Outlet />
         </main>
       </div>

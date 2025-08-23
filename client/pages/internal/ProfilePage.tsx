@@ -69,8 +69,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "account",
       title: "Sua conta",
-      subtitle:
-        "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativa��ão de conta.",
+      subtitle: "Dados pessoais.",
       icon: User,
       items: [
         {
@@ -105,8 +104,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "security",
       title: "Segurança e acesso à conta",
-      subtitle:
-        "Gerencie a segurança da sua conta e monitore o uso dela, inclusive os aplicativos conectados a ela.",
+      subtitle: "Senha e segurança.",
       icon: Shield,
       items: [
         {
@@ -135,7 +133,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "privacy",
       title: "Privacidade e segurança",
-      subtitle: "Gerencie as informações que você vê e compartilha no app.",
+      subtitle: "Controle de privacidade.",
       icon: Eye,
       items: [
         {
@@ -157,8 +155,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "notifications",
       title: "Notificações",
-      subtitle:
-        "Selecione os tipos de notificação que você recebe sobre atividades, interesses e recomendações.",
+      subtitle: "Alertas e avisos.",
       icon: Bell,
       items: [
         {
@@ -181,7 +178,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "appearance",
       title: "Acessibilidade, exibição e idiomas",
-      subtitle: "Gerencie a forma como o conteúdo é exibido para você.",
+      subtitle: "Tema e idioma.",
       icon: Palette,
       items: [
         {
@@ -211,8 +208,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "support",
       title: "Recursos adicionais",
-      subtitle:
-        "Verifique em outros lugares informações úteis para saber mais sobre os produtos e serviços.",
+      subtitle: "Ajuda e suporte.",
       icon: HelpCircle,
       items: [
         {
@@ -301,36 +297,20 @@ const ProfilePage: React.FC = () => {
     const section = getCurrentSection();
     if (!section) return null;
 
-    const Icon = section.icon;
-
     return (
-      <div className="p-4 space-y-4">
-        {/* Header da seção */}
-        <div className="flex items-center space-x-3 pb-2">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <Icon className="h-4 w-4 text-primary" />
-          </div>
-          <h2 className="text-lg font-semibold text-foreground">
-            {section.title}
-          </h2>
-        </div>
-
+      <div className="p-4 space-y-3">
         {/* Itens da seção */}
-        <div className="space-y-3">
-          {section.items?.map((item) => (
-            <SettingsSection
-              key={item.id}
-              title={item.title}
-              subtitle={item.subtitle}
-              icon={item.icon}
-              onClick={
-                item.hasSettings
-                  ? () => navigateToSubSection(item.id)
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+        {section.items?.map((item) => (
+          <SettingsSection
+            key={item.id}
+            title={item.title}
+            subtitle={item.subtitle}
+            icon={item.icon}
+            onClick={
+              item.hasSettings ? () => navigateToSubSection(item.id) : undefined
+            }
+          />
+        ))}
       </div>
     );
   };

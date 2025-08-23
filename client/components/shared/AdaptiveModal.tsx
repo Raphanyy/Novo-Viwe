@@ -1,7 +1,7 @@
 import React from "react";
-import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { usePlatform } from "../../contexts/PlatformContext";
+import ModalHeader from "./ModalHeader";
 
 interface AdaptiveModalProps {
   isOpen: boolean;
@@ -10,6 +10,10 @@ interface AdaptiveModalProps {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
+  showBackButton?: boolean;
+  onBack?: () => void;
+  rightContent?: React.ReactNode;
+  fullPage?: boolean;
 }
 
 const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
@@ -19,6 +23,10 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
   children,
   size = "md",
   className = "",
+  showBackButton = false,
+  onBack,
+  rightContent,
+  fullPage = false,
 }) => {
   const { isMobile } = usePlatform();
 
@@ -32,15 +40,17 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
     xl: "max-w-xl",
   };
 
-  // Mobile uses full screen sheet style, desktop uses centered modal
-  const modalClasses = isMobile
-    ? "fixed inset-0 z-50 bg-white"
+  // Full page mode or mobile uses full screen, desktop uses centered modal
+  const useFullScreen = fullPage || isMobile;
+
+  const modalClasses = useFullScreen
+    ? "fixed inset-0 z-50 bg-background"
     : cn(
         "fixed inset-0 z-50 flex items-center justify-center p-4",
         "bg-black bg-opacity-50",
       );
 
-  const contentClasses = isMobile
+  const contentClasses = useFullScreen
     ? "flex flex-col h-full"
     : cn(
         "bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden",
@@ -49,41 +59,29 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
       );
 
   return (
-    <div className={modalClasses} onClick={isMobile ? undefined : onClose}>
+    <div className={modalClasses} onClick={useFullScreen ? undefined : onClose}>
       <div
         className={cn(contentClasses, className)}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          className={cn(
-            "flex items-center justify-between border-b border-gray-200",
-            isMobile ? "p-4 flex-shrink-0" : "p-6",
-          )}
-        >
-          {title && (
-            <h2
-              className={cn(
-                "font-semibold text-gray-900",
-                isMobile ? "text-lg" : "text-xl",
-              )}
-            >
-              {title}
-            </h2>
-          )}
-          <button
-            onClick={onClose}
-            className={cn(
-              "rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors",
-              isMobile ? "p-2" : "p-1.5",
-            )}
-          >
-            <X className={isMobile ? "h-6 w-6" : "h-5 w-5"} />
-          </button>
-        </div>
+        {title && (
+          <ModalHeader
+            title={title}
+            showBackButton={showBackButton}
+            onBack={onBack}
+            rightContent={rightContent}
+          />
+        )}
 
         {/* Content */}
-        <div className={cn("overflow-y-auto", isMobile ? "flex-1 p-4" : "p-6")}>
+        <div
+          className={cn(
+            "overflow-y-auto",
+            useFullScreen ? "flex-1" : "",
+            title ? "" : "p-4",
+          )}
+        >
           {children}
         </div>
       </div>

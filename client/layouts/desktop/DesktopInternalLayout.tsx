@@ -111,6 +111,8 @@ const DesktopInternalLayout: React.FC = () => {
     return location.pathname === path;
   };
 
+  const shouldShowHeader = location.pathname === "/app";
+
   return (
     <div
       className="h-screen bg-background flex font-sans"
@@ -270,40 +272,46 @@ const DesktopInternalLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header with Breadcrumb and Actions */}
-        <header className="bg-card border-b border-border px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                {getCurrentPageName()}
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {getCurrentPageDescription()}
-              </p>
-            </div>
+        {shouldShowHeader && (
+          <header className="bg-card border-b border-border px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">
+                  {getCurrentPageName()}
+                </h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {getCurrentPageDescription()}
+                </p>
+              </div>
 
-            {/* Header Actions */}
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/app/notificacoes"
-                className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
-              >
-                <Bell className="h-5 w-5 text-muted-foreground" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </Link>
+              {/* Header Actions */}
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/app/notificacoes"
+                  className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <Bell className="h-5 w-5 text-muted-foreground" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                </Link>
 
-              <button
-                onClick={openRouteModal}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
-              >
-                Nova Rota
-              </button>
+                <button
+                  onClick={openRouteModal}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Nova Rota
+                </button>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+        )}
 
         {/* Main Content with Padding */}
         <main className="flex-1 overflow-hidden bg-background">
-          <div className="h-full p-8 overflow-y-auto">
+          <div
+            className={`h-full overflow-y-auto ${
+              shouldShowHeader ? "p-8" : "p-0"
+            }`}
+          >
             <Outlet />
           </div>
         </main>

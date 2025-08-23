@@ -31,9 +31,14 @@ import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-// Configure Mapbox token
-mapboxgl.accessToken =
-  "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
+// Configure Mapbox token from environment variable
+const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+
+if (!mapboxToken) {
+  console.error("VITE_MAPBOX_ACCESS_TOKEN environment variable is not set");
+}
+
+mapboxgl.accessToken = mapboxToken || "";
 
 interface SearchResult {
   id: string;
@@ -54,6 +59,7 @@ const MapPage: React.FC = () => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<any>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [mapMode, setMapMode] = useState<"normal" | "satellite" | "traffic">(
@@ -172,6 +178,18 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
+    // Check if Mapbox token is available
+    if (!mapboxToken) {
+      console.error("Mapbox token not available. Map cannot be initialized.");
+      setMapError(
+        "Token do Mapbox não configurado. Entre em contato com o suporte.",
+      );
+      return;
+    }
+
+    // Reset error state when attempting to initialize
+    setMapError(null);
+
     try {
       map.current = new mapboxgl.Map({
         container: mapRef.current,
@@ -182,6 +200,7 @@ const MapPage: React.FC = () => {
         fadeDuration: 100, // Reduce animation time to minimize abort scenarios
         preserveDrawingBuffer: false, // Improve performance
         antialias: false, // Reduce GPU usage
+        crossSourceCollisions: false, // Reduce conflicts between sources
       });
 
       // Add comprehensive error handling for map loading
@@ -346,6 +365,27 @@ const MapPage: React.FC = () => {
         );
       } else {
         console.error("Failed to initialize map:", error);
+        if (error instanceof Error) {
+          if (
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("NetworkError")
+          ) {
+            setMapError(
+              "Problema de conexão. Verifique sua internet e tente novamente.",
+            );
+          } else if (
+            error.message.includes("token") ||
+            error.message.includes("unauthorized")
+          ) {
+            setMapError(
+              "Token do Mapbox inválido. Entre em contato com o suporte.",
+            );
+          } else {
+            setMapError("Erro ao carregar o mapa. Tente atualizar a página.");
+          }
+        } else {
+          setMapError("Erro desconhecido ao carregar o mapa.");
+        }
       }
     }
   }, []); // Remove setMapCleanupCallback from dependencies
@@ -505,7 +545,7 @@ const MapPage: React.FC = () => {
 
         // Call Mapbox Directions API
         const response = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxToken}`,
           { signal: controller.signal },
         );
 
@@ -784,10 +824,15 @@ const MapPage: React.FC = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
+        if (!mapboxToken) {
+          console.warn("Mapbox token not available for search");
+          return;
+        }
+
         const poiResponse = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             query,
-          )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=10&types=poi`,
+          )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=10&types=poi`,
           {
             signal: controller.signal,
             headers: { Accept: "application/json" },
@@ -822,7 +867,7 @@ const MapPage: React.FC = () => {
           const enhancedResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               businessQuery,
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
+            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
             {
               signal: controller2.signal,
               headers: { Accept: "application/json" },
@@ -866,7 +911,7 @@ const MapPage: React.FC = () => {
           const generalResponse = await fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
               query,
-            )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
+            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
             {
               signal: controller3.signal,
               headers: { Accept: "application/json" },
@@ -1292,6 +1337,30 @@ const MapPage: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-1 relative">
+        {/* Error Fallback */}
+        {mapError && (
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-50">
+            <div className="text-center p-6 max-w-sm mx-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Mapa Indisponível
+              </h3>
+              <p className="text-gray-600 mb-4">{mapError}</p>
+              <button
+                onClick={() => {
+                  setMapError(null);
+                  window.location.reload();
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+              >
+                Tentar Novamente
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Mapbox Container */}
         <div ref={mapRef} className="w-full h-full" />
 

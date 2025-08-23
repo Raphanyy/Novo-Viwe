@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import ModalHeader from "./ModalHeader";
 import {
   Accordion,
   AccordionContent,
@@ -15,17 +15,12 @@ import {
   Fuel,
   Route,
   MapPin,
-  Navigation,
   Calendar,
   Trophy,
   Star,
   TrendingUp,
   Save,
-  X,
-  Target,
-  BarChart3,
   Award,
-  Zap,
 } from "lucide-react";
 
 interface FinalSummaryModalProps {
@@ -51,19 +46,11 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
 
   const { endRoute } = useTraceRoute();
 
-  const handleClose = (open: boolean) => {
-    if (!open) {
-      endRoute(); // Limpa tudo incluindo o mapa
-      onClose();
-    }
-  };
-
-  const handleCloseButton = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleClose = () => {
     endRoute(); // Limpa tudo incluindo o mapa
     onClose();
   };
+
   const { state } = useTraceRoute();
 
   const formatTime = (milliseconds: number) => {
@@ -121,15 +108,14 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-full max-w-5xl mx-auto max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
-            <Trophy className="h-6 w-6 text-yellow-600" />
-            <span>Rota Concluída com Sucesso!</span>
-          </DialogTitle>
-        </DialogHeader>
-
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      <ModalHeader
+        title="Rota Concluída!"
+        showBackButton={true}
+        onBack={handleClose}
+        rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
+      />
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="space-y-6">
           {/* Aviso se não há dados suficientes */}
           {!hasValidData && (
@@ -151,6 +137,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               </div>
             </div>
           )}
+
           {/* Estatísticas Principais */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-green-50 p-4 rounded-lg text-center border border-green-200">
@@ -231,7 +218,12 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <span>Desempenho da Viagem</span>
+                  <div>
+                    <span className="font-medium">Desempenho da Viagem</span>
+                    <p className="text-sm text-muted-foreground">
+                      Eficiência e créditos.
+                    </p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -278,7 +270,12 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Paradas Realizadas</span>
+                  <div className="flex-1">
+                    <span className="font-medium">Paradas Realizadas</span>
+                    <p className="text-sm text-muted-foreground">
+                      Detalhes das paradas.
+                    </p>
+                  </div>
                   <Badge variant="secondary">{completedStops.length}</Badge>
                 </div>
               </AccordionTrigger>
@@ -335,7 +332,14 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <Fuel className="h-4 w-4 text-orange-600" />
-                  <span>Economia e Sustentabilidade</span>
+                  <div>
+                    <span className="font-medium">
+                      Economia e Sustentabilidade
+                    </span>
+                    <p className="text-sm text-muted-foreground">
+                      Consumo de combustível.
+                    </p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -407,7 +411,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={handleCloseButton}
+              onClick={handleClose}
               className="flex-1"
             >
               Apenas Fechar
@@ -422,8 +426,8 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             </Button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
