@@ -115,7 +115,7 @@ const RoutesPage: React.FC = () => {
         duration: "1h 15min",
         distance: "65.2 km",
         traffic: "light",
-        scheduledFor: "Sábado 08:00",
+        scheduledFor: "S��bado 08:00",
         isFavorite: false,
       },
     ],
@@ -147,7 +147,7 @@ const RoutesPage: React.FC = () => {
       {/* Header with Search */}
       <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-gray-900">Minhas Rotas</h1>
+          <h1 className="text-xl font-bold text-foreground">Minhas Rotas</h1>
           <button
             onClick={openRouteModal}
             className="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700 transition-colors duration-200"
@@ -179,7 +179,7 @@ const RoutesPage: React.FC = () => {
               className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-600 hover:text-foreground"
               }`}
             >
               {tab.name}
@@ -227,7 +227,7 @@ const RoutesPage: React.FC = () => {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-foreground">
                         {route.name}
                       </h3>
                       {route.isFavorite && (
