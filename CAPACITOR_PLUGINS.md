@@ -5,6 +5,7 @@ Este documento lista todos os plugins Capacitor que foram configurados no projet
 ## Plugins Instalados
 
 ### 1. @capacitor/geolocation (v7.1.5)
+
 - **Funcionalidade**: Acesso nativo à localização GPS do dispositivo
 - **Uso no projeto**: Utilizado no MapPage.tsx para obter localização do usuário
 - **Permissões configuradas**:
@@ -12,6 +13,7 @@ Este documento lista todos os plugins Capacitor que foram configurados no projet
   - iOS: `NSLocationWhenInUseUsageDescription`, `NSLocationAlwaysAndWhenInUseUsageDescription`
 
 ### 2. @capacitor/push-notifications (v7.0.2)
+
 - **Funcionalidade**: Notificações push nativas
 - **Uso no projeto**: UI configurada em NotificationSettingsPage.tsx
 - **Permissões configuradas**:
@@ -19,21 +21,25 @@ Este documento lista todos os plugins Capacitor que foram configurados no projet
   - iOS: `aps-environment` (development)
 
 ### 3. @capacitor/status-bar (v7.0.2)
+
 - **Funcionalidade**: Controle da barra de status
 - **Uso no projeto**: Para personalizar aparência da status bar no tema escuro
 - **Configuração**: Automática via Capacitor
 
 ### 4. @capacitor/preferences (v7.0.2)
+
 - **Funcionalidade**: Armazenamento nativo persistente
 - **Uso no projeto**: Substituição recomendada para localStorage em AuthContext.tsx e TraceRouteContext.tsx
 - **Vantagens**: Armazenamento mais seguro e consistente entre plataformas
 
 ### 5. @capacitor/share (v7.0.2)
+
 - **Funcionalidade**: Compartilhamento nativo
 - **Uso no projeto**: Botões de compartilhar em várias páginas (HomePage, AboutPage, etc.)
 - **Configuração**: Automática via Capacitor
 
 ### 6. @capacitor/network (v7.0.2)
+
 - **Funcionalidade**: Monitoramento de conexão de rede
 - **Uso no projeto**: Detecção de status de conectividade para melhor UX
 - **Permissões configuradas**:
@@ -42,29 +48,32 @@ Este documento lista todos os plugins Capacitor que foram configurados no projet
 ## Como usar os plugins
 
 ### Geolocation
+
 ```typescript
-import { Geolocation } from '@capacitor/geolocation';
+import { Geolocation } from "@capacitor/geolocation";
 
 const getCurrentPosition = async () => {
   const coordinates = await Geolocation.getCurrentPosition();
-  console.log('Current position:', coordinates);
+  console.log("Current position:", coordinates);
 };
 ```
 
 ### Push Notifications
+
 ```typescript
-import { PushNotifications } from '@capacitor/push-notifications';
+import { PushNotifications } from "@capacitor/push-notifications";
 
 const addListeners = async () => {
-  await PushNotifications.addListener('registration', token => {
-    console.info('Registration token: ', token.value);
+  await PushNotifications.addListener("registration", (token) => {
+    console.info("Registration token: ", token.value);
   });
 };
 ```
 
 ### Status Bar
+
 ```typescript
-import { StatusBar, Style } from '@capacitor/status-bar';
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 const setStatusBarStyleDark = async () => {
   await StatusBar.setStyle({ style: Style.Dark });
@@ -72,43 +81,46 @@ const setStatusBarStyleDark = async () => {
 ```
 
 ### Preferences (Storage)
+
 ```typescript
-import { Preferences } from '@capacitor/preferences';
+import { Preferences } from "@capacitor/preferences";
 
 const setName = async () => {
   await Preferences.set({
-    key: 'name',
-    value: 'Max',
+    key: "name",
+    value: "Max",
   });
 };
 
 const getName = async () => {
-  const { value } = await Preferences.get({ key: 'name' });
+  const { value } = await Preferences.get({ key: "name" });
   console.log(`Hello ${value}!`);
 };
 ```
 
 ### Share
+
 ```typescript
-import { Share } from '@capacitor/share';
+import { Share } from "@capacitor/share";
 
 const share = async () => {
   await Share.share({
-    title: 'See cool stuff',
-    text: 'Really awesome thing you need to see right meow',
-    url: 'http://ionicframework.com/',
-    dialogTitle: 'Share with buddies',
+    title: "See cool stuff",
+    text: "Really awesome thing you need to see right meow",
+    url: "http://ionicframework.com/",
+    dialogTitle: "Share with buddies",
   });
 };
 ```
 
 ### Network
+
 ```typescript
-import { Network } from '@capacitor/network';
+import { Network } from "@capacitor/network";
 
 const logCurrentNetworkStatus = async () => {
   const status = await Network.getStatus();
-  console.log('Network status:', status);
+  console.log("Network status:", status);
 };
 ```
 
