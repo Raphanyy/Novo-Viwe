@@ -1,5 +1,6 @@
 import React from "react";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { VisuallyHidden } from "../ui/visually-hidden";
 import ModalHeader from "./ModalHeader";
 import {
   Accordion,
@@ -123,7 +124,10 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-full max-w-5xl mx-auto max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent className="w-full max-w-5xl mx-auto max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-0">
+        <VisuallyHidden>
+          <DialogTitle>Rota Concluída com Sucesso</DialogTitle>
+        </VisuallyHidden>
         <ModalHeader
           title="Rota Concluída!"
           onClose={() => handleClose(false)}
@@ -131,8 +135,8 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             <Trophy className="h-5 w-5 text-yellow-600" />
           }
         />
-
-        <div className="space-y-6">
+        <div className="p-4 sm:p-6">
+          <div className="space-y-6">
           {/* Aviso se não há dados suficientes */}
           {!hasValidData && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -432,6 +436,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               Salvar e Encerrar
             </Button>
           </div>
+        </div>
         </div>
       </DialogContent>
     </Dialog>
