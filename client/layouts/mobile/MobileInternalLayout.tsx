@@ -100,6 +100,7 @@ const MobileInternalLayout: React.FC = () => {
   };
 
   const isMapPage = location.pathname === "/app/mapa";
+  const isProfileSettingsPage = location.pathname === "/app/opcoes" || location.pathname === "/app/ajustes";
 
   const {
     state: traceState,
@@ -406,7 +407,8 @@ const MobileInternalLayout: React.FC = () => {
       />
 
       {/* Mobile Header - Simplified */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+      {!isProfileSettingsPage && (
+        <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="flex items-center">
             <Rocket className="h-6 w-6 text-blue-600" />
@@ -489,10 +491,13 @@ const MobileInternalLayout: React.FC = () => {
             )}
           </div>
         </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Content - Optimized for mobile */}
-      <main className="flex-1 overflow-hidden bg-background pt-[73px] pb-[73px]">
+      <main className={`flex-1 overflow-hidden bg-background pb-[73px] ${
+        isProfileSettingsPage ? "pt-0" : "pt-[73px]"
+      }`}>
         <div className="h-full overflow-y-auto">
           <Outlet />
         </div>
