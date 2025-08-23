@@ -49,8 +49,11 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
     }
   };
 
+  const { endRoute } = useTraceRoute();
+
   const handleClose = (open: boolean) => {
     if (!open) {
+      endRoute(); // Limpa tudo incluindo o mapa
       onClose();
     }
   };
@@ -58,6 +61,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
   const handleCloseButton = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    endRoute(); // Limpa tudo incluindo o mapa
     onClose();
   };
   const { state } = useTraceRoute();
