@@ -13,18 +13,21 @@ Este projeto foi adaptado para rodar perfeitamente no Replit!
 ## 📋 O que foi Adaptado para o Replit
 
 ### Arquivos Criados:
+
 - `.replit` - Configuração principal do Replit
 - `replit.nix` - Ambiente Nix com Node.js 20 e pnpm
 - `main.py` - Arquivo para detecção de projeto
 - `README-REPLIT.md` - Este arquivo
 
 ### Modificações:
+
 - **vite.config.ts**: Servidor configurado para `0.0.0.0` e porta dinâmica
 - **package.json**: Scripts adaptados para Replit
 
 ## 🔧 Configuração
 
 O projeto está configurado para:
+
 - ✅ Node.js 20
 - ✅ pnpm como gerenciador de pacotes
 - ✅ Porta 8080 (configurável via ENV)
@@ -35,6 +38,7 @@ O projeto está configurado para:
 ## 🌐 Acessando a Aplicação
 
 Depois de clicar em "Run", você pode:
+
 - Ver a aplicação na aba "Webview" do Replit
 - Abrir em nova aba para visualização completa
 - Compartilhar o link público do Replit
