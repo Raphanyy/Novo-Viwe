@@ -1,5 +1,6 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
+import ModalHeader from "./ModalHeader";
 import {
   Accordion,
   AccordionContent,
@@ -65,12 +66,13 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
+        <ModalHeader
+          title="Detalhes da Navegação"
+          onClose={onClose}
+          rightContent={
             <Navigation className="h-5 w-5 text-blue-600" />
-            <span>Detalhes da Navegação</span>
-          </DialogTitle>
-        </DialogHeader>
+          }
+        />
 
         <div className="space-y-4">
           <Accordion type="multiple" className="w-full">
@@ -79,7 +81,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span>Paradas Concluídas</span>
+                  <div className="flex-1">
+                    <span className="font-medium">Paradas Concluídas</span>
+                    <p className="text-sm text-muted-foreground">Histórico de paradas.</p>
+                  </div>
                   <Badge variant="secondary">{completedStops.length}</Badge>
                 </div>
               </AccordionTrigger>
@@ -130,7 +135,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <Clock className="h-4 w-4 text-blue-600" />
-                  <span>Tempo em Atividade</span>
+                  <div>
+                    <span className="font-medium">Tempo em Atividade</span>
+                    <p className="text-sm text-muted-foreground">Duração total.</p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -168,7 +176,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <Fuel className="h-4 w-4 text-orange-600" />
-                  <span>Consumo de Combustível</span>
+                  <div>
+                    <span className="font-medium">Consumo de Combustível</span>
+                    <p className="text-sm text-muted-foreground">Estimado vs real.</p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -208,7 +219,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <Route className="h-4 w-4 text-purple-600" />
-                  <span>Distância Total</span>
+                  <div>
+                    <span className="font-medium">Distância Total</span>
+                    <p className="text-sm text-muted-foreground">Percorrida e restante.</p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -249,7 +263,10 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               <AccordionTrigger className="text-left">
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4 text-red-600" />
-                  <span>Distância da Próxima Parada</span>
+                  <div>
+                    <span className="font-medium">Próxima Parada</span>
+                    <p className="text-sm text-muted-foreground">Distância e detalhes.</p>
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
