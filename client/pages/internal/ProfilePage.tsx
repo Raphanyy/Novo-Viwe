@@ -297,36 +297,22 @@ const ProfilePage: React.FC = () => {
     const section = getCurrentSection();
     if (!section) return null;
 
-    const Icon = section.icon;
-
     return (
-      <div className="p-4 space-y-4">
-        {/* Header da seção */}
-        <div className="flex items-center space-x-3 pb-2">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <Icon className="h-4 w-4 text-primary" />
-          </div>
-          <h2 className="text-lg font-semibold text-foreground">
-            {section.title}
-          </h2>
-        </div>
-
+      <div className="p-4 space-y-3">
         {/* Itens da seção */}
-        <div className="space-y-3">
-          {section.items?.map((item) => (
-            <SettingsSection
-              key={item.id}
-              title={item.title}
-              subtitle={item.subtitle}
-              icon={item.icon}
-              onClick={
-                item.hasSettings
-                  ? () => navigateToSubSection(item.id)
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+        {section.items?.map((item) => (
+          <SettingsSection
+            key={item.id}
+            title={item.title}
+            subtitle={item.subtitle}
+            icon={item.icon}
+            onClick={
+              item.hasSettings
+                ? () => navigateToSubSection(item.id)
+                : undefined
+            }
+          />
+        ))}
       </div>
     );
   };
