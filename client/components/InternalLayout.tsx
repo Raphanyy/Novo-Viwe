@@ -41,7 +41,7 @@ const InternalLayout: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      name: "Opções",
+      name: "Perfil",
       path: "/app/opcoes",
       icon: Sliders,
       color: "text-yellow-600",

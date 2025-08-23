@@ -92,7 +92,7 @@ function RouteConfigurationForm({
   isTemporary?: boolean;
   onSave?: () => void;
 }) {
-  const [openSections, setOpenSections] = useState<string[]>(["informacoes"]);
+  const [openSections, setOpenSections] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     info: { routeName: "", responsible: "", id: "", notes: "", priority: "" },
     clients: [] as Array<{

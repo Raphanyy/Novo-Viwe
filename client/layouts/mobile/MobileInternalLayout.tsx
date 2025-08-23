@@ -57,7 +57,7 @@ const MobileInternalLayout: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      name: "Opções",
+      name: "Perfil",
       path: "/app/opcoes",
       icon: Sliders,
       color: "text-yellow-600",
@@ -384,7 +384,7 @@ const MobileInternalLayout: React.FC = () => {
 
   return (
     <div
-      className="h-screen bg-gray-50 flex flex-col font-sans"
+      className="h-screen bg-background flex flex-col font-sans"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <link
@@ -393,14 +393,14 @@ const MobileInternalLayout: React.FC = () => {
       />
 
       {/* Mobile Header - Simplified */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="flex items-center">
             <Rocket className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-lg ml-2 text-gray-900">Viwe</span>
+            <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
           </div>
-          <div className="w-px h-6 bg-gray-300"></div>
-          <h1 className="text-lg font-semibold text-gray-900">
+          <div className="w-px h-6 bg-border"></div>
+          <h1 className="text-lg font-semibold text-foreground">
             {getCurrentPageName()}
           </h1>
         </div>
