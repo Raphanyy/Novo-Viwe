@@ -16,18 +16,18 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className={`bg-white border-b border-gray-200 ${className}`}>
+    <header className={`bg-card border-b border-border ${className}`}>
       <div className="px-4 py-3 flex items-center justify-between">
         {/* Logo e Título */}
         <div className="flex items-center space-x-3 min-w-0 flex-1">
           <div className="flex items-center flex-shrink-0">
             <Rocket className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-lg ml-2 text-gray-900">Viwe</span>
+            <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
           </div>
 
-          <div className="w-px h-6 bg-gray-300 flex-shrink-0"></div>
+          <div className="w-px h-6 bg-border flex-shrink-0"></div>
 
-          <h1 className="text-lg font-semibold text-gray-900 truncate">
+          <h1 className="text-lg font-semibold text-foreground truncate">
             {title}
           </h1>
         </div>
@@ -37,9 +37,9 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           {/* Quick Notifications */}
           <Link
             to="/app/notificacoes"
-            className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+            className="p-2 rounded-xl hover:bg-accent transition-colors duration-200 relative"
           >
-            <Bell className="h-5 w-5 text-gray-600" />
+            <Bell className="h-5 w-5 text-muted-foreground" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
           </Link>
 
@@ -47,7 +47,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-accent transition-colors duration-200"
             >
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                 {user?.avatar ? (
