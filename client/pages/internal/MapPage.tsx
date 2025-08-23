@@ -934,7 +934,7 @@ const MapPage: React.FC = () => {
             }}
             onClick={(e) => e.stopPropagation()}
             className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-            placeholder="Buscar locais, endereços..."
+            placeholder="Buscar cidades, bairros, estabelecimentos..."
           />
           <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
             {isSearching && (
