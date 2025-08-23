@@ -381,14 +381,14 @@ const NotificationsPage: React.FC = () => {
 
                       {/* Management buttons */}
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
                           <button
                             onClick={() =>
                               notification.read
                                 ? markAsUnread(notification.id)
                                 : markAsRead(notification.id)
                             }
-                            className="flex items-center space-x-1 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
+                            className="flex items-center space-x-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
                           >
                             {notification.read ? (
                               <EyeOff className="h-4 w-4" />
