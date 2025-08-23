@@ -53,7 +53,7 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
   const contentClasses = useFullScreen
     ? "flex flex-col h-full"
     : cn(
-        "bg-white rounded-lg shadow-xl max-h-[90vh] overflow-hidden",
+        "bg-card rounded-lg shadow-xl max-h-[90vh] overflow-hidden border border-border",
         sizeClasses[size],
         "w-full",
       );

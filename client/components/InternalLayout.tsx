@@ -87,17 +87,17 @@ const InternalLayout: React.FC = () => {
       />
 
       {/* Top Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         {/* Logo e Título */}
         <div className="flex items-center space-x-3">
           <div className="flex items-center">
             <Rocket className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-lg ml-2 text-gray-900 hidden sm:block">
+            <span className="font-bold text-lg ml-2 text-foreground hidden sm:block">
               Viwe
             </span>
           </div>
-          <div className="hidden sm:block w-px h-6 bg-gray-300"></div>
-          <h1 className="text-lg font-semibold text-gray-900">
+          <div className="hidden sm:block w-px h-6 bg-border"></div>
+          <h1 className="text-lg font-semibold text-foreground">
             {getCurrentPageName()}
           </h1>
         </div>
@@ -107,9 +107,9 @@ const InternalLayout: React.FC = () => {
           {/* Notifications (mobile) */}
           <Link
             to="/app/notificacoes"
-            className="sm:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+            className="sm:hidden p-2 rounded-xl hover:bg-accent transition-colors duration-200 relative"
           >
-            <Bell className="h-5 w-5 text-gray-600" />
+            <Bell className="h-5 w-5 text-muted-foreground" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
           </Link>
 
@@ -117,7 +117,7 @@ const InternalLayout: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+              className="flex items-center space-x-2 p-1 rounded-xl hover:bg-accent transition-colors duration-200"
             >
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                 {user?.avatar ? (
@@ -130,7 +130,7 @@ const InternalLayout: React.FC = () => {
                   <User className="h-4 w-4 text-blue-600" />
                 )}
               </div>
-              <span className="hidden sm:block text-sm font-medium text-gray-900">
+              <span className="hidden sm:block text-sm font-medium text-foreground">
                 {user?.name}
               </span>
               <Menu className="h-4 w-4 text-gray-500 sm:block hidden" />
@@ -176,7 +176,7 @@ const InternalLayout: React.FC = () => {
       </main>
 
       {/* Bottom Navigation (Mobile) */}
-      <nav className="bg-white border-t border-gray-200 px-2 py-2 sm:hidden">
+      <nav className="bg-card border-t border-border px-2 py-2 sm:hidden">
         <div className="flex items-center justify-around">
           {navigationItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
@@ -186,22 +186,15 @@ const InternalLayout: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 ${
-                  active ? "bg-blue-50" : "hover:bg-gray-50"
+                className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 ${
+                  active ? "" : "hover:bg-muted"
                 }`}
               >
                 <Icon
                   className={`h-5 w-5 ${
-                    active ? "text-blue-600" : "text-gray-600"
+                    active ? "text-blue-600" : "text-muted-foreground"
                   }`}
                 />
-                <span
-                  className={`text-xs font-medium ${
-                    active ? "text-blue-600" : "text-gray-600"
-                  }`}
-                >
-                  {item.name}
-                </span>
               </Link>
             );
           })}

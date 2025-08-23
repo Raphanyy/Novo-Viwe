@@ -344,23 +344,17 @@ const MobileInternalLayout: React.FC = () => {
           <Link
             key={item.action}
             to="/app"
-            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
             <Icon className="h-5 w-5 text-muted-foreground" />
-            <span className="text-xs font-medium truncate text-muted-foreground">
-              {item.name}
-            </span>
           </Link>
         ) : (
           <button
             key={item.action}
             onClick={() => handleMapNavigation(item.action)}
-            className="flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
             <Icon className="h-5 w-5 text-muted-foreground" />
-            <span className="text-xs font-medium truncate text-muted-foreground">
-              {item.name}
-            </span>
           </button>
         );
       });
@@ -374,8 +368,8 @@ const MobileInternalLayout: React.FC = () => {
           <Link
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center space-y-1 p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 ${
-              active ? "bg-blue-50" : "hover:bg-muted"
+            className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 ${
+              active ? "" : "hover:bg-muted"
             }`}
           >
             <Icon
@@ -383,13 +377,6 @@ const MobileInternalLayout: React.FC = () => {
                 active ? "text-blue-600" : "text-muted-foreground"
               }`}
             />
-            <span
-              className={`text-xs font-medium truncate ${
-                active ? "text-blue-600" : "text-muted-foreground"
-              }`}
-            >
-              {item.name}
-            </span>
           </Link>
         );
       });

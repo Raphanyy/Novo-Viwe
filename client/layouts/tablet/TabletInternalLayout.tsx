@@ -231,7 +231,7 @@ const TabletInternalLayout: React.FC = () => {
 
   return (
     <div
-      className="h-screen bg-gray-50 flex font-sans"
+      className="h-screen bg-background flex font-sans"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <link
@@ -241,27 +241,27 @@ const TabletInternalLayout: React.FC = () => {
 
       {/* Collapsible Sidebar for Tablet */}
       <aside
-        className={`bg-white border-r border-gray-200 transition-all duration-300 ${
+        className={`bg-card border-r border-border transition-all duration-300 ${
           isSidebarOpen ? "w-64" : "w-16"
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Rocket className="h-6 w-6 text-blue-600" />
                 {isSidebarOpen && (
-                  <span className="font-bold text-lg ml-2 text-gray-900">
+                  <span className="font-bold text-lg ml-2 text-foreground">
                     Viwe
                   </span>
                 )}
               </div>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-1 rounded-lg hover:bg-gray-100"
+                className="p-1 rounded-lg hover:bg-accent"
               >
-                <Menu className="h-4 w-4 text-gray-600" />
+                <Menu className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
           </div>
@@ -277,17 +277,15 @@ const TabletInternalLayout: React.FC = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center p-3 rounded-xl transition-all duration-200 group ${
+                    className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 group ${
                       active
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? "text-blue-600"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
                     }`}
                     title={!isSidebarOpen ? item.name : undefined}
                   >
                     <Icon className="h-5 w-5 flex-shrink-0" />
-                    {isSidebarOpen && (
-                      <span className="ml-3 font-medium">{item.name}</span>
-                    )}
+                    <span className="sr-only">{item.name}</span>
                     {!isSidebarOpen && active && (
                       <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none">
                         {item.name}
@@ -300,13 +298,13 @@ const TabletInternalLayout: React.FC = () => {
           </nav>
 
           {/* User Section */}
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-border">
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center w-full p-2 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                className="flex items-center justify-center w-full p-3 rounded-xl hover:bg-accent transition-colors duration-200"
               >
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                   {user?.avatar ? (
                     <img
                       src={user.avatar}
@@ -317,28 +315,19 @@ const TabletInternalLayout: React.FC = () => {
                     <User className="h-4 w-4 text-blue-600" />
                   )}
                 </div>
-                {isSidebarOpen && (
-                  <div className="ml-3 text-left min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {user?.name}
-                    </p>
-                    <p className="text-xs text-gray-500 truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                )}
+                <span className="sr-only">{user?.name}</span>
               </button>
 
               {/* User Dropdown */}
               {isUserMenuOpen && (
                 <div
-                  className={`absolute bottom-full mb-2 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 ${
+                  className={`absolute bottom-full mb-2 bg-card rounded-xl shadow-xl border border-border py-2 z-50 ${
                     isSidebarOpen ? "left-0 right-0" : "left-full ml-2 w-48"
                   }`}
                 >
                   <Link
                     to="/app/ajustes"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors duration-200"
                     onClick={() => setIsUserMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4 mr-3" />
@@ -364,14 +353,14 @@ const TabletInternalLayout: React.FC = () => {
         {/* Top Header with Page Title */}
         {shouldShowHeader && (
           <header
-            className="fixed top-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-4"
+            className="fixed top-0 right-0 z-50 bg-card border-b border-border px-6 py-4"
             style={{ left: isSidebarOpen ? "256px" : "64px" }}
           >
             <div className="flex items-center justify-between">
               {getCurrentNavigationItems() ? (
                 // Map-specific header (dynamic based on trace state)
                 <div className="flex items-center space-x-4">
-                  <h1 className="text-xl font-semibold text-gray-900">
+                  <h1 className="text-xl font-semibold text-foreground">
                     {getCurrentPageName()}
                   </h1>
                   <div className="flex items-center space-x-2">
@@ -383,23 +372,21 @@ const TabletInternalLayout: React.FC = () => {
                         <Link
                           key={item.action}
                           to="/app"
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                          className="flex items-center justify-center p-3 rounded-xl hover:bg-accent transition-colors duration-200"
+                          title={item.name}
                         >
-                          <Icon className="h-4 w-4 text-gray-600" />
-                          <span className="text-sm font-medium text-gray-600">
-                            {item.name}
-                          </span>
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="sr-only">{item.name}</span>
                         </Link>
                       ) : (
                         <button
                           key={item.action}
                           onClick={() => handleMapNavigation(item.action)}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                          className="flex items-center justify-center p-3 rounded-xl hover:bg-accent transition-colors duration-200"
+                          title={item.name}
                         >
-                          <Icon className="h-4 w-4 text-gray-600" />
-                          <span className="text-sm font-medium text-gray-600">
-                            {item.name}
-                          </span>
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="sr-only">{item.name}</span>
                         </button>
                       );
                     })}
@@ -408,7 +395,7 @@ const TabletInternalLayout: React.FC = () => {
               ) : (
                 // Default header
                 <>
-                  <h1 className="text-xl font-semibold text-gray-900">
+                  <h1 className="text-xl font-semibold text-foreground">
                     {getCurrentPageName()}
                   </h1>
 
@@ -416,9 +403,9 @@ const TabletInternalLayout: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <Link
                       to="/app/notificacoes"
-                      className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+                      className="p-2 rounded-xl hover:bg-accent transition-colors duration-200 relative"
                     >
-                      <Bell className="h-5 w-5 text-gray-600" />
+                      <Bell className="h-5 w-5 text-muted-foreground" />
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
                     </Link>
                   </div>

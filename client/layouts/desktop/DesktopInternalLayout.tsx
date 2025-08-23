@@ -159,19 +159,14 @@ const DesktopInternalLayout: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center p-3 rounded-xl transition-all duration-200 group relative ${
+                  className={`flex items-center justify-center p-3 rounded-xl transition-all duration-200 group relative ${
                     active
-                      ? "bg-blue-50 text-blue-600 shadow-sm"
+                      ? "text-blue-600"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  <div className="ml-3 flex-1">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {item.description}
-                    </div>
-                  </div>
+                  <span className="sr-only">{item.name}</span>
                   {active && (
                     <div className="absolute right-3 w-1 h-8 bg-blue-600 rounded-full"></div>
                   )}
@@ -185,10 +180,11 @@ const DesktopInternalLayout: React.FC = () => {
         <div className="p-4 border-t border-border">
           <Link
             to="/help"
-            className="flex items-center p-3 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200"
+            className="flex items-center justify-center p-3 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-200"
+            title="Ajuda & Suporte"
           >
             <HelpCircle className="h-5 w-5" />
-            <span className="ml-3 font-medium">Ajuda & Suporte</span>
+            <span className="sr-only">Ajuda & Suporte</span>
           </Link>
         </div>
 
@@ -197,28 +193,21 @@ const DesktopInternalLayout: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center w-full p-3 rounded-xl hover:bg-muted transition-colors duration-200"
+              className="flex items-center justify-center w-full p-3 rounded-xl hover:bg-muted transition-colors duration-200"
+              title={user?.name}
             >
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
                     alt={user.name}
-                    className="w-10 h-10 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
                   <User className="h-5 w-5 text-blue-600" />
                 )}
               </div>
-              <div className="ml-3 text-left min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {user?.name}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {user?.email}
-                </p>
-              </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              <span className="sr-only">{user?.name}</span>
             </button>
 
             {/* User Dropdown */}
