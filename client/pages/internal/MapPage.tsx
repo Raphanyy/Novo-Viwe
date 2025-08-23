@@ -1339,21 +1339,21 @@ const MapPage: React.FC = () => {
       <div className="flex-1 relative">
         {/* Error Fallback */}
         {mapError && (
-          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-50">
-            <div className="text-center p-6 max-w-sm mx-4">
+          <div className="fixed inset-0 z-50 bg-background flex items-center justify-center p-4">
+            <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full text-center">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Mapa Indisponível
               </h3>
-              <p className="text-gray-600 mb-4">{mapError}</p>
+              <p className="text-muted-foreground mb-4">{mapError}</p>
               <button
                 onClick={() => {
                   setMapError(null);
                   window.location.reload();
                 }}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200"
               >
                 Tentar Novamente
               </button>
@@ -1418,24 +1418,24 @@ const MapPage: React.FC = () => {
 
         {/* Trace Confirmation Dialog */}
         {traceState.showConfirmDialog && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full">
+          <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                   <AlertTriangle className="h-6 w-6 text-orange-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Deseja Traçar Esta Rota?
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Consome {traceState.estimatedCredits} Créditos
                   </p>
                 </div>
               </div>
 
               <div className="mb-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Você tem {traceState.stops.length} parada(s) marcada(s). Esta
                   ação irá traçar a rota completa no mapa.
                 </p>
@@ -1447,7 +1447,7 @@ const MapPage: React.FC = () => {
                     cancelTrace();
                     clearAllMarkersAndRoutes();
                   }}
-                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200"
+                  className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
                 >
                   Desistir
                 </button>
@@ -1460,8 +1460,8 @@ const MapPage: React.FC = () => {
                   disabled={isTracingRoute}
                   className={`flex-1 py-3 px-4 rounded-xl font-medium transition-colors duration-200 ${
                     isTracingRoute
-                      ? "bg-blue-400 text-white cursor-not-allowed"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
+                      ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
                   }`}
                 >
                   {isTracingRoute ? "Traçando..." : "Confirmar"}
@@ -1473,50 +1473,52 @@ const MapPage: React.FC = () => {
 
         {/* POI Details Modal */}
         {selectedPOI && (
-          <div className="absolute inset-x-4 bottom-4 bg-white rounded-2xl shadow-xl p-4 z-30 animate-in slide-in-from-bottom duration-300">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {selectedPOI.name}
-                </h3>
-                <div className="space-y-1 mt-1">
-                  {selectedPOI.fullAddress && (
-                    <p className="text-sm text-gray-600">
-                      {selectedPOI.fullAddress}
-                    </p>
-                  )}
-                  <div className="flex items-center space-x-4">
-                    <span className="text-sm text-gray-500">
-                      {selectedPOI.distance}
-                    </span>
-                    {selectedPOI.rating && (
-                      <div className="flex items-center space-x-1">
-                        <span className="text-yellow-500">★</span>
-                        <span className="text-sm text-gray-600">
-                          {selectedPOI.rating}
-                        </span>
-                      </div>
+          <div className="fixed inset-x-4 bottom-4 z-40 animate-in slide-in-from-bottom duration-300">
+            <div className="bg-card border border-border rounded-xl shadow-xl p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {selectedPOI.name}
+                  </h3>
+                  <div className="space-y-1 mt-1">
+                    {selectedPOI.fullAddress && (
+                      <p className="text-sm text-muted-foreground">
+                        {selectedPOI.fullAddress}
+                      </p>
                     )}
+                    <div className="flex items-center space-x-4">
+                      <span className="text-sm text-muted-foreground">
+                        {selectedPOI.distance}
+                      </span>
+                      {selectedPOI.rating && (
+                        <div className="flex items-center space-x-1">
+                          <span className="text-yellow-500">★</span>
+                          <span className="text-sm text-muted-foreground">
+                            {selectedPOI.rating}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={() => setSelectedPOI(null)}
+                  className="p-1 hover:bg-accent rounded-lg transition-colors duration-200"
+                >
+                  <X className="h-5 w-5 text-muted-foreground" />
+                </button>
               </div>
-              <button
-                onClick={() => setSelectedPOI(null)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-              >
-                <X className="h-5 w-5 text-gray-400" />
-              </button>
-            </div>
 
-            <div className="flex space-x-3">
-              <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <MoveRight className="h-4 w-4" />
-                <span>Ir para lá</span>
-              </button>
-              <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <BookmarkPlus className="h-4 w-4" />
-                <span>Mais tarde</span>
-              </button>
+              <div className="flex space-x-3">
+                <button className="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-xl font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center space-x-2">
+                  <MoveRight className="h-4 w-4" />
+                  <span>Ir para lá</span>
+                </button>
+                <button className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2">
+                  <BookmarkPlus className="h-4 w-4" />
+                  <span>Mais tarde</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
