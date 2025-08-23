@@ -408,7 +408,7 @@ const TabletInternalLayout: React.FC = () => {
               ) : (
                 // Default header
                 <>
-                  <h1 className="text-xl font-semibold text-gray-900">
+                  <h1 className="text-xl font-semibold text-foreground">
                     {getCurrentPageName()}
                   </h1>
 
@@ -416,9 +416,9 @@ const TabletInternalLayout: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <Link
                       to="/app/notificacoes"
-                      className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+                      className="p-2 rounded-xl hover:bg-accent transition-colors duration-200 relative"
                     >
-                      <Bell className="h-5 w-5 text-gray-600" />
+                      <Bell className="h-5 w-5 text-muted-foreground" />
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
                     </Link>
                   </div>
