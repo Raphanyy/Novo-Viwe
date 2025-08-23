@@ -95,15 +95,15 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
 
   return (
     <aside
-      className={`w-64 bg-white border-r border-gray-200 flex flex-col ${className}`}
+      className={`w-64 bg-card border-r border-border flex flex-col ${className}`}
     >
       {/* Sidebar Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center">
           <Rocket className="h-8 w-8 text-blue-600" />
           <div className="ml-3">
-            <h1 className="font-bold text-xl text-gray-900">Viwe</h1>
-            <p className="text-xs text-gray-500">Route Planner</p>
+            <h1 className="font-bold text-xl text-foreground">Viwe</h1>
+            <p className="text-xs text-muted-foreground">Route Planner</p>
           </div>
         </div>
       </div>
