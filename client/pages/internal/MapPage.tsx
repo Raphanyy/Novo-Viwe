@@ -171,6 +171,8 @@ const MapPage: React.FC = () => {
         center: [-46.6333, -23.5505], // São Paulo center
         zoom: 12,
         attributionControl: false,
+        optimizeForTerrain: false, // Reduce complex tile operations
+        fadeDuration: 100, // Reduce animation time to minimize abort scenarios
       });
 
       // Add comprehensive error handling for map loading
