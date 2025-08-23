@@ -74,7 +74,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Sua viagem para o aeroporto está agendada para amanhã às 15:00.",
       details:
-        "Tempo estimado: 45 minutos. Sugestão: sair às 14:00 para chegar com folga. Verificamos o trânsito e não há congestionamentos previstos para o horário.",
+        "Viagem de 45 min para aeroporto. Saia às 14:00 com folga. Trânsito normal previsto para amanhã.",
       time: "3h atrás",
       read: true,
       icon: Calendar,
