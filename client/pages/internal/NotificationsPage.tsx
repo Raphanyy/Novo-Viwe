@@ -174,7 +174,7 @@ const NotificationsPage: React.FC = () => {
     switch (notification.type) {
       case "traffic":
         return (
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5">
             <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
               Ver rota alternativa
             </button>
@@ -185,7 +185,7 @@ const NotificationsPage: React.FC = () => {
         );
       case "route":
         return (
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5">
             <button className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200">
               Usar nova rota
             </button>
@@ -196,7 +196,7 @@ const NotificationsPage: React.FC = () => {
         );
       case "scheduled":
         return (
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5">
             <button className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
               Verificar trânsito
             </button>
@@ -207,7 +207,7 @@ const NotificationsPage: React.FC = () => {
         );
       case "system":
         return (
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5">
             <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
               Atualizar agora
             </button>
