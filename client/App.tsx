@@ -17,11 +17,10 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/internal/DashboardPage";
 import MapPage from "./pages/internal/MapPage";
 import RoutesPage from "./pages/internal/RoutesPage";
-import OptionsPage from "./pages/internal/OptionsPage";
+import ProfilePage from "./pages/internal/ProfilePage";
 import ActivityPage from "./pages/internal/ActivityPage";
 import NotificationsPage from "./pages/internal/NotificationsPage";
 import SettingsPage from "./pages/internal/SettingsPage";
-import ProfilePage from "./pages/internal/ProfilePage";
 
 // Adaptive Layouts
 import AdaptiveInternalLayout from "./components/AdaptiveInternalLayout";
@@ -87,11 +86,10 @@ const AppRoutes = () => {
         <Route index element={<DashboardPage />} />
         <Route path="mapa" element={<MapPage />} />
         <Route path="rotas" element={<RoutesPage />} />
-        <Route path="opcoes" element={<OptionsPage />} />
+        <Route path="opcoes" element={<ProfilePage />} />
         <Route path="atividade" element={<ActivityPage />} />
         <Route path="notificacoes" element={<NotificationsPage />} />
         <Route path="ajustes" element={<SettingsPage />} />
-        <Route path="perfil" element={<ProfilePage />} />
       </Route>
 
       {/* Catch all - redirect to home */}
