@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
   MapPin,
   Navigation,
@@ -328,20 +328,49 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Manage center pin tracking when tracing starts/stops
+  // Throttled and optimized center pin tracking
+  const lastUpdateTimeRef = useRef<number>(0);
+  const lastCoordinatesRef = useRef<[number, number] | null>(null);
+
+  // Throttled update function with coordinate comparison
+  const throttledUpdateCenterPin = useCallback((coordinates: [number, number]) => {
+    const now = Date.now();
+    const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
+
+    // Only update if enough time has passed (throttle to 100ms)
+    if (timeSinceLastUpdate < 100) return;
+
+    // Only update if coordinates changed significantly (0.0001 degree threshold)
+    const lastCoords = lastCoordinatesRef.current;
+    if (lastCoords) {
+      const deltaLng = Math.abs(coordinates[0] - lastCoords[0]);
+      const deltaLat = Math.abs(coordinates[1] - lastCoords[1]);
+
+      // Skip update if movement is too small
+      if (deltaLng < 0.0001 && deltaLat < 0.0001) return;
+    }
+
+    lastUpdateTimeRef.current = now;
+    lastCoordinatesRef.current = coordinates;
+    updateCenterPin(coordinates);
+  }, [updateCenterPin]);
+
+  // Optimized center pin tracking when tracing starts/stops
   useEffect(() => {
     if (!map.current) return;
 
     if (traceState.isTracing) {
       // Initialize center coordinates when tracing starts
       const center = map.current.getCenter();
-      updateCenterPin([center.lng, center.lat]);
+      const initialCoords: [number, number] = [center.lng, center.lat];
+      lastCoordinatesRef.current = initialCoords;
+      updateCenterPin(initialCoords);
 
-      // Add event listeners for dynamic tracking
+      // Optimized event handler with throttling
       const updateCenterCoords = () => {
         if (map.current) {
           const center = map.current.getCenter();
-          updateCenterPin([center.lng, center.lat]);
+          throttledUpdateCenterPin([center.lng, center.lat]);
         }
       };
 
@@ -354,11 +383,25 @@ const MapPage: React.FC = () => {
           map.current.off("move", updateCenterCoords);
           map.current.off("zoom", updateCenterCoords);
         }
+        // Reset refs on cleanup
+        lastUpdateTimeRef.current = 0;
+        lastCoordinatesRef.current = null;
       };
     }
-  }, [traceState.isTracing]); // Only depend on isTracing to prevent loop
+  }, [traceState.isTracing, throttledUpdateCenterPin]);
 
-  // Update stop markers
+  // Memoize filtered stops to prevent unnecessary recalculations
+  const visibleStops = useMemo(() => {
+    return traceState.stops.filter((stop) => {
+      // During active navigation, only show incomplete stops
+      if (traceState.isInActiveNavigation && stop.isCompleted) {
+        return false;
+      }
+      return true;
+    });
+  }, [traceState.stops, traceState.isInActiveNavigation]);
+
+  // Optimized stop markers update with memoization
   useEffect(() => {
     if (!map.current) return;
 
@@ -366,13 +409,8 @@ const MapPage: React.FC = () => {
     stopMarkers.current.forEach((marker) => marker.remove());
     stopMarkers.current = [];
 
-    // Add stop markers - only for incomplete stops during active navigation
-    traceState.stops.forEach((stop, index) => {
-      // During active navigation, only show incomplete stops
-      if (traceState.isInActiveNavigation && stop.isCompleted) {
-        return; // Skip completed stops during navigation
-      }
-
+    // Add stop markers using memoized visible stops
+    visibleStops.forEach((stop, index) => {
       const stopEl = document.createElement("div");
       stopEl.className = "relative";
 
@@ -396,7 +434,7 @@ const MapPage: React.FC = () => {
 
       stopMarkers.current.push(marker);
     });
-  }, [traceState.stops, traceState.isInActiveNavigation]);
+  }, [visibleStops]);
 
   // Handle config modal opening from trace context
   useEffect(() => {
@@ -509,7 +547,12 @@ const MapPage: React.FC = () => {
     [setRouteTraced],
   );
 
-  // Update POI markers
+  // Memoized POI click handler to prevent recreation
+  const handlePOIClick = useCallback((poi: any) => {
+    setSelectedPOI(poi);
+  }, []);
+
+  // Optimized POI markers update
   useEffect(() => {
     if (!map.current) return;
 
@@ -517,16 +560,14 @@ const MapPage: React.FC = () => {
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
 
-    // Add filtered POI markers
+    // Add filtered POI markers with optimized event handling
     filteredPOIs.forEach((poi) => {
       const el = document.createElement("div");
       el.className = `w-8 h-8 ${poi.color} rounded-full shadow-lg border-2 border-white cursor-pointer hover:scale-110 transition-transform duration-200`;
       el.innerHTML =
         '<div class="w-full h-full rounded-full bg-white/20 flex items-center justify-center"><svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>';
 
-      el.addEventListener("click", () => {
-        setSelectedPOI(poi);
-      });
+      el.addEventListener("click", () => handlePOIClick(poi));
 
       const marker = new mapboxgl.Marker(el)
         .setLngLat(poi.coordinates)
@@ -534,7 +575,7 @@ const MapPage: React.FC = () => {
 
       markers.current.push(marker);
     });
-  }, [filteredPOIs]);
+  }, [filteredPOIs, handlePOIClick]);
 
   const handleZoomIn = useCallback(() => {
     if (map.current) {
