@@ -1325,6 +1325,30 @@ const MapPage: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-1 relative">
+        {/* Error Fallback */}
+        {mapError && (
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-50">
+            <div className="text-center p-6 max-w-sm mx-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Mapa Indisponível
+              </h3>
+              <p className="text-gray-600 mb-4">{mapError}</p>
+              <button
+                onClick={() => {
+                  setMapError(null);
+                  window.location.reload();
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
+              >
+                Tentar Novamente
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Mapbox Container */}
         <div ref={mapRef} className="w-full h-full" />
 
@@ -1418,7 +1442,7 @@ const MapPage: React.FC = () => {
                 <button
                   onClick={async () => {
                     confirmTrace();
-                    // Tra��ar a rota no mapa
+                    // Traçar a rota no mapa
                     await traceRouteOnMap(traceState.stops);
                   }}
                   disabled={isTracingRoute}
