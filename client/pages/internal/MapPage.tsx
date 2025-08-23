@@ -598,7 +598,7 @@ const MapPage: React.FC = () => {
       el.addEventListener("click", () => handlePOIClick(poi));
 
       const marker = new mapboxgl.Marker(el)
-        .setLngLat(poi.coordinates)
+        .setLngLat(poi.coordinates as [number, number])
         .addTo(map.current!);
 
       markers.current.push(marker);
