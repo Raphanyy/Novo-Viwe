@@ -293,8 +293,14 @@ const NotificationsPage: React.FC = () => {
                 <AccordionItem
                   key={notification.id}
                   value={`item-${notification.id}`}
-                  className={`bg-card rounded-xl border border-l-4 border-l-blue-500 transition-all duration-200 ${
-                    isSelected ? "ring-2 ring-blue-500 bg-blue-50" : ""
+                  className={`bg-card rounded-xl border border-l-4 transition-all duration-200 ${
+                    !notification.read
+                      ? "border-l-green-500"
+                      : "border-l-blue-500"
+                  } ${
+                    isSelected
+                      ? `ring-2 ${!notification.read ? "ring-green-500 bg-green-50" : "ring-blue-500 bg-blue-50"}`
+                      : ""
                   }`}
                 >
                   <AccordionTrigger className="hover:no-underline px-3 py-2">
