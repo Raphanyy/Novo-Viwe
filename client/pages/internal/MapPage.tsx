@@ -216,7 +216,7 @@ const MapPage: React.FC = () => {
         }
       };
     }
-  }, [traceState.isTracing, updateCenterPin]); // Include updateCenterPin dependency
+  }, [traceState.isTracing]); // Only depend on isTracing to prevent loop
 
   // Update stop markers
   useEffect(() => {
