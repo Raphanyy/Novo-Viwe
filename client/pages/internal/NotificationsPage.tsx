@@ -403,17 +403,17 @@ const NotificationsPage: React.FC = () => {
                           </button>
                         </div>
 
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
                           <button
                             onClick={() => archiveNotification(notification.id)}
-                            className="p-2 hover:bg-muted rounded-lg transition-colors duration-200"
+                            className="p-1.5 hover:bg-muted rounded-lg transition-colors duration-200"
                             title="Arquivar"
                           >
                             <Archive className="h-4 w-4 text-muted-foreground" />
                           </button>
                           <button
                             onClick={() => deleteNotification(notification.id)}
-                            className="p-2 hover:bg-red-100 rounded-lg transition-colors duration-200"
+                            className="p-1.5 hover:bg-red-100 rounded-lg transition-colors duration-200"
                             title="Excluir"
                           >
                             <Trash2 className="h-4 w-4 text-red-600" />
