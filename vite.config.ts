@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "0.0.0.0",
     port: process.env.PORT ? parseInt(process.env.PORT) : 8080,
+    allowedHosts: "all",
     fs: {
       allow: ["./client", "./shared", "./node_modules"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
