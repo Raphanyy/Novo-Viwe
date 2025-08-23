@@ -1,6 +1,4 @@
 import React from "react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { VisuallyHidden } from "../ui/visually-hidden";
 import ModalHeader from "./ModalHeader";
 import {
   Accordion,
@@ -17,17 +15,12 @@ import {
   Fuel,
   Route,
   MapPin,
-  Navigation,
   Calendar,
   Trophy,
   Star,
   TrendingUp,
   Save,
-  X,
-  Target,
-  BarChart3,
   Award,
-  Zap,
 } from "lucide-react";
 
 interface FinalSummaryModalProps {
@@ -53,19 +46,11 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
 
   const { endRoute } = useTraceRoute();
 
-  const handleClose = (open: boolean) => {
-    if (!open) {
-      endRoute(); // Limpa tudo incluindo o mapa
-      onClose();
-    }
-  };
-
-  const handleCloseButton = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleClose = () => {
     endRoute(); // Limpa tudo incluindo o mapa
     onClose();
   };
+
   const { state } = useTraceRoute();
 
   const formatTime = (milliseconds: number) => {
@@ -123,20 +108,17 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-full max-w-5xl mx-auto max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-0">
-        <VisuallyHidden>
-          <DialogTitle>Rota Concluída com Sucesso</DialogTitle>
-        </VisuallyHidden>
-        <ModalHeader
-          title="Rota Concluída!"
-          onClose={() => handleClose(false)}
-          rightContent={
-            <Trophy className="h-5 w-5 text-yellow-600" />
-          }
-        />
-        <div className="p-4 sm:p-6">
-          <div className="space-y-6">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      <ModalHeader
+        title="Rota Concluída!"
+        showBackButton={true}
+        onBack={handleClose}
+        rightContent={
+          <Trophy className="h-5 w-5 text-yellow-600" />
+        }
+      />
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="space-y-6">
           {/* Aviso se não há dados suficientes */}
           {!hasValidData && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -157,6 +139,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               </div>
             </div>
           )}
+
           {/* Estatísticas Principais */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-green-50 p-4 rounded-lg text-center border border-green-200">
@@ -422,7 +405,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={handleCloseButton}
+              onClick={handleClose}
               className="flex-1"
             >
               Apenas Fechar
@@ -437,9 +420,8 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             </Button>
           </div>
         </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
