@@ -116,7 +116,9 @@
   }
 
   /* Melhorar contraste em elementos de formulário */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     @apply bg-input text-foreground border-border;
   }
 

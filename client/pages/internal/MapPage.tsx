@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   MapPin,
   Navigation,
@@ -349,27 +355,30 @@ const MapPage: React.FC = () => {
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
 
   // Throttled update function with coordinate comparison
-  const throttledUpdateCenterPin = useCallback((coordinates: [number, number]) => {
-    const now = Date.now();
-    const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
+  const throttledUpdateCenterPin = useCallback(
+    (coordinates: [number, number]) => {
+      const now = Date.now();
+      const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
 
-    // Only update if enough time has passed (throttle to 100ms)
-    if (timeSinceLastUpdate < 100) return;
+      // Only update if enough time has passed (throttle to 100ms)
+      if (timeSinceLastUpdate < 100) return;
 
-    // Only update if coordinates changed significantly (0.0001 degree threshold)
-    const lastCoords = lastCoordinatesRef.current;
-    if (lastCoords) {
-      const deltaLng = Math.abs(coordinates[0] - lastCoords[0]);
-      const deltaLat = Math.abs(coordinates[1] - lastCoords[1]);
+      // Only update if coordinates changed significantly (0.0001 degree threshold)
+      const lastCoords = lastCoordinatesRef.current;
+      if (lastCoords) {
+        const deltaLng = Math.abs(coordinates[0] - lastCoords[0]);
+        const deltaLat = Math.abs(coordinates[1] - lastCoords[1]);
 
-      // Skip update if movement is too small
-      if (deltaLng < 0.0001 && deltaLat < 0.0001) return;
-    }
+        // Skip update if movement is too small
+        if (deltaLng < 0.0001 && deltaLat < 0.0001) return;
+      }
 
-    lastUpdateTimeRef.current = now;
-    lastCoordinatesRef.current = coordinates;
-    updateCenterPin(coordinates);
-  }, [updateCenterPin]);
+      lastUpdateTimeRef.current = now;
+      lastCoordinatesRef.current = coordinates;
+      updateCenterPin(coordinates);
+    },
+    [updateCenterPin],
+  );
 
   // Optimized center pin tracking when tracing starts/stops
   useEffect(() => {
@@ -497,7 +506,7 @@ const MapPage: React.FC = () => {
         // Call Mapbox Directions API
         const response = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
 
         clearTimeout(timeoutId);
@@ -564,8 +573,8 @@ const MapPage: React.FC = () => {
           setRouteTraced(true);
         }
       } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-          console.warn('Requisição de rota cancelada por timeout');
+        if (error instanceof Error && error.name === "AbortError") {
+          console.warn("Requisição de rota cancelada por timeout");
         } else {
           console.error("Erro ao traçar rota:", error);
         }
@@ -1048,9 +1057,9 @@ const MapPage: React.FC = () => {
         event.reason &&
         (event.reason.name === "AbortError" ||
           (event.reason.message &&
-           (event.reason.message.includes("aborted") ||
-            event.reason.message.includes("cancelled") ||
-            event.reason.message.includes("signal is aborted"))))
+            (event.reason.message.includes("aborted") ||
+              event.reason.message.includes("cancelled") ||
+              event.reason.message.includes("signal is aborted"))))
       ) {
         event.preventDefault(); // Prevent the error from being logged
         return;
