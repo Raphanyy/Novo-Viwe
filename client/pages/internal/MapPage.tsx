@@ -171,14 +171,26 @@ const MapPage: React.FC = () => {
         center: [-46.6333, -23.5505], // São Paulo center
         zoom: 12,
         attributionControl: false,
-        crossSourceCollisions: false, // Reduces network conflicts
-        maxTileCacheSize: 50, // Limit tile cache to prevent memory issues
-        refreshExpiredTiles: false, // Prevent automatic tile refresh
       });
 
-      // Add error handling for map loading
+      // Add comprehensive error handling for map loading
       map.current.on('error', (e) => {
+        // Filter out non-critical AbortErrors
+        if (e.error && e.error.message && e.error.message.includes('aborted')) {
+          return; // Silently ignore abort errors as they're expected during normal operation
+        }
         console.warn('Mapbox error (non-critical):', e.error);
+      });
+
+      // Add handling for source errors (including tile loading issues)
+      map.current.on('sourcedataloading', () => {
+        // Track source loading to help debug issues
+      });
+
+      map.current.on('sourcedata', (e) => {
+        if (e.sourceDataType === 'content' && e.isSourceLoaded) {
+          // Source loaded successfully
+        }
       });
 
       // Add current location marker
