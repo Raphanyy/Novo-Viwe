@@ -124,7 +124,7 @@ const MapPage: React.FC = () => {
 
   const filterOptions = [
     { id: "restaurant", name: "Restaurantes", icon: "🍽️" },
-    { id: "gas", name: "Postos", icon: "��" },
+    { id: "gas", name: "Postos", icon: "⛽" },
     { id: "hospital", name: "Hospitais", icon: "🏥" },
     { id: "shopping", name: "Shopping", icon: "🛍️" },
     { id: "park", name: "Parques", icon: "🌳" },
@@ -550,6 +550,20 @@ const MapPage: React.FC = () => {
           businessQuery
         )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=8&types=poi,place&proximity=-46.6333,-23.5505`
       );
+
+      // Strategy 3: Try with name variations for specific cases
+      let variationQuery = query;
+      if (lowerQuery.includes('zero oito')) {
+        variationQuery = query.replace(/zero oito/gi, '08').replace(/zeor oito/gi, '08');
+      } else if (lowerQuery.includes('08')) {
+        variationQuery = query.replace(/08/g, 'zero oito');
+      }
+
+      const variationResponse = variationQuery !== query ? await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          variationQuery
+        )}.json?access_token=${mapboxgl.accessToken}&country=BR&language=pt&limit=5&types=poi&proximity=-46.6333,-23.5505`
+      ) : Promise.resolve({ json: () => ({ features: [] }) });
 
       // Strategy 3: Fallback general search
       const generalResponse = await fetch(
