@@ -505,7 +505,7 @@ const OptionsPage: React.FC = () => {
                       className={`p-4 rounded-2xl border-2 transition-all duration-200 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-border bg-white"
+                          : "border-border hover:border-border bg-card"
                       }`}
                     >
                       <Icon
@@ -561,7 +561,7 @@ const OptionsPage: React.FC = () => {
                       className={`w-full p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
-                          : "border-border hover:border-border bg-white"
+                          : "border-border hover:border-border bg-card"
                       }`}
                     >
                       <div
@@ -591,7 +591,7 @@ const OptionsPage: React.FC = () => {
                         }`}
                       >
                         {isSelected && (
-                          <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                          <div className="w-full h-full rounded-full bg-card scale-50"></div>
                         )}
                       </div>
                     </button>
@@ -896,7 +896,7 @@ const OptionsPage: React.FC = () => {
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${isDarkMode ? "bg-blue-600" : "bg-gray-200"}`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isDarkMode ? "translate-x-6" : "translate-x-1"}`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${isDarkMode ? "translate-x-6" : "translate-x-1"}`}
                     />
                   </div>
                 </div>
@@ -911,7 +911,7 @@ const OptionsPage: React.FC = () => {
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${ignoreConsumption ? "bg-blue-600" : "bg-gray-200"}`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${ignoreConsumption ? "translate-x-6" : "translate-x-1"}`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-card transition-transform ${ignoreConsumption ? "translate-x-6" : "translate-x-1"}`}
                     />
                   </div>
                 </div>
