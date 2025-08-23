@@ -258,15 +258,15 @@ const NotificationsPage: React.FC = () => {
                 <AccordionItem
                   key={notification.id}
                   value={`item-${notification.id}`}
-                  className={`rounded-xl border border-l-4 transition-all duration-200 relative overflow-hidden ${
+                  className={`bg-card rounded-xl border border-l-4 transition-all duration-200 relative overflow-hidden ${
                     !notification.read
-                      ? "border-l-green-500 bg-gradient-to-r from-green-50/80 via-green-50/30 to-transparent"
-                      : "border-l-blue-500 bg-gradient-to-r from-blue-50/80 via-blue-50/30 to-transparent"
+                      ? "border-l-green-500"
+                      : "border-l-blue-500"
                   } ${
                     isSelected
                       ? `ring-2 ${!notification.read ? "ring-green-500" : "ring-blue-500"}`
                       : ""
-                  } bg-card`}
+                  }`}
                 >
                   {/* Gradient overlay */}
                   <div
