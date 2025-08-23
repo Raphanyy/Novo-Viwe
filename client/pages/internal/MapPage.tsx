@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   MapPin,
   Navigation,
@@ -50,6 +50,7 @@ const MapPage: React.FC = () => {
     setRouteTraced,
     startNavigation,
     stopNavigation,
+    setMapCleanupCallback,
   } = useTraceRoute();
 
   // Pontos de interesse com coordenadas reais de São Paulo
@@ -123,6 +124,22 @@ const MapPage: React.FC = () => {
     (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
   );
 
+  // Function to clear all markers and routes from map
+  const clearAllMarkersAndRoutes = useCallback(() => {
+    // Clear route from map inline to avoid circular dependency
+    if (map.current && map.current.getSource("route")) {
+      map.current.removeLayer("route");
+      map.current.removeSource("route");
+    }
+
+    // Clear stop markers
+    stopMarkers.current.forEach((marker) => marker.remove());
+    stopMarkers.current = [];
+
+    // Reset route traced state
+    setRouteTraced(false);
+  }, [setRouteTraced]);
+
   // Initialize Mapbox
   useEffect(() => {
     if (!mapRef.current) return;
@@ -146,34 +163,60 @@ const MapPage: React.FC = () => {
       .setLngLat([-46.6333, -23.5505])
       .addTo(map.current);
 
-    // Update center pin coordinates when map moves (for fixed screen pin)
-    const updateCenterCoords = () => {
-      if (map.current) {
-        const center = map.current.getCenter();
-        updateCenterPin([center.lng, center.lat]);
-      }
-    };
+    // No event listeners needed here - will be added when tracing starts
 
-    map.current.on("move", updateCenterCoords);
-    map.current.on("zoom", updateCenterCoords);
-
-    // Initialize center pin coordinates
-    updateCenterCoords();
+    // Register cleanup callback after map is initialized
+    // Use setTimeout to avoid immediate execution during render
+    const timeoutId = setTimeout(() => {
+      setMapCleanupCallback(clearAllMarkersAndRoutes);
+    }, 0);
 
     return () => {
+      clearTimeout(timeoutId);
       if (map.current) {
-        map.current.remove();
+        try {
+          // Clear all event listeners first
+          map.current.off();
+          // Remove the map safely
+          map.current.remove();
+        } catch (error) {
+          // Suppress AbortError and other cleanup errors
+          console.warn("Map cleanup warning:", error);
+        }
+        map.current = null;
       }
     };
-  }, []);
+  }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Initialize center coordinates when tracing starts
+  // Manage center pin tracking when tracing starts/stops
   useEffect(() => {
-    if (traceState.isTracing && map.current && !traceState.centerPin) {
+    if (!map.current) return;
+
+    if (traceState.isTracing) {
+      // Initialize center coordinates when tracing starts
       const center = map.current.getCenter();
       updateCenterPin([center.lng, center.lat]);
+
+      // Add event listeners for dynamic tracking
+      const updateCenterCoords = () => {
+        if (map.current) {
+          const center = map.current.getCenter();
+          updateCenterPin([center.lng, center.lat]);
+        }
+      };
+
+      map.current.on("move", updateCenterCoords);
+      map.current.on("zoom", updateCenterCoords);
+
+      // Cleanup function to remove listeners when tracing stops
+      return () => {
+        if (map.current) {
+          map.current.off("move", updateCenterCoords);
+          map.current.off("zoom", updateCenterCoords);
+        }
+      };
     }
-  }, [traceState.isTracing, traceState.centerPin, updateCenterPin]);
+  }, [traceState.isTracing]); // Only depend on isTracing to prevent loop
 
   // Update stop markers
   useEffect(() => {
@@ -243,100 +286,88 @@ const MapPage: React.FC = () => {
   }, [mapMode]);
 
   // Function to trace route between stops
-  const traceRouteOnMap = async (
-    stops: Array<{ coordinates: [number, number] }>,
-  ) => {
-    if (!map.current || stops.length < 2) return;
+  const traceRouteOnMap = useCallback(
+    async (stops: Array<{ coordinates: [number, number] }>) => {
+      if (!map.current || stops.length < 2) return;
 
-    setIsTracingRoute(true);
+      setIsTracingRoute(true);
 
-    try {
-      // Convert stops to coordinates string for Mapbox Directions API
-      const coordinates = stops
-        .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
-        .join(";");
+      try {
+        // Convert stops to coordinates string for Mapbox Directions API
+        const coordinates = stops
+          .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
+          .join(";");
 
-      // Call Mapbox Directions API
-      const response = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-      );
+        // Call Mapbox Directions API
+        const response = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.routes && data.routes.length > 0) {
-        const route = data.routes[0];
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
 
-        // Remove existing route if any
-        if (map.current.getSource("route")) {
-          map.current.removeLayer("route");
-          map.current.removeSource("route");
+          // Remove existing route if any
+          if (map.current.getSource("route")) {
+            map.current.removeLayer("route");
+            map.current.removeSource("route");
+          }
+
+          // Add route to map
+          map.current.addSource("route", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: route.geometry,
+            },
+          });
+
+          map.current.addLayer({
+            id: "route",
+            type: "line",
+            source: "route",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": "#3b82f6",
+              "line-width": 5,
+              "line-opacity": 0.8,
+            },
+          });
+
+          // Fit map to show entire route
+          const coordinates = route.geometry.coordinates;
+          const bounds = new mapboxgl.LngLatBounds();
+          coordinates.forEach((coord: [number, number]) => {
+            bounds.extend(coord);
+          });
+
+          map.current.fitBounds(bounds, {
+            padding: 50,
+            duration: 1000,
+          });
+
+          console.log("Rota traçada com sucesso:", {
+            distance: route.distance,
+            duration: route.duration,
+            stops: stops.length,
+          });
+
+          // Marcar rota como traçada no contexto
+          setRouteTraced(true);
         }
-
-        // Add route to map
-        map.current.addSource("route", {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: route.geometry,
-          },
-        });
-
-        map.current.addLayer({
-          id: "route",
-          type: "line",
-          source: "route",
-          layout: {
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#3b82f6",
-            "line-width": 5,
-            "line-opacity": 0.8,
-          },
-        });
-
-        // Fit map to show entire route
-        const coordinates = route.geometry.coordinates;
-        const bounds = new mapboxgl.LngLatBounds();
-        coordinates.forEach((coord: [number, number]) => {
-          bounds.extend(coord);
-        });
-
-        map.current.fitBounds(bounds, {
-          padding: 50,
-          duration: 1000,
-        });
-
-        console.log("Rota traçada com sucesso:", {
-          distance: route.distance,
-          duration: route.duration,
-          stops: stops.length,
-        });
-
-        // Marcar rota como traçada no contexto
-        setRouteTraced(true);
+      } catch (error) {
+        console.error("Erro ao traçar rota:", error);
+      } finally {
+        setIsTracingRoute(false);
       }
-    } catch (error) {
-      console.error("Erro ao traçar rota:", error);
-    } finally {
-      setIsTracingRoute(false);
-    }
-  };
-
-  // Function to clear route from map
-  const clearRouteFromMap = () => {
-    if (!map.current) return;
-
-    if (map.current.getSource("route")) {
-      map.current.removeLayer("route");
-      map.current.removeSource("route");
-    }
-
-    // Resetar estado de rota traçada
-    setRouteTraced(false);
-  };
+    },
+    [setRouteTraced],
+  );
 
   // Update POI markers
   useEffect(() => {
@@ -365,26 +396,26 @@ const MapPage: React.FC = () => {
     });
   }, [filteredPOIs]);
 
-  const handleZoomIn = () => {
+  const handleZoomIn = useCallback(() => {
     if (map.current) {
       map.current.zoomIn();
     }
-  };
+  }, []);
 
-  const handleZoomOut = () => {
+  const handleZoomOut = useCallback(() => {
     if (map.current) {
       map.current.zoomOut();
     }
-  };
+  }, []);
 
-  const handleRecenter = () => {
+  const handleRecenter = useCallback(() => {
     if (map.current) {
       map.current.flyTo({
         center: [-46.6333, -23.5505],
         zoom: 12,
       });
     }
-  };
+  }, []);
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -481,8 +512,8 @@ const MapPage: React.FC = () => {
         {/* Mapbox Container */}
         <div ref={mapRef} className="w-full h-full" />
 
-        {/* Fixed Center Pin - Only visible when tracing */}
-        {traceState.isTracing && (
+        {/* Fixed Center Pin - Visible from "Traçar" until "Navegar" button appears */}
+        {traceState.isTracing && !traceState.showTraceConfirmed && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
             <div className="relative">
               <div className="w-8 h-8 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
@@ -559,7 +590,7 @@ const MapPage: React.FC = () => {
                 <button
                   onClick={() => {
                     cancelTrace();
-                    clearRouteFromMap();
+                    clearAllMarkersAndRoutes();
                   }}
                   className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200"
                 >

@@ -82,6 +82,8 @@ interface TraceRouteContextType {
   openFinalSummaryModal: () => void; // Abrir modal de resumo final
   closeFinalSummaryModal: () => void; // Fechar modal de resumo final
   saveAndCompleteRoute: () => void; // Salvar e marcar rota como concluída
+  // Callbacks para limpeza do mapa
+  setMapCleanupCallback: (callback: () => void) => void;
 }
 
 const TraceRouteContext = createContext<TraceRouteContextType | undefined>(
@@ -133,6 +135,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     showFinalSummaryModal: false,
   });
 
+  // Callback para limpeza do mapa
+  const [mapCleanupCallback, setMapCleanupCallback] = useState<
+    (() => void) | null
+  >(null);
+
   const startTracing = () => {
     setState((prev) => ({
       ...prev,
@@ -146,6 +153,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const stopTracing = () => {
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
+
     setState((prev) => ({
       ...prev,
       isTracing: false,
@@ -283,6 +295,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const cancelTrace = () => {
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
+
     // Cancel everything and reset
     stopTracing();
   };
@@ -319,6 +336,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const giveUpNavigation = () => {
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
+
     // Desiste da navegação e volta ao estado inicial
     setState((prev) => ({
       ...prev,
@@ -526,6 +548,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const endRoute = () => {
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
+
     // Encerra toda a navegação e volta ao estado inicial
     setState((prev) => ({
       ...prev,
@@ -580,6 +607,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     localStorage.setItem("completedRoutes", JSON.stringify(existingRoutes));
 
     console.log("Rota salva e marcada como concluída:", routeSummary);
+
+    // Limpa o mapa se callback estiver disponível
+    if (mapCleanupCallback) {
+      mapCleanupCallback();
+    }
 
     // Resetar todo o estado após salvar
     setState((prev) => ({
@@ -648,6 +680,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     openFinalSummaryModal,
     closeFinalSummaryModal,
     saveAndCompleteRoute,
+    setMapCleanupCallback: (callback: () => void) =>
+      setMapCleanupCallback(() => callback),
   };
 
   return (
