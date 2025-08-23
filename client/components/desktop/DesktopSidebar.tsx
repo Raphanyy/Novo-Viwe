@@ -68,13 +68,6 @@ const navigationItems: NavigationItem[] = [
     color: "text-indigo-600",
     description: "Central de notificações",
   },
-  {
-    name: "Ajustes",
-    path: "/app/ajustes",
-    icon: Settings,
-    color: "text-gray-600",
-    description: "Configurações do sistema",
-  },
 ];
 
 interface DesktopSidebarProps {
