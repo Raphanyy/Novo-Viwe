@@ -417,6 +417,72 @@ const MapPage: React.FC = () => {
     }
   }, []);
 
+  const findMyLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      alert('Geolocalização não é suportada por este navegador.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        if (map.current) {
+          // Voa para a localização atual do usuário
+          map.current.flyTo({
+            center: [longitude, latitude],
+            zoom: 16,
+            duration: 2000
+          });
+
+          // Atualiza o marcador de localização atual
+          const currentLocationEl = document.createElement("div");
+          currentLocationEl.className =
+            "w-4 h-4 bg-blue-600 rounded-full shadow-lg border-2 border-white";
+          currentLocationEl.innerHTML =
+            '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div>';
+
+          // Remove marcador anterior se existir
+          const existingMarkers = document.querySelectorAll('.mapboxgl-marker');
+          existingMarkers.forEach(marker => {
+            const markerEl = marker.querySelector('.w-4.h-4.bg-blue-600');
+            if (markerEl) {
+              marker.remove();
+            }
+          });
+
+          // Adiciona novo marcador na localização atual
+          new mapboxgl.Marker(currentLocationEl)
+            .setLngLat([longitude, latitude])
+            .addTo(map.current);
+        }
+      },
+      (error) => {
+        let errorMessage = 'Erro ao obter localização: ';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage += 'Permissão negada pelo usuário.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage += 'Localização indisponível.';
+            break;
+          case error.TIMEOUT:
+            errorMessage += 'Tempo esgotado para obter localização.';
+            break;
+          default:
+            errorMessage += 'Erro desconhecido.';
+            break;
+        }
+        alert(errorMessage);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  }, []);
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Search and Controls */}
