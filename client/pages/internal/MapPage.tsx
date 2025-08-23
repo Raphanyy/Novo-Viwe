@@ -761,20 +761,38 @@ const MapPage: React.FC = () => {
 
   // Clear search timeout on unmount and add global error handler
   useEffect(() => {
-    // Add global error handler for network issues
+    // Add global error handler for network issues and filter out expected AbortErrors
     const handleGlobalError = (event: ErrorEvent) => {
+      // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
+      if (event.message.includes('AbortError') || event.message.includes('aborted without reason')) {
+        event.preventDefault(); // Prevent the error from being logged to console
+        return;
+      }
+
       if (event.message.includes('Failed to fetch') || event.message.includes('NetworkError')) {
         console.warn('Network error detected, search may be affected:', event.message);
       }
     };
 
+    // Handle unhandled promise rejections (including AbortErrors from async operations)
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      if (event.reason &&
+          (event.reason.name === 'AbortError' ||
+           (event.reason.message && event.reason.message.includes('aborted')))) {
+        event.preventDefault(); // Prevent the error from being logged
+        return;
+      }
+    };
+
     window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
       window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
   }, []);
 
