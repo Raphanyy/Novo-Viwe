@@ -161,54 +161,19 @@ const NotificationsPage: React.FC = () => {
   const renderActionButtons = (notification: any) => {
     if (!notification.actionable) return null;
 
-    switch (notification.type) {
-      case "traffic":
-        return (
-          <div className="flex flex-wrap gap-1.5">
-            <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
-              Ver rota alternativa
-            </button>
-            <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Dispensar
-            </button>
-          </div>
-        );
-      case "route":
-        return (
-          <div className="flex flex-wrap gap-1.5">
-            <button className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors duration-200">
-              Usar nova rota
-            </button>
-            <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Ver detalhes
-            </button>
-          </div>
-        );
-      case "scheduled":
-        return (
-          <div className="flex flex-wrap gap-1.5">
-            <button className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors duration-200">
-              Verificar trânsito
-            </button>
-            <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Adiar lembrete
-            </button>
-          </div>
-        );
-      case "system":
-        return (
-          <div className="flex flex-wrap gap-1.5">
-            <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
-              Atualizar agora
-            </button>
-            <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
-              Lembrar depois
-            </button>
-          </div>
-        );
-      default:
-        return null;
-    }
+    return (
+      <div className="flex flex-wrap gap-1.5">
+        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200">
+          Ação Principal
+        </button>
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
+          Ver Detalhes
+        </button>
+        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-muted transition-colors duration-200 border border-border">
+          Dispensar
+        </button>
+      </div>
+    );
   };
 
   return (
