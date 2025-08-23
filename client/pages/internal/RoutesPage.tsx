@@ -115,7 +115,7 @@ const RoutesPage: React.FC = () => {
         duration: "1h 15min",
         distance: "65.2 km",
         traffic: "light",
-        scheduledFor: "S��bado 08:00",
+        scheduledFor: "Sábado 08:00",
         isFavorite: false,
       },
     ],
@@ -130,7 +130,7 @@ const RoutesPage: React.FC = () => {
       case "heavy":
         return "text-red-600 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-muted-foreground bg-gray-100";
     }
   };
 
@@ -179,7 +179,7 @@ const RoutesPage: React.FC = () => {
               className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab.name}
@@ -235,7 +235,7 @@ const RoutesPage: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-muted-foreground">
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span>{route.from}</span>
@@ -256,11 +256,11 @@ const RoutesPage: React.FC = () => {
                   <div className="flex items-center space-x-4 text-sm">
                     <div className="flex items-center space-x-1">
                       <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="text-gray-600">{route.duration}</span>
+                      <span className="text-muted-foreground">{route.duration}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <MapPin className="h-4 w-4 text-gray-500" />
-                      <span className="text-gray-600">{route.distance}</span>
+                      <span className="text-muted-foreground">{route.distance}</span>
                     </div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
@@ -287,10 +287,10 @@ const RoutesPage: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                      <Share2 className="h-4 w-4 text-gray-600" />
+                      <Share2 className="h-4 w-4 text-muted-foreground" />
                     </button>
                     <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                      <Edit3 className="h-4 w-4 text-gray-600" />
+                      <Edit3 className="h-4 w-4 text-muted-foreground" />
                     </button>
                     <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
                       <Navigation className="h-4 w-4" />
