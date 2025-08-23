@@ -263,6 +263,7 @@ const MapPage: React.FC = () => {
 
       return () => {
         clearTimeout(timeoutId);
+        clearTimeout(autoLocationTimeout);
         if (map.current) {
           try {
             // Clear all event listeners first
