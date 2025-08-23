@@ -215,7 +215,9 @@ const ActivityPage: React.FC = () => {
           <div className="bg-card rounded-2xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <Route className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium text-foreground">Viagens</span>
+              <span className="text-sm font-medium text-foreground">
+                Viagens
+              </span>
             </div>
             <p className="text-2xl font-bold text-foreground">
               {stats.totalTrips}

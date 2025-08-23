@@ -458,7 +458,10 @@ const OptionsPage: React.FC = () => {
                         />
                         <span className="font-medium">{item.title}</span>
                       </div>
-                      <ChevronRight size={20} className="text-muted-foreground" />
+                      <ChevronRight
+                        size={20}
+                        className="text-muted-foreground"
+                      />
                     </button>
                   </div>
                 ))}

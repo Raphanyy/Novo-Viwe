@@ -216,7 +216,10 @@ const DashboardPage: React.FC = () => {
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="bg-card rounded-2xl p-4 border border-border">
+                <div
+                  key={stat.label}
+                  className="bg-card rounded-2xl p-4 border border-border"
+                >
                   <div className="flex items-center justify-between mb-2">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
@@ -292,7 +295,9 @@ const DashboardPage: React.FC = () => {
               <Zap className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-foreground mb-1">Dica do Dia</h4>
+              <h4 className="font-semibold text-foreground mb-1">
+                Dica do Dia
+              </h4>
               <p className="text-sm text-muted-foreground mb-3">
                 Evite a Rua das Palmeiras entre 17h-19h. Trânsito intenso pode
                 aumentar seu tempo de viagem em até 15 minutos.
@@ -329,7 +334,9 @@ const DashboardPage: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">Trânsito</p>
-                <p className="text-xs text-muted-foreground">Condições normais</p>
+                <p className="text-xs text-muted-foreground">
+                  Condições normais
+                </p>
               </div>
             </div>
             <p className="text-lg font-bold text-green-600">Fluindo</p>

@@ -212,7 +212,9 @@ const DesktopInternalLayout: React.FC = () => {
                 <p className="text-sm font-medium text-foreground truncate">
                   {user?.name}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
               </div>
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </button>

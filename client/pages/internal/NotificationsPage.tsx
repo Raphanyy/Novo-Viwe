@@ -43,7 +43,8 @@ const NotificationsPage: React.FC = () => {
       title: "Alerta de Trânsito",
       message:
         "Congestionamento detectado na Av. Paulista. Rota alternativa disponível com economia de 12 minutos.",
-      details: "O congestionamento foi causado por um acidente na altura do número 1500. O desvio pela Rua Augusta pode economizar até 12 minutos no seu trajeto atual.",
+      details:
+        "O congestionamento foi causado por um acidente na altura do número 1500. O desvio pela Rua Augusta pode economizar até 12 minutos no seu trajeto atual.",
       time: "2 min atrás",
       read: false,
       icon: AlertTriangle,
@@ -57,7 +58,8 @@ const NotificationsPage: React.FC = () => {
       title: "Nova Rota Otimizada",
       message:
         "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
-      details: "Nossa IA analisou seus padrões de viagem e encontrou uma nova rota que pode economizar 8 minutos e 2km de distância. A nova rota evita 3 semáforos principais.",
+      details:
+        "Nossa IA analisou seus padrões de viagem e encontrou uma nova rota que pode economizar 8 minutos e 2km de distância. A nova rota evita 3 semáforos principais.",
       time: "1h atrás",
       read: false,
       icon: Route,
@@ -69,8 +71,10 @@ const NotificationsPage: React.FC = () => {
       id: 3,
       type: "scheduled",
       title: "Lembrete de Viagem",
-      message: "Sua viagem para o aeroporto está agendada para amanhã às 15:00.",
-      details: "Tempo estimado: 45 minutos. Sugestão: sair às 14:00 para chegar com folga. Verificamos o trânsito e não há congestionamentos previstos para o horário.",
+      message:
+        "Sua viagem para o aeroporto está agendada para amanhã às 15:00.",
+      details:
+        "Tempo estimado: 45 minutos. Sugestão: sair às 14:00 para chegar com folga. Verificamos o trânsito e não há congestionamentos previstos para o horário.",
       time: "3h atrás",
       read: true,
       icon: Calendar,
@@ -83,7 +87,8 @@ const NotificationsPage: React.FC = () => {
       type: "achievement",
       title: "Meta Atingida!",
       message: "Você economizou 2 horas de trânsito este mês!",
-      details: "Parabéns! Suas escolhas inteligentes de rota economizaram 2h14min em tempo de viagem e R$ 45,30 em combustível neste mês. Continue assim!",
+      details:
+        "Parabéns! Suas escolhas inteligentes de rota economizaram 2h14min em tempo de viagem e R$ 45,30 em combustível neste mês. Continue assim!",
       time: "1 dia atrás",
       read: true,
       icon: Star,
@@ -96,7 +101,8 @@ const NotificationsPage: React.FC = () => {
       type: "system",
       title: "Atualização Disponível",
       message: "Nova versão do app com melhorias na navegação.",
-      details: "A versão 2.1.5 está disponível com correções de bugs, melhor precisão GPS e novos recursos de economia de bateria. A atualização leva aproximadamente 2 minutos.",
+      details:
+        "A versão 2.1.5 está disponível com correções de bugs, melhor precisão GPS e novos recursos de economia de bateria. A atualização leva aproximadamente 2 minutos.",
       time: "2 dias atrás",
       read: true,
       icon: Info,
@@ -298,7 +304,9 @@ const NotificationsPage: React.FC = () => {
                   key={notification.id}
                   value={`item-${notification.id}`}
                   className={`bg-card rounded-2xl border transition-all duration-200 ${
-                    !notification.read ? "border-l-4 border-l-blue-500" : "border-border"
+                    !notification.read
+                      ? "border-l-4 border-l-blue-500"
+                      : "border-border"
                   } ${isSelected ? "ring-2 ring-blue-500 bg-blue-50" : ""}`}
                 >
                   <AccordionTrigger className="hover:no-underline px-4 py-3">
@@ -360,7 +368,7 @@ const NotificationsPage: React.FC = () => {
                       </div>
                     </div>
                   </AccordionTrigger>
-                  
+
                   <AccordionContent className="px-4 pb-4">
                     <div className="ml-8">
                       {/* Detailed message */}
@@ -375,18 +383,26 @@ const NotificationsPage: React.FC = () => {
                       <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => 
-                              notification.read 
+                            onClick={() =>
+                              notification.read
                                 ? markAsUnread(notification.id)
                                 : markAsRead(notification.id)
                             }
                             className="flex items-center space-x-1 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
                           >
-                            {notification.read ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            <span>{notification.read ? "Marcar como não lida" : "Marcar como lida"}</span>
+                            {notification.read ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                            <span>
+                              {notification.read
+                                ? "Marcar como não lida"
+                                : "Marcar como lida"}
+                            </span>
                           </button>
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => archiveNotification(notification.id)}
