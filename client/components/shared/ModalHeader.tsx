@@ -1,11 +1,10 @@
 import React from "react";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface ModalHeaderProps {
   title: string;
   showBackButton?: boolean;
   onBack?: () => void;
-  onClose?: () => void;
   rightContent?: React.ReactNode;
 }
 
@@ -13,7 +12,6 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({
   title,
   showBackButton = false,
   onBack,
-  onClose,
   rightContent,
 }) => {
   return (
@@ -29,17 +27,11 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({
         )}
         <h1 className="text-lg font-semibold text-foreground">{title}</h1>
       </div>
-      <div className="flex items-center space-x-2">
-        {rightContent}
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-accent rounded-lg transition-colors"
-          >
-            <X className="h-5 w-5 text-foreground" />
-          </button>
-        )}
-      </div>
+      {rightContent && (
+        <div className="flex items-center space-x-2">
+          {rightContent}
+        </div>
+      )}
     </div>
   );
 };
