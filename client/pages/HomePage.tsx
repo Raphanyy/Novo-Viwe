@@ -79,7 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ heroRef }) => {
             <button className="bg-blue-600 text-white px-7 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-lg transform hover:-translate-y-0.5">
               Começar a planejar
             </button>
-            <button className="text-foreground px-7 py-3 rounded-full border border-border font-semibold hover:bg-gray-100 transition-colors duration-200">
+            <button className="text-foreground px-7 py-3 rounded-full border border-border font-semibold hover:bg-muted transition-colors duration-200">
               Saiba mais
             </button>
           </div>
