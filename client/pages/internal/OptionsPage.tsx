@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   Accordion,
@@ -46,12 +46,61 @@ import {
   ToggleRight,
 } from "lucide-react";
 
+// Constantes movidas para fora do componente para evitar recriações
+const VEHICLES = [
+  { id: "car", name: "Carro", icon: Car, description: "Veículo padrão" },
+  { id: "bike", name: "Bicicleta", icon: Bike, description: "Ciclovias preferidas" },
+  { id: "truck", name: "Caminhão", icon: Truck, description: "Rotas para veículos pesados" },
+  { id: "walk", name: "A pé", icon: Footprints, description: "Caminhos para pedestres" },
+];
+
+const ROUTE_TYPES = [
+  { id: "fastest", name: "Mais Rápida", icon: Zap, description: "Prioriza menor tempo de viagem" },
+  { id: "shortest", name: "Mais Curta", icon: Route, description: "Menor distância percorrida" },
+  { id: "economic", name: "Econômica", icon: DollarSign, description: "Menor consumo de combustível" },
+  { id: "balanced", name: "Balanceada", icon: Shield, description: "Equilíbrio entre tempo e economia" },
+];
+
+const FUEL_TYPES = [
+  { id: "gasoline", name: "Gasolina", price: "R$ 5,49/L" },
+  { id: "ethanol", name: "Etanol", price: "R$ 3,89/L" },
+  { id: "diesel", name: "Diesel", price: "R$ 4,99/L" },
+  { id: "electric", name: "Elétrico", price: "R$ 0,45/kWh" },
+];
+
+const ACCOUNT_ACTIONS = [
+  { icon: CreditCard, title: "Meus Planos", action: "Meus Planos" },
+  { icon: CreditCard, title: "Preferências de Pagamento", action: "Preferências de Pagamento" },
+  { icon: BadgeMinus, title: "Remover Anúncios", action: "Remover Anúncios" },
+  { icon: BookOpen, title: "Tutoriais", action: "Tutoriais" },
+  { icon: AlertCircle, title: "Emergências", action: "Emergências" },
+  { icon: FileText, title: "Relatórios", action: "Relatórios" },
+  { icon: Flag, title: "Denúncias", action: "Denúncias" },
+  { icon: HelpCircle, title: "Suporte / FAQ", action: "Suporte" },
+  { icon: Shield, title: "Segurança", action: "Segurança" },
+  { icon: RefreshCcw, title: "Atualizações", action: "updates" },
+];
+
+const NAVIGATION_SETTINGS_CONFIG = [
+  { key: "voiceGuidance", icon: Volume2, title: "Orientação por voz", subtitle: "Instruções faladas durante a navegação" },
+  { key: "soundAlerts", icon: VolumeX, title: "Alertas sonoros", subtitle: "Sons de alerta para mudanças" },
+  { key: "autoZoom", icon: MapPin, title: "Zoom automático", subtitle: "Ajusta zoom conforme velocidade" },
+  { key: "nightMode", icon: Clock, title: "Modo noturno automático", subtitle: "Ativa tema escuro após 18h" },
+];
+
+const AVOID_OPTIONS_CONFIG = [
+  { key: "tolls", icon: DollarSign, title: "Pedágios", subtitle: "Evitar estradas com cobrança" },
+  { key: "highways", icon: Route, title: "Rodovias", subtitle: "Preferir vias urbanas" },
+  { key: "ferries", icon: Globe, title: "Balsas", subtitle: "Evitar travessias marítimas" },
+  { key: "unpaved", icon: MapPin, title: "Estradas não pavimentadas", subtitle: "Apenas vias asfaltadas" },
+];
+
 const OptionsPage: React.FC = () => {
   const { user } = useAuth();
   
-  // Estados do perfil
-  const [name, setName] = useState(user?.name || "Nome do Usuário");
-  const [email, setEmail] = useState(user?.email || "email@exemplo.com");
+  // Estados do perfil - usando valores iniciais estáveis
+  const [name, setName] = useState(() => user?.name || "Nome do Usuário");
+  const [email, setEmail] = useState(() => user?.email || "email@exemplo.com");
   const [company, setCompany] = useState("Nome da Empresa");
   const [country, setCountry] = useState("Brasil");
   const [city, setCity] = useState("Rio de Janeiro");
@@ -65,65 +114,81 @@ const OptionsPage: React.FC = () => {
   const [routePreference, setRoutePreference] = useState("balanced");
   const [selectedFuel, setSelectedFuel] = useState("gasoline");
   const [fuelConsumption, setFuelConsumption] = useState("12");
-  const [avoidOptions, setAvoidOptions] = useState({
+
+  // Estados de objetos com valores estáveis
+  const [avoidOptions, setAvoidOptions] = useState(() => ({
     tolls: false,
     highways: false,
     ferries: false,
     unpaved: true,
-  });
-  const [navigationSettings, setNavigationSettings] = useState({
+  }));
+
+  const [navigationSettings, setNavigationSettings] = useState(() => ({
     voiceGuidance: true,
     soundAlerts: true,
     autoZoom: true,
     nightMode: false,
-  });
+  }));
 
-  const vehicles = [
-    { id: "car", name: "Carro", icon: Car, description: "Veículo padrão" },
-    { id: "bike", name: "Bicicleta", icon: Bike, description: "Ciclovias preferidas" },
-    { id: "truck", name: "Caminhão", icon: Truck, description: "Rotas para veículos pesados" },
-    { id: "walk", name: "A pé", icon: Footprints, description: "Caminhos para pedestres" },
-  ];
+  // Controle do estado dos accordions
+  const [openAccordions, setOpenAccordions] = useState<string[]>([]);
 
-  const routeTypes = [
-    { id: "fastest", name: "Mais Rápida", icon: Zap, description: "Prioriza menor tempo de viagem" },
-    { id: "shortest", name: "Mais Curta", icon: Route, description: "Menor distância percorrida" },
-    { id: "economic", name: "Econômica", icon: DollarSign, description: "Menor consumo de combustível" },
-    { id: "balanced", name: "Balanceada", icon: Shield, description: "Equilíbrio entre tempo e economia" },
-  ];
-
-  const fuelTypes = [
-    { id: "gasoline", name: "Gasolina", price: "R$ 5,49/L" },
-    { id: "ethanol", name: "Etanol", price: "R$ 3,89/L" },
-    { id: "diesel", name: "Diesel", price: "R$ 4,99/L" },
-    { id: "electric", name: "Elétrico", price: "R$ 0,45/kWh" },
-  ];
-
-  const handleSaveProfile = (e: React.FormEvent) => {
+  // Funções memoizadas para evitar re-renderizações
+  const handleSaveProfile = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     console.log("Profile saved:", { name, email, company, country, city });
     setShowSuccessMessage(true);
     setTimeout(() => setShowSuccessMessage(false), 2000);
-  };
+  }, [name, email, company, country, city]);
 
-  const handleAction = (action: string) => {
+  const handleAction = useCallback((action: string) => {
     console.log(`Action: ${action}`);
     alert(`Ação de '${action}' acionada!`);
-  };
+  }, []);
 
-  const toggleAvoidOption = (option: keyof typeof avoidOptions) => {
+  const toggleAvoidOption = useCallback((option: keyof typeof avoidOptions) => {
     setAvoidOptions((prev) => ({
       ...prev,
       [option]: !prev[option],
     }));
-  };
+  }, []);
 
-  const toggleNavigationSetting = (setting: keyof typeof navigationSettings) => {
+  const toggleNavigationSetting = useCallback((setting: keyof typeof navigationSettings) => {
     setNavigationSettings((prev) => ({
       ...prev,
       [setting]: !prev[setting],
     }));
-  };
+  }, []);
+
+  // Funções específicas memoizadas
+  const handleVehicleSelect = useCallback((vehicleId: string) => {
+    setSelectedVehicle(vehicleId);
+  }, []);
+
+  const handleRouteSelect = useCallback((routeId: string) => {
+    setRoutePreference(routeId);
+  }, []);
+
+  const handleFuelSelect = useCallback((fuelId: string) => {
+    setSelectedFuel(fuelId);
+  }, []);
+
+  const handleNavigationSelect = useCallback((navType: string) => {
+    setSelectedNavigation(navType);
+  }, []);
+
+  const handleDarkModeToggle = useCallback(() => {
+    setIsDarkMode(prev => !prev);
+  }, []);
+
+  const handleIgnoreConsumptionToggle = useCallback(() => {
+    setIgnoreConsumption(prev => !prev);
+  }, []);
+
+  // Memoização da inicial do avatar para evitar recálculos
+  const avatarInitial = useMemo(() => {
+    return name.charAt(0).toUpperCase();
+  }, [name]);
 
   return (
     <div className="h-full overflow-auto bg-gray-50">
@@ -141,7 +206,12 @@ const OptionsPage: React.FC = () => {
 
       {/* Main Content with Accordions */}
       <main className="p-4">
-        <Accordion type="multiple" className="w-full space-y-4">
+        <Accordion 
+          type="multiple" 
+          value={openAccordions}
+          onValueChange={setOpenAccordions}
+          className="w-full space-y-4"
+        >
           
           {/* Seção do Perfil */}
           <AccordionItem value="profile" className="bg-white rounded-xl shadow-md border border-gray-200">
@@ -161,7 +231,7 @@ const OptionsPage: React.FC = () => {
                 {/* Seção da foto de perfil */}
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-24 h-24 bg-blue-200 rounded-full flex items-center justify-center text-blue-600 font-bold text-4xl">
-                    {name.charAt(0).toUpperCase()}
+                    {avatarInitial}
                   </div>
                   <button className="text-blue-600 font-medium hover:underline">
                     Alterar Foto
@@ -256,18 +326,7 @@ const OptionsPage: React.FC = () => {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-3">
-                {[
-                  { icon: CreditCard, title: "Meus Planos", action: "Meus Planos" },
-                  { icon: CreditCard, title: "Preferências de Pagamento", action: "Preferências de Pagamento" },
-                  { icon: BadgeMinus, title: "Remover Anúncios", action: "Remover Anúncios" },
-                  { icon: BookOpen, title: "Tutoriais", action: "Tutoriais" },
-                  { icon: AlertCircle, title: "Emergências", action: "Emergências" },
-                  { icon: FileText, title: "Relatórios", action: "Relatórios" },
-                  { icon: Flag, title: "Denúncias", action: "Denúncias" },
-                  { icon: HelpCircle, title: "Suporte / FAQ", action: "Suporte" },
-                  { icon: Shield, title: "Segurança", action: "Segurança" },
-                  { icon: RefreshCcw, title: "Atualizações", action: "updates" },
-                ].map((item, index) => (
+                {ACCOUNT_ACTIONS.map((item, index) => (
                   <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <button
                       onClick={() => handleAction(item.action)}
@@ -306,14 +365,14 @@ const OptionsPage: React.FC = () => {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="grid grid-cols-2 gap-3">
-                {vehicles.map((vehicle) => {
+                {VEHICLES.map((vehicle) => {
                   const Icon = vehicle.icon;
                   const isSelected = selectedVehicle === vehicle.id;
 
                   return (
                     <button
                       key={vehicle.id}
-                      onClick={() => setSelectedVehicle(vehicle.id)}
+                      onClick={() => handleVehicleSelect(vehicle.id)}
                       className={`p-4 rounded-2xl border-2 transition-all duration-200 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
@@ -355,14 +414,14 @@ const OptionsPage: React.FC = () => {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-3">
-                {routeTypes.map((type) => {
+                {ROUTE_TYPES.map((type) => {
                   const Icon = type.icon;
                   const isSelected = routePreference === type.id;
 
                   return (
                     <button
                       key={type.id}
-                      onClick={() => setRoutePreference(type.id)}
+                      onClick={() => handleRouteSelect(type.id)}
                       className={`w-full p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
                         isSelected
                           ? "border-blue-500 bg-blue-50"
@@ -431,7 +490,7 @@ const OptionsPage: React.FC = () => {
                         name="navigation"
                         value="integrated"
                         checked={selectedNavigation === "integrated"}
-                        onChange={() => setSelectedNavigation("integrated")}
+                        onChange={() => handleNavigationSelect("integrated")}
                         className="form-radio text-blue-600 h-4 w-4"
                       />
                       <MapPin size={20} className="ml-2" />
@@ -443,7 +502,7 @@ const OptionsPage: React.FC = () => {
                         name="navigation"
                         value="google"
                         checked={selectedNavigation === "google"}
-                        onChange={() => setSelectedNavigation("google")}
+                        onChange={() => handleNavigationSelect("google")}
                         className="form-radio text-blue-600 h-4 w-4"
                       />
                       <Map size={20} className="ml-2" />
@@ -455,7 +514,7 @@ const OptionsPage: React.FC = () => {
                         name="navigation"
                         value="waze"
                         checked={selectedNavigation === "waze"}
-                        onChange={() => setSelectedNavigation("waze")}
+                        onChange={() => handleNavigationSelect("waze")}
                         className="form-radio text-blue-600 h-4 w-4"
                       />
                       <Waypoints size={20} className="ml-2" />
@@ -468,12 +527,7 @@ const OptionsPage: React.FC = () => {
                 <div>
                   <h4 className="font-medium mb-3">Configurações</h4>
                   <div className="space-y-4">
-                    {[
-                      { key: "voiceGuidance", icon: Volume2, title: "Orientação por voz", subtitle: "Instruções faladas durante a navegação" },
-                      { key: "soundAlerts", icon: VolumeX, title: "Alertas sonoros", subtitle: "Sons de alerta para mudanças" },
-                      { key: "autoZoom", icon: MapPin, title: "Zoom automático", subtitle: "Ajusta zoom conforme velocidade" },
-                      { key: "nightMode", icon: Clock, title: "Modo noturno automático", subtitle: "Ativa tema escuro após 18h" },
-                    ].map((setting) => (
+                    {NAVIGATION_SETTINGS_CONFIG.map((setting) => (
                       <div key={setting.key} className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <setting.icon className="h-5 w-5 text-gray-600" />
@@ -522,10 +576,10 @@ const OptionsPage: React.FC = () => {
                     Tipo de Combustível
                   </label>
                   <div className="grid grid-cols-2 gap-2">
-                    {fuelTypes.map((fuel) => (
+                    {FUEL_TYPES.map((fuel) => (
                       <button
                         key={fuel.id}
-                        onClick={() => setSelectedFuel(fuel.id)}
+                        onClick={() => handleFuelSelect(fuel.id)}
                         className={`p-3 rounded-xl text-left transition-all duration-200 ${
                           selectedFuel === fuel.id
                             ? "bg-blue-50 border-2 border-blue-200"
@@ -592,12 +646,7 @@ const OptionsPage: React.FC = () => {
             </AccordionTrigger>
             <AccordionContent className="px-6 pb-6">
               <div className="space-y-4">
-                {[
-                  { key: "tolls", icon: DollarSign, title: "Pedágios", subtitle: "Evitar estradas com cobrança" },
-                  { key: "highways", icon: Route, title: "Rodovias", subtitle: "Preferir vias urbanas" },
-                  { key: "ferries", icon: Globe, title: "Balsas", subtitle: "Evitar travessias marítimas" },
-                  { key: "unpaved", icon: MapPin, title: "Estradas não pavimentadas", subtitle: "Apenas vias asfaltadas" },
-                ].map((option) => (
+                {AVOID_OPTIONS_CONFIG.map((option) => (
                   <div key={option.key} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <option.icon className="h-5 w-5 text-gray-600" />
@@ -649,7 +698,7 @@ const OptionsPage: React.FC = () => {
                     <span className="font-medium">Tema Escuro</span>
                   </div>
                   <div
-                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    onClick={handleDarkModeToggle}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${isDarkMode ? "bg-blue-600" : "bg-gray-200"}`}
                   >
                     <span
@@ -664,7 +713,7 @@ const OptionsPage: React.FC = () => {
                     <span className="font-medium">Ignorar Consumo</span>
                   </div>
                   <div
-                    onClick={() => setIgnoreConsumption(!ignoreConsumption)}
+                    onClick={handleIgnoreConsumptionToggle}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${ignoreConsumption ? "bg-blue-600" : "bg-gray-200"}`}
                   >
                     <span
