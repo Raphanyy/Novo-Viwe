@@ -166,7 +166,7 @@ const DashboardPage: React.FC = () => {
                   <button
                     key={action.name}
                     onClick={action.action}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-border"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
@@ -187,7 +187,7 @@ const DashboardPage: React.FC = () => {
                   <Link
                     key={action.name}
                     to={action.path}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-border"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
@@ -216,7 +216,7 @@ const DashboardPage: React.FC = () => {
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <div key={stat.label} className="bg-card rounded-2xl p-4">
+                <div key={stat.label} className="bg-card rounded-2xl p-4 border border-border">
                   <div className="flex items-center justify-between mb-2">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
@@ -251,7 +251,7 @@ const DashboardPage: React.FC = () => {
             {recentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-border"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -309,7 +309,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Weather & Traffic (Simplified) */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-card rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4 border border-border">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">☀️</span>
@@ -322,7 +322,7 @@ const DashboardPage: React.FC = () => {
             <p className="text-lg font-bold text-foreground">24°C</p>
           </div>
 
-          <div className="bg-card rounded-2xl p-4">
+          <div className="bg-card rounded-2xl p-4 border border-border">
             <div className="flex items-center space-x-2 mb-2">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <Car className="h-4 w-4 text-green-600" />
