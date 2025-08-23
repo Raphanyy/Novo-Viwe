@@ -59,7 +59,7 @@ const NotificationsPage: React.FC = () => {
       message:
         "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
       details:
-        "Nova rota Casa→Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
+        "Nova rota Casa���Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
       time: "1h atrás",
       read: false,
       icon: Route,
@@ -88,7 +88,7 @@ const NotificationsPage: React.FC = () => {
       title: "Meta Atingida!",
       message: "Você economizou 2 horas de trânsito este mês!",
       details:
-        "Parabéns! Suas escolhas inteligentes de rota economizaram 2h14min em tempo de viagem e R$ 45,30 em combustível neste mês. Continue assim!",
+        "Economizou 2h14min e R$ 45,30 em combustível este mês com rotas inteligentes. Parabéns!",
       time: "1 dia atrás",
       read: true,
       icon: Star,
