@@ -1,6 +1,4 @@
 import React from "react";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { VisuallyHidden } from "../ui/visually-hidden";
 import ModalHeader from "./ModalHeader";
 import {
   Accordion,
@@ -64,21 +62,20 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
     return Math.random() * 5000 + 500; // Simulação
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto p-0">
-        <VisuallyHidden>
-          <DialogTitle>Detalhes da Navegação</DialogTitle>
-        </VisuallyHidden>
-        <ModalHeader
-          title="Detalhes da Navegação"
-          onClose={onClose}
-          rightContent={
-            <Navigation className="h-5 w-5 text-blue-600" />
-          }
-        />
-        <div className="p-4">
-          <div className="space-y-4">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      <ModalHeader
+        title="Detalhes da Navegação"
+        showBackButton={true}
+        onBack={onClose}
+        rightContent={
+          <Navigation className="h-5 w-5 text-blue-600" />
+        }
+      />
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-4">
           <Accordion type="multiple" className="w-full">
             {/* Paradas Concluídas */}
             <AccordionItem value="completed-stops">
@@ -313,10 +310,9 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
