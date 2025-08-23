@@ -163,9 +163,9 @@ const MapPage: React.FC = () => {
       .setLngLat([-46.6333, -23.5505])
       .addTo(map.current);
 
-    // Update center pin coordinates when map moves (for fixed screen pin)
+    // Update center pin coordinates when map moves (only during tracing)
     const updateCenterCoords = () => {
-      if (map.current) {
+      if (map.current && traceState.isTracing) {
         const center = map.current.getCenter();
         updateCenterPin([center.lng, center.lat]);
       }
@@ -173,9 +173,6 @@ const MapPage: React.FC = () => {
 
     map.current.on("move", updateCenterCoords);
     map.current.on("zoom", updateCenterCoords);
-
-    // Initialize center pin coordinates
-    updateCenterCoords();
 
     // Register cleanup callback after map is initialized
     // Use setTimeout to avoid immediate execution during render
@@ -213,7 +210,7 @@ const MapPage: React.FC = () => {
       const center = map.current.getCenter();
       updateCenterPin([center.lng, center.lat]);
     }
-  }, [traceState.isTracing]); // Only depend on isTracing to prevent loop
+  }, [traceState.isTracing, traceState.centerPin, updateCenterPin]); // Include all dependencies but avoid loop with condition
 
   // Update stop markers
   useEffect(() => {
