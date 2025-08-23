@@ -147,6 +147,14 @@ const InternalLayout: React.FC = () => {
                 </div>
 
                 <div className="py-2">
+                  <Link
+                    to="/app/opcoes"
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="h-4 w-4 mr-3" />
+                    Perfil
+                  </Link>
 
                   <button
                     onClick={logout}
