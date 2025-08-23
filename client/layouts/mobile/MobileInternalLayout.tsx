@@ -26,6 +26,10 @@ import {
   Zap,
   Trophy,
   Save,
+  Gamepad2,
+  Cog,
+  Compass,
+  PenTool,
 } from "lucide-react";
 
 const MobileInternalLayout: React.FC = () => {
@@ -114,12 +118,12 @@ const MobileInternalLayout: React.FC = () => {
     },
     {
       name: "Traçar",
-      icon: Navigation,
+      icon: PenTool,
       action: "trace",
     },
     {
       name: "Controle",
-      icon: Target,
+      icon: Gamepad2,
       action: "control",
     },
     {
@@ -142,12 +146,12 @@ const MobileInternalLayout: React.FC = () => {
     },
     {
       name: "Configurar",
-      icon: Target,
+      icon: Cog,
       action: "configure",
     },
     {
       name: "Traçar",
-      icon: Navigation,
+      icon: Compass,
       action: "trace_execute",
     },
   ];
