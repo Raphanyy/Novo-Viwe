@@ -163,14 +163,7 @@ const MapPage: React.FC = () => {
       .setLngLat([-46.6333, -23.5505])
       .addTo(map.current);
 
-    // Store updateCenterCoords in a ref to avoid recreating the function
-    const updateCenterCoordsRef = useRef<() => void>();
-    updateCenterCoordsRef.current = () => {
-      if (map.current) {
-        const center = map.current.getCenter();
-        updateCenterPin([center.lng, center.lat]);
-      }
-    };
+    // No event listeners needed here - will be added when tracing starts
 
     // Register cleanup callback after map is initialized
     // Use setTimeout to avoid immediate execution during render
@@ -202,13 +195,37 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove dependencies to prevent infinite loop
 
-  // Initialize center coordinates when tracing starts
+  // Manage center pin tracking when tracing starts/stops
   useEffect(() => {
-    if (traceState.isTracing && map.current && !traceState.centerPin) {
-      const center = map.current.getCenter();
-      updateCenterPin([center.lng, center.lat]);
+    if (!map.current) return;
+
+    if (traceState.isTracing) {
+      // Initialize center coordinates when tracing starts
+      if (!traceState.centerPin) {
+        const center = map.current.getCenter();
+        updateCenterPin([center.lng, center.lat]);
+      }
+
+      // Add event listeners for dynamic tracking
+      const updateCenterCoords = () => {
+        if (map.current) {
+          const center = map.current.getCenter();
+          updateCenterPin([center.lng, center.lat]);
+        }
+      };
+
+      map.current.on("move", updateCenterCoords);
+      map.current.on("zoom", updateCenterCoords);
+
+      // Cleanup function to remove listeners when tracing stops
+      return () => {
+        if (map.current) {
+          map.current.off("move", updateCenterCoords);
+          map.current.off("zoom", updateCenterCoords);
+        }
+      };
     }
-  }, [traceState.isTracing, traceState.centerPin, updateCenterPin]); // Include all dependencies but avoid loop with condition
+  }, [traceState.isTracing]); // Only depend on isTracing
 
   // Update stop markers
   useEffect(() => {
