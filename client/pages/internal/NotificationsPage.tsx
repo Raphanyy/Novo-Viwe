@@ -312,19 +312,19 @@ const NotificationsPage: React.FC = () => {
                   <AccordionTrigger className="hover:no-underline px-4 py-3">
                     <div className="flex items-center space-x-3 w-full">
                       {/* Selection Checkbox */}
-                      <button
+                      <div
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleNotificationSelection(notification.id);
                         }}
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
                           isSelected
                             ? "bg-blue-500 border-blue-500"
                             : "border-border hover:border-muted-foreground"
                         }`}
                       >
                         {isSelected && <Check className="h-3 w-3 text-white" />}
-                      </button>
+                      </div>
 
                       {/* Icon */}
                       <div
