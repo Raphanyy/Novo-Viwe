@@ -17,7 +17,19 @@ import {
   Database,
   Volume2,
   LogOut,
+  Mail,
 } from "lucide-react";
+
+// Import modular components
+import ProfileCard from "../../components/profile/ProfileCard";
+import ProfileHeader from "../../components/profile/ProfileHeader";
+import SettingsSection from "../../components/profile/SettingsSection";
+
+// Import secondary pages
+import PersonalInfoPage from "../../components/profile/pages/PersonalInfoPage";
+import PasswordPage from "../../components/profile/pages/PasswordPage";
+import NotificationSettingsPage from "../../components/profile/pages/NotificationSettingsPage";
+import ThemeSettingsPage from "../../components/profile/pages/ThemeSettingsPage";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -41,6 +53,7 @@ interface ProfileSubSection {
   subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
   hasSettings?: boolean;
+  component?: React.ComponentType<{ onBack: () => void }>;
 }
 
 const ProfilePage: React.FC = () => {
@@ -54,7 +67,7 @@ const ProfilePage: React.FC = () => {
     {
       id: "account",
       title: "Sua conta", 
-      subtitle: "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativação de conta.",
+      subtitle: "Veja informações sobre sua conta, baixe um arquivo com seus dados ou saiba mais sobre as opções de desativa��ão de conta.",
       icon: User,
       items: [
         {
@@ -63,6 +76,7 @@ const ProfilePage: React.FC = () => {
           subtitle: "Altere suas informações pessoais",
           icon: Edit3,
           hasSettings: true,
+          component: PersonalInfoPage,
         },
         {
           id: "plan-billing",
@@ -97,6 +111,7 @@ const ProfilePage: React.FC = () => {
           subtitle: "Altere sua senha a qualquer momento",
           icon: Lock,
           hasSettings: true,
+          component: PasswordPage,
         },
         {
           id: "two-factor",
@@ -147,12 +162,13 @@ const ProfilePage: React.FC = () => {
           subtitle: "Configure notificações do dispositivo",
           icon: Bell,
           hasSettings: true,
+          component: NotificationSettingsPage,
         },
         {
           id: "email-notifications", 
           title: "Notificações por email",
           subtitle: "Configure notificações por email",
-          icon: Bell,
+          icon: Mail,
           hasSettings: true,
         },
       ],
@@ -169,6 +185,7 @@ const ProfilePage: React.FC = () => {
           subtitle: "Escolha como o app será exibido",
           icon: Palette,
           hasSettings: true,
+          component: ThemeSettingsPage,
         },
         {
           id: "language",
@@ -256,50 +273,19 @@ const ProfilePage: React.FC = () => {
   const renderPrimaryLevel = () => (
     <div className="p-4 space-y-6">
       {/* Card do Usuário */}
-      <div className="bg-card rounded-2xl p-6 border border-border">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-16 h-16 rounded-full object-cover"
-              />
-            ) : (
-              <User className="h-8 w-8 text-primary" />
-            )}
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-foreground">{user?.name}</h2>
-            <p className="text-muted-foreground">@{user?.name?.toLowerCase().replace(/\s+/g, '')}</p>
-            <p className="text-sm text-muted-foreground mt-1">{user?.email}</p>
-          </div>
-        </div>
-      </div>
+      <ProfileCard />
 
       {/* Seções do Perfil */}
       <div className="space-y-4">
-        {profileSections.map((section) => {
-          const Icon = section.icon;
-          return (
-            <button
-              key={section.id}
-              onClick={() => navigateToSection(section.id)}
-              className="w-full bg-card rounded-2xl p-6 border border-border text-left hover:bg-accent/50 transition-colors"
-            >
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground mb-1">{section.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{section.subtitle}</p>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-2" />
-              </div>
-            </button>
-          );
-        })}
+        {profileSections.map((section) => (
+          <SettingsSection
+            key={section.id}
+            title={section.title}
+            subtitle={section.subtitle}
+            icon={section.icon}
+            onClick={() => navigateToSection(section.id)}
+          />
+        ))}
       </div>
     </div>
   );
@@ -323,27 +309,15 @@ const ProfilePage: React.FC = () => {
 
         {/* Itens da seção */}
         <div className="space-y-3">
-          {section.items?.map((item) => {
-            const ItemIcon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => item.hasSettings ? navigateToSubSection(item.id) : undefined}
-                className="w-full bg-card rounded-xl p-4 border border-border text-left hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-center space-x-3">
-                  <ItemIcon className="h-5 w-5 text-muted-foreground" />
-                  <div className="flex-1">
-                    <h4 className="font-medium text-foreground">{item.title}</h4>
-                    <p className="text-sm text-muted-foreground">{item.subtitle}</p>
-                  </div>
-                  {item.hasSettings && (
-                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  )}
-                </div>
-              </button>
-            );
-          })}
+          {section.items?.map((item) => (
+            <SettingsSection
+              key={item.id}
+              title={item.title}
+              subtitle={item.subtitle}
+              icon={item.icon}
+              onClick={item.hasSettings ? () => navigateToSubSection(item.id) : undefined}
+            />
+          ))}
         </div>
       </div>
     );
@@ -354,6 +328,13 @@ const ProfilePage: React.FC = () => {
     const subSection = getCurrentSubSection();
     if (!subSection) return null;
 
+    // Se existe um componente específico, renderiza ele
+    if (subSection.component) {
+      const Component = subSection.component;
+      return <Component onBack={goBack} />;
+    }
+
+    // Caso contrário, renderiza uma página genérica
     return (
       <div className="p-4">
         <div className="bg-card rounded-xl p-6 border border-border">
@@ -366,24 +347,21 @@ const ProfilePage: React.FC = () => {
     );
   };
 
+  const getHeaderTitle = () => {
+    if (currentLevel === NavigationLevel.PRIMARY) return "Configurações";
+    if (currentLevel === NavigationLevel.SECONDARY) return getCurrentSection()?.title;
+    if (currentLevel === NavigationLevel.TERTIARY) return getCurrentSubSection()?.title;
+    return "Configurações";
+  };
+
   return (
     <div className="h-full bg-background overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border px-4 py-3 flex items-center">
-        {currentLevel !== NavigationLevel.PRIMARY && (
-          <button
-            onClick={goBack}
-            className="p-2 hover:bg-accent rounded-lg mr-2"
-          >
-            <ArrowLeft className="h-5 w-5 text-foreground" />
-          </button>
-        )}
-        <h1 className="text-lg font-semibold text-foreground">
-          {currentLevel === NavigationLevel.PRIMARY && "Configurações"}
-          {currentLevel === NavigationLevel.SECONDARY && getCurrentSection()?.title}
-          {currentLevel === NavigationLevel.TERTIARY && getCurrentSubSection()?.title}
-        </h1>
-      </div>
+      <ProfileHeader
+        title={getHeaderTitle() || "Configurações"}
+        showBackButton={currentLevel !== NavigationLevel.PRIMARY}
+        onBack={goBack}
+      />
 
       {/* Conteúdo principal */}
       <div className="flex-1 overflow-y-auto">
