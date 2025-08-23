@@ -156,7 +156,7 @@ const SettingsPage: React.FC = () => {
 
   if (selectedSection) {
     return (
-      <div className="h-full bg-gray-50">
+      <div className="h-full bg-black">
         {/* Section Header */}
         <div className="bg-white border-b border-gray-200 p-4">
           <div className="flex items-center space-x-3">
@@ -564,7 +564,7 @@ const SettingsPage: React.FC = () => {
 
   // Main Settings Page
   return (
-    <div className="h-full overflow-auto bg-gray-50">
+    <div className="h-full overflow-auto bg-black">
       <div className="p-4 space-y-6">
         {/* User Profile Card */}
         <div className="bg-white rounded-2xl p-6">

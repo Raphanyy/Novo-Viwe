@@ -276,7 +276,7 @@ const OptionsPage: React.FC = () => {
   }, [name]);
 
   return (
-    <div className="h-full overflow-auto bg-background">
+    <div className="h-full overflow-auto bg-black">
       {/* Header */}
       <header className="bg-card border-b border-border shadow-sm sticky top-0 z-10">
         <h1 className="text-xl font-bold text-center p-4">Perfil</h1>
