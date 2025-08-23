@@ -371,7 +371,7 @@ const TabletInternalLayout: React.FC = () => {
               {getCurrentNavigationItems() ? (
                 // Map-specific header (dynamic based on trace state)
                 <div className="flex items-center space-x-4">
-                  <h1 className="text-xl font-semibold text-gray-900">
+                  <h1 className="text-xl font-semibold text-foreground">
                     {getCurrentPageName()}
                   </h1>
                   <div className="flex items-center space-x-2">
@@ -383,10 +383,10 @@ const TabletInternalLayout: React.FC = () => {
                         <Link
                           key={item.action}
                           to="/app"
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-accent transition-colors duration-200"
                         >
-                          <Icon className="h-4 w-4 text-gray-600" />
-                          <span className="text-sm font-medium text-gray-600">
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-medium text-muted-foreground">
                             {item.name}
                           </span>
                         </Link>
@@ -394,10 +394,10 @@ const TabletInternalLayout: React.FC = () => {
                         <button
                           key={item.action}
                           onClick={() => handleMapNavigation(item.action)}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                          className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-accent transition-colors duration-200"
                         >
-                          <Icon className="h-4 w-4 text-gray-600" />
-                          <span className="text-sm font-medium text-gray-600">
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-medium text-muted-foreground">
                             {item.name}
                           </span>
                         </button>
