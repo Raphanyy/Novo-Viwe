@@ -88,11 +88,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem("viwe_user");
   };
 
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      localStorage.setItem("viwe_user", JSON.stringify(updatedUser));
+    }
+  };
+
+  const updateAvatar = (avatarUrl: string) => {
+    if (user) {
+      const updatedUser = { ...user, avatar: avatarUrl };
+      setUser(updatedUser);
+      localStorage.setItem("viwe_user", JSON.stringify(updatedUser));
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
+    updateUser,
+    updateAvatar,
     isLoading,
   };
 
