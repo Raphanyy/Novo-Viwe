@@ -699,17 +699,45 @@ const MapPage: React.FC = () => {
                   className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
                 >
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <MapPin className="h-4 w-4 text-blue-600" />
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                      result.place_type.includes('poi')
+                        ? 'bg-green-100'
+                        : result.place_type.includes('place')
+                        ? 'bg-purple-100'
+                        : 'bg-blue-100'
+                    }`}>
+                      {result.place_type.includes('poi') ? (
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                      ) : (
+                        <MapPin className={`h-4 w-4 ${
+                          result.place_type.includes('poi')
+                            ? 'text-green-600'
+                            : result.place_type.includes('place')
+                            ? 'text-purple-600'
+                            : 'text-blue-600'
+                        }`} />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">
-                        {result.text}
-                      </p>
+                      <div className="flex items-center space-x-2">
+                        <p className="font-medium text-gray-900 truncate">
+                          {result.text}
+                        </p>
+                        {result.place_type.includes('poi') && (
+                          <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                            Estabelecimento
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-500 truncate">
                         {result.place_name}
                       </p>
-                      {result.place_type.length > 0 && (
+                      {result.properties.category && (
+                        <p className="text-xs text-gray-400 capitalize">
+                          {result.properties.category.replace(/[_,]/g, ' ')}
+                        </p>
+                      )}
+                      {!result.properties.category && result.place_type.length > 0 && (
                         <p className="text-xs text-gray-400 capitalize">
                           {result.place_type[0].replace('_', ' ')}
                         </p>
