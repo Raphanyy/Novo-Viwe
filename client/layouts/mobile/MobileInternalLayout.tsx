@@ -100,7 +100,7 @@ const MobileInternalLayout: React.FC = () => {
   };
 
   const isMapPage = location.pathname === "/app/mapa";
-  const isProfileSettingsPage = location.pathname === "/app/opcoes" || location.pathname === "/app/ajustes";
+  const shouldShowHeader = location.pathname === "/app" || location.pathname === "/app/mapa";
 
   const {
     state: traceState,
@@ -407,7 +407,7 @@ const MobileInternalLayout: React.FC = () => {
       />
 
       {/* Mobile Header - Simplified */}
-      {!isProfileSettingsPage && (
+      {shouldShowHeader && (
         <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="flex items-center">
@@ -496,7 +496,7 @@ const MobileInternalLayout: React.FC = () => {
 
       {/* Main Content - Optimized for mobile */}
       <main className={`flex-1 overflow-hidden bg-background pb-[73px] ${
-        isProfileSettingsPage ? "pt-0" : "pt-[73px]"
+        shouldShowHeader ? "pt-[73px]" : "pt-0"
       }`}>
         <div className="h-full overflow-y-auto">
           <Outlet />
