@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme - TEMA ESCURO ABSOLUTO
+   * Fundo global: Preto absoluto
+   * Textos principais: Branco
+   * Textos secundários: Cinza claro com alto contraste
+  */
+  :root {
+    /* Fundo principal: Preto absoluto */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    /* Cards e componentes: Preto absoluto com borda sutil */
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+
+    /* Popovers e overlays: Preto absoluto */
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Cores primárias: Azul mantido para contraste */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Cores secundárias: Cinza escuro */
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 90%;
+
+    /* Cores muted: Cinza médio para textos secundários */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 75%;
+
+    /* Cores de accent: Cinza escuro */
+    --accent: 0 0% 8%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Cores destrutivas: Vermelho com alto contraste */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Bordas e inputs: Cinza escuro */
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar: Preto absoluto */
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 221 83% 53%;
+  }
+
+  /* Modo dark mantido para compatibilidade (mas agora é o padrão) */
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 75%;
+
+    --accent: 0 0% 8%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
+    --ring: 221 83% 53%;
+
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 221 83% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Garantir que elementos específicos usem o tema escuro */
+  html {
+    @apply bg-black;
+  }
+
+  /* Melhorar contraste em elementos de formulário */
+  input,
+  textarea,
+  select {
+    @apply bg-input text-foreground border-border;
+  }
+
+  /* Melhorar contraste em botões */
+  button {
+    @apply text-foreground;
+  }
+
+  /* Scrollbar escura para combinar com o tema */
+  ::-webkit-scrollbar {
+    width: 8px;
+    background: hsl(0 0% 8%);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(0 0% 25%);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(0 0% 35%);
+  }
+
+  /* Garantir que elementos com fundo branco explícito sejam escuros */
+  .bg-white {
+    @apply !bg-card;
+  }
+
+  .text-black {
+    @apply !text-foreground;
+  }
+
+  .text-gray-900 {
+    @apply !text-foreground;
+  }
+
+  .text-gray-800 {
+    @apply !text-foreground;
+  }
+
+  .text-gray-700 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-600 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-500 {
+    @apply !text-muted-foreground;
+  }
+
+  .text-gray-400 {
+    @apply !text-muted-foreground;
+  }
+
+  /* Melhorar contraste em fundos cinza */
+  .bg-gray-50 {
+    @apply !bg-muted;
+  }
+
+  .bg-gray-100 {
+    @apply !bg-secondary;
+  }
+
+  .bg-gray-200 {
+    @apply !bg-border;
+  }
+}
