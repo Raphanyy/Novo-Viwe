@@ -2,14 +2,6 @@
   "name": "fusion-starter",
   "private": true,
   "type": "module",
-  "pkg": {
-    "assets": [
-      "dist/spa/*"
-    ],
-    "scripts": [
-      "dist/server/**/*.js"
-    ]
-  },
   "scripts": {
     "dev": "vite",
     "start": "vite",
@@ -17,27 +9,12 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
-    "build:mobile": "vite build --outDir dist/spa",
-    "cap:build": "npm run build:mobile && npx cap sync",
-    "cap:android": "npm run cap:build && npx cap open android",
-    "cap:ios": "npm run cap:build && npx cap open ios",
-    "cap:sync": "npx cap sync",
     "prod": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@capacitor/android": "^7.4.3",
-    "@capacitor/cli": "^7.4.3",
-    "@capacitor/core": "^7.4.3",
-    "@capacitor/geolocation": "^7.1.5",
-    "@capacitor/ios": "^7.4.3",
-    "@capacitor/network": "^7.0.2",
-    "@capacitor/preferences": "^7.0.2",
-    "@capacitor/push-notifications": "^7.0.2",
-    "@capacitor/share": "^7.0.2",
-    "@capacitor/status-bar": "^7.0.2",
     "@types/mapbox-gl": "^3.4.1",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
@@ -116,7 +93,9 @@
     "typescript": "^5.9.2",
     "vaul": "^1.1.2",
     "vite": "^7.1.2",
-    "vitest": "^3.2.4"
+    "vite-plugin-pwa": "^1.0.3",
+    "vitest": "^3.2.4",
+    "workbox-window": "^7.3.0"
   },
   "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
 }
