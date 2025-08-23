@@ -790,8 +790,23 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Clear search timeout on unmount and add global error handler
+  // Clear search timeout on unmount and add comprehensive error filtering
   useEffect(() => {
+    // Store original console.error to restore later
+    const originalConsoleError = console.error;
+
+    // Override console.error temporarily to filter Mapbox AbortErrors
+    console.error = (...args: any[]) => {
+      const message = args.join(' ');
+      if (message.includes('AbortError') &&
+          (message.includes('signal is aborted') || message.includes('mapbox'))) {
+        // Silently ignore Mapbox AbortErrors
+        return;
+      }
+      // Call original console.error for other errors
+      originalConsoleError.apply(console, args);
+    };
+
     // Add global error handler for network issues and filter out expected AbortErrors
     const handleGlobalError = (event: ErrorEvent) => {
       // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
@@ -819,6 +834,9 @@ const MapPage: React.FC = () => {
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
     return () => {
+      // Restore original console.error
+      console.error = originalConsoleError;
+
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
