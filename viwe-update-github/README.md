@@ -43,6 +43,7 @@ pnpm dev
 ## 📱 Build Mobile
 
 ### Web Build
+
 ```bash
 # Build para web
 pnpm build
@@ -52,6 +53,7 @@ pnpm run build:mobile
 ```
 
 ### Android
+
 ```bash
 # Build e abrir no Android Studio
 pnpm run cap:android
@@ -61,6 +63,7 @@ pnpm run cap:sync
 ```
 
 ### iOS
+
 ```bash
 # Build e abrir no Xcode
 pnpm run cap:ios
@@ -86,6 +89,7 @@ pnpm run cap:ios
 ## 🎨 Design System
 
 O projeto utiliza um design system completo baseado em:
+
 - **TailwindCSS 3** com tema escuro absoluto
 - **Radix UI** para componentes acessíveis
 - **Lucide React** para ícones
@@ -115,19 +119,23 @@ pnpm start            # Servidor de produção
 ## 🌐 Deploy
 
 ### Web (Netlify)
+
 O deploy na web é automático via Netlify:
+
 - URL: http://fusion-starter-2024.netlify.app
 - Deploy contínuo configurado
 
 ### Mobile Stores
 
 #### Android (Google Play)
+
 1. Abrir `android/` no Android Studio
 2. Build → Generate Signed Bundle/APK
 3. Configurar keystore de produção
 4. Upload na Play Console
 
 #### iOS (App Store)
+
 1. Abrir `ios/App.xcworkspace` no Xcode
 2. Configurar Team e Bundle ID
 3. Product → Archive
@@ -136,13 +144,16 @@ O deploy na web é automático via Netlify:
 ## 🔑 Configurações
 
 ### Capacitor
+
 - **App ID**: `com.viwe.app`
 - **App Name**: `Viwe`
 - **Tema**: Escuro com splash screen personalizado
 - **Scheme**: HTTPS para Android
 
 ### Environment Variables
+
 Configure via Netlify UI ou `.env`:
+
 ```bash
 # Exemplo de variáveis de ambiente
 VITE_API_URL=your_api_url
@@ -170,6 +181,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 ## 🆘 Suporte
 
 Para suporte e dúvidas:
+
 - Documentação: [Guias do projeto](./MOBILE_BUILD_GUIDE.md)
 - Issues: Abra uma issue no GitHub
 - Discussões: Use as Discussions do repositório
