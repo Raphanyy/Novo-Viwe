@@ -58,7 +58,7 @@ const DesktopInternalLayout: React.FC = () => {
     {
       name: "Menu",
       path: "/app/ajustes",
-      icon: Settings,
+      icon: Plus,
       color: "text-orange-600",
       description: "Configurações do sistema",
     },
