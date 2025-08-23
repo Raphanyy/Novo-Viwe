@@ -147,10 +147,10 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
       </nav>
 
       {/* Help Section */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-border">
         <Link
           to="/help"
-          className="flex items-center p-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+          className="flex items-center p-3 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-colors duration-200"
         >
           <HelpCircle className="h-5 w-5" />
           <span className="ml-3 font-medium">Ajuda & Suporte</span>
@@ -158,11 +158,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ className = "" }) => {
       </div>
 
       {/* User Section */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-border">
         <div className="relative">
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center w-full p-3 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+            className="flex items-center w-full p-3 rounded-xl hover:bg-accent transition-colors duration-200"
           >
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
               {user?.avatar ? (
