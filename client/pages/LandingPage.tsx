@@ -455,8 +455,9 @@ const HomePage = ({
             <div className="mb-1 md:mb-2 lg:mb-3 flex justify-center -translate-y-6">
               <div className="group relative">
                 <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
-                {/* Efeito de brilho suave */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                {/* Efeito de brilho intensificado */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-full blur-2xl opacity-20 group-hover:opacity-60 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-primary/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
               </div>
             </div>
 
