@@ -96,6 +96,8 @@ interface TraceRouteContextType {
   saveAndCompleteRoute: () => void; // Salvar e marcar rota como concluída
   // Callbacks para limpeza do mapa
   setMapCleanupCallback: (callback: () => void) => void;
+  // Atualizar dados de navegação com métricas reais do Mapbox
+  updateNavigationData: (data: Partial<NavigationData>) => void;
 }
 
 const TraceRouteContext = createContext<TraceRouteContextType | undefined>(
