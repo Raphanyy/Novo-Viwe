@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { Save, Loader2 } from "lucide-react";
+import ViweLoader from "../shared/ViweLoader";
 
 interface ProfileFormProps {
   onSave?: (data: ProfileFormData) => void;
