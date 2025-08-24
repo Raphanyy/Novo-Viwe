@@ -527,7 +527,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Secção de Funcionalidades principais com proporções corrigidas */}
+      {/* Secção de Funcionalidades principais com proporç��es corrigidas */}
       <section
         ref={featuresRef}
         className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
@@ -662,7 +662,7 @@ const LandingPage = () => {
     directionalLight.position.set(0, 0, 5);
     scene.add(directionalLight);
 
-    const geometry = new THREE.PlaneGeometry(8, 8, 20, 20);
+    const geometry = new THREE.PlaneGeometry(12, 12, 30, 30);
     const material = new THREE.MeshLambertMaterial({
       color: 0x3b82f6,
       wireframe: true,
