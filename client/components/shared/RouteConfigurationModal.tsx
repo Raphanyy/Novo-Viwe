@@ -294,9 +294,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             </span>
           </div>
           <p className="text-xs text-blue-700 mt-1">
-            {isInMapPage 
+            {isInMapPage
               ? "Configurando rota com paradas do mapa. Salvar manterá as funcionalidades existentes."
-              : "Configurando rota independente. Salvar apenas prepara os dados."
+              : "Modo Independente"
             }
           </p>
         </div>
