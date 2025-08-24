@@ -185,6 +185,13 @@ const StatsSection = memo(() => {
       ref={sectionRef}
       className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
     >
+      {/* Background Pattern - Decorative Squares for Stats */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-24 h-24 border-2 border-primary rounded-xl transform rotate-12"></div>
+        <div className="absolute top-20 right-20 w-32 h-32 border-2 border-blue-500 rounded-xl transform -rotate-6"></div>
+        <div className="absolute bottom-10 left-1/4 w-20 h-20 border-2 border-blue-600 rounded-xl transform rotate-45"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 border-2 border-primary/60 rounded-xl transform -rotate-12"></div>
+      </div>
       {/* Efeitos de fundo melhorados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
       <div
@@ -544,6 +551,15 @@ const HomePage = ({
     <React.Fragment>
       {/* Secção Hero enquadrada ao máximo */}
       <section className="relative overflow-hidden py-4 md:py-6 lg:py-8 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-start pt-20">
+        {/* Background Pattern - Decorative Squares */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-32 h-32 border-2 border-primary rounded-2xl transform rotate-12"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 border-2 border-blue-500 rounded-2xl transform -rotate-6"></div>
+          <div className="absolute bottom-32 left-16 w-40 h-40 border-2 border-primary/60 rounded-2xl transform rotate-6"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 border-2 border-blue-600 rounded-2xl transform -rotate-12"></div>
+          <div className="absolute top-1/2 left-10 w-16 h-16 border-2 border-blue-400 rounded-2xl transform rotate-45"></div>
+          <div className="absolute top-1/3 right-10 w-28 h-28 border-2 border-primary/80 rounded-2xl transform -rotate-12"></div>
+        </div>
         <div
           className="absolute inset-0 z-0 pointer-events-none opacity-60"
           ref={heroRef}
@@ -645,8 +661,15 @@ const HomePage = ({
       {/* Secção de Funcionalidades principais com proporções corrigidas */}
       <section
         ref={featuresRef}
-        className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
+        className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 relative overflow-hidden ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
       >
+        {/* Background Pattern - Decorative Squares for Features */}
+        <div className="absolute inset-0 opacity-8">
+          <div className="absolute top-16 left-16 w-36 h-36 border-2 border-muted-foreground/20 rounded-2xl transform rotate-12"></div>
+          <div className="absolute top-32 right-24 w-20 h-20 border-2 border-primary/30 rounded-2xl transform -rotate-6"></div>
+          <div className="absolute bottom-24 left-24 w-24 h-24 border-2 border-blue-500/25 rounded-2xl transform rotate-6"></div>
+          <div className="absolute bottom-16 right-16 w-32 h-32 border-2 border-muted-foreground/15 rounded-2xl transform -rotate-12"></div>
+        </div>
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
