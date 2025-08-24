@@ -1073,7 +1073,7 @@ const MapPage: React.FC = () => {
                 <button
                   key={result.id}
                   onClick={() => handleSelectSearchResult(result)}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                  className="w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
                 >
                   <div className="flex items-start space-x-3">
                     <div
