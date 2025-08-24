@@ -462,7 +462,16 @@ const ActivityPage: React.FC = () => {
 
                   <AccordionContent className="px-4 pb-4 relative z-10">
                     <div className="pt-3 border-t border-border">
-                      <p className="text-sm font-medium text-foreground mb-3">{stat.details.subtitle}</p>
+                      {/* Valor principal e mudança */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                          <p className="text-sm font-medium text-foreground">{stat.details.subtitle}</p>
+                        </div>
+                        <span className="text-sm text-green-600 font-medium bg-green-100 px-3 py-1 rounded-full">
+                          {stat.change}
+                        </span>
+                      </div>
 
                       <div className="grid grid-cols-2 gap-3 mb-4">
                         {stat.details.items.map((item, itemIndex) => (
