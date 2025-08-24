@@ -876,6 +876,38 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       }));
       console.log("Dados de navegação atualizados:", data);
     },
+    suggestSmartOptimization: () => {
+      const remainingStops = state.stops.filter((stop) => !stop.isCompleted);
+      const completedStops = state.stops.filter((stop) => stop.isCompleted);
+
+      // Análise inteligente de quando otimizar
+      const shouldOptimize =
+        // Há pelo menos 3 paradas restantes
+        remainingStops.length >= 3 &&
+        // Está em navegação ativa
+        state.isInActiveNavigation &&
+        // Já completou pelo menos uma parada (tem dados para análise)
+        completedStops.length >= 1 &&
+        // Não otimizou recentemente (evitar spam)
+        !state.isTracing;
+
+      if (shouldOptimize) {
+        console.log("🤖 Inteligência adaptativa: Sugerindo otimização baseada no comportamento", {
+          remainingStops: remainingStops.length,
+          completedStops: completedStops.length,
+          reason: "Condições ideais para re-otimização detectadas"
+        });
+
+        // Auto-otimizar se condições são ideais
+        setTimeout(() => {
+          optimizeRoute();
+        }, 500);
+
+        return true;
+      }
+
+      return false;
+    },
   };
 
   return (
