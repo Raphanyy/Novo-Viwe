@@ -304,54 +304,14 @@ const MapPage: React.FC = () => {
         }
       }, 1500); // Wait 1.5s for map to fully initialize
 
+      // Adicionar o mapa ao ResourceManager para cleanup automático
+      if (map.current) {
+        resourceManager.current!.addMapboxMap('mainMap', map.current);
+      }
+
       return () => {
-        clearTimeout(timeoutId);
-        clearTimeout(autoLocationTimeout);
-        if (map.current) {
-          try {
-            // Stop any ongoing operations before removing the map
-            map.current.stop();
-
-            // Clear specific event listeners to avoid issues
-            try {
-              // Remove map without clearing events to avoid errors
-              // The map will be garbage collected with all its listeners
-            } catch (e) {
-              // Ignore errors during cleanup
-            }
-
-            // Remove the map safely with a small delay to allow cleanup
-            setTimeout(() => {
-              try {
-                if (map.current) {
-                  map.current.remove();
-                  map.current = null;
-                }
-              } catch (cleanupError) {
-                // Silently handle cleanup errors (often AbortErrors from pending tile requests)
-                if (
-                  !(cleanupError instanceof Error) ||
-                  (!cleanupError.message.includes("aborted") &&
-                    !cleanupError.message.includes("AbortError"))
-                ) {
-                  console.warn("Map cleanup warning:", cleanupError);
-                }
-              }
-            }, 100);
-          } catch (error) {
-            // Suppress AbortError and other cleanup errors
-            if (
-              error instanceof Error &&
-              (error.message.includes("aborted") ||
-                error.message.includes("AbortError"))
-            ) {
-              // Silently ignore AbortErrors during cleanup
-            } else {
-              console.warn("Map cleanup warning:", error);
-            }
-          }
-          map.current = null;
-        }
+        // ResourceManager cuida do cleanup de timeouts e outros recursos
+        resourceManager.current!.destroy();
       };
     } catch (error) {
       if (
