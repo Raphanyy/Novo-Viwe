@@ -409,13 +409,6 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Optimized throttled center pin tracking using performance utils
-  const throttledUpdateCenterPin = useCoordinateThrottle(
-    updateCenterPin,
-    100, // 100ms throttle
-    0.0001, // 0.0001 degree tolerance
-  );
-
   // Optimized center pin tracking when tracing starts/stops
   useEffect(() => {
     if (!map.current) return;
@@ -454,7 +447,7 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.isTracing]);
 
-  // Otimizar visibleStops usando memoização estável
+  // Otimizar visibleStops usando memoizaç��o estável
   const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
