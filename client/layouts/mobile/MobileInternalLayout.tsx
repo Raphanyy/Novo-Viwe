@@ -124,53 +124,35 @@ const MobileInternalLayout: React.FC = () => {
     saveAndCompleteRoute,
   } = useTraceRoute();
 
-  const mapNavigationItems = [
+  // === ESTADOS DA NAVBAR DO MAPA ===
+  // Seguindo lógica contextual: Exploração > Planejamento > Navegação > Finalização
+
+  // 1. EXPLORAÇÃO - Estado inicial do mapa
+  const explorationNavigationItems = [
     {
       name: "Voltar",
       icon: ArrowLeft,
       action: "back",
     },
     {
-      name: "Traçar",
+      name: "Planejar",
       icon: PenTool,
       action: "trace",
     },
     {
-      name: "Controle",
-      icon: Gamepad2,
+      name: "Configurar",
+      icon: Cog,
       action: "control",
     },
     {
-      name: "Resumo",
+      name: "Histórico",
       icon: FileText,
       action: "summary",
     },
   ];
 
-  const traceNavigationItems = [
-    {
-      name: "Adicionar",
-      icon: Plus,
-      action: "add",
-    },
-    {
-      name: "Limpar",
-      icon: Trash2,
-      action: "clear",
-    },
-    {
-      name: "Configurar",
-      icon: Cog,
-      action: "configure",
-    },
-    {
-      name: "Traçar",
-      icon: Compass,
-      action: "trace_execute",
-    },
-  ];
-
-  const preparationNavigationItems = [
+  // 2. PLANEJAMENTO - Criando e configurando rota
+  const planningNavigationItems = [
     {
       name: "Cancelar",
       icon: X,
@@ -187,28 +169,14 @@ const MobileInternalLayout: React.FC = () => {
       action: "clear",
     },
     {
-      name: "Traçar",
+      name: "Confirmar",
       icon: Navigation,
       action: "trace_execute",
     },
   ];
 
-  // Nova navbar para rota confirmada: "Navegar" e "Desistir"
-  const traceConfirmedNavigationItems = [
-    {
-      name: "Desistir",
-      icon: X,
-      action: "give_up",
-    },
-    {
-      name: "Navegar",
-      icon: Navigation,
-      action: "start_navigation",
-    },
-  ];
-
-  // Nova navbar para navegação ativa: "Concluir Parada", "Otimizar", "Detalhes", "Ajustes"
-  const activeNavigationItems = [
+  // 3. NAVEGAÇÃO - Rota ativa em andamento
+  const navigationNavigationItems = [
     {
       name: "Concluir",
       icon: Target,
@@ -231,15 +199,15 @@ const MobileInternalLayout: React.FC = () => {
     },
   ];
 
-  // Nova navbar para todas as paradas concluídas: "Resumo" e "Encerrar"
-  const finalSummaryNavigationItems = [
+  // 4. FINALIZAÇÃO - Conclusão e salvamento
+  const finalizationNavigationItems = [
     {
       name: "Resumo",
       icon: Trophy,
       action: "show_summary",
     },
     {
-      name: "Encerrar",
+      name: "Salvar",
       icon: Save,
       action: "save_and_complete",
     },
@@ -315,19 +283,19 @@ const MobileInternalLayout: React.FC = () => {
 
   const getCurrentNavigationItems = () => {
     if (isMapPage) {
-      // Prioridade: todas paradas concluídas > navegação ativa > rota confirmada > preparação > traçamento > padrão
+      // Fluxo lógico: Exploração > Planejamento > Navegação > Finalização
       if (traceState.allStopsCompleted) {
-        return finalSummaryNavigationItems;
+        // 4. FINALIZAÇÃO - Todas paradas concluídas
+        return finalizationNavigationItems;
       } else if (traceState.isInActiveNavigation) {
-        return activeNavigationItems;
-      } else if (traceState.showTraceConfirmed) {
-        return traceConfirmedNavigationItems;
-      } else if (traceState.isInPreparation) {
-        return preparationNavigationItems;
-      } else if (traceState.isTracing) {
-        return traceNavigationItems;
+        // 3. NAVEGAÇÃO - Rota ativa, navegando entre paradas
+        return navigationNavigationItems;
+      } else if (traceState.isTracing || traceState.isInPreparation || traceState.showTraceConfirmed) {
+        // 2. PLANEJAMENTO - Criando rota, adicionando paradas, confirmando
+        return planningNavigationItems;
       } else {
-        return mapNavigationItems;
+        // 1. EXPLORAÇÃO - Estado inicial, explorando mapa
+        return explorationNavigationItems;
       }
     }
     // Para outras páginas, retorna null para usar navegação padrão
