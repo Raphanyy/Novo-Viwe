@@ -63,25 +63,25 @@ const StatsSection = () => {
       number: "1M+",
       label: "Rotas Otimizadas",
       icon: Route,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-blue-600",
     },
     {
       number: "50K+",
       label: "Usuários Ativos",
       icon: Users,
-      color: "from-green-500 to-emerald-500",
+      color: "from-blue-600 to-blue-700",
     },
     {
       number: "99.9%",
       label: "Uptime Garantido",
       icon: Shield,
-      color: "from-purple-500 to-pink-500",
+      color: "from-blue-400 to-blue-500",
     },
     {
       number: "30%",
       label: "Economia de Tempo",
       icon: Clock,
-      color: "from-orange-500 to-red-500",
+      color: "from-blue-700 to-blue-800",
     },
   ];
 
@@ -92,7 +92,7 @@ const StatsSection = () => {
     >
       {/* Efeitos de fundo suavizados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
@@ -139,7 +139,7 @@ const TestimonialsSection = () => {
       name: "Ana Silva",
       role: "Executiva de Vendas",
       avatar: "AS",
-      text: "O Viwe revolucionou minha rotina de trabalho. Economizo 2 horas por dia nas minhas visitas aos clientes!",
+      text: "Revolucionou minha rotina! Economizo 2 horas por dia nas visitas aos clientes.",
       rating: 5,
       company: "TechCorp",
     },
@@ -147,7 +147,7 @@ const TestimonialsSection = () => {
       name: "Carlos Mendes",
       role: "Motorista de App",
       avatar: "CM",
-      text: "Melhor aplicativo de rotas que já usei. A previsão de trânsito é incrivelmente precisa.",
+      text: "Melhor app de rotas que já usei. Previsão de trânsito sempre precisa.",
       rating: 5,
       company: "Uber",
     },
@@ -155,7 +155,7 @@ const TestimonialsSection = () => {
       name: "Mariana Costa",
       role: "Empresária",
       avatar: "MC",
-      text: "Nossa frota reduziu 25% no consumo de combustível usando as rotas otimizadas do Viwe.",
+      text: "Nossa frota reduziu 25% no combustível. Rotas otimizadas fazem diferença.",
       rating: 5,
       company: "LogiTrans",
     },
@@ -187,13 +187,19 @@ const TestimonialsSection = () => {
             >
               <div className="flex items-center space-x-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 text-yellow-500 fill-current"
-                  />
+                  <Star key={i} className="h-4 w-4 text-primary fill-current" />
                 ))}
               </div>
-              <blockquote className="text-card-foreground mb-6 leading-relaxed">
+              <blockquote
+                className="text-card-foreground mb-6 leading-relaxed overflow-hidden"
+                style={
+                  {
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  } as React.CSSProperties
+                }
+              >
                 "{testimonial.text}"
               </blockquote>
               <div className="flex items-center">
@@ -227,7 +233,7 @@ const HowItWorksSection = () => {
       title: "Defina seu destino",
       description: "Digite onde você quer ir ou selecione no mapa interativo",
       icon: Target,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-blue-600",
     },
     {
       step: "02",
@@ -235,7 +241,7 @@ const HowItWorksSection = () => {
       description:
         "Nossa IA calcula a melhor rota considerando trânsito e preferências",
       icon: Zap,
-      color: "from-purple-500 to-pink-500",
+      color: "from-blue-600 to-blue-700",
     },
     {
       step: "03",
@@ -243,7 +249,7 @@ const HowItWorksSection = () => {
       description:
         "Siga as instruções em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
-      color: "from-green-500 to-emerald-500",
+      color: "from-blue-700 to-blue-800",
     },
   ];
 
@@ -301,26 +307,26 @@ const AdvancedFeaturesSection = () => {
       icon: Smartphone,
       title: "App Mobile Nativo",
       description: "Disponível para iOS e Android com sincronização automática",
-      gradient: "from-blue-500 to-cyan-500",
+      gradient: "from-blue-500 to-blue-600",
     },
     {
       icon: Cloud,
       title: "Sincronização Automática",
       description:
         "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-blue-600 to-blue-700",
     },
     {
       icon: BarChart3,
       title: "Relatórios Avançados",
       description: "Análise detalhada de tempo, distância e economia",
-      gradient: "from-green-500 to-emerald-500",
+      gradient: "from-blue-700 to-blue-800",
     },
     {
       icon: Award,
       title: "Suporte Premium",
       description: "Atendimento 24/7 com especialistas em otimização",
-      gradient: "from-orange-500 to-red-500",
+      gradient: "from-blue-400 to-blue-500",
     },
   ];
 
@@ -376,7 +382,7 @@ const HomePage = ({
 }) => {
   // Estado para a animação do texto do herói
   const [isHeroTextVisible, setIsHeroTextVisible] = useState(false);
-  // Observer para a seção de funcionalidades
+  // Observer para a se����ão de funcionalidades
   const featuresRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
@@ -428,67 +434,67 @@ const HomePage = ({
 
   return (
     <React.Fragment>
-      {/* Secção Hero com proporções adequadas */}
-      <section className="relative overflow-hidden py-20 md:py-32 text-center bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Secção Hero enquadrada ao máximo */}
+      <section className="relative overflow-hidden py-4 md:py-6 lg:py-8 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-start pt-20">
         <div
-          className="absolute inset-0 z-0 pointer-events-none opacity-30"
+          className="absolute inset-0 z-0 pointer-events-none opacity-60"
           ref={heroRef}
         ></div>
 
-        {/* Efeitos de brilho suavizados */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-purple-500/5 opacity-30"></div>
-        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+        {/* Efeitos de brilho intensificados */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-blue-500/10 opacity-50"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-6 relative z-10 w-full">
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            {/* Logo grande alinhada com o texto */}
-            <div className="mb-4 md:mb-6 flex justify-center">
+            {/* Logo posicionada 15% mais acima e com tamanho aumentado */}
+            <div className="mb-1 md:mb-2 lg:mb-3 flex justify-center -translate-y-6">
               <div className="group relative">
-                <ViweLogo className="h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 xl:h-80 xl:w-80 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
+                <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-blue-500/15 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity duration-300"></div>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-foreground leading-[1.05] tracking-tight mb-2 lg:mb-3">
               Somos a maior plataforma
               <br />
               de rotas inteligentes no mundo
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground max-w-2xl mx-auto leading-snug mb-3 lg:mb-4">
               Viwe é o planejador de rotas mais avançado do mercado. Otimize
               trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
-          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-3 lg:mb-4">
             <Link
               to="/login"
-              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+              className="group bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
             >
               <span className="flex items-center justify-center gap-2">
-                <Sparkles className="h-5 w-5" />
+                <Sparkles className="h-4 w-4" />
                 Começar gratuitamente
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
-            <button className="group flex items-center justify-center gap-2 text-foreground px-8 py-4 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-300">
-              <Play className="h-5 w-5" />
+            <button className="group flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full border border-border font-semibold hover:bg-white/90 transition-all duration-300">
+              <Play className="h-4 w-4" />
               Ver demonstração
             </button>
           </div>
 
-          {/* Badge de confiança simplificado */}
-          <div className="mt-8 flex justify-center">
-            <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+          {/* Badge de confiança ultra-compacto */}
+          <div className="flex justify-center">
+            <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-3 py-1 flex items-center gap-2">
               <div className="flex -space-x-1">
-                <div className="w-6 h-6 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
-                <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
-                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full border border-background"></div>
               </div>
-              <span className="text-muted-foreground text-sm">
+              <span className="text-muted-foreground text-xs">
                 Mais de <strong className="text-foreground">50K</strong>{" "}
                 usuários
               </span>
@@ -554,60 +560,59 @@ const HomePage = ({
                 Otimização de Rotas
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Algoritmos de IA calculam o caminho mais eficiente, economizando
-                tempo e combustível.
+                IA encontra rotas eficientes. Economize tempo e combustível.
               </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-green-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-green-500/20 to-green-500/10 rounded-xl text-green-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl text-blue-500 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <TrafficCone className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-green-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-500 transition-colors">
                 Previsão de Trânsito
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Dados em tempo real para evitar engarrafamentos com precisão de
-                99%.
+                Dados em tempo real evitam trânsito. Precisão de 99% garantida.
               </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-yellow-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-600/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 rounded-xl text-yellow-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-xl text-blue-600 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <MapPin className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-yellow-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-600 transition-colors">
                 Pontos de Interesse
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Descubra restaurantes, postos e atrações ao longo do caminho.
+                Encontre restaurantes, postos e atrações no seu trajeto
+                facilmente.
               </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-purple-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-700/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-xl text-purple-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-xl text-blue-700 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <Share2 className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-purple-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-700 transition-colors">
                 Compartilhar Itinerário
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Compartilhe rotas em tempo real com familiares e equipes.
+                Compartilhe rotas em tempo real com família e equipes.
               </p>
             </div>
           </div>
@@ -649,35 +654,27 @@ const LandingPage = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     heroRef.current.appendChild(renderer.domElement);
 
-    const light = new THREE.AmbientLight(0xffffff, 0.2);
+    const light = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 0.3);
+    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 0.8);
     directionalLight.position.set(0, 0, 5);
     scene.add(directionalLight);
 
-    const geometry = new THREE.PlaneGeometry(8, 8, 20, 20);
+    const geometry = new THREE.PlaneGeometry(12, 12, 30, 30);
     const material = new THREE.MeshLambertMaterial({
       color: 0x3b82f6,
       wireframe: true,
       transparent: true,
-      opacity: 0.1,
+      opacity: 0.4,
     });
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    let mouseX = 0,
-      mouseY = 0;
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-
     const animate = () => {
       requestAnimationFrame(animate);
-      plane.rotation.x = mouseY * 0.05;
-      plane.rotation.y = mouseX * 0.05;
-      plane.rotation.z += 0.001;
+      plane.rotation.x += 0.0003;
+      plane.rotation.y += 0.0005;
+      plane.rotation.z += 0.0005;
       renderer.render(scene, camera);
     };
     animate();
@@ -693,7 +690,6 @@ const LandingPage = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       if (
         heroRef.current &&
@@ -714,29 +710,28 @@ const LandingPage = () => {
       <HomePage heroRef={heroRef} />
 
       {/* CTA Section balanceada */}
-      <section className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 py-20 text-center relative overflow-hidden">
+      <section className="bg-gradient-to-r from-primary via-blue-600 to-blue-700 py-20 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white mb-6">
-              Pronto para revolucionar suas jornadas?
+              Revolucione suas jornadas agora!
             </h2>
             <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
-              Junte-se a mais de 50.000 usuários que já otimizaram suas rotas
-              com o Viwe.
+              Mais de 50.000 usuários já otimizaram suas rotas com o Viwe.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
                 to="/login"
-                className="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
+                className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
               >
                 <span className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5" />
                   Começar gratuitamente
                 </span>
               </Link>
-              <button className="border-2 border-white/40 text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+              <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300">
                 <span className="flex items-center justify-center gap-2">
                   <MessageCircle className="h-5 w-5" />
                   Falar com vendas
@@ -747,15 +742,15 @@ const LandingPage = () => {
             {/* Garantias */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-white/80 text-sm">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Teste grátis por 30 dias</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Sem cartão de crédito</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Suporte 24/7</span>
               </div>
             </div>
