@@ -20,7 +20,7 @@ const ViweRouteTracer: React.FC<ViweRouteTracerProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-20 left-4 right-4 z-50 bg-blue-600 text-white rounded-xl p-3 shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white text-gray-900 border-b border-gray-200 p-4">
       <div className="flex items-center space-x-3">
         <div className="flex-shrink-0">
           {isTracing ? (
