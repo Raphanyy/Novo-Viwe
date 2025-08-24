@@ -43,20 +43,21 @@ const MobileLoginPage: React.FC = () => {
 
       {/* Área central com textos */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
-        {/* Título principal */}
+        {/* Logo oficial */}
         <div className="text-center mb-8">
-          <h1
-            className="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-center tracking-[0.3em] mb-6 select-none"
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 40px rgba(59, 130, 246, 0.3)',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              letterSpacing: '0.3em'
-            }}
-          >
-            V I W E
-          </h1>
+          <div className="flex items-center justify-center mb-6">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2F83e633ef02914957b822f0c6a448850f?format=webp&width=800"
+              alt="Viwe Logo"
+              className="w-32 h-32 sm:w-40 sm:h-40 object-contain select-none pointer-events-none"
+              style={{
+                filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.2))',
+                backfaceVisibility: 'hidden',
+                transform: 'translateZ(0)',
+              }}
+              draggable={false}
+            />
+          </div>
 
           {/* Linha decorativa */}
           <div className="flex items-center justify-center mb-6">
