@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 /**
  * Hook customizado para gerenciar o modal de configuração de rotas
@@ -7,13 +7,13 @@ import { useState } from "react";
 export function useRouteModal() {
   const [isRouteModalOpen, setIsRouteModalOpen] = useState(false);
 
-  const openRouteModal = () => {
+  const openRouteModal = useCallback(() => {
     setIsRouteModalOpen(true);
-  };
+  }, []);
 
-  const closeRouteModal = () => {
+  const closeRouteModal = useCallback(() => {
     setIsRouteModalOpen(false);
-  };
+  }, []);
 
   return {
     isRouteModalOpen,
