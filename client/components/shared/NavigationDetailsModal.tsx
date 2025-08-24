@@ -56,10 +56,17 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
   const nextStop = remainingStops[0];
 
   const getNextStopDistance = () => {
-    if (!nextStop) return 0;
-    // Cálculo simples de distância para a próxima parada
-    // Em uma implementação real, usaria a API do Mapbox para calcular a distância real
-    return Math.random() * 5000 + 500; // Simulação
+    if (!nextStop || !state.navigationData.remainingDistance) return 0;
+
+    // Calcular distância estimada para a próxima parada baseada na distância restante
+    // dividida pelo número de paradas restantes
+    const remainingStopsCount = remainingStops.length;
+    if (remainingStopsCount === 0) return 0;
+
+    // Distribuir distância restante proporcionalmente entre paradas restantes
+    const averageDistancePerStop =
+      state.navigationData.remainingDistance / remainingStopsCount;
+    return Math.round(averageDistancePerStop);
   };
 
   if (!isOpen) return null;

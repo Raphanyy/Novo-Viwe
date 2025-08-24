@@ -134,6 +134,8 @@ const MapPage: React.FC = () => {
     startTracing,
     closeFinalSummaryModal,
     saveAndCompleteRoute,
+    updateNavigationData,
+    suggestSmartOptimization,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
@@ -721,6 +723,15 @@ const MapPage: React.FC = () => {
             stops: stops.length,
           });
 
+          // Atualizar dados de navegação com métricas reais do Mapbox
+          updateNavigationData({
+            totalDistance: route.distance || 0,
+            remainingDistance: route.distance || 0,
+            estimatedFuelConsumption: route.distance
+              ? (route.distance / 1000) * 0.08 // 8L/100km estimativa
+              : 0,
+          });
+
           // Marcar rota como traçada no contexto
           setRouteTraced(true);
         }
@@ -1191,6 +1202,28 @@ const MapPage: React.FC = () => {
       window.removeEventListener("clearRoute", handleClearRoute);
     };
   }, [traceRouteOnMap]);
+
+  // Inteligência adaptativa: monitorar mudanças na navegação
+  useEffect(() => {
+    if (traceState.isInActiveNavigation && traceState.stops.length > 0) {
+      const completedStops = traceState.stops.filter(
+        (stop) => stop.isCompleted,
+      );
+
+      // Triggerar análise inteligente após cada parada concluída
+      if (completedStops.length > 0) {
+        const timer = setTimeout(() => {
+          suggestSmartOptimization();
+        }, 2000); // Delay para permitir atualizações de estado
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [
+    traceState.isInActiveNavigation,
+    traceState.stops.filter((s) => s.isCompleted).length,
+    suggestSmartOptimization,
+  ]);
 
   // Rota é traçada via evento "traceRoute" disparado pelo confirmTrace()
   // Removido useEffect redundante que causava piscar por disparo duplicado

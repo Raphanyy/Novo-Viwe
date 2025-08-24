@@ -1,5 +1,5 @@
 import React from "react";
-import ModalHeader from "./ModalHeader";
+import AdaptiveModal from "./AdaptiveModal";
 import {
   Accordion,
   AccordionContent,
@@ -102,332 +102,364 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
     creditsUsed: state.estimatedCredits || 0,
   };
 
-  // Evita renderizar se não está aberto
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-[60] bg-background flex flex-col">
-      <ModalHeader
-        title="Rota Concluída!"
-        showBackButton={true}
-        onBack={handleClose}
-        rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
-      />
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-        <div className="space-y-6">
-          {/* Aviso se não há dados suficientes */}
-          {!hasValidData && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+    <AdaptiveModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Rota Concluída!"
+      showBackButton={true}
+      onBack={handleClose}
+      rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
+      fullPage={false}
+      size="xl"
+    >
+      <div className="p-6 space-y-6">
+        {/* Aviso se não há dados suficientes */}
+        {!hasValidData && (
+          <div className="bg-muted/50 border border-border rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <div className="bg-primary p-2 rounded-full">
+                <Trophy className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-foreground">
+                  Rota Finalizada
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {state.stops.length === 0
+                    ? "Nenhuma parada foi configurada nesta rota."
+                    : "A rota foi encerrada, mas pode não ter dados completos de navegação."}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Resumo Detalhado */}
+        <Accordion type="multiple" className="w-full">
+          {/* Estatísticas Gerais da Rota */}
+          <AccordionItem value="general-stats">
+            <AccordionTrigger className="text-left">
               <div className="flex items-center space-x-2">
-                <div className="bg-yellow-600 p-1 rounded-full">
-                  <Trophy className="h-4 w-4 text-white" />
-                </div>
+                <Route className="h-4 w-4 text-blue-600" />
                 <div>
-                  <div className="font-medium text-yellow-800">
-                    Rota Finalizada
+                  <span className="font-medium">Estatísticas Gerais</span>
+                  <p className="text-sm text-muted-foreground">
+                    Resumo principal da rota.
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Paradas Concluídas
+                    </div>
+                    <div className="text-lg font-semibold text-green-600">
+                      {routeStats.completedStops} de {routeStats.totalStops}
+                    </div>
                   </div>
-                  <div className="text-sm text-yellow-700">
-                    {state.stops.length === 0
-                      ? "Nenhuma parada foi configurada nesta rota."
-                      : "A rota foi encerrada, mas pode não ter dados completos de navegação."}
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Tempo Total
+                    </div>
+                    <div className="text-lg font-semibold text-blue-600">
+                      {routeStats.totalTime > 0
+                        ? formatTime(routeStats.totalTime)
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Distância Percorrida
+                    </div>
+                    <div className="text-lg font-semibold text-purple-600">
+                      {routeStats.totalDistance > 0
+                        ? formatDistance(routeStats.totalDistance)
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Combustível Usado
+                    </div>
+                    <div className="text-lg font-semibold text-orange-600">
+                      {routeStats.fuelUsed > 0
+                        ? `${routeStats.fuelUsed.toFixed(1)}L`
+                        : "N/A"}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            </AccordionContent>
+          </AccordionItem>
 
-          {/* Estatísticas Principais */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-              <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-green-600">
-                {routeStats.completedStops}
-              </div>
-              <div className="text-sm text-gray-600">Paradas Concluídas</div>
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
-              <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-blue-600">
-                {routeStats.totalTime > 0
-                  ? formatTime(routeStats.totalTime)
-                  : "N/A"}
-              </div>
-              <div className="text-sm text-gray-600">Tempo Total</div>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-lg text-center border border-purple-200">
-              <Route className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-purple-600">
-                {routeStats.totalDistance > 0
-                  ? formatDistance(routeStats.totalDistance)
-                  : "N/A"}
-              </div>
-              <div className="text-sm text-gray-600">Distância</div>
-            </div>
-
-            <div className="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-              <Fuel className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-orange-600">
-                {routeStats.fuelUsed > 0
-                  ? routeStats.fuelUsed.toFixed(1)
-                  : "N/A"}
-                L
-              </div>
-              <div className="text-sm text-gray-600">Combustível</div>
-            </div>
-          </div>
-
-          {/* Badges de Conquistas */}
+          {/* Conquistas e Badges */}
           {hasValidData && (
-            <div className="flex flex-wrap gap-2 justify-center">
-              {routeStats.efficiency === 100 && (
-                <Badge className="bg-green-100 text-green-700 border-green-200">
-                  <Star className="h-3 w-3 mr-1" />
-                  Rota 100% Completa
-                </Badge>
-              )}
-              {routeStats.fuelSaved > 0 && (
-                <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Economia de Combustível
-                </Badge>
-              )}
-              {routeStats.totalTime > 0 &&
-                routeStats.totalTime < 60 * 60 * 1000 && (
-                  <Badge className="bg-purple-100 text-purple-700 border-purple-200">
-                    <Clock className="h-3 w-3 mr-1" />
-                    Rota Rápida
-                  </Badge>
-                )}
-              {routeStats.efficiency >= 80 && routeStats.efficiency < 100 && (
-                <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200">
-                  <Award className="h-3 w-3 mr-1" />
-                  Boa Eficiência
-                </Badge>
-              )}
-            </div>
+            <AccordionItem value="achievements">
+              <AccordionTrigger className="text-left">
+                <div className="flex items-center space-x-2">
+                  <Trophy className="h-4 w-4 text-yellow-600" />
+                  <div>
+                    <span className="font-medium">Conquistas</span>
+                    <p className="text-sm text-muted-foreground">
+                      Badges e reconhecimentos.
+                    </p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap gap-2">
+                  {routeStats.efficiency === 100 && (
+                    <Badge className="bg-green-600/10 text-green-600 border-green-600/20">
+                      <Star className="h-3 w-3 mr-1" />
+                      Rota 100% Completa
+                    </Badge>
+                  )}
+                  {routeStats.fuelSaved > 0 && (
+                    <Badge className="bg-blue-600/10 text-blue-600 border-blue-600/20">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      Economia de Combustível
+                    </Badge>
+                  )}
+                  {routeStats.totalTime > 0 &&
+                    routeStats.totalTime < 60 * 60 * 1000 && (
+                      <Badge className="bg-purple-600/10 text-purple-600 border-purple-600/20">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Rota Rápida
+                      </Badge>
+                    )}
+                  {routeStats.efficiency >= 80 &&
+                    routeStats.efficiency < 100 && (
+                      <Badge className="bg-yellow-600/10 text-yellow-600 border-yellow-600/20">
+                        <Award className="h-3 w-3 mr-1" />
+                        Boa Eficiência
+                      </Badge>
+                    )}
+                  {(routeStats.efficiency < 80 ||
+                    routeStats.efficiency === 0) && (
+                    <div className="text-sm text-muted-foreground">
+                      Nenhuma conquista obtida nesta rota.
+                    </div>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           )}
+          {/* Desempenho da Viagem */}
+          <AccordionItem value="performance">
+            <AccordionTrigger className="text-left">
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="h-4 w-4 text-blue-600" />
+                <div>
+                  <span className="font-medium">Desempenho da Viagem</span>
+                  <p className="text-sm text-muted-foreground">
+                    Eficiência e créditos.
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Eficiência
+                    </div>
+                    <div className="text-lg font-semibold text-foreground">
+                      {routeStats.efficiency.toFixed(1)}%
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Créditos Usados
+                    </div>
+                    <div className="text-lg font-semibold text-foreground">
+                      {routeStats.creditsUsed}
+                    </div>
+                  </div>
+                </div>
 
-          {/* Resumo Detalhado */}
-          <Accordion type="multiple" className="w-full">
-            {/* Desempenho da Viagem */}
-            <AccordionItem value="performance">
-              <AccordionTrigger className="text-left">
-                <div className="flex items-center space-x-2">
-                  <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <div>
-                    <span className="font-medium">Desempenho da Viagem</span>
+                {state.navigationData.startTime && (
+                  <div className="text-sm text-muted-foreground">
+                    <strong>Viagem realizada:</strong>{" "}
+                    {state.navigationData.startTime.toLocaleDateString("pt-BR")}{" "}
+                    às{" "}
+                    {state.navigationData.startTime.toLocaleTimeString(
+                      "pt-BR",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
+                  </div>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Todas as Paradas Concluídas */}
+          <AccordionItem value="all-stops">
+            <AccordionTrigger className="text-left">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <div className="flex-1">
+                  <span className="font-medium">Paradas Realizadas</span>
+                  <p className="text-sm text-muted-foreground">
+                    Detalhes das paradas.
+                  </p>
+                </div>
+                <Badge variant="secondary">{completedStops.length}</Badge>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-3">
+                {completedStops.length === 0 ? (
+                  <div className="text-center py-4">
+                    <h4 className="font-medium text-foreground mb-2">
+                      Nenhuma parada concluída
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      Eficiência e créditos.
+                      A rota foi encerrada sem paradas concluídas.
                     </p>
                   </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="text-sm text-gray-600">Eficiência</div>
-                      <div className="text-lg font-semibold text-gray-900">
-                        {routeStats.efficiency.toFixed(1)}%
+                ) : (
+                  completedStops.map((stop, index) => (
+                    <div
+                      key={stop.id}
+                      className="flex items-start space-x-3 p-3 bg-green-600/10 border border-green-600/20 rounded-lg"
+                    >
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
+                        {stop.order}
                       </div>
-                    </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="text-sm text-gray-600">
-                        Créditos Usados
-                      </div>
-                      <div className="text-lg font-semibold text-gray-900">
-                        {routeStats.creditsUsed}
-                      </div>
-                    </div>
-                  </div>
-
-                  {state.navigationData.startTime && (
-                    <div className="text-sm text-gray-600">
-                      <strong>Viagem realizada:</strong>{" "}
-                      {state.navigationData.startTime.toLocaleDateString(
-                        "pt-BR",
-                      )}{" "}
-                      às{" "}
-                      {state.navigationData.startTime.toLocaleTimeString(
-                        "pt-BR",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      )}
-                    </div>
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Todas as Paradas Concluídas */}
-            <AccordionItem value="all-stops">
-              <AccordionTrigger className="text-left">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <div className="flex-1">
-                    <span className="font-medium">Paradas Realizadas</span>
-                    <p className="text-sm text-muted-foreground">
-                      Detalhes das paradas.
-                    </p>
-                  </div>
-                  <Badge variant="secondary">{completedStops.length}</Badge>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3">
-                  {completedStops.length === 0 ? (
-                    <div className="text-center py-8">
-                      <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-600 mb-2">
-                        Nenhuma parada concluída
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        A rota foi encerrada sem paradas concluídas.
-                      </p>
-                    </div>
-                  ) : (
-                    completedStops.map((stop, index) => (
-                      <div
-                        key={stop.id}
-                        className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg"
-                      >
-                        <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                          {stop.order}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">
-                            {stop.name}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {stop.address}
-                          </p>
-                          {stop.completedAt && (
-                            <div className="flex items-center space-x-1 mt-1">
-                              <Calendar className="h-3 w-3 text-gray-400" />
-                              <span className="text-xs text-gray-500">
-                                Concluída às{" "}
-                                {stop.completedAt.toLocaleTimeString("pt-BR", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Economia e Sustentabilidade */}
-            <AccordionItem value="economy">
-              <AccordionTrigger className="text-left">
-                <div className="flex items-center space-x-2">
-                  <Fuel className="h-4 w-4 text-orange-600" />
-                  <div>
-                    <span className="font-medium">
-                      Economia e Sustentabilidade
-                    </span>
-                    <p className="text-sm text-muted-foreground">
-                      Consumo de combustível.
-                    </p>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
-                  {hasValidFuelData ? (
-                    <>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="bg-orange-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
-                            Combustível Estimado
-                          </div>
-                          <div className="text-lg font-semibold text-orange-600">
-                            {state.navigationData.estimatedFuelConsumption.toFixed(
-                              1,
-                            )}{" "}
-                            L
-                          </div>
-                        </div>
-                        <div className="bg-green-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
-                            Combustível Real
-                          </div>
-                          <div className="text-lg font-semibold text-green-600">
-                            {actualFuel.toFixed(1)} L
-                          </div>
-                        </div>
-                      </div>
-
-                      {fuelEconomy > 0 ? (
-                        <div className="bg-green-100 p-3 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <TrendingUp className="h-4 w-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-800">
-                              Você economizou {fuelEconomy.toFixed(1)}L de
-                              combustível!
+                      <div className="flex-1">
+                        <h4 className="font-medium text-foreground">
+                          {stop.name}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {stop.address}
+                        </p>
+                        {stop.completedAt && (
+                          <div className="flex items-center space-x-1 mt-1">
+                            <Calendar className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                              Concluída às{" "}
+                              {stop.completedAt.toLocaleTimeString("pt-BR", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </span>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="bg-blue-100 p-3 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <Fuel className="h-4 w-4 text-blue-600" />
-                            <span className="text-sm font-medium text-blue-800">
-                              Consumo dentro do esperado.
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Fuel className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-600 mb-2">
-                        Dados de combustível não disponíveis
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        A rota foi muito curta para calcular o consumo de
-                        combustível.
-                      </p>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                  ))
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-          {/* Botões de Ação */}
-          <div className="flex space-x-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="flex-1"
-            >
-              Apenas Fechar
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSaveAndComplete}
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Salvar e Encerrar
-            </Button>
-          </div>
+          {/* Economia e Sustentabilidade */}
+          <AccordionItem value="economy">
+            <AccordionTrigger className="text-left">
+              <div className="flex items-center space-x-2">
+                <Fuel className="h-4 w-4 text-orange-600" />
+                <div>
+                  <span className="font-medium">
+                    Economia e Sustentabilidade
+                  </span>
+                  <p className="text-sm text-muted-foreground">
+                    Consumo de combustível.
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                {hasValidFuelData ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-orange-600/10 border border-orange-600/20 p-3 rounded-lg">
+                        <div className="text-sm text-muted-foreground">
+                          Combustível Estimado
+                        </div>
+                        <div className="text-lg font-semibold text-orange-600">
+                          {state.navigationData.estimatedFuelConsumption.toFixed(
+                            1,
+                          )}{" "}
+                          L
+                        </div>
+                      </div>
+                      <div className="bg-green-600/10 border border-green-600/20 p-3 rounded-lg">
+                        <div className="text-sm text-muted-foreground">
+                          Combustível Real
+                        </div>
+                        <div className="text-lg font-semibold text-green-600">
+                          {actualFuel.toFixed(1)} L
+                        </div>
+                      </div>
+                    </div>
+
+                    {fuelEconomy > 0 ? (
+                      <div className="bg-green-600/10 border border-green-600/20 p-3 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <TrendingUp className="h-4 w-4 text-green-600" />
+                          <span className="text-sm font-medium text-green-600">
+                            Você economizou {fuelEconomy.toFixed(1)}L de
+                            combustível!
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-blue-600/10 border border-blue-600/20 p-3 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <Fuel className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-600">
+                            Consumo dentro do esperado.
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-4">
+                    <h4 className="font-medium text-foreground mb-2">
+                      Dados de combustível não disponíveis
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      A rota foi muito curta para calcular o consumo de
+                      combustível.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Botões de Ação */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleClose}
+            className="flex-1"
+          >
+            Apenas Fechar
+          </Button>
+          <Button
+            type="button"
+            onClick={handleSaveAndComplete}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Salvar e Encerrar
+          </Button>
         </div>
       </div>
-    </div>
+    </AdaptiveModal>
   );
 };
 

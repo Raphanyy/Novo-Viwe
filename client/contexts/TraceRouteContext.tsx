@@ -31,6 +31,9 @@ export interface NavigationData {
   actualFuelConsumption: number; // em litros
   activeTime: number; // em milissegundos
   currentStopIndex: number; // índice da próxima parada a ser concluída
+  lastOptimizationTime?: Date; // última otimização realizada
+  optimizationCount: number; // número de otimizações realizadas
+  averageStopTime: number; // tempo médio por parada em milissegundos
 }
 
 export interface TraceRouteState {
@@ -96,6 +99,10 @@ interface TraceRouteContextType {
   saveAndCompleteRoute: () => void; // Salvar e marcar rota como concluída
   // Callbacks para limpeza do mapa
   setMapCleanupCallback: (callback: () => void) => void;
+  // Atualizar dados de navegação com métricas reais do Mapbox
+  updateNavigationData: (data: Partial<NavigationData>) => void;
+  // Sugerir otimização inteligente baseada no comportamento
+  suggestSmartOptimization: () => boolean;
 }
 
 const TraceRouteContext = createContext<TraceRouteContextType | undefined>(
@@ -140,6 +147,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       actualFuelConsumption: 0,
       activeTime: 0,
       currentStopIndex: 0,
+      optimizationCount: 0,
+      averageStopTime: 0,
     },
     showDetailsModal: false,
     showAdjustmentsModal: false,
@@ -199,6 +208,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         actualFuelConsumption: 0,
         activeTime: 0,
         currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -394,7 +405,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       mapCleanupCallback();
     }
 
-    // Desiste da navegação e volta ao estado inicial
+    // Desiste da navegaç��o e volta ao estado inicial
     setState((prev) => ({
       ...prev,
       showTraceConfirmed: false,
@@ -415,6 +426,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         actualFuelConsumption: 0,
         activeTime: 0,
         currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -482,6 +495,22 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       const nextStopIndex = currentStopIndex + 1;
       const isRouteCompleted = nextStopIndex >= prev.stops.length;
 
+      // Contar paradas restantes
+      const remainingStops = updatedStops.filter((stop) => !stop.isCompleted);
+
+      // Calcular tempo médio por parada para melhorar estimativas
+      const completedStopsWithTime = updatedStops.filter(
+        (stop) =>
+          stop.isCompleted && stop.completedAt && prev.navigationData.startTime,
+      );
+
+      let averageStopTime = prev.navigationData.averageStopTime;
+      if (completedStopsWithTime.length > 0 && prev.navigationData.startTime) {
+        const totalTimeSpent =
+          Date.now() - prev.navigationData.startTime.getTime();
+        averageStopTime = totalTimeSpent / completedStopsWithTime.length;
+      }
+
       // Calculate remaining distance from completed stops
       const completedStopsCount = updatedStops.filter(
         (stop) => stop.isCompleted,
@@ -494,6 +523,24 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       console.log(
         `Parada ${currentStopIndex + 1} concluída! Próxima: ${nextStopIndex + 1}/${totalStops}`,
       );
+
+      // Usar inteligência adaptativa para decidir se deve otimizar
+      if (!isRouteCompleted && remainingStops.length > 0) {
+        // Aguardar atualização do estado antes de analisar
+        setTimeout(() => {
+          // Tentar usar inteligência adaptativa primeiro
+          const optimizedIntelligently = state.isInActiveNavigation; // Será executado pela função externa
+
+          // Se não otimizou inteligentemente e há poucas paradas, apenas re-traçar
+          if (!optimizedIntelligently && remainingStops.length < 3) {
+            window.dispatchEvent(
+              new CustomEvent("traceRoute", {
+                detail: { stops: remainingStops },
+              }),
+            );
+          }
+        }, 500);
+      }
 
       if (isRouteCompleted) {
         console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
@@ -525,6 +572,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           ...prev.navigationData,
           currentStopIndex: nextStopIndex,
           remainingDistance: Math.max(0, remainingDistance),
+          averageStopTime,
         },
       };
     });
@@ -532,8 +580,18 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
   const optimizeRoute = async () => {
     try {
+      // Durante navegação ativa, otimizar apenas paradas restantes
+      const stopsToOptimize = state.isInActiveNavigation
+        ? state.stops.filter((stop) => !stop.isCompleted)
+        : state.stops;
+
+      if (stopsToOptimize.length < 2) {
+        console.log("Não há paradas suficientes para otimizar (mínimo 2)");
+        return;
+      }
+
       // Utiliza a API de Optimization do Mapbox com configuração centralizada
-      const coordinates = state.stops.map((stop) => stop.coordinates);
+      const coordinates = stopsToOptimize.map((stop) => stop.coordinates);
       const coordinatesString = coordinates
         .map((coord) => `${coord[0]},${coord[1]}`)
         .join(";");
@@ -548,6 +606,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         console.error("Erro ao otimizar rota: Token do Mapbox não disponível");
         return;
       }
+
+      console.log(`Otimizando ${stopsToOptimize.length} paradas...`);
 
       const result = await handleAsyncError(async () => {
         const response = await fetchWithErrorHandling(
@@ -565,26 +625,73 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
       if (result.success && result.data?.trips?.length > 0) {
         const optimizedWaypoints = result.data.waypoints;
+        const trip = result.data.trips[0];
 
-        // Reordena as paradas baseado na otimização
         setState((prev) => {
-          const reorderedStops = optimizedWaypoints.map(
-            (waypoint: any, index: number) => {
-              const originalStop = prev.stops[waypoint.waypoint_index];
-              return {
-                ...originalStop,
-                order: index + 1,
-              };
-            },
-          );
+          let reorderedStops: RouteStop[];
+
+          if (prev.isInActiveNavigation) {
+            // Durante navegação, manter paradas concluídas no início e reordenar apenas as restantes
+            const completedStops = prev.stops.filter(
+              (stop) => stop.isCompleted,
+            );
+            const optimizedRemainingStops = optimizedWaypoints.map(
+              (waypoint: any, index: number) => {
+                const originalStop = stopsToOptimize[waypoint.waypoint_index];
+                return {
+                  ...originalStop,
+                  order: completedStops.length + index + 1,
+                };
+              },
+            );
+            reorderedStops = [...completedStops, ...optimizedRemainingStops];
+          } else {
+            // Fora de navegação, reordenar todas as paradas
+            reorderedStops = optimizedWaypoints.map(
+              (waypoint: any, index: number) => {
+                const originalStop = stopsToOptimize[waypoint.waypoint_index];
+                return {
+                  ...originalStop,
+                  order: index + 1,
+                };
+              },
+            );
+          }
+
+          // Atualizar dados de navegação com métricas reais do Mapbox
+          const updatedNavigationData = {
+            ...prev.navigationData,
+            totalDistance: trip.distance || prev.navigationData.totalDistance,
+            estimatedFuelConsumption: trip.distance
+              ? (trip.distance / 1000) * 0.08 // 8L/100km estimativa
+              : prev.navigationData.estimatedFuelConsumption,
+            lastOptimizationTime: new Date(),
+            optimizationCount: prev.navigationData.optimizationCount + 1,
+          };
 
           return {
             ...prev,
             stops: reorderedStops,
+            navigationData: updatedNavigationData,
           };
         });
 
-        console.log("Rota otimizada com sucesso!");
+        // Automaticamente re-traçar a rota no mapa após otimização
+        setTimeout(() => {
+          const updatedStops = state.isInActiveNavigation
+            ? state.stops.filter((stop) => !stop.isCompleted)
+            : state.stops;
+
+          window.dispatchEvent(
+            new CustomEvent("traceRoute", {
+              detail: { stops: updatedStops },
+            }),
+          );
+        }, 100);
+
+        console.log(
+          `Rota otimizada com sucesso! Distância: ${trip.distance}m, Duração: ${trip.duration}s`,
+        );
       } else if (result.error) {
         if (
           result.error.shouldNotifyUser &&
@@ -681,6 +788,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         actualFuelConsumption: 0,
         activeTime: 0,
         currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
     console.log("Rota finalizada e estado resetado");
@@ -750,6 +859,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         actualFuelConsumption: 0,
         activeTime: 0,
         currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -789,6 +900,80 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     saveAndCompleteRoute,
     setMapCleanupCallback: (callback: () => void) =>
       setMapCleanupCallback(() => callback),
+    updateNavigationData: (data: Partial<NavigationData>) => {
+      setState((prev) => ({
+        ...prev,
+        navigationData: {
+          ...prev.navigationData,
+          ...data,
+        },
+      }));
+      console.log("Dados de navegação atualizados:", data);
+    },
+    suggestSmartOptimization: () => {
+      const remainingStops = state.stops.filter((stop) => !stop.isCompleted);
+      const completedStops = state.stops.filter((stop) => stop.isCompleted);
+      const now = new Date();
+
+      // Verificar se otimizou recentemente (evitar spam de otimizações)
+      const lastOptimization = state.navigationData.lastOptimizationTime;
+      const timeSinceLastOptimization = lastOptimization
+        ? now.getTime() - lastOptimization.getTime()
+        : Infinity;
+      const minTimeBetweenOptimizations = 5 * 60 * 1000; // 5 minutos
+
+      // Análise inteligente mais sofisticada
+      const hasEnoughStops = remainingStops.length >= 3;
+      const isActiveNavigation = state.isInActiveNavigation;
+      const hasCompletedStops = completedStops.length >= 1;
+      const notOptimizedRecently =
+        timeSinceLastOptimization > minTimeBetweenOptimizations;
+      const notOptimizedTooMuch = state.navigationData.optimizationCount < 5; // Máximo 5 otimizações por rota
+      const hasGoodPerformanceData = state.navigationData.averageStopTime > 0;
+
+      const shouldOptimize =
+        hasEnoughStops &&
+        isActiveNavigation &&
+        hasCompletedStops &&
+        notOptimizedRecently &&
+        notOptimizedTooMuch &&
+        !state.isTracing;
+
+      if (shouldOptimize) {
+        const reason = hasGoodPerformanceData
+          ? `Padrão de navegação detectado (tempo médio: ${Math.round(state.navigationData.averageStopTime / 1000 / 60)}min/parada)`
+          : "Condições ideais para re-otimização detectadas";
+
+        console.log(
+          "🤖 Inteligência adaptativa: Sugerindo otimização inteligente",
+          {
+            remainingStops: remainingStops.length,
+            completedStops: completedStops.length,
+            optimizationCount: state.navigationData.optimizationCount,
+            timeSinceLastOptimization: Math.round(
+              timeSinceLastOptimization / 1000 / 60,
+            ), // em minutos
+            averageStopTime: Math.round(
+              state.navigationData.averageStopTime / 1000 / 60,
+            ), // em minutos
+            reason,
+          },
+        );
+
+        // Auto-otimizar com delay inteligente baseado no comportamento
+        const smartDelay = hasGoodPerformanceData
+          ? Math.min(2000, state.navigationData.averageStopTime / 10) // Delay proporcional ao tempo médio
+          : 1000;
+
+        setTimeout(() => {
+          optimizeRoute();
+        }, smartDelay);
+
+        return true;
+      }
+
+      return false;
+    },
   };
 
   return (
