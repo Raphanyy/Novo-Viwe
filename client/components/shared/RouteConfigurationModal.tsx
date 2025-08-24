@@ -1211,8 +1211,10 @@ function SchedulingPage({
     if (type === "permanente") {
       newData.date = "";
       setErrors({});
-    } else if (type === "imediata" && !newData.date) {
-      // Se mudou para imediata e não tem data, define hoje como padrão
+      setIsTodayToggle(false); // Reset toggle quando muda para permanente
+    } else if (type === "imediata") {
+      // Se mudou para imediata, ativar toggle "Hoje" por padrão
+      setIsTodayToggle(true);
       newData.date = today;
     }
     setData(newData);
