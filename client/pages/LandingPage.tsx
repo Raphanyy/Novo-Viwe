@@ -4,20 +4,370 @@ import {
   MapPin,
   Route,
   Share2,
-  Compass,
-  Menu,
-  X,
-  Rocket,
   TrafficCone,
-  Globe,
-  Users,
-  DollarSign,
-  List,
   Clock,
+  Star,
+  CheckCircle,
+  Shield,
+  Zap,
+  Target,
+  Award,
+  Smartphone,
+  Cloud,
+  BarChart3,
+  ArrowRight,
+  Play,
+  Heart,
+  MessageCircle,
+  Sparkles,
+  Lightbulb,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// === Componentes de Página ===
+// === Logo Real da Viwe ===
+const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
+  <img
+    src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
+    alt="Viwe Logo"
+    className={`${className} object-contain`}
+  />
+);
+
+// === Seções Principais ===
+
+const StatsSection = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const stats = [
+    {
+      number: "1M+",
+      label: "Rotas Otimizadas",
+      icon: Route,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      number: "50K+",
+      label: "Usuários Ativos",
+      icon: Users,
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      number: "99.9%",
+      label: "Uptime Garantido",
+      icon: Shield,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      number: "30%",
+      label: "Economia de Tempo",
+      icon: Clock,
+      color: "from-orange-500 to-red-500",
+    },
+  ];
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
+    >
+      {/* Efeitos de fundo suavizados */}
+      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl"></div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Números que impressionam
+          </h2>
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            Milhares de pessoas já confiam no Viwe para otimizar suas jornadas
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className={`text-center transition-all duration-700 delay-${index * 100} ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+            >
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r ${stat.color} rounded-xl mb-3 md:mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
+              >
+                <stat.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                {stat.number}
+              </div>
+              <div className="text-muted-foreground font-medium text-sm md:text-base">
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TestimonialsSection = () => {
+  const testimonials = [
+    {
+      name: "Ana Silva",
+      role: "Executiva de Vendas",
+      avatar: "AS",
+      text: "O Viwe revolucionou minha rotina de trabalho. Economizo 2 horas por dia nas minhas visitas aos clientes!",
+      rating: 5,
+      company: "TechCorp",
+    },
+    {
+      name: "Carlos Mendes",
+      role: "Motorista de App",
+      avatar: "CM",
+      text: "Melhor aplicativo de rotas que já usei. A previsão de trânsito é incrivelmente precisa.",
+      rating: 5,
+      company: "Uber",
+    },
+    {
+      name: "Mariana Costa",
+      role: "Empresária",
+      avatar: "MC",
+      text: "Nossa frota reduziu 25% no consumo de combustível usando as rotas otimizadas do Viwe.",
+      rating: 5,
+      company: "LogiTrans",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 bg-secondary/50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
+            <Heart className="h-4 w-4 text-primary" />
+            <span className="text-primary font-medium text-sm">
+              Amado pelos usuários
+            </span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            O que nossos usuários dizem
+          </h2>
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            Milhares de pessoas já otimizaram suas jornadas com o Viwe
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="group bg-card p-6 rounded-2xl border border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:-translate-y-1"
+            >
+              <div className="flex items-center space-x-1 mb-4">
+                {Array.from({ length: testimonial.rating }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-4 w-4 text-yellow-500 fill-current"
+                  />
+                ))}
+              </div>
+              <blockquote className="text-card-foreground mb-6 leading-relaxed">
+                "{testimonial.text}"
+              </blockquote>
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm mr-3">
+                  {testimonial.avatar}
+                </div>
+                <div>
+                  <div className="font-semibold text-card-foreground">
+                    {testimonial.name}
+                  </div>
+                  <div className="text-muted-foreground text-sm">
+                    {testimonial.role}
+                  </div>
+                  <div className="text-primary text-xs font-medium">
+                    {testimonial.company}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const HowItWorksSection = () => {
+  const steps = [
+    {
+      step: "01",
+      title: "Defina seu destino",
+      description: "Digite onde você quer ir ou selecione no mapa interativo",
+      icon: Target,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      step: "02",
+      title: "Otimização inteligente",
+      description:
+        "Nossa IA calcula a melhor rota considerando trânsito e preferências",
+      icon: Zap,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      step: "03",
+      title: "Navegue com confiança",
+      description:
+        "Siga as instruções em tempo real e chegue mais rápido ao destino",
+      icon: CheckCircle,
+      color: "from-green-500 to-emerald-500",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 bg-background">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
+            <Lightbulb className="h-4 w-4 text-primary" />
+            <span className="text-primary font-medium text-sm">
+              Como funciona
+            </span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Três passos simples
+          </h2>
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            Processo simplificado para otimizar suas jornadas
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          {steps.map((step, index) => (
+            <div key={index} className="text-center relative group">
+              {index < steps.length - 1 && (
+                <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-primary to-primary/20 transform -translate-x-1/2 z-0 rounded-full"></div>
+              )}
+
+              <div
+                className={`relative z-10 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${step.color} rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300`}
+              >
+                <step.icon className="h-8 w-8 md:h-10 md:w-10 text-white" />
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-accent-foreground text-xs font-bold">
+                  {step.step}
+                </div>
+              </div>
+
+              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                {step.title}
+              </h3>
+              <p className="text-muted-foreground leading-relaxed text-sm md:text-base max-w-xs mx-auto">
+                {step.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const AdvancedFeaturesSection = () => {
+  const features = [
+    {
+      icon: Smartphone,
+      title: "App Mobile Nativo",
+      description: "Disponível para iOS e Android com sincronização automática",
+      gradient: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: Cloud,
+      title: "Sincronização Automática",
+      description:
+        "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
+      gradient: "from-purple-500 to-pink-500",
+    },
+    {
+      icon: BarChart3,
+      title: "Relatórios Avançados",
+      description: "Análise detalhada de tempo, distância e economia",
+      gradient: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: Award,
+      title: "Suporte Premium",
+      description: "Atendimento 24/7 com especialistas em otimização",
+      gradient: "from-orange-500 to-red-500",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 bg-secondary/30">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-primary font-medium text-sm">
+              Recursos avançados
+            </span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Tecnologia de ponta
+          </h2>
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            Recursos premium que fazem a diferença na sua experiência
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="group bg-card p-6 rounded-2xl border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            >
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-xl mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
+              >
+                <feature.icon className="h-6 w-6 text-white" />
+              </div>
+
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                {feature.title}
+              </h3>
+
+              <p className="text-muted-foreground leading-relaxed text-sm">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const HomePage = ({
   heroRef,
@@ -65,9 +415,9 @@ const HomePage = ({
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const rotationX = (y / rect.height - 0.5) * -10;
-    const rotationY = (x / rect.width - 0.5) * 10;
-    card.style.transform = `scale(1.05) perspective(1000px) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    const rotationX = (y / rect.height - 0.5) * -5;
+    const rotationY = (x / rect.width - 0.5) * 5;
+    card.style.transform = `scale(1.02) perspective(1000px) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
   };
 
   const handleCardMouseLeave = (e: React.MouseEvent, index: number) => {
@@ -78,187 +428,208 @@ const HomePage = ({
 
   return (
     <React.Fragment>
-      {/* Secção Hero com Fundo Three.js */}
-      <section className="relative overflow-hidden py-32 md:py-48 text-center bg-gradient-to-br from-white to-gray-50">
+      {/* Secção Hero com proporções adequadas */}
+      <section className="relative overflow-hidden py-20 md:py-32 text-center bg-gradient-to-br from-background via-background to-primary/5">
         <div
-          className="absolute inset-0 z-0 pointer-events-none"
+          className="absolute inset-0 z-0 pointer-events-none opacity-30"
           ref={heroRef}
         ></div>
+
+        {/* Efeitos de brilho suavizados */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-purple-500/5 opacity-30"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+
         <div className="container mx-auto px-6 relative z-10">
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <h1 className="text-4xl md:text-7xl font-extrabold text-gray-900 leading-[1.05] tracking-[-0.05em]">
-              Sua jornada, <br /> planejada de forma inteligente.
+            {/* Logo grande alinhada com o texto */}
+            <div className="mb-4 md:mb-6 flex justify-center">
+              <div className="group relative">
+                <ViweLogo className="h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 xl:h-80 xl:w-80 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
+                {/* Efeito de brilho suave */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+              </div>
+            </div>
+
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
+              Somos a maior plataforma
+              <br />
+              de rotas inteligentes no mundo
             </h1>
-            <p className="mt-8 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto tracking-[-0.01em]">
-              Viwe é o seu planejador de rotas definitivo. Otimize seus
-              trajetos, descubra novos lugares e chegue ao seu destino com
-              eficiência e tranquilidade.
+            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Viwe é o planejador de rotas mais avançado do mercado. Otimize
+              trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
-          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4">
+          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/login"
-              className="bg-blue-600 text-white px-7 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-lg transform hover:-translate-y-0.5"
+              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
             >
-              Começar a planejar
+              <span className="flex items-center justify-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Começar gratuitamente
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Link>
-            <button className="text-gray-900 px-7 py-3 rounded-full border border-gray-300 font-semibold hover:bg-gray-100 transition-colors duration-200">
-              Saiba mais
+            <button className="group flex items-center justify-center gap-2 text-foreground px-8 py-4 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-300">
+              <Play className="h-5 w-5" />
+              Ver demonstração
             </button>
           </div>
-        </div>
-      </section>
 
-      {/* Secção de Logos (Confiança) */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-6">
-          <h2 className="text-center text-lg font-semibold text-gray-600 mb-12">
-            Confiança de viajantes e empresas em todo o mundo
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center justify-center">
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M5.895 24h-5.895v-24h18.27c5.939 0 9.873 2.858 9.873 8.358 0 5.432-3.824 8.312-9.674 8.312h-9.844v7.33zm5.895-16.73c2.757 0 4.639-1.325 4.639-3.95 0-2.625-1.879-3.95-4.639-3.95h-5.895v7.9z" />
-            </svg>
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M72.245 24.001h-5.748l-8.625-12.75-8.625 12.75h-5.748l12.18-18.001-12.18-18h5.748l8.625 12.75 8.625-12.75h5.748l-12.18 18z" />
-            </svg>
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M96.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M116.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M141.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M166.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
+          {/* Badge de confiança simplificado */}
+          <div className="mt-8 flex justify-center">
+            <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+              <div className="flex -space-x-1">
+                <div className="w-6 h-6 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
+                <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
+                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
+              </div>
+              <span className="text-muted-foreground text-sm">
+                Mais de <strong className="text-foreground">50K</strong>{" "}
+                usuários
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Secção de Funcionalidades com animação */}
+      {/* Seção de Estatísticas */}
+      <StatsSection />
+
+      {/* Secção de Logos de Confiança simplificada */}
+      <section className="py-12 md:py-16 bg-muted/20">
+        <div className="container mx-auto px-6">
+          <h2 className="text-center text-base font-medium text-muted-foreground mb-8">
+            Confiança de empresas em todo o mundo
+          </h2>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 items-center">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="flex justify-center">
+                <div className="w-20 h-12 bg-muted/40 rounded-lg flex items-center justify-center opacity-50 hover:opacity-70 transition-opacity">
+                  <span className="text-muted-foreground text-xs font-medium">
+                    LOGO
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Secção de Funcionalidades principais com proporções corrigidas */}
       <section
         ref={featuresRef}
-        className={`bg-gray-50 py-16 md:py-24 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
+        className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
       >
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
+              <Zap className="h-4 w-4 text-primary" />
+              <span className="text-primary font-medium text-sm">
+                Funcionalidades principais
+              </span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               Recursos para otimizar sua viagem
             </h2>
-            <p className="mt-2 text-lg text-gray-600">
-              Tudo o que você precisa para uma jornada perfeita, num só lugar.
+            <p className="text-base text-muted-foreground max-w-xl mx-auto">
+              Tecnologia avançada que faz a diferença na sua jornada
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div
               ref={(el) => (cardRefs.current[0] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 0)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 0)}
             >
-              <div className="p-4 inline-block bg-blue-100 rounded-xl text-blue-600">
-                <Route className="h-8 w-8" />
+              <div className="p-3 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl text-primary mb-4 group-hover:scale-105 transition-transform duration-300">
+                <Route className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold mt-6">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
                 Otimização de Rotas
               </h3>
-              <p className="mt-2 text-gray-600 text-sm">
-                Calcule o caminho mais rápido e eficiente, economizando tempo e
-                combustível.
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Algoritmos de IA calculam o caminho mais eficiente, economizando
+                tempo e combustível.
               </p>
             </div>
+
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-green-500/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="p-4 inline-block bg-green-100 rounded-xl text-green-600">
-                <TrafficCone className="h-8 w-8" />
+              <div className="p-3 inline-block bg-gradient-to-br from-green-500/20 to-green-500/10 rounded-xl text-green-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <TrafficCone className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold mt-6">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-green-500 transition-colors">
                 Previsão de Trânsito
               </h3>
-              <p className="mt-2 text-gray-600 text-sm">
-                Evite engarrafamentos com informações de trânsito em tempo real
-                e previsões inteligentes.
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Dados em tempo real para evitar engarrafamentos com precisão de
+                99%.
               </p>
             </div>
+
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-yellow-500/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="p-4 inline-block bg-yellow-100 rounded-xl text-yellow-600">
-                <MapPin className="h-8 w-8" />
+              <div className="p-3 inline-block bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 rounded-xl text-yellow-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <MapPin className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold mt-6">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-yellow-500 transition-colors">
                 Pontos de Interesse
               </h3>
-              <p className="mt-2 text-gray-600 text-sm">
-                Descubra e adicione locais importantes ao longo do seu caminho,
-                como restaurantes e postos de gasolina.
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Descubra restaurantes, postos e atrações ao longo do caminho.
               </p>
             </div>
+
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-white p-8 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-purple-500/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="p-4 inline-block bg-purple-100 rounded-xl text-purple-600">
-                <Share2 className="h-8 w-8" />
+              <div className="p-3 inline-block bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-xl text-purple-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <Share2 className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold mt-6">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-purple-500 transition-colors">
                 Compartilhar Itinerário
               </h3>
-              <p className="mt-2 text-gray-600 text-sm">
-                Envie seu trajeto completo para amigos e familiares com apenas
-                um toque.
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Compartilhe rotas em tempo real com familiares e equipes.
               </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Como Funciona */}
+      <HowItWorksSection />
+
+      {/* Recursos Avançados */}
+      <AdvancedFeaturesSection />
+
+      {/* Testemunhos */}
+      <TestimonialsSection />
     </React.Fragment>
   );
 };
 
 const LandingPage = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Efeito three.js para o fundo
+  // Efeito three.js suavizado para o fundo
   useEffect(() => {
     if (!heroRef.current) return;
 
@@ -278,15 +649,15 @@ const LandingPage = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     heroRef.current.appendChild(renderer.domElement);
 
-    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    const light = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 0.3);
     directionalLight.position.set(0, 0, 5);
     scene.add(directionalLight);
 
-    const geometry = new THREE.PlaneGeometry(10, 10, 32, 32);
+    const geometry = new THREE.PlaneGeometry(8, 8, 20, 20);
     const material = new THREE.MeshLambertMaterial({
-      color: 0x4b5563,
+      color: 0x3b82f6,
       wireframe: true,
       transparent: true,
       opacity: 0.1,
@@ -304,8 +675,9 @@ const LandingPage = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      plane.rotation.x = mouseY * 0.1;
-      plane.rotation.y = mouseX * 0.1;
+      plane.rotation.x = mouseY * 0.05;
+      plane.rotation.y = mouseX * 0.05;
+      plane.rotation.z += 0.001;
       renderer.render(scene, camera);
     };
     animate();
@@ -337,262 +709,59 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div
-      className="bg-white min-h-screen text-gray-800 font-sans"
-      style={{ fontFamily: "Inter, sans-serif" }}
-    >
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
-        rel="stylesheet"
-      />
-
-      {/* Barra de Navegação */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 py-4 transition-all duration-300">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <Rocket className="h-8 w-8 text-blue-600" />
-            <span className="font-bold text-xl ml-2 text-gray-900">Viwe</span>
-          </div>
-
-          <div className="hidden md:flex space-x-8 text-gray-700 font-medium">
-            <a
-              href="#funcionalidades"
-              className="hover:text-gray-900 transition-colors duration-200"
-            >
-              Funcionalidades
-            </a>
-            <a
-              href="#sobre"
-              className="hover:text-gray-900 transition-colors duration-200"
-            >
-              Sobre nós
-            </a>
-            <a
-              href="#precos"
-              className="hover:text-gray-900 transition-colors duration-200"
-            >
-              Preços
-            </a>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-gray-700 font-medium hover:text-gray-900 transition-colors duration-200 hidden md:block"
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/login"
-              className="bg-blue-600 text-white px-5 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors duration-200 transform hover:-translate-y-0.5 hidden md:block"
-            >
-              Começar agora
-            </Link>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-gray-500 hover:text-gray-900 transition-colors duration-200"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
-        >
-          <div className="flex flex-col items-start px-6 py-4 space-y-2 text-gray-700 font-medium bg-white border-t border-gray-100">
-            <a
-              href="#funcionalidades"
-              className="w-full py-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-            >
-              Funcionalidades
-            </a>
-            <a
-              href="#sobre"
-              className="w-full py-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-            >
-              Sobre nós
-            </a>
-            <a
-              href="#precos"
-              className="w-full py-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-            >
-              Preços
-            </a>
-            <Link
-              to="/login"
-              className="w-full py-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/login"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 text-center"
-            >
-              Começar agora
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <div className="bg-background min-h-screen text-foreground">
       {/* Conteúdo Principal */}
-      <main className="pt-24">
-        <HomePage heroRef={heroRef} />
+      <HomePage heroRef={heroRef} />
 
-        {/* CTA Section */}
-        <section className="bg-gray-900 py-20 text-white text-center">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl md:text-5xl font-extrabold leading-tight">
-              Pronto para sua próxima aventura?
+      {/* CTA Section balanceada */}
+      <section className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 py-20 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white mb-6">
+              Pronto para revolucionar suas jornadas?
             </h2>
-            <p className="mt-4 text-lg max-w-xl mx-auto text-gray-400">
-              Crie sua conta agora e comece a planejar seus trajetos com a Viwe.
+            <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
+              Junte-se a mais de 50.000 usuários que já otimizaram suas rotas
+              com o Viwe.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
                 to="/login"
-                className="bg-blue-600 text-white px-7 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-lg"
+                className="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
               >
-                Começar a planejar
+                <span className="flex items-center justify-center gap-2">
+                  <Sparkles className="h-5 w-5" />
+                  Começar gratuitamente
+                </span>
               </Link>
-              <button className="border border-gray-400 text-gray-400 px-7 py-3 rounded-full font-semibold hover:bg-gray-800 hover:text-white transition-colors duration-200">
-                Contatar suporte
+              <button className="border-2 border-white/40 text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+                <span className="flex items-center justify-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  Falar com vendas
+                </span>
               </button>
             </div>
-          </div>
-        </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-16">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div>
-            <div className="flex items-center">
-              <Compass className="h-6 w-6 text-blue-400" />
-              <span className="font-bold text-lg ml-2 text-white">Viwe</span>
+            {/* Garantias */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-white/80 text-sm">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-400" />
+                <span>Teste grátis por 30 dias</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-400" />
+                <span>Sem cartão de crédito</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-400" />
+                <span>Suporte 24/7</span>
+              </div>
             </div>
-            <p className="mt-4 text-sm max-w-xs">
-              Planejador de rotas <br /> para o mundo.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white">Funcionalidades</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Otimização
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Trânsito
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Pontos de interesse
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Compartilhar
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white">Empresa</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Sobre nós
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Contato
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white">Ajuda</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Suporte
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Termos de uso
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Política de privacidade
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white">Idioma</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  Português (Brasil)
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors duration-200"
-                >
-                  English (United States)
-                </a>
-              </li>
-            </ul>
-            <p className="mt-6 text-xs text-gray-500">
-              © 2024 Viwe. Todos os direitos reservados.
-            </p>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 };
