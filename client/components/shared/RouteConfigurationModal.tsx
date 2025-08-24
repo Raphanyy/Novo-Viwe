@@ -264,6 +264,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
         // Se estiver no modo de traçamento e tiver paradas suficientes, finalizar planejamento
         if (traceContext.state.isTracing && formData.stops.length >= 2) {
+          console.log("Configurações salvas, finalizando planejamento automaticamente...");
           // Fechar modal primeiro
           setIsSuccess(true);
           setIsLoading(false);
@@ -272,6 +273,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             setIsSuccess(false);
             onClose();
             // Finalizar planejamento automaticamente após salvar
+            console.log("Chamando showTraceConfirmation() para finalizar planejamento");
             traceContext.showTraceConfirmation();
           }, 1500);
 
