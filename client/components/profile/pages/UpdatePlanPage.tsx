@@ -139,17 +139,6 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-full bg-background">
-      {/* Header local com botão de voltar */}
-      <div className="bg-card border-b border-border px-4 py-3 flex items-center space-x-2">
-        <button
-          onClick={onBack}
-          className="p-2 hover:bg-accent rounded-lg transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5 text-foreground" />
-        </button>
-        <h1 className="text-lg font-semibold text-foreground">Nossos Planos</h1>
-      </div>
-
       <div className="p-4">
         {/* Subtítulo da página */}
         <div className="mb-6">

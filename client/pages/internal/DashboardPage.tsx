@@ -16,6 +16,7 @@ import {
   Activity,
   Users,
   FolderOpen,
+  Heart,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
@@ -321,41 +322,14 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Weather & Traffic (Simplified) */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-            <div className="flex items-center space-x-2 mb-2 relative z-10">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <span className="text-lg">☀️</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">Clima</p>
-                <p className="text-xs text-muted-foreground">Bom para viajar</p>
-              </div>
-            </div>
-            <p className="text-lg font-bold text-foreground relative z-10">
-              24°C
-            </p>
-          </div>
-
-          <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-            <div className="flex items-center space-x-2 mb-2 relative z-10">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <Car className="h-4 w-4 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">Trânsito</p>
-                <p className="text-xs text-muted-foreground">
-                  Condições normais
-                </p>
-              </div>
-            </div>
-            <p className="text-lg font-bold text-green-600 relative z-10">
-              Fluindo
+        {/* Avaliação da Tela */}
+        <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary relative overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+          <div className="flex items-center justify-center space-x-2 relative z-10">
+            <Heart className="h-6 w-6 text-blue-600 fill-current" />
+            <p className="text-sm font-medium text-foreground">
+              Avalie esta tela
             </p>
           </div>
         </div>

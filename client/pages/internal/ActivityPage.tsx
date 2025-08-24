@@ -371,7 +371,7 @@ const ActivityPage: React.FC = () => {
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Header */}
-        <div className="bg-black rounded-2xl p-4 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+        <div className="bg-black rounded-2xl p-4 text-white border border-l-4 border-l-primary relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
@@ -417,7 +417,7 @@ const ActivityPage: React.FC = () => {
 
         {/* Filters */}
         {showFilters && (
-          <div className="bg-card rounded-xl p-3 border border-l-4 border-l-primary border-border relative overflow-hidden">
+          <div className="bg-card rounded-xl p-3 border border-l-4 border-l-primary relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
             <div className="relative z-10 space-y-3">
               <div className="relative">
@@ -473,7 +473,7 @@ const ActivityPage: React.FC = () => {
                 <AccordionItem
                   key={stat.label}
                   value={`item-${index}`}
-                  className="bg-card rounded-xl border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  className="bg-card rounded-xl border border-l-4 border-l-primary relative overflow-hidden"
                 >
                   <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
 
@@ -560,7 +560,7 @@ const ActivityPage: React.FC = () => {
               return (
                 <div
                   key={route.id}
-                  className={`bg-card rounded-xl border border-l-4 ${statusConfig.borderColor} border-border relative overflow-hidden`}
+                  className="bg-card rounded-xl border border-l-4 border-l-primary relative overflow-hidden"
                 >
                   <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
 
@@ -578,17 +578,6 @@ const ActivityPage: React.FC = () => {
                           <h3 className="font-semibold text-foreground text-sm">
                             {route.name}
                           </h3>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}
-                          >
-                            <StatusIcon className="h-3 w-3" />
-                            <span>{statusConfig.label}</span>
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}
-                          >
-                            {route.efficiency}%
-                          </span>
                         </div>
 
                         <div className="flex items-center space-x-3 text-xs text-muted-foreground">
@@ -740,7 +729,7 @@ const ActivityPage: React.FC = () => {
         </div>
 
         {/* Performance Summary */}
-        <div className="bg-black rounded-xl p-4 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+        <div className="bg-black rounded-xl p-4 text-white border border-l-4 border-l-primary relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
             <h2 className="text-lg font-semibold mb-3">Performance</h2>

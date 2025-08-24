@@ -11,7 +11,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   {
-    name: "Início",
+    name: "Home",
     path: "/app",
     icon: Home,
     color: "text-blue-600",

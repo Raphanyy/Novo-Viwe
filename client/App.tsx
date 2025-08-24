@@ -23,6 +23,7 @@ import RoutesPage from "./pages/internal/RoutesPage";
 import ProfilePage from "./pages/internal/ProfilePage";
 import ActivityPage from "./pages/internal/ActivityPage";
 import NotificationsPage from "./pages/internal/NotificationsPage";
+import AjustesPage from "./pages/internal/AjustesPage";
 
 // Adaptive Layouts
 import AdaptiveInternalLayout from "./components/AdaptiveInternalLayout";
@@ -121,7 +122,7 @@ const AppRoutes = () => {
         <Route path="opcoes" element={<ProfilePage />} />
         <Route path="atividade" element={<ActivityPage />} />
         <Route path="notificacoes" element={<NotificationsPage />} />
-        <Route path="ajustes" element={<ProfilePage />} />
+        <Route path="ajustes" element={<AjustesPage />} />
       </Route>
 
       {/* Catch all - redirect to home */}
