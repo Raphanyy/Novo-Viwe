@@ -434,37 +434,63 @@ const ActivityPage: React.FC = () => {
 
         {/* Statistics */}
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas</h3>
-          <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-            {stats.map((stat) => {
+          <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas Detalhadas</h3>
+          <Accordion type="multiple" className="space-y-3">
+            {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <div
+                <AccordionItem
                   key={stat.label}
-                  className="bg-card rounded-xl p-3 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  value={`item-${index}`}
+                  className="bg-card rounded-xl border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
                   <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-1">
-                      <Icon className={`h-4 w-4 ${stat.color}`} />
-                      <span className="text-xs text-green-600 font-medium">
-                        {stat.change}
-                      </span>
+
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline relative z-10">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`h-5 w-5 ${stat.color}`} />
+                        <div className="text-left">
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-semibold text-foreground">{stat.label}</h4>
+                            <span className="text-xs text-green-600 font-medium bg-green-100 px-2 py-0.5 rounded-full">
+                              {stat.change}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{stat.description}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                      </div>
                     </div>
-                    <div className="flex items-baseline space-x-1">
-                      <p className="text-lg font-bold text-foreground leading-none">
-                        {stat.value}
-                      </p>
+                  </AccordionTrigger>
+
+                  <AccordionContent className="px-4 pb-4 relative z-10">
+                    <div className="pt-3 border-t border-border">
+                      <p className="text-sm font-medium text-foreground mb-3">{stat.details.subtitle}</p>
+
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        {stat.details.items.map((item, itemIndex) => (
+                          <div key={itemIndex} className="flex justify-between items-center p-2 bg-background/50 rounded-lg">
+                            <span className="text-xs text-muted-foreground">{item.label}</span>
+                            <span className="text-sm font-medium text-foreground">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="p-3 bg-accent/50 rounded-lg">
+                        <div className="flex items-start space-x-2">
+                          <TrendingUp className="h-4 w-4 text-primary mt-0.5" />
+                          <p className="text-xs text-muted-foreground leading-relaxed">{stat.details.trend}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-foreground">{stat.label}</span>
-                      <span className="text-muted-foreground">{stat.description}</span>
-                    </div>
-                  </div>
-                </div>
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </div>
+          </Accordion>
         </div>
 
         {/* Route History */}
