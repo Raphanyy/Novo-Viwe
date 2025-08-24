@@ -46,19 +46,27 @@ class MapboxConfigManager {
     try {
       const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-      if (!token) {
+      // Log de debug para ajudar na resolução de problemas
+      console.debug('Mapbox token check:', {
+        exists: !!token,
+        length: token?.length || 0,
+        prefix: token?.substring(0, 3) || 'N/A'
+      });
+
+      if (!token || token.trim() === '') {
         this.config = {
           token: null,
           isValid: false,
           isAvailable: false,
-          errorMessage: "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN no arquivo .env",
+          errorMessage: "Token do Mapbox não configurado. Crie um arquivo .env na raiz do projeto com VITE_MAPBOX_ACCESS_TOKEN=seu_token_aqui",
         };
       } else if (!this.isValidMapboxToken(token)) {
+        const reason = this.getTokenValidationReason(token);
         this.config = {
           token: null,
           isValid: false,
           isAvailable: false,
-          errorMessage: "Token do Mapbox inválido. Verifique o formato do token.",
+          errorMessage: `Token do Mapbox inválido: ${reason}. Verifique se o token está correto e tem o formato 'pk.xxxxxxx...'`,
         };
       } else {
         // Token válido - configurar globalmente
