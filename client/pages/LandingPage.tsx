@@ -561,7 +561,7 @@ const HomePage = ({
                 Otimização de Rotas
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                IA calcula rotas mais eficientes. Economia garantida de tempo e combustível.
+                IA encontra rotas eficientes. Economize tempo e combustível.
               </p>
             </div>
 
