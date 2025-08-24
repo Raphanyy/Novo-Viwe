@@ -8,6 +8,8 @@ import {
 export interface RouteStop {
   id: string;
   name: string;
+  code?: string; // Código/ID da parada
+  notes?: string; // Anotação da parada
   coordinates: [number, number]; // [lng, lat]
   address?: string;
   isCompleted?: boolean;
