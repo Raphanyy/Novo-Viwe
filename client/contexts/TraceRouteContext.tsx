@@ -569,6 +569,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           ...prev.navigationData,
           currentStopIndex: nextStopIndex,
           remainingDistance: Math.max(0, remainingDistance),
+          averageStopTime,
         },
       };
     });
