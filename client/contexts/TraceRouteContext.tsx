@@ -864,6 +864,16 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     saveAndCompleteRoute,
     setMapCleanupCallback: (callback: () => void) =>
       setMapCleanupCallback(() => callback),
+    updateNavigationData: (data: Partial<NavigationData>) => {
+      setState((prev) => ({
+        ...prev,
+        navigationData: {
+          ...prev.navigationData,
+          ...data,
+        },
+      }));
+      console.log("Dados de navegação atualizados:", data);
+    },
   };
 
   return (
