@@ -656,9 +656,9 @@ const LandingPage = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     heroRef.current.appendChild(renderer.domElement);
 
-    const light = new THREE.AmbientLight(0xffffff, 0.2);
+    const light = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 0.3);
+    const directionalLight = new THREE.DirectionalLight(0x3b82f6, 0.8);
     directionalLight.position.set(0, 0, 5);
     scene.add(directionalLight);
 
@@ -667,7 +667,7 @@ const LandingPage = () => {
       color: 0x3b82f6,
       wireframe: true,
       transparent: true,
-      opacity: 0.1,
+      opacity: 0.4,
     });
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
