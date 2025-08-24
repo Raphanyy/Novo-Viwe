@@ -49,8 +49,8 @@ const AccordionPricingCard: React.FC<{
       </button>
 
       {/* Conteúdo colapsável do acordeão */}
-      <div 
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out relative z-10 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <p className="text-muted-foreground mt-6 mb-4">{description}</p>
         
