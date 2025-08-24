@@ -243,8 +243,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const handleFinalSubmit = async () => {
     // Na página do mapa, validar apenas se tem paradas para finalizar o planejamento
     if (isInMapPage && traceContext.state.isTracing) {
-      if (formData.stops.length < 2) {
-        alert("Adicione pelo menos 2 paradas para finalizar o planejamento.");
+      if (formData.stops.length < 1) {
+        alert("Adicione pelo menos 1 parada para finalizar o planejamento.");
         return;
       }
     } else if (!isFormValid()) {
