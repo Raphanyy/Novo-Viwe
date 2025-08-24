@@ -31,16 +31,7 @@ import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-// Configure Mapbox token from environment variable
-const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-
-if (!mapboxToken) {
-  console.error("Mapbox token not available. Map cannot be initialized.");
-  console.warn("Please set VITE_MAPBOX_ACCESS_TOKEN in your .env file");
-} else {
-  mapboxgl.accessToken = mapboxToken;
-}
+import { mapboxConfig, isMapboxAvailable, getMapboxToken, getMapboxError, createMapboxApiUrl } from "../../lib/mapbox-config";
 
 interface SearchResult {
   id: string;
@@ -180,12 +171,11 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Check if Mapbox token is available
-    if (!mapboxToken) {
-      console.error("Mapbox token not available. Map cannot be initialized.");
-      setMapError(
-        "Token do Mapbox não configurado. Entre em contato com o suporte.",
-      );
+    // Check if Mapbox is available and configured
+    if (!isMapboxAvailable()) {
+      const errorMessage = getMapboxError();
+      console.error("Mapbox not available:", errorMessage);
+      setMapError(errorMessage || "Token do Mapbox não configurado. Entre em contato com o suporte.");
       return;
     }
 
@@ -545,11 +535,20 @@ const MapPage: React.FC = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-        // Call Mapbox Directions API
-        const response = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxToken}`,
-          { signal: controller.signal },
+        // Call Mapbox Directions API using centralized config
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`,
+          { steps: 'true', geometries: 'geojson' }
         );
+
+        if (!apiUrl) {
+          throw new Error('Mapbox token não disponível para traçar rota');
+        }
+
+        const response = await fetch(apiUrl, {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' }
+        });
 
         clearTimeout(timeoutId);
 
@@ -727,7 +726,7 @@ const MapPage: React.FC = () => {
             errorMessage += "Permissão negada pelo usuário.";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage += "Localização indisponível.";
+            errorMessage += "Localiza��ão indisponível.";
             break;
           case error.TIMEOUT:
             errorMessage += "Tempo esgotado para obter localização.";
