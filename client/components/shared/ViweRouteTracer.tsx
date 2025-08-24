@@ -31,13 +31,13 @@ const ViweRouteTracer: React.FC<ViweRouteTracerProps> = ({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
-            <Route className="h-4 w-4" />
-            <span className="font-medium text-sm">
+            <Route className="h-4 w-4 text-gray-700" />
+            <span className="font-medium text-sm text-gray-900">
               {isTracing ? "Traçando rota..." : "Rota traçada!"}
             </span>
           </div>
-          <div className="flex items-center space-x-1 text-xs text-blue-100">
-            <MapPin className="h-3 w-3" />
+          <div className="flex items-center space-x-1 text-xs text-gray-600">
+            <MapPin className="h-3 w-3 text-gray-500" />
             <span>
               {isTracing
                 ? `Da sua localização → ${stopsCount} paradas`
