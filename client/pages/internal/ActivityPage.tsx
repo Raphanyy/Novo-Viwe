@@ -560,29 +560,29 @@ const ActivityPage: React.FC = () => {
         </div>
 
         {/* Performance Summary */}
-        <div className="bg-black rounded-2xl p-6 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+        <div className="bg-black rounded-xl p-4 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
-            <h2 className="text-lg font-semibold mb-4">Resumo de Performance</h2>
-            <div className="grid grid-cols-2 gap-6">
+            <h2 className="text-lg font-semibold mb-3">Performance</h2>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-gray-300 text-sm mb-1">Melhor eficiência</p>
-                <p className="text-2xl font-bold mb-1">95%</p>
+                <p className="text-gray-300 text-xs">Melhor eficiência</p>
+                <p className="text-xl font-bold">95%</p>
                 <p className="text-gray-400 text-xs">Reunião - Centro</p>
               </div>
               <div>
-                <p className="text-gray-300 text-sm mb-1">Maior economia</p>
-                <p className="text-2xl font-bold mb-1">R$ 11,55</p>
-                <p className="text-gray-400 text-xs">Aeroporto Internacional</p>
+                <p className="text-gray-300 text-xs">Maior economia</p>
+                <p className="text-xl font-bold">R$ 11,55</p>
+                <p className="text-gray-400 text-xs">Aeroporto</p>
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-card/10 rounded-xl">
+            <div className="mt-4 p-3 bg-card/10 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-gray-300">Meta do próximo mês</p>
+                <p className="text-xs text-gray-300">Meta próximo mês</p>
                 <span className="text-xs text-gray-400">75%</span>
               </div>
-              <p className="font-medium mb-3">Alcançar 50 viagens com 90%+ de eficiência</p>
+              <p className="text-sm font-medium mb-2">50 viagens com 90%+ eficiência</p>
               <Progress value={75} className="h-2" />
             </div>
           </div>
