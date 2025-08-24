@@ -344,7 +344,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           <p className="text-xs text-blue-700 mt-1">
             {isInMapPage
               ? "Configurando rota com paradas selecionadas."
-              : "Custo ao criar : 1 crédito"}
+              : "Custo ao criar rotas : 1 crédito viwe"}
           </p>
         </div>
 
