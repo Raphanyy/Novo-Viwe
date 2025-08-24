@@ -12,6 +12,7 @@ import {
   Lock,
   Database,
   LogOut,
+  Heart,
 } from "lucide-react";
 
 // Import modular components
@@ -205,6 +206,17 @@ const ProfilePage: React.FC = () => {
             onClick={() => navigateToSection(section.id)}
           />
         ))}
+      </div>
+
+      {/* Avaliação da Experiência */}
+      <div className="bg-card rounded-xl p-4 border border-border flex items-center space-x-3 cursor-pointer hover:bg-accent transition-colors">
+        <div className="flex-shrink-0">
+          <Heart className="h-6 w-6 text-blue-500 fill-blue-500" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-sm font-medium text-foreground">Avalie sua experiência</h3>
+        </div>
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </div>
     </div>
   );
