@@ -724,14 +724,14 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
                 to="/login"
-                className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
+                className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg"
               >
                 <span className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5" />
                   Começar gratuitamente
                 </span>
               </Link>
-              <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300">
+              <button className="bg-black text-white px-8 py-3 rounded-full border border-white font-semibold hover:bg-black/90 transition-all duration-300">
                 <span className="flex items-center justify-center gap-2">
                   <MessageCircle className="h-5 w-5" />
                   Falar com vendas
