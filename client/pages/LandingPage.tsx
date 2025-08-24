@@ -438,7 +438,7 @@ const HomePage = ({
       {/* Secção Hero enquadrada ao máximo */}
       <section className="relative overflow-hidden py-4 md:py-6 lg:py-8 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-start pt-20">
         <div
-          className="absolute inset-0 z-0 pointer-events-none opacity-30"
+          className="absolute inset-0 z-0 pointer-events-none opacity-60"
           ref={heroRef}
         ></div>
 
