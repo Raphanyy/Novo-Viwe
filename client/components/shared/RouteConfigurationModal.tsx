@@ -313,8 +313,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           </div>
           <p className="text-xs text-blue-700 mt-1">
             {isInMapPage
-              ? "Configurando rota com paradas do mapa. Salvar manterá as funcionalidades existentes."
-              : "Modo Independente"}
+              ? "Configurando rota com paradas selecionadas."
+              : "Configuração independente de rota."}
           </p>
         </div>
 
@@ -336,22 +336,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           </div>
         </div>
 
-        {/* Aviso para rota imediata */}
-        {isTemporary && (
-          <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg mb-4">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-orange-600" />
-              <div>
-                <span className="font-semibold text-orange-800">
-                  Rota Imediata
-                </span>
-                <p className="text-sm text-orange-700">
-                  Esta rota é válida por 24 horas a partir do início.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Seções de configuração */}
         {configurationSections.map((section) => (
