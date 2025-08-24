@@ -89,6 +89,16 @@ const ActivityPage: React.FC = () => {
       icon: CheckCircle,
       color: "text-green-600",
       description: "Concluídas",
+      details: {
+        subtitle: "Análise detalhada das rotas",
+        items: [
+          { label: "Este mês", value: "47 rotas" },
+          { label: "Mês anterior", value: "42 rotas" },
+          { label: "Média diária", value: "1.6 rotas" },
+          { label: "Taxa de sucesso", value: "94%" },
+        ],
+        trend: "Aumento consistente no número de rotas concluídas",
+      },
     },
     {
       label: "Tempo",
@@ -97,6 +107,16 @@ const ActivityPage: React.FC = () => {
       icon: Clock,
       color: "text-blue-600",
       description: "Economizado",
+      details: {
+        subtitle: "Tempo economizado em viagens",
+        items: [
+          { label: "Tempo total economizado", value: "18.3h" },
+          { label: "Economia média por rota", value: "23 min" },
+          { label: "Maior economia", value: "45 min" },
+          { label: "Eficiência temporal", value: "85%" },
+        ],
+        trend: "Melhor otimização de rotas resulta em maior economia",
+      },
     },
     {
       label: "Distância",
@@ -105,6 +125,16 @@ const ActivityPage: React.FC = () => {
       icon: MapPin,
       color: "text-purple-600",
       description: "Percorrida",
+      details: {
+        subtitle: "Distâncias percorridas",
+        items: [
+          { label: "Total percorrido", value: "342 km" },
+          { label: "Média por rota", value: "7.3 km" },
+          { label: "Rota mais longa", value: "28.7 km" },
+          { label: "Rota mais curta", value: "2.1 km" },
+        ],
+        trend: "Aumento gradual na distância total percorrida",
+      },
     },
     {
       label: "Economia",
@@ -113,6 +143,16 @@ const ActivityPage: React.FC = () => {
       icon: DollarSign,
       color: "text-green-600",
       description: "Total",
+      details: {
+        subtitle: "Economia financeira",
+        items: [
+          { label: "Economia total", value: "R$ 127,80" },
+          { label: "Economia em combustível", value: "R$ 89,40" },
+          { label: "Economia em pedágio", value: "R$ 38,40" },
+          { label: "Média por rota", value: "R$ 2,72" },
+        ],
+        trend: "Significativo aumento na economia mensal",
+      },
     },
     {
       label: "Eficiência",
@@ -121,6 +161,16 @@ const ActivityPage: React.FC = () => {
       icon: TrendingUp,
       color: "text-yellow-600",
       description: "Média",
+      details: {
+        subtitle: "Índice de eficiência",
+        items: [
+          { label: "Eficiência média", value: "89%" },
+          { label: "Melhor eficiência", value: "95%" },
+          { label: "Rotas acima 90%", value: "28 rotas" },
+          { label: "Meta mensal", value: "85%" },
+        ],
+        trend: "Melhoria constante na eficiência das rotas",
+      },
     },
     {
       label: "Combustível",
@@ -129,6 +179,16 @@ const ActivityPage: React.FC = () => {
       icon: Fuel,
       color: "text-orange-600",
       description: "Poupado",
+      details: {
+        subtitle: "Economia de combustível",
+        items: [
+          { label: "Total poupado", value: "24.5 L" },
+          { label: "Valor economizado", value: "R$ 147,00" },
+          { label: "Economia por rota", value: "0.52 L" },
+          { label: "Redução CO2", value: "57.8 kg" },
+        ],
+        trend: "Excelente economia de combustível e impacto ambiental",
+      },
     },
   ];
 
