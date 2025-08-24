@@ -245,12 +245,12 @@ const MapPage: React.FC = () => {
 
       // Register cleanup callback after map is initialized
       // Use setTimeout to avoid immediate execution during render
-      const timeoutId = setTimeout(() => {
+      createManagedTimeout(resourceManager.current!, 'setCleanupCallback', () => {
         setMapCleanupCallback(clearAllMarkersAndRoutes);
       }, 0);
 
       // Auto-activate find my location when entering the map page
-      const autoLocationTimeout = setTimeout(() => {
+      createManagedTimeout(resourceManager.current!, 'autoLocation', () => {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
