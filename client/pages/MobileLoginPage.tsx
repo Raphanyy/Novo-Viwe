@@ -54,24 +54,24 @@ const MobileLoginPage: React.FC = () => {
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
-        <div className="flex-shrink-0 pt-12 pb-8 text-center">
-          <div className="flex items-center justify-center mb-6">
+        <div className="flex-shrink-0 pt-8 sm:pt-12 pb-6 sm:pb-8 text-center">
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
             <div className="p-3 bg-blue-600/10 backdrop-blur-sm rounded-2xl">
-              <Rocket className="h-10 w-10 text-blue-600" />
+              <Rocket className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Bem-vindo ao Viwe
           </h1>
-          <p className="text-muted-foreground text-lg px-6">
+          <p className="text-muted-foreground text-base sm:text-lg px-6">
             Sua jornada inteligente começa aqui
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="flex-1 px-6 pb-8">
+        <div className="flex-1 px-4 sm:px-6 pb-6 sm:pb-8">
           <div className="max-w-sm mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {/* Email Field */}
               <div className="space-y-2">
                 <label
@@ -89,7 +89,7 @@ const MobileLoginPage: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 bg-card border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-foreground placeholder-muted-foreground"
+                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-card border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-foreground placeholder-muted-foreground text-base"
                     placeholder="seu@email.com"
                     required
                   />
@@ -113,7 +113,7 @@ const MobileLoginPage: React.FC = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-12 pr-12 py-4 bg-card border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-foreground placeholder-muted-foreground"
+                    className="w-full pl-12 pr-12 py-3 sm:py-4 bg-card border border-border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-foreground placeholder-muted-foreground text-base"
                     placeholder="Sua senha"
                     required
                   />
@@ -142,7 +142,7 @@ const MobileLoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                className="w-full bg-blue-600 text-white py-3 sm:py-4 px-6 rounded-2xl font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg text-base"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
