@@ -61,12 +61,12 @@ const MobileLoginPage: React.FC = () => {
           {/* Botão Entrar */}
           <button
             onClick={handleEmailLogin}
-            className="w-full bg-black text-white py-4 px-6 rounded-2xl font-semibold hover:bg-gray-800 transition-colors duration-200"
+            className="w-full bg-gray-800 text-blue-500 py-4 px-6 rounded-2xl font-semibold hover:bg-gray-700 transition-colors duration-200"
           >
             Entrar
           </button>
 
-          {/* Botão Cadastro */}
+          {/* Bot��o Cadastro */}
           <button
             onClick={handleSignup}
             className="w-full bg-white text-black py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
