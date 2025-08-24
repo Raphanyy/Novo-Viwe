@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "../ui/button";
 import ModalHeader from "./ModalHeader";
 import SettingsSection from "../profile/SettingsSection";
@@ -13,6 +14,8 @@ import {
   Plus,
   Trash2,
   AlertTriangle,
+  Search,
+  Move,
 } from "lucide-react";
 import { ViweLoaderInline } from "./ViweLoader";
 import { useTraceRoute, RouteStop } from "../../contexts/TraceRouteContext";
@@ -59,6 +62,7 @@ interface ConfigurationSection {
     formData: any;
     saveData: (data: any) => void;
     traceContext?: ReturnType<typeof useTraceRoute>;
+    isInMapPage?: boolean;
   }>;
 }
 
@@ -75,6 +79,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   prefilledStops = [],
   isTemporary = false,
 }) => {
+  const location = useLocation();
   const traceContext = useTraceRoute();
   const [currentLevel, setCurrentLevel] = useState(NavigationLevel.PRIMARY);
   const [selectedSection, setSelectedSection] = useState<keyof FormData | null>(null);
@@ -82,21 +87,24 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const initializedRef = useRef(false);
 
+  // Detectar se está na página do mapa
+  const isInMapPage = location.pathname === "/app/mapa";
+
   // Estado do formulário com tipos apropriados - initialize with current data
   const [formData, setFormData] = useState<FormData>(() => {
     const currentStops = prefilledStops.length > 0 ? prefilledStops : [];
     return {
-      info: {
-        routeName: "",
-        responsible: "",
-        priority: "media"
+      info: { 
+        routeName: "", 
+        responsible: "", 
+        priority: "media" 
       },
       clients: [],
       routeSet: "",
       stops: currentStops,
-      scheduling: {
-        type: isTemporary ? "imediata" : "permanente",
-        date: ""
+      scheduling: { 
+        type: isTemporary ? "imediata" : "permanente", 
+        date: "" 
       },
     };
   });
@@ -116,7 +124,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         }
       }));
     }
-
+    
     if (!isOpen) {
       // Reset initialization flag when modal closes
       initializedRef.current = false;
@@ -149,7 +157,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     {
       id: "stops",
       title: "Configurar Paradas",
-      subtitle: "Gerenciar paradas.",
+      subtitle: isInMapPage 
+        ? (formData.stops.length > 0 ? "Organizar paradas." : "Adicionar do mapa.")
+        : "Adicionar endereços.",
       icon: MapPin,
       component: StopsPage,
     },
@@ -184,12 +194,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   // Salvar dados de seção
   const saveAndClose = (section: keyof FormData, data: any) => {
     setFormData((prevData) => ({ ...prevData, [section]: data }));
-    
-    // Sincronizar paradas com o contexto se necessário
-    if (section === 'stops') {
-      // Atualizar o contexto com as novas paradas se estivermos em modo de traçamento
-      // Isso será feito no handleFinalSubmit para evitar múltiplas atualizações
-    }
   };
 
   // Verificar se seção foi configurada corretamente
@@ -204,7 +208,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       case "stops":
         return formData.stops.length > 0;
       case "scheduling":
-        return (formData.scheduling.type === "permanente" ||
+        return (formData.scheduling.type === "permanente" || 
                 (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""));
       default:
         return false;
@@ -217,12 +221,12 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       formData.info.routeName.trim() !== "" &&
       formData.info.responsible.trim() !== "" &&
       formData.stops.length > 0 &&
-      (formData.scheduling.type === "permanente" ||
+      (formData.scheduling.type === "permanente" || 
        (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""))
     );
   };
 
-  // Envio final
+  // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
     if (!isFormValid()) {
       alert("Por favor, preencha todos os campos obrigatórios: Informações da Rota, Paradas e Programação.");
@@ -232,16 +236,19 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     setIsLoading(true);
     
     try {
-      // Simula salvamento no backend
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // TODO: Aqui deveria haver uma chamada real para o backend
-      console.log("Dados da rota salvos:", formData);
-      
-      // Se estivermos em modo de traçamento, atualizar o contexto
-      if (traceContext.state.isTracing && formData.stops.length > 0) {
-        // Sincronizar as paradas com o contexto
-        // Nota: Esta lógica pode precisar ser ajustada dependendo da implementação do contexto
+      if (isInMapPage) {
+        // Na página do mapa: manter funções existentes
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        console.log("Dados da rota salvos (página mapa):", formData);
+        
+        // Sincronizar as paradas com o contexto se necessário
+        if (traceContext.state.isTracing && formData.stops.length > 0) {
+          // Lógica específica para o mapa pode ser adicionada aqui
+        }
+      } else {
+        // Fora da página do mapa: não fazer nada por enquanto
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        console.log("Dados da rota preparados (fora do mapa) - nenhuma ação tomada:", formData);
       }
       
       setIsSuccess(true);
@@ -278,6 +285,22 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
     return (
       <div className="p-4 space-y-3">
+        {/* Indicador de contexto */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <Info className="h-4 w-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">
+              {isInMapPage ? "Modo Mapa" : "Modo Independente"}
+            </span>
+          </div>
+          <p className="text-xs text-blue-700 mt-1">
+            {isInMapPage 
+              ? "Configurando rota com paradas do mapa. Salvar manterá as funcionalidades existentes."
+              : "Configurando rota independente. Salvar apenas prepara os dados."
+            }
+          </p>
+        </div>
+
         {/* Indicador de progresso */}
         <div className="mb-6">
           <div className="flex justify-between items-center text-sm font-medium text-muted-foreground mb-2">
@@ -359,7 +382,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Salvar Configurações
+                {isInMapPage ? "Salvar Configurações" : "Preparar Rota"}
               </>
             )}
           </Button>
@@ -380,6 +403,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         formData={formData[section.id]}
         saveData={(data) => saveAndClose(section.id, data)}
         traceContext={traceContext}
+        isInMapPage={isInMapPage}
       />
     );
   };
@@ -698,19 +722,23 @@ function RouteSetPage({
   );
 }
 
-// Página de Paradas melhorada
+// Página de Paradas com funcionalidade adaptável
 function StopsPage({ 
   onBack, 
   formData, 
   saveData, 
-  traceContext 
+  traceContext,
+  isInMapPage = false
 }: { 
   onBack: () => void; 
   formData: RouteStop[]; 
   saveData: (data: RouteStop[]) => void;
   traceContext?: ReturnType<typeof useTraceRoute>;
+  isInMapPage?: boolean;
 }) {
   const [stops, setStops] = useState<RouteStop[]>(formData);
+  const [newAddress, setNewAddress] = useState("");
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
 
   const handleRemoveStop = (stopId: string) => {
     const newStops = stops.filter(stop => stop.id !== stopId);
@@ -733,32 +761,48 @@ function StopsPage({
     saveData(reorderedStops);
   };
 
+  const handleAddAddress = async () => {
+    if (!newAddress.trim()) return;
+    
+    setIsAddingAddress(true);
+    try {
+      // Simular geocodificação do endereço
+      // Em um ambiente real, usaria a API do Mapbox para geocodificar
+      const newStop: RouteStop = {
+        id: `stop-${Date.now()}`,
+        name: `Parada ${stops.length + 1}`,
+        address: newAddress.trim(),
+        coordinates: [-23.5505, -46.6333] as [number, number], // São Paulo como exemplo
+        order: stops.length + 1,
+        isCompleted: false
+      };
+      
+      const newStops = [...stops, newStop];
+      setStops(newStops);
+      saveData(newStops);
+      setNewAddress("");
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsAddingAddress(false);
+    }
+  };
+
+  const hasStopsFromMap = isInMapPage && stops.length > 0;
+  const shouldShowAddressInput = !isInMapPage || stops.length === 0;
+
   return (
     <div className="p-4 space-y-4">
-      {stops.length === 0 ? (
-        <div className="text-center py-8">
-          <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="font-medium text-foreground mb-2">Nenhuma Parada Configurada</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Use o mapa para adicionar paradas à sua rota
-          </p>
-          <Button 
-            variant="outline" 
-            onClick={onBack}
-            className="text-primary border-primary hover:bg-primary/10"
-          >
-            <MapPin className="h-4 w-4 mr-2" />
-            Ir para o Mapa
-          </Button>
-        </div>
-      ) : (
+      {/* Funcionalidade 1: Mostrar paradas do mapa e permitir organização */}
+      {hasStopsFromMap && (
         <>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-medium text-foreground">
               Paradas da Rota ({stops.length})
             </h3>
             <span className="text-xs text-muted-foreground">
-              Toque para remover
+              Toque para remover • Organize a ordem
             </span>
           </div>
           
@@ -782,6 +826,28 @@ function StopsPage({
                     {stop.coordinates[1].toFixed(4)}, {stop.coordinates[0].toFixed(4)}
                   </p>
                 </div>
+                <div className="flex flex-col space-y-1">
+                  {index > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleReorderStops(index, index - 1)}
+                      className="h-6 w-6 p-0"
+                    >
+                      ↑
+                    </Button>
+                  )}
+                  {index < stops.length - 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleReorderStops(index, index + 1)}
+                      className="h-6 w-6 p-0"
+                    >
+                      ↓
+                    </Button>
+                  )}
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -799,6 +865,110 @@ function StopsPage({
               As paradas serão visitadas na ordem mostrada acima
             </p>
           </div>
+        </>
+      )}
+
+      {/* Funcionalidade 2: Adicionar endereços das paradas */}
+      {shouldShowAddressInput && (
+        <>
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+            <h3 className="font-medium text-foreground mb-2">
+              {isInMapPage ? "Adicionar Paradas" : "Configurar Paradas"}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              {isInMapPage 
+                ? "Nenhuma parada foi adicionada do mapa. Adicione endereços manualmente ou use o mapa."
+                : "Digite os endereços das paradas da sua rota."
+              }
+            </p>
+            
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={newAddress}
+                onChange={(e) => setNewAddress(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddAddress();
+                  }
+                }}
+                className="flex-1 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Digite o endereço da parada..."
+                disabled={isAddingAddress}
+              />
+              <Button 
+                onClick={handleAddAddress}
+                disabled={!newAddress.trim() || isAddingAddress}
+              >
+                {isAddingAddress ? (
+                  <ViweLoaderInline />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Lista de paradas adicionadas */}
+          {stops.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-medium text-foreground">
+                Paradas Adicionadas ({stops.length})
+              </h4>
+              <div className="space-y-2">
+                {stops.map((stop, index) => (
+                  <div
+                    key={stop.id}
+                    className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                        {stop.order}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">{stop.name}</p>
+                        <p className="text-xs text-muted-foreground">{stop.address}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {index > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleReorderStops(index, index - 1)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Move className="h-3 w-3" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveStop(stop.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Estado vazio */}
+          {stops.length === 0 && (
+            <div className="text-center py-8">
+              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <h3 className="font-medium text-foreground mb-2">Nenhuma Parada Configurada</h3>
+              <p className="text-sm text-muted-foreground">
+                {isInMapPage 
+                  ? "Use o mapa para adicionar paradas ou digite os endereços acima"
+                  : "Digite os endereços das paradas acima para começar"
+                }
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>
