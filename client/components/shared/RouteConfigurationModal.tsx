@@ -107,7 +107,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       stops: currentStops,
       scheduling: {
         type: "imediata", // Por padrão sempre imediata
-        date: "",
+        date: new Date().toISOString().split("T")[0], // Data padrão é hoje
       },
     };
   });
