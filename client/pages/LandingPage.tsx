@@ -14,10 +14,325 @@ import {
   DollarSign,
   List,
   Clock,
+  Star,
+  CheckCircle,
+  TrendingUp,
+  Shield,
+  Zap,
+  Target,
+  Award,
+  Smartphone,
+  Cloud,
+  BarChart3,
+  ArrowRight,
+  Play,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+// === Logo SVG Customizada ===
+const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#3b82f6" />
+        <stop offset="100%" stopColor="#1d4ed8" />
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge> 
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    
+    {/* Fundo do círculo */}
+    <circle cx="50" cy="50" r="45" fill="url(#logoGradient)" filter="url(#glow)" />
+    
+    {/* Foguete estilizado */}
+    <path
+      d="M50 15 L60 35 L55 40 L50 38 L45 40 L40 35 Z"
+      fill="white"
+    />
+    <path
+      d="M45 40 L55 40 L53 45 L52 50 L48 50 L47 45 Z"
+      fill="white"
+    />
+    <path
+      d="M47 50 L53 50 L52 55 L51 60 L49 60 L48 55 Z"
+      fill="white"
+    />
+    
+    {/* Chamas */}
+    <path
+      d="M48 60 L50 70 L52 60"
+      fill="#f59e0b"
+    />
+    <path
+      d="M46 62 L48 68 L50 62"
+      fill="#ef4444"
+    />
+    <path
+      d="M52 62 L54 68 L52 62"
+      fill="#ef4444"
+    />
+    
+    {/* Janelas */}
+    <circle cx="48" cy="42" r="2" fill="#3b82f6" />
+    <circle cx="52" cy="42" r="2" fill="#3b82f6" />
+    
+    {/* Estrelas decorativas */}
+    <circle cx="25" cy="25" r="1" fill="white" opacity="0.8" />
+    <circle cx="75" cy="30" r="1" fill="white" opacity="0.6" />
+    <circle cx="30" cy="70" r="1" fill="white" opacity="0.7" />
+    <circle cx="70" cy="75" r="1" fill="white" opacity="0.5" />
+  </svg>
+);
+
 // === Componentes de Página ===
+
+const StatsSection = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const stats = [
+    { number: "1M+", label: "Rotas Otimizadas", icon: Route },
+    { number: "50K+", label: "Usuários Ativos", icon: Users },
+    { number: "99.9%", label: "Uptime Garantido", icon: Shield },
+    { number: "30%", label: "Economia de Tempo", icon: Clock },
+  ];
+
+  return (
+    <section ref={sectionRef} className="py-20 bg-gradient-to-br from-primary/5 to-purple-500/5 border-y border-border">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className={`text-center transition-all duration-1000 delay-${index * 200} ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+                <stat.icon className="h-8 w-8 text-primary" />
+              </div>
+              <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">{stat.number}</div>
+              <div className="text-muted-foreground font-medium">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TestimonialsSection = () => {
+  const testimonials = [
+    {
+      name: "Ana Silva",
+      role: "Executiva de Vendas",
+      avatar: "AS",
+      text: "O Viwe revolucionou minha rotina de trabalho. Economizo 2 horas por dia nas minhas visitas aos clientes!",
+      rating: 5,
+    },
+    {
+      name: "Carlos Mendes",
+      role: "Motorista de App",
+      avatar: "CM",
+      text: "Melhor aplicativo de rotas que já usei. A previsão de trânsito é incrivelmente precisa.",
+      rating: 5,
+    },
+    {
+      name: "Mariana Costa",
+      role: "Empresária",
+      avatar: "MC",
+      text: "Nossa frota reduziu 25% no consumo de combustível usando as rotas otimizadas do Viwe.",
+      rating: 5,
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-secondary">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            O que nossos usuários dizem
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Milhares de pessoas já otimizaram suas jornadas com o Viwe
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-card p-8 rounded-2xl border border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/30"
+            >
+              <div className="flex items-center space-x-1 mb-4">
+                {Array.from({ length: testimonial.rating }).map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
+                ))}
+              </div>
+              <blockquote className="text-card-foreground mb-6 leading-relaxed">
+                "{testimonial.text}"
+              </blockquote>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold mr-4">
+                  {testimonial.avatar}
+                </div>
+                <div>
+                  <div className="font-semibold text-card-foreground">{testimonial.name}</div>
+                  <div className="text-muted-foreground text-sm">{testimonial.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const HowItWorksSection = () => {
+  const steps = [
+    {
+      step: "01",
+      title: "Defina seu destino",
+      description: "Digite onde você quer ir ou selecione no mapa interativo",
+      icon: Target,
+    },
+    {
+      step: "02", 
+      title: "Otimização inteligente",
+      description: "Nossa IA calcula a melhor rota considerando trânsito e preferências",
+      icon: Zap,
+    },
+    {
+      step: "03",
+      title: "Navegue com confiança",
+      description: "Siga as instruções em tempo real e chegue mais rápido ao destino",
+      icon: CheckCircle,
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Como funciona
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Três passos simples para otimizar suas jornadas
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {steps.map((step, index) => (
+            <div key={index} className="text-center relative">
+              {index < steps.length - 1 && (
+                <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-primary to-primary/20 transform -translate-x-1/2 z-0" />
+              )}
+              
+              <div className="relative z-10 inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mb-6 shadow-lg">
+                <step.icon className="h-12 w-12 text-primary-foreground" />
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-accent-foreground text-sm font-bold">
+                  {step.step}
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-semibold text-foreground mb-4">{step.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const AdvancedFeaturesSection = () => {
+  const features = [
+    {
+      icon: Smartphone,
+      title: "App Mobile Nativo",
+      description: "Disponível para iOS e Android com sincronização em nuvem",
+      gradient: "from-blue-500 to-cyan-500"
+    },
+    {
+      icon: Cloud,
+      title: "Sincronização Automática",
+      description: "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: BarChart3,
+      title: "Relatórios Avançados",
+      description: "Análise detalhada de tempo, distância e economia de combustível",
+      gradient: "from-green-500 to-emerald-500"
+    },
+    {
+      icon: Award,
+      title: "Suporte Premium",
+      description: "Atendimento 24/7 com especialistas em otimização de rotas",
+      gradient: "from-orange-500 to-red-500"
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-gradient-to-br from-secondary to-background">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Recursos Avançados
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Tecnologia de ponta para a melhor experiência de navegação
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="group bg-card p-8 rounded-2xl border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <feature.icon className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">{feature.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const HomePage = ({
   heroRef,
@@ -78,18 +393,32 @@ const HomePage = ({
 
   return (
     <React.Fragment>
-      {/* Secção Hero com Fundo Three.js */}
-      <section className="relative overflow-hidden py-32 md:py-48 text-center bg-gradient-to-br from-background to-secondary">
+      {/* Secção Hero com Fundo Three.js e Logo */}
+      <section className="relative overflow-hidden py-32 md:py-48 text-center bg-gradient-to-br from-background via-background to-primary/5">
         <div
           className="absolute inset-0 z-0 pointer-events-none"
           ref={heroRef}
         ></div>
+        
+        {/* Efeitos de brilho */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-purple-500/10 opacity-50"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
+        
         <div className="container mx-auto px-6 relative z-10">
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <h1 className="text-4xl md:text-7xl font-extrabold text-foreground leading-[1.05] tracking-[-0.05em]">
-              Sua jornada, <br /> planejada de forma inteligente.
+            {/* Logo grande acima do título */}
+            <div className="mb-8 flex justify-center">
+              <ViweLogo className="h-24 w-24 md:h-32 md:w-32 animate-pulse" />
+            </div>
+            
+            <h1 className="text-4xl md:text-7xl font-extrabold text-foreground leading-[1.05] tracking-[-0.05em] mb-4">
+              Sua jornada, <br /> 
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                planejada de forma inteligente.
+              </span>
             </h1>
             <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto tracking-[-0.01em]">
               Viwe é o seu planejador de rotas definitivo. Otimize seus
@@ -100,16 +429,23 @@ const HomePage = ({
           <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/login"
-              className="bg-primary text-primary-foreground px-7 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors duration-200 shadow-lg transform hover:-translate-y-0.5"
+              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-200 shadow-2xl transform hover:-translate-y-1 hover:shadow-primary/25"
             >
-              Começar a planejar
+              <span className="flex items-center justify-center gap-2">
+                Começar a planejar
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Link>
-            <button className="text-foreground px-7 py-3 rounded-full border border-border font-semibold hover:bg-secondary transition-colors duration-200">
-              Saiba mais
+            <button className="group flex items-center justify-center gap-2 text-foreground px-8 py-4 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-200">
+              <Play className="h-5 w-5" />
+              Ver demonstração
             </button>
           </div>
         </div>
       </section>
+
+      {/* Seção de Estatísticas */}
+      <StatsSection />
 
       {/* Secção de Logos (Confiança) */}
       <section className="py-16 md:py-24 bg-background">
@@ -118,53 +454,18 @@ const HomePage = ({
             Confiança de viajantes e empresas em todo o mundo
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center justify-center">
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M5.895 24h-5.895v-24h18.27c5.939 0 9.873 2.858 9.873 8.358 0 5.432-3.824 8.312-9.674 8.312h-9.844v7.33zm5.895-16.73c2.757 0 4.639-1.325 4.639-3.95 0-2.625-1.879-3.95-4.639-3.95h-5.895v7.9z" />
-            </svg>
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M72.245 24.001h-5.748l-8.625-12.75-8.625 12.75h-5.748l12.18-18.001-12.18-18h5.748l8.625 12.75 8.625-12.75h5.748l-12.18 18z" />
-            </svg>
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M96.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M116.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M141.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
-            <svg
-              className="h-8 text-muted-foreground/50 opacity-60"
-              fill="currentColor"
-              viewBox="0 0 100 24"
-            >
-              <path d="M166.792 12.001c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-12 7.333c-3.948 0-7.165-3.217-7.165-7.166 0-3.948 3.217-7.165 7.165-7.165 3.948 0 7.166 3.217 7.166 7.165 0 3.949-3.218 7.166-7.166 7.166z" />
-            </svg>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="flex justify-center">
+                <div className="w-24 h-12 bg-muted-foreground/10 rounded-lg flex items-center justify-center opacity-60 hover:opacity-80 transition-opacity">
+                  <span className="text-muted-foreground text-sm font-semibold">LOGO</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Secção de Funcionalidades com animação */}
+      {/* Secção de Funcionalidades principais */}
       <section
         ref={featuresRef}
         className={`bg-secondary py-16 md:py-24 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
@@ -181,11 +482,11 @@ const HomePage = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div
               ref={(el) => (cardRefs.current[0] = el)}
-              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-primary/50"
+              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-primary/50 hover:shadow-2xl"
               onMouseMove={(e) => handleCardMouseMove(e, 0)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 0)}
             >
-              <div className="p-4 inline-block bg-primary/10 rounded-xl text-primary">
+              <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl text-primary mb-6">
                 <Route className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-semibold mt-6 text-card-foreground">
@@ -198,11 +499,11 @@ const HomePage = ({
             </div>
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-green-500/50"
+              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-green-500/50 hover:shadow-2xl"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="p-4 inline-block bg-green-500/10 rounded-xl text-green-500">
+              <div className="p-4 inline-block bg-gradient-to-br from-green-500/20 to-green-500/10 rounded-xl text-green-500 mb-6">
                 <TrafficCone className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-semibold mt-6 text-card-foreground">
@@ -215,11 +516,11 @@ const HomePage = ({
             </div>
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-yellow-500/50"
+              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-yellow-500/50 hover:shadow-2xl"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="p-4 inline-block bg-yellow-500/10 rounded-xl text-yellow-500">
+              <div className="p-4 inline-block bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 rounded-xl text-yellow-500 mb-6">
                 <MapPin className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-semibold mt-6 text-card-foreground">
@@ -232,11 +533,11 @@ const HomePage = ({
             </div>
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-purple-500/50"
+              className="bg-card p-8 rounded-2xl border border-border shadow-xl transition-all duration-300 hover:border-purple-500/50 hover:shadow-2xl"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="p-4 inline-block bg-purple-500/10 rounded-xl text-purple-500">
+              <div className="p-4 inline-block bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-xl text-purple-500 mb-6">
                 <Share2 className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-semibold mt-6 text-card-foreground">
@@ -250,6 +551,15 @@ const HomePage = ({
           </div>
         </div>
       </section>
+
+      {/* Como Funciona */}
+      <HowItWorksSection />
+
+      {/* Recursos Avançados */}
+      <AdvancedFeaturesSection />
+
+      {/* Testemunhos */}
+      <TestimonialsSection />
     </React.Fragment>
   );
 };
@@ -350,7 +660,7 @@ const LandingPage = () => {
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border py-4 transition-all duration-300">
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center">
-            <Rocket className="h-8 w-8 text-primary" />
+            <ViweLogo className="h-8 w-8" />
             <span className="font-bold text-xl ml-2 text-foreground">Viwe</span>
           </div>
 
@@ -444,152 +754,101 @@ const LandingPage = () => {
       <main className="pt-24">
         <HomePage heroRef={heroRef} />
 
-        {/* CTA Section */}
-        <section className="bg-secondary py-20 text-center border-t border-border">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
-              Pronto para sua próxima aventura?
+        {/* CTA Section Premium */}
+        <section className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 py-24 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="container mx-auto px-6 relative z-10">
+            <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-white mb-6">
+              Pronto para revolucionar suas jornadas?
             </h2>
-            <p className="mt-4 text-lg max-w-xl mx-auto text-muted-foreground">
-              Crie sua conta agora e comece a planejar seus trajetos com a Viwe.
+            <p className="mt-4 text-xl max-w-2xl mx-auto text-white/90 mb-10">
+              Junte-se a milhares de usuários que já otimizaram suas rotas com o Viwe.
+              Comece gratuitamente hoje mesmo!
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 to="/login"
-                className="bg-primary text-primary-foreground px-7 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors duration-200 shadow-lg"
+                className="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-colors duration-200 shadow-lg text-lg"
               >
-                Começar a planejar
+                Começar gratuitamente
               </Link>
-              <button className="border border-border text-muted-foreground px-7 py-3 rounded-full font-semibold hover:bg-accent hover:text-accent-foreground transition-colors duration-200">
-                Contatar suporte
+              <button className="border-2 border-white/30 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-colors duration-200 text-lg">
+                Contatar vendas
               </button>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-secondary text-muted-foreground py-16 border-t border-border">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div>
-            <div className="flex items-center">
-              <Compass className="h-6 w-6 text-primary" />
-              <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
+      {/* Footer Premium */}
+      <footer className="bg-secondary text-muted-foreground py-20 border-t border-border">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
+            <div className="md:col-span-2">
+              <div className="flex items-center mb-6">
+                <ViweLogo className="h-8 w-8" />
+                <span className="font-bold text-2xl ml-2 text-foreground">Viwe</span>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
+                O planejador de rotas mais avançado do mercado. Otimize suas jornadas 
+                e economize tempo, combustível e dinheiro com nossa tecnologia de ponta.
+              </p>
+              <div className="flex space-x-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer">
+                  <span className="text-primary font-bold">f</span>
+                </div>
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer">
+                  <span className="text-primary font-bold">t</span>
+                </div>
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer">
+                  <span className="text-primary font-bold">in</span>
+                </div>
+              </div>
             </div>
-            <p className="mt-4 text-sm max-w-xs">
-              Planejador de rotas <br /> para o mundo.
-            </p>
+            <div>
+              <h4 className="font-semibold text-foreground mb-6">Produto</h4>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Funcionalidades</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Preços</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">API</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Integrações</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-6">Empresa</h4>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Sobre nós</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Carreira</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Imprensa</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Parceiros</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-6">Suporte</h4>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Central de ajuda</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Contato</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Status</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors duration-200">Privacidade</a></li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Funcionalidades</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Otimização
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Trânsito
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Pontos de interesse
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Compartilhar
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Empresa</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Sobre nós
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Contato
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Ajuda</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Suporte
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Termos de uso
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Política de privacidade
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Idioma</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Português (Brasil)
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  English (United States)
-                </a>
-              </li>
-            </ul>
-            <p className="mt-6 text-xs text-muted-foreground/60">
+          
+          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-muted-foreground/80">
               © 2024 Viwe. Todos os direitos reservados.
             </p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Termos de uso
+              </a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Política de privacidade
+              </a>
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Cookies
+              </a>
+            </div>
           </div>
         </div>
       </footer>
