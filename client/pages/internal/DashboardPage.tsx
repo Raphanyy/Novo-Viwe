@@ -16,6 +16,7 @@ import {
   Activity,
   Users,
   FolderOpen,
+  Heart,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
