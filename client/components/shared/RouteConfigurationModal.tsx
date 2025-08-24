@@ -193,9 +193,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       case "stops":
         return formData.stops.length > 0;
       case "scheduling":
-        return formData.scheduling.type !== "" && 
-               (formData.scheduling.type === "permanente" || 
-                (formData.scheduling.type === "imediata" && formData.scheduling.date !== ""));
+        return (formData.scheduling.type === "permanente" ||
+                (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""));
       default:
         return false;
     }
