@@ -13,6 +13,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import MobileLoginPage from "./pages/MobileLoginPage";
+import EmailLoginPage from "./pages/EmailLoginPage";
 
 // Internal Pages
 import DashboardPage from "./pages/internal/DashboardPage";
@@ -84,6 +85,14 @@ const AppRoutes = () => {
                 <LoginPage />
               </AdaptivePublicLayout>
             )}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/login-email"
+        element={
+          <PublicRoute>
+            <EmailLoginPage />
           </PublicRoute>
         }
       />
