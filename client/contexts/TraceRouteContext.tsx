@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+} from "react";
 import {
   useErrorHandler,
   fetchWithErrorHandling,
@@ -147,7 +153,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     (() => void) | null
   >(null);
 
-  const startTracing = () => {
+  const startTracing = useCallback(() => {
     setState((prev) => ({
       ...prev,
       isTracing: true,
@@ -157,7 +163,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       routeType: "temporary",
       estimatedCredits: 5, // Default credits estimation
     }));
-  };
+  }, []);
 
   const stopTracing = () => {
     // Limpa o mapa se callback estiver disponível
@@ -251,6 +257,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     const newStop: RouteStop = {
       id: `stop-${Date.now()}`,
       name: name || `Parada ${state.stops.length + 1}`,
+      code: "", // Campo vazio para ser preenchido pelo usuário
+      notes: "", // Campo vazio para ser preenchido pelo usuário
       coordinates,
       address: finalAddress,
       isCompleted: false,
@@ -343,12 +351,12 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     stopTracing();
   };
 
-  const updateCenterPin = (coordinates: [number, number]) => {
+  const updateCenterPin = useCallback((coordinates: [number, number]) => {
     setState((prev) => ({
       ...prev,
       centerPin: { coordinates },
     }));
-  };
+  }, []);
 
   const startNavigation = () => {
     setState((prev) => ({
@@ -367,11 +375,17 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const setRouteTraced = (traced: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      isRouteTraced: traced,
-      navigationMode: traced ? "traced" : null,
-    }));
+    setState((prev) => {
+      // Evita re-renders desnecessários quando o valor não mudou
+      if (prev.isRouteTraced === traced) {
+        return prev;
+      }
+      return {
+        ...prev,
+        isRouteTraced: traced,
+        navigationMode: traced ? "traced" : null,
+      };
+    });
   };
 
   const giveUpNavigation = () => {
@@ -693,7 +707,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       estimatedCredits: state.estimatedCredits,
     };
 
-    // Salvar no localStorage (pode ser substituído por API call)
+    // Salvar no localStorage (pode ser substitu��do por API call)
     const existingRoutes = JSON.parse(
       localStorage.getItem("completedRoutes") || "[]",
     );

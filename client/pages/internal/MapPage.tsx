@@ -103,6 +103,7 @@ const MapPage: React.FC = () => {
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
+  const lastRouteGeometryRef = useRef<string | null>(null);
   const [currentUserLocation, setCurrentUserLocation] = useState<
     [number, number] | null
   >(null);
@@ -236,6 +237,9 @@ const MapPage: React.FC = () => {
       map.current.removeLayer("route");
       map.current.removeSource("route");
     }
+
+    // Limpar referência da geometria da rota
+    lastRouteGeometryRef.current = null;
 
     // Clear stop markers
     stopMarkers.current.forEach((marker) => marker.remove());
@@ -486,7 +490,7 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.isTracing]);
 
-  // Otimizar visibleStops usando memoizaç��o estável
+  // Otimizar visibleStops usando memoizaç���o estável
   const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
@@ -651,6 +655,20 @@ const MapPage: React.FC = () => {
 
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
+
+          // Verificar se é a mesma rota para evitar redesenho desnecessário
+          const routeGeometryString = JSON.stringify(
+            route.geometry.coordinates,
+          );
+          if (lastRouteGeometryRef.current === routeGeometryString) {
+            console.log("Rota idêntica já está no mapa, pulando redesenho");
+            setRouteTraced(true);
+            setIsTracingRoute(false);
+            return { success: true };
+          }
+
+          // Armazenar nova geometria
+          lastRouteGeometryRef.current = routeGeometryString;
 
           // Remove existing route if any
           if (map.current && map.current.getSource("route")) {
@@ -1160,6 +1178,8 @@ const MapPage: React.FC = () => {
         map.current.removeLayer("route");
         map.current.removeSource("route");
       }
+      // Limpar referência da geometria da rota
+      lastRouteGeometryRef.current = null;
       console.log("Rota limpa do mapa");
     };
 
@@ -1172,18 +1192,8 @@ const MapPage: React.FC = () => {
     };
   }, [traceRouteOnMap]);
 
-  // Auto-trace route when it becomes traced in context
-  useEffect(() => {
-    if (traceState.isRouteTraced && traceState.stops.length >= 1) {
-      // Garantir que a rota seja traçada no mapa quando confirmada
-      // Agora traça desde a localização atual até as paradas
-      const timeoutId = setTimeout(() => {
-        traceRouteOnMap(traceState.stops);
-      }, 100);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [traceState.isRouteTraced, traceState.stops, traceRouteOnMap]);
+  // Rota é traçada via evento "traceRoute" disparado pelo confirmTrace()
+  // Removido useEffect redundante que causava piscar por disparo duplicado
 
   // Cleanup all resources on unmount
   useEffect(() => {
