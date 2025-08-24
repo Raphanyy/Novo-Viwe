@@ -38,7 +38,11 @@ const ViweRouteTracer: React.FC<ViweRouteTracerProps> = ({
           </div>
           <div className="flex items-center space-x-1 text-xs text-blue-100">
             <MapPin className="h-3 w-3" />
-            <span>{stopsCount} paradas conectadas</span>
+            <span>
+              {isTracing
+                ? `Da sua localização → ${stopsCount} paradas`
+                : `Localização atual → ${stopsCount} paradas conectadas`}
+            </span>
           </div>
         </div>
       </div>
