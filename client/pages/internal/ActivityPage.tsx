@@ -412,11 +412,11 @@ const ActivityPage: React.FC = () => {
               return (
                 <div
                   key={route.id}
-                  className={`bg-card rounded-2xl border border-l-4 ${statusConfig.borderColor} border-border relative overflow-hidden`}
+                  className={`bg-card rounded-xl border border-l-4 ${statusConfig.borderColor} border-border relative overflow-hidden`}
                 >
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
 
-                  <div className="relative z-10 p-4 hover:bg-accent/50 transition-colors duration-200">
+                  <div className="relative z-10 p-3 hover:bg-accent/50 transition-colors duration-200">
                     <div className="flex items-center justify-between">
                       <div
                         className="flex-1 text-left cursor-pointer"
@@ -424,50 +424,48 @@ const ActivityPage: React.FC = () => {
                           setExpandedTrip(expandedTrip === route.id ? null : route.id)
                         }
                       >
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold text-foreground">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="font-semibold text-foreground text-sm">
                             {route.name}
                           </h3>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}>
                             <StatusIcon className="h-3 w-3" />
                             <span>{statusConfig.label}</span>
                           </span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}>
                             {route.efficiency}%
                           </span>
                         </div>
 
-                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-3 text-xs text-muted-foreground">
                           <span className="flex items-center space-x-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                              {new Date(route.date).toLocaleDateString("pt-BR")} • {route.time}
-                            </span>
+                            <Calendar className="h-3 w-3" />
+                            <span>{new Date(route.date).toLocaleDateString("pt-BR")}</span>
                           </span>
                           <span className="flex items-center space-x-1">
-                            <Clock className="h-4 w-4" />
+                            <Clock className="h-3 w-3" />
                             <span>{route.duration}</span>
                           </span>
                           <span className="flex items-center space-x-1">
-                            <MapPin className="h-4 w-4" />
+                            <MapPin className="h-3 w-3" />
                             <span>{route.distance}</span>
+                          </span>
+                          <span className="text-green-600 font-medium">
+                            -{route.savings.time}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedRoute(route);
                           }}
-                          className="p-2 hover:bg-accent rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-accent rounded-lg transition-colors"
                         >
-                          <Eye className="h-4 w-4 text-muted-foreground" />
+                          <Eye className="h-3 w-3 text-muted-foreground" />
                         </button>
-                        <span className="text-green-600 text-sm font-medium">
-                          -{route.savings.time}
-                        </span>
                         <button
                           onClick={() =>
                             setExpandedTrip(expandedTrip === route.id ? null : route.id)
@@ -475,9 +473,9 @@ const ActivityPage: React.FC = () => {
                           className="p-1 hover:bg-accent rounded-lg transition-colors"
                         >
                           {expandedTrip === route.id ? (
-                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
                           )}
                         </button>
                       </div>
