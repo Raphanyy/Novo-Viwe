@@ -403,13 +403,10 @@ const MapPage: React.FC = () => {
   }, []); // Remove setMapCleanupCallback from dependencies
 
   // Optimized throttled center pin tracking using performance utils
-  const throttledUpdateCenterPin = useMemo(() =>
-    useCoordinateThrottle(
-      updateCenterPin,
-      100, // 100ms throttle
-      0.0001, // 0.0001 degree tolerance
-    ),
-    [updateCenterPin]
+  const throttledUpdateCenterPin = useCoordinateThrottle(
+    updateCenterPin,
+    100, // 100ms throttle
+    0.0001, // 0.0001 degree tolerance
   );
 
   // Optimized center pin tracking when tracing starts/stops
