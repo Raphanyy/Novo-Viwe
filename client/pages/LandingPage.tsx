@@ -118,9 +118,9 @@ const StatsSection = memo(() => {
             : `${Math.floor(animatedStats.routes / 1000)}K+`,
         label: "Rotas Otimizadas",
         icon: Route,
-        color: "from-blue-500 to-blue-600",
-        gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
-        shadow: "shadow-blue-500/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number:
@@ -129,25 +129,25 @@ const StatsSection = memo(() => {
             : `${Math.floor(animatedStats.users / 1000)}K+`,
         label: "Usuários Ativos",
         icon: Users,
-        color: "from-blue-600 to-blue-700",
-        gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
-        shadow: "shadow-blue-600/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number: `${animatedStats.uptime.toFixed(1)}%`,
         label: "Uptime Garantido",
         icon: Shield,
-        color: "from-blue-400 to-blue-500",
-        gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
-        shadow: "shadow-blue-400/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number: `${animatedStats.savings}%`,
         label: "Economia de Tempo",
         icon: Clock,
-        color: "from-blue-700 to-blue-800",
-        gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
-        shadow: "shadow-blue-700/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
     ],
     [animatedStats],
@@ -733,7 +733,7 @@ const HomePage = ({
       {/* Como Funciona */}
       <HowItWorksSection />
 
-      {/* Recursos Avan��ados */}
+      {/* Recursos Avançados */}
       <AdvancedFeaturesSection />
 
       {/* Testemunhos */}
