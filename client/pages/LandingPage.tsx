@@ -189,7 +189,7 @@ const TestimonialsSection = () => {
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
                   <Star
                     key={i}
-                    className="h-4 w-4 text-yellow-500 fill-current"
+                    className="h-4 w-4 text-primary fill-current"
                   />
                 ))}
               </div>
