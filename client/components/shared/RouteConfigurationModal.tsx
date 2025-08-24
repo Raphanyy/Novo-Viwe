@@ -100,6 +100,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   // Sincronizar com as paradas do contexto quando o modal abrir
   useEffect(() => {
     if (isOpen) {
+      // Only update when modal opens, avoid infinite loops
       const currentStops = prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
       setFormData(prev => ({
         ...prev,
@@ -110,17 +111,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         }
       }));
     }
-  }, [isOpen]); // Removed problematic dependencies that cause infinite loops
-
-  // Separate effect to handle prefilled stops changes
-  useEffect(() => {
-    if (isOpen && prefilledStops.length > 0) {
-      setFormData(prev => ({
-        ...prev,
-        stops: prefilledStops
-      }));
-    }
-  }, [isOpen, prefilledStops]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]); // Only depend on isOpen to avoid infinite loops
 
   // Configuração das seções principais
   const configurationSections: ConfigurationSection[] = [
