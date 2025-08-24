@@ -24,7 +24,7 @@ const ViweRouteTracer: React.FC<ViweRouteTracerProps> = ({
       <div className="flex items-center space-x-3">
         <div className="flex-shrink-0">
           {isTracing ? (
-            <ViweLoaderInline size="sm" className="text-white" />
+            <ViweLoaderInline text="" />
           ) : (
             <Zap className="h-5 w-5 text-yellow-300" />
           )}
