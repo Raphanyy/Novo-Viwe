@@ -229,7 +229,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
     if (!isFormValid()) {
-      alert("Por favor, preencha todos os campos obrigatórios: Informações da Rota, Paradas e Programação.");
+      alert("Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.");
       return;
     }
 
