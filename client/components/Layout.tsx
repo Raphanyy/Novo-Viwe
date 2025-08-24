@@ -143,6 +143,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Pronto para sua próxima aventura?
               </h2>
               <p className="mt-4 text-lg max-w-xl self-center text-muted-foreground">
+                Crie sua conta e comece agora mesmo para começar a usar
                 <br />
                 <br />
               </p>
