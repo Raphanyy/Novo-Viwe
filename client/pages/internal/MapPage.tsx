@@ -108,6 +108,7 @@ const MapPage: React.FC = () => {
     startNavigation,
     stopNavigation,
     setMapCleanupCallback,
+    addStop,
   } = useTraceRoute();
 
   // Pontos de interesse com coordenadas reais de São Paulo
