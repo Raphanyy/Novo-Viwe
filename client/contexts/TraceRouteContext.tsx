@@ -487,18 +487,32 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
   const optimizeRoute = async () => {
     try {
-      // Utiliza a API de Optimization do Mapbox
+      // Utiliza a API de Optimization do Mapbox com configuração centralizada
       const coordinates = state.stops.map((stop) => stop.coordinates);
       const coordinatesString = coordinates
         .map((coord) => `${coord[0]},${coord[1]}`)
         .join(";");
 
-      const accessToken =
-        "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
-
-      const response = await fetch(
-        `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinatesString}?access_token=${accessToken}&source=first&destination=last&roundtrip=false`,
+      const { createMapboxApiUrl } = await import("../lib/mapbox-config");
+      const apiUrl = createMapboxApiUrl(
+        `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinatesString}`,
+        { source: 'first', destination: 'last', roundtrip: 'false' }
       );
+
+      if (!apiUrl) {
+        console.error("Erro ao otimizar rota: Token do Mapbox não disponível");
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      const response = await fetch(apiUrl, {
+        signal: controller.signal,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
@@ -525,11 +539,19 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
           console.log("Rota otimizada com sucesso!");
         }
+      } else if (response.status === 401) {
+        console.error("Erro ao otimizar rota: Token Mapbox inválido");
+      } else if (response.status === 429) {
+        console.error("Erro ao otimizar rota: Limite de requisições excedido");
       } else {
         console.error("Erro ao otimizar rota:", response.statusText);
       }
     } catch (error) {
-      console.error("Erro ao chamar API de otimização:", error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.warn("Otimização de rota cancelada por timeout");
+      } else {
+        console.error("Erro ao chamar API de otimização:", error);
+      }
     }
   };
 
