@@ -547,11 +547,11 @@ const ActivityPage: React.FC = () => {
           </div>
 
           {filteredRoutes.length === 0 && (
-            <div className="text-center py-12">
-              <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Nenhuma rota encontrada</h3>
-              <p className="text-muted-foreground">
-                {searchTerm ? "Tente ajustar sua busca ou filtros" : "Nenhuma rota corresponde aos filtros selecionados"}
+            <div className="text-center py-8">
+              <AlertTriangle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+              <h3 className="text-lg font-semibold text-foreground mb-1">Nenhuma rota encontrada</h3>
+              <p className="text-sm text-muted-foreground">
+                {searchTerm ? "Tente ajustar sua busca" : "Nenhuma rota nos filtros selecionados"}
               </p>
             </div>
           )}
