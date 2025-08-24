@@ -259,7 +259,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
     try {
       if (isInMapPage) {
-        // Na página do mapa: salvar configurações e finalizar planejamento
+        // Na página do mapa: salvar configuraç��es e finalizar planejamento
         await new Promise((resolve) => setTimeout(resolve, 1500));
         console.log("Dados da rota salvos (página mapa):", formData);
 
@@ -342,9 +342,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             </span>
           </div>
           <p className="text-xs text-blue-700 mt-1">
-            {isInMapPage
-              ? "Configurando rota com paradas selecionadas."
-              : "Custo ao criar rotas : 1 crédito viwe"}
+            Custo ao criar rotas : 1 crédito viwe
           </p>
         </div>
 
