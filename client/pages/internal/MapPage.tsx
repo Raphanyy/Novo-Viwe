@@ -653,6 +653,18 @@ const MapPage: React.FC = () => {
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
 
+          // Verificar se é a mesma rota para evitar redesenho desnecessário
+          const routeGeometryString = JSON.stringify(route.geometry.coordinates);
+          if (lastRouteGeometryRef.current === routeGeometryString) {
+            console.log("Rota idêntica já está no mapa, pulando redesenho");
+            setRouteTraced(true);
+            setIsTracingRoute(false);
+            return { success: true };
+          }
+
+          // Armazenar nova geometria
+          lastRouteGeometryRef.current = routeGeometryString;
+
           // Remove existing route if any
           if (map.current && map.current.getSource("route")) {
             map.current.removeLayer("route");
@@ -805,7 +817,7 @@ const MapPage: React.FC = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        // Armazenar localizaç��o atual do usuário
+        // Armazenar localização atual do usuário
         setCurrentUserLocation([longitude, latitude]);
         console.log("Localização atual armazenada (find my location):", [
           longitude,
