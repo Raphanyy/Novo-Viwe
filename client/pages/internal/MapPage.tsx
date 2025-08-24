@@ -486,7 +486,7 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.isTracing]);
 
-  // Otimizar visibleStops usando memoizaç��o estável
+  // Otimizar visibleStops usando memoizaç���o estável
   const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
@@ -1172,18 +1172,8 @@ const MapPage: React.FC = () => {
     };
   }, [traceRouteOnMap]);
 
-  // Auto-trace route when it becomes traced in context
-  useEffect(() => {
-    if (traceState.isRouteTraced && traceState.stops.length >= 1) {
-      // Garantir que a rota seja traçada no mapa quando confirmada
-      // Agora traça desde a localização atual até as paradas
-      const timeoutId = setTimeout(() => {
-        traceRouteOnMap(traceState.stops);
-      }, 100);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [traceState.isRouteTraced, traceState.stops, traceRouteOnMap]);
+  // Rota é traçada via evento "traceRoute" disparado pelo confirmTrace()
+  // Removido useEffect redundante que causava piscar por disparo duplicado
 
   // Cleanup all resources on unmount
   useEffect(() => {
