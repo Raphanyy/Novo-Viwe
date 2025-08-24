@@ -523,9 +523,9 @@ const HomePage = ({
         ></div>
 
         {/* Efeitos de brilho intensificados */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-blue-500/10 opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 opacity-50"></div>
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
 
         <div className="container mx-auto px-6 relative z-10 w-full">
           <div
@@ -536,7 +536,7 @@ const HomePage = ({
               <div className="group relative">
                 <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-blue-500/15 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-primary/15 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity duration-300"></div>
               </div>
             </div>
 
@@ -571,9 +571,9 @@ const HomePage = ({
           <div className="flex justify-center">
             <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-3 py-1 flex items-center gap-2">
               <div className="flex -space-x-1">
-                <div className="w-4 h-4 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
               </div>
               <span className="text-muted-foreground text-xs">
                 Mais de <strong className="text-foreground">50K</strong>{" "}
