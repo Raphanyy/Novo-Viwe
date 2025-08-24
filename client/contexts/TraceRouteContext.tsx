@@ -199,18 +199,41 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     let finalAddress = address;
     if (!finalAddress) {
       try {
-        // Use Mapbox Geocoding API to get address from coordinates
-        const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json?access_token=pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA&limit=1&language=pt`,
+        // Use Mapbox Geocoding API to get address from coordinates with centralized config
+        const { createMapboxApiUrl } = await import("../lib/mapbox-config");
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json`,
+          { limit: '1', language: 'pt' }
         );
-        const data = await response.json();
-        if (data.features && data.features.length > 0) {
-          finalAddress = data.features[0].place_name;
-        } else {
+
+        if (!apiUrl) {
           finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
+        } else {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+          const response = await fetch(apiUrl, {
+            signal: controller.signal,
+            headers: { 'Accept': 'application/json' }
+          });
+
+          clearTimeout(timeoutId);
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.features && data.features.length > 0) {
+              finalAddress = data.features[0].place_name;
+            } else {
+              finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
+            }
+          } else {
+            finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
+          }
         }
       } catch (error) {
-        console.error("Error fetching address:", error);
+        if (!(error instanceof Error && error.name === 'AbortError')) {
+          console.warn("Error fetching address:", error);
+        }
         finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
       }
     }
