@@ -781,8 +781,19 @@ const LandingPage = () => {
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    // Static render - no animation loop
-    renderer.render(scene, camera);
+    // Controlled animation loop with proper cleanup
+    let animationId: number;
+    const animate = () => {
+      if (!plane || !renderer || !scene || !camera) return;
+
+      plane.rotation.x += 0.0003;
+      plane.rotation.y += 0.0005;
+      plane.rotation.z += 0.0005;
+      renderer.render(scene, camera);
+
+      animationId = requestAnimationFrame(animate);
+    };
+    animate();
 
     const handleResize = () => {
       if (!heroRef.current) return;
