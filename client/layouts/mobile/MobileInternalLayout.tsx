@@ -272,7 +272,7 @@ const MobileInternalLayout: React.FC = () => {
         if (traceState.stops.length >= 2) {
           showTraceConfirmation();
         } else {
-          // Se não tem paradas suficientes, mostrar feedback
+          // Se n��o tem paradas suficientes, mostrar feedback
           alert("Adicione pelo menos 2 paradas para traçar a rota");
         }
         break;
@@ -329,11 +329,7 @@ const MobileInternalLayout: React.FC = () => {
         return routeTracedNavigationItems;
       } else if (traceState.isTracing) {
         // 2. PLANEJAMENTO - Criando rota, adicionando paradas
-        if (traceState.stops.length >= 2) {
-          return planningReadyNavigationItems;
-        } else {
-          return planningNavigationItems;
-        }
+        return planningNavigationItems;
       } else {
         // 1. EXPLORAÇÃO - Estado inicial, explorando mapa
         return explorationNavigationItems;
