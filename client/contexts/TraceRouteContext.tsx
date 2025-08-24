@@ -648,6 +648,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
             estimatedFuelConsumption: trip.distance
               ? (trip.distance / 1000) * 0.08 // 8L/100km estimativa
               : prev.navigationData.estimatedFuelConsumption,
+            lastOptimizationTime: new Date(),
+            optimizationCount: prev.navigationData.optimizationCount + 1,
           };
 
           return {
