@@ -187,19 +187,18 @@ const TestimonialsSection = () => {
             >
               <div className="flex items-center space-x-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 text-primary fill-current"
-                  />
+                  <Star key={i} className="h-4 w-4 text-primary fill-current" />
                 ))}
               </div>
               <blockquote
                 className="text-card-foreground mb-6 leading-relaxed overflow-hidden"
-                style={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                } as React.CSSProperties}
+                style={
+                  {
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  } as React.CSSProperties
+                }
               >
                 "{testimonial.text}"
               </blockquote>
@@ -595,7 +594,8 @@ const HomePage = ({
                 Pontos de Interesse
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Encontre restaurantes, postos e atrações no seu trajeto facilmente.
+                Encontre restaurantes, postos e atrações no seu trajeto
+                facilmente.
               </p>
             </div>
 
