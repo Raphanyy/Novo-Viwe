@@ -589,19 +589,27 @@ const HomePage = ({
       {/* Seção de Estatísticas */}
       <StatsSection />
 
-      {/* Secção de Logos de Confiança simplificada */}
-      <section className="py-12 md:py-16 bg-muted/20">
-        <div className="container mx-auto px-6">
-          <h2 className="text-center text-base font-medium text-muted-foreground mb-8">
-            Confiança de empresas em todo o mundo
-          </h2>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 items-center">
+      {/* Secção de Logos de Confiança aprimorada */}
+      <section className="py-16 md:py-20 bg-gradient-to-b from-muted/10 to-secondary/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-xl font-bold text-foreground mb-2">
+              Confiança de empresas globais
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Escolhido por líderes em tecnologia e logística
+            </p>
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-8 items-center">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="flex justify-center">
-                <div className="w-20 h-12 bg-muted/40 rounded-lg flex items-center justify-center opacity-50 hover:opacity-70 transition-opacity">
-                  <span className="text-muted-foreground text-xs font-medium">
+              <div key={index} className="flex justify-center group">
+                <div className="w-24 h-16 bg-gradient-to-br from-card to-muted/30 rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-primary/10 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <span className="text-muted-foreground group-hover:text-foreground text-xs font-bold transition-colors duration-300 relative z-10">
                     LOGO
                   </span>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
                 </div>
               </div>
             ))}
