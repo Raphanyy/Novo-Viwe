@@ -344,20 +344,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           <p className="text-xs text-blue-700 mt-1">
             {isInMapPage
               ? "Configurando rota com paradas selecionadas."
-              : "Configuração independente de rota."}
-          </p>
-        </div>
-
-        {/* Aviso sobre consumo de créditos */}
-        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
-            <span className="text-sm font-medium text-amber-800">
-              Criar Novas Rotas Consome 1 Crédito
-            </span>
-          </div>
-          <p className="text-xs text-amber-700 mt-1">
-            Cada nova rota criada deduzirá 1 crédito do seu saldo disponível.
+              : "Custo ao criar : 1 crédito"}
           </p>
         </div>
 
