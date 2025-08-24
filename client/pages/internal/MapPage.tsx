@@ -1203,6 +1203,22 @@ const MapPage: React.FC = () => {
     };
   }, [traceRouteOnMap]);
 
+  // Inteligência adaptativa: monitorar mudanças na navegação
+  useEffect(() => {
+    if (traceState.isInActiveNavigation && traceState.stops.length > 0) {
+      const completedStops = traceState.stops.filter(stop => stop.isCompleted);
+
+      // Triggerar análise inteligente após cada parada concluída
+      if (completedStops.length > 0) {
+        const timer = setTimeout(() => {
+          suggestSmartOptimization();
+        }, 2000); // Delay para permitir atualizações de estado
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [traceState.isInActiveNavigation, traceState.stops.filter(s => s.isCompleted).length, suggestSmartOptimization]);
+
   // Rota é traçada via evento "traceRoute" disparado pelo confirmTrace()
   // Removido useEffect redundante que causava piscar por disparo duplicado
 
