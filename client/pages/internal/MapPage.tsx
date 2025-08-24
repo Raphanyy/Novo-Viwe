@@ -726,7 +726,7 @@ const MapPage: React.FC = () => {
             errorMessage += "Permissão negada pelo usuário.";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage += "Localiza��ão indisponível.";
+            errorMessage += "Localização indisponível.";
             break;
           case error.TIMEOUT:
             errorMessage += "Tempo esgotado para obter localização.";
@@ -825,20 +825,20 @@ const MapPage: React.FC = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-        if (!mapboxToken) {
+        const poiApiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`,
+          { country: 'BR', language: 'pt', limit: '10', types: 'poi' }
+        );
+
+        if (!poiApiUrl) {
           console.warn("Mapbox token not available for search");
           return;
         }
 
-        const poiResponse = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            query,
-          )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=10&types=poi`,
-          {
-            signal: controller.signal,
-            headers: { Accept: "application/json" },
-          },
-        );
+        const poiResponse = await fetch(poiApiUrl, {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        });
 
         clearTimeout(timeoutId);
 
