@@ -425,25 +425,17 @@ const MapPage: React.FC = () => {
         }
       };
 
-      // Adicionar listeners usando ResourceManager
-      resourceManager.current!.addEventListener(
-        "mapMove",
-        map.current,
-        "move",
-        updateCenterCoords,
-      );
-      resourceManager.current!.addEventListener(
-        "mapZoom",
-        map.current,
-        "zoom",
-        updateCenterCoords,
-      );
+      // Adicionar listeners diretamente ao Mapbox Map
+      map.current.on("move", updateCenterCoords);
+      map.current.on("zoom", updateCenterCoords);
 
       // Cleanup function
       return () => {
-        // ResourceManager remove os listeners automaticamente
-        resourceManager.current!.removeResource("mapMove");
-        resourceManager.current!.removeResource("mapZoom");
+        // Remover listeners do Mapbox Map
+        if (map.current) {
+          map.current.off("move", updateCenterCoords);
+          map.current.off("zoom", updateCenterCoords);
+        }
 
         // Reset refs on cleanup
         lastUpdateTimeRef.current = 0;
