@@ -63,7 +63,6 @@ interface TraceRouteContextType {
   openConfiguration: () => void;
   closeConfiguration: () => void;
   setInPreparation: (value: boolean) => void;
-  showTraceConfirmation: () => void;
   hideTraceConfirmation: () => void;
   confirmTrace: () => void;
   cancelTrace: () => void;
@@ -304,12 +303,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
   };
 
-  const showTraceConfirmation = () => {
-    setState((prev) => ({
-      ...prev,
-      showConfirmDialog: true,
-    }));
-  };
 
   const hideTraceConfirmation = () => {
     setState((prev) => ({
@@ -756,7 +749,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     openConfiguration,
     closeConfiguration,
     setInPreparation,
-    showTraceConfirmation,
     hideTraceConfirmation,
     confirmTrace,
     cancelTrace,
