@@ -348,17 +348,23 @@ const MobileInternalLayout: React.FC = () => {
           <Link
             key={item.action}
             to="/app"
-            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-muted-foreground" />
+            <Icon className="h-5 w-5 text-muted-foreground mb-1" />
+            <span className="text-xs text-muted-foreground font-medium">
+              {item.name}
+            </span>
           </Link>
         ) : (
           <button
             key={item.action}
             onClick={() => handleMapNavigation(item.action)}
-            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-muted-foreground" />
+            <Icon className="h-5 w-5 text-muted-foreground mb-1" />
+            <span className="text-xs text-muted-foreground font-medium">
+              {item.name}
+            </span>
           </button>
         );
       });
