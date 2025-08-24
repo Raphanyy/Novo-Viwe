@@ -660,7 +660,7 @@ const MapPage: React.FC = () => {
 
       markers.current.push(marker);
     });
-  }, [filteredPOIs, handlePOIClick]);
+  }, [filteredPOIs]);
 
   const handleZoomIn = useCallback(() => {
     if (map.current) {
@@ -1254,7 +1254,7 @@ const MapPage: React.FC = () => {
                   "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
               </p>
               <div className="text-xs text-muted-foreground/70">
-                Esta é uma versão de demonstração da plataforma Viwe.
+                Esta é uma vers��o de demonstração da plataforma Viwe.
               </div>
             </div>
           </div>
