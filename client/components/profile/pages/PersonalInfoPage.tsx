@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileForm from "../ProfileForm";
 import ProfileCard from "../ProfileCard";
-import { Camera } from "lucide-react";
+import { Camera, ChevronRight } from "lucide-react";
 
 interface PersonalInfoPageProps {
   onBack: () => void;
