@@ -254,12 +254,16 @@ const MobileInternalLayout: React.FC = () => {
         startTracing();
         break;
       case "control":
-        // Função ainda não definida
-        console.log("Controle pressed");
+        // Abre modal de configurações da rota
+        openConfiguration();
         break;
       case "summary":
-        // Função ainda não definida
-        console.log("Resumo pressed");
+        // Abre modal de detalhes se estiver navegando, senão abre configuração
+        if (traceState.isInActiveNavigation || traceState.allStopsCompleted) {
+          openDetailsModal();
+        } else {
+          openConfiguration();
+        }
         break;
       case "add":
         // Adiciona uma parada no centro do mapa

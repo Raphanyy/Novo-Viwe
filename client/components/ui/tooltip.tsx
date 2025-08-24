@@ -4,12 +4,11 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
 
 // Defensive wrapper for TooltipProvider to handle React context issues
-const TooltipProvider = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Provider>,
+const TooltipProvider: React.FC<
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
->((props, ref) => {
+> = (props) => {
   try {
-    return <TooltipPrimitive.Provider ref={ref} {...props} />;
+    return <TooltipPrimitive.Provider {...props} />;
   } catch (error) {
     console.warn(
       "TooltipProvider error, falling back to children only:",
@@ -17,7 +16,7 @@ const TooltipProvider = React.forwardRef<
     );
     return <>{props.children}</>;
   }
-});
+};
 
 const Tooltip = TooltipPrimitive.Root;
 

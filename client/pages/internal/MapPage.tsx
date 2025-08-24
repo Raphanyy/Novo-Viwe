@@ -24,8 +24,10 @@ import {
   BookmarkPlus,
   RotateCcw,
   Loader2,
+  Share2,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
+import ModalHeader from "../../components/shared/ModalHeader";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
@@ -91,6 +93,8 @@ const MapPage: React.FC = () => {
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
+  const lastCoordinatesRef = useRef<[number, number] | null>(null);
+  const lastUpdateTimeRef = useRef<number>(0);
 
   const {
     state: traceState,
@@ -104,7 +108,15 @@ const MapPage: React.FC = () => {
     startNavigation,
     stopNavigation,
     setMapCleanupCallback,
+    addStop,
   } = useTraceRoute();
+
+  // Optimized throttled center pin tracking using performance utils
+  const throttledUpdateCenterPin = useCoordinateThrottle(
+    updateCenterPin,
+    100, // 100ms throttle
+    0.0001, // 0.0001 degree tolerance
+  );
 
   // Pontos de interesse com coordenadas reais de São Paulo
   const pointsOfInterest = [
@@ -183,8 +195,8 @@ const MapPage: React.FC = () => {
     [activeFilters],
     (prev, current) => {
       // Comparação customizada para arrays de filtros
-      const [prevFilters] = prev;
-      const [currentFilters] = current;
+      const [prevFilters] = prev as [string[]];
+      const [currentFilters] = current as [string[]];
 
       if (prevFilters.length !== currentFilters.length) return false;
       return prevFilters.every(
@@ -397,13 +409,6 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Optimized throttled center pin tracking using performance utils
-  const throttledUpdateCenterPin = useCoordinateThrottle(
-    updateCenterPin,
-    100, // 100ms throttle
-    0.0001, // 0.0001 degree tolerance
-  );
-
   // Optimized center pin tracking when tracing starts/stops
   useEffect(() => {
     if (!map.current) return;
@@ -423,34 +428,26 @@ const MapPage: React.FC = () => {
         }
       };
 
-      // Adicionar listeners usando ResourceManager
-      resourceManager.current!.addEventListener(
-        "mapMove",
-        map.current,
-        "move",
-        updateCenterCoords,
-      );
-      resourceManager.current!.addEventListener(
-        "mapZoom",
-        map.current,
-        "zoom",
-        updateCenterCoords,
-      );
+      // Adicionar listeners diretamente ao Mapbox Map
+      map.current.on("move", updateCenterCoords);
+      map.current.on("zoom", updateCenterCoords);
 
       // Cleanup function
       return () => {
-        // ResourceManager remove os listeners automaticamente
-        resourceManager.current!.removeResource("mapMove");
-        resourceManager.current!.removeResource("mapZoom");
+        // Remover listeners do Mapbox Map
+        if (map.current) {
+          map.current.off("move", updateCenterCoords);
+          map.current.off("zoom", updateCenterCoords);
+        }
 
         // Reset refs on cleanup
         lastUpdateTimeRef.current = 0;
         lastCoordinatesRef.current = null;
       };
     }
-  }, [traceState.isTracing, throttledUpdateCenterPin]);
+  }, [traceState.isTracing]);
 
-  // Otimizar visibleStops usando memoização estável
+  // Otimizar visibleStops usando memoizaç��o estável
   const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
@@ -660,7 +657,7 @@ const MapPage: React.FC = () => {
 
       markers.current.push(marker);
     });
-  }, [filteredPOIs, handlePOIClick]);
+  }, [filteredPOIs]);
 
   const handleZoomIn = useCallback(() => {
     if (map.current) {
@@ -1070,14 +1067,14 @@ const MapPage: React.FC = () => {
           {/* Search Results Dropdown */}
           {showSearchResults && searchResults.length > 0 && (
             <div
-              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {searchResults.map((result) => (
                 <button
                   key={result.id}
                   onClick={() => handleSelectSearchResult(result)}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                  className="w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
                 >
                   <div className="flex items-start space-x-3">
                     <div
@@ -1117,7 +1114,7 @@ const MapPage: React.FC = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
-                        <p className="font-medium text-gray-900 truncate">
+                        <p className="font-medium text-foreground truncate">
                           {result.text}
                         </p>
                         {result.place_type.includes("poi") && (
@@ -1151,17 +1148,17 @@ const MapPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 truncate">
+                      <p className="text-sm text-muted-foreground truncate">
                         {result.place_name}
                       </p>
                       {result.properties.category && (
-                        <p className="text-xs text-gray-400 capitalize">
+                        <p className="text-xs text-muted-foreground/70 capitalize">
                           {result.properties.category.replace(/[_,]/g, " ")}
                         </p>
                       )}
                       {!result.properties.category &&
                         result.place_type.length > 0 && (
-                          <p className="text-xs text-gray-400 capitalize">
+                          <p className="text-xs text-muted-foreground/70 capitalize">
                             {result.place_type[0].replace("_", " ")}
                           </p>
                         )}
@@ -1339,80 +1336,190 @@ const MapPage: React.FC = () => {
           </div>
         )}
 
-        {/* Trace Confirmation Dialog */}
+        {/* Trace Confirmation Dialog - Full Page Modal */}
         {traceState.showConfirmDialog && (
-          <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="h-6 w-6 text-orange-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    Deseja Traçar Esta Rota?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Consome {traceState.estimatedCredits} Créditos
-                  </p>
-                </div>
-              </div>
+          <div className="fixed inset-0 z-50 bg-background flex flex-col">
+            {/* Header */}
+            <ModalHeader
+              title="Traçar Rota"
+              showBackButton={true}
+              onBack={() => {
+                cancelTrace();
+                clearAllMarkersAndRoutes();
+              }}
+              rightContent={
+                <AlertTriangle className="h-5 w-5 text-orange-600" />
+              }
+            />
 
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground">
-                  Você tem {traceState.stops.length} parada(s) marcada(s). Esta
-                  ação irá traçar a rota completa no mapa.
-                </p>
-              </div>
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="max-w-md mx-auto space-y-6">
+                {/* Route Summary Card */}
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        Confirmar Traçado da Rota
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Consome {traceState.estimatedCredits} créditos
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => {
-                    cancelTrace();
-                    clearAllMarkersAndRoutes();
-                  }}
-                  className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
-                >
-                  Desistir
-                </button>
-                <button
-                  onClick={async () => {
-                    confirmTrace();
-                    // Traçar a rota no mapa
-                    await traceRouteOnMap(traceState.stops);
-                  }}
-                  disabled={isTracingRoute}
-                  className={`flex-1 py-3 px-4 rounded-xl font-medium transition-colors duration-200 ${
-                    isTracingRoute
-                      ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
-                  }`}
-                >
-                  {isTracingRoute ? "Traçando..." : "Confirmar"}
-                </button>
+                  <div className="space-y-4">
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-foreground">
+                          Paradas configuradas
+                        </span>
+                        <span className="text-lg font-bold text-primary">
+                          {traceState.stops.length}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Esta ação irá traçar a rota completa no mapa conectando
+                        todas as paradas.
+                      </p>
+                    </div>
+
+                    {traceState.stops.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-foreground">
+                          Paradas da rota:
+                        </h4>
+                        <div className="max-h-32 overflow-y-auto space-y-1">
+                          {traceState.stops.slice(0, 3).map((stop, index) => (
+                            <div
+                              key={stop.id}
+                              className="flex items-center space-x-2 text-xs"
+                            >
+                              <div className="w-4 h-4 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[10px] font-medium">
+                                {index + 1}
+                              </div>
+                              <span className="text-muted-foreground truncate">
+                                {stop.name}
+                              </span>
+                            </div>
+                          ))}
+                          {traceState.stops.length > 3 && (
+                            <div className="text-xs text-muted-foreground ml-6">
+                              +{traceState.stops.length - 3} paradas adicionais
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <AlertTriangle className="h-4 w-4 text-orange-600" />
+                        <span className="text-sm font-medium text-orange-800">
+                          Importante
+                        </span>
+                      </div>
+                      <p className="text-xs text-orange-700 mt-1">
+                        O traçado da rota irá otimizar o caminho entre as
+                        paradas para economizar tempo e combustível.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      cancelTrace();
+                      clearAllMarkersAndRoutes();
+                    }}
+                    className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={async () => {
+                      confirmTrace();
+                      // Traçar a rota no mapa
+                      await traceRouteOnMap(traceState.stops);
+                    }}
+                    disabled={isTracingRoute}
+                    className={`flex-1 py-3 px-4 rounded-xl font-medium transition-colors duration-200 ${
+                      isTracingRoute
+                        ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    }`}
+                  >
+                    {isTracingRoute ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Traçando...
+                      </>
+                    ) : (
+                      <>
+                        <RouteIcon className="h-4 w-4 mr-2" />
+                        Confirmar Traçado
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* POI Details Modal */}
+        {/* POI Details Modal - Enhanced */}
         {selectedPOI && (
-          <div className="fixed inset-x-4 bottom-4 z-40 animate-in slide-in-from-bottom duration-300">
-            <div className="bg-card border border-border rounded-xl shadow-xl p-4">
-              <div className="flex items-start justify-between mb-3">
+          <div className="fixed inset-x-4 bottom-4 z-45 animate-in slide-in-from-bottom duration-300">
+            <div className="bg-card border border-border rounded-xl shadow-xl p-4 max-h-[70vh] overflow-y-auto">
+              <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {selectedPOI.name}
-                  </h3>
-                  <div className="space-y-1 mt-1">
-                    {selectedPOI.fullAddress && (
-                      <p className="text-sm text-muted-foreground">
-                        {selectedPOI.fullAddress}
-                      </p>
-                    )}
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm text-muted-foreground">
-                        {selectedPOI.distance}
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {selectedPOI.name}
+                    </h3>
+                    {selectedPOI.type && (
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${selectedPOI.color ? selectedPOI.color.replace("bg-", "bg-") + "/20 text-" + selectedPOI.color.replace("bg-", "") : "bg-gray-100 text-gray-700"}`}
+                      >
+                        {selectedPOI.type === "restaurant"
+                          ? "Restaurante"
+                          : selectedPOI.type === "gas"
+                            ? "Posto"
+                            : selectedPOI.type === "hospital"
+                              ? "Hospital"
+                              : selectedPOI.type === "shopping"
+                                ? "Shopping"
+                                : selectedPOI.type === "park"
+                                  ? "Parque"
+                                  : selectedPOI.type.charAt(0).toUpperCase() +
+                                    selectedPOI.type.slice(1)}
                       </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    {selectedPOI.fullAddress && (
+                      <div className="flex items-start space-x-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-muted-foreground">
+                          {selectedPOI.fullAddress}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-1">
+                        <Navigation className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {selectedPOI.distance}
+                        </span>
+                      </div>
+
                       {selectedPOI.rating && (
                         <div className="flex items-center space-x-1">
                           <span className="text-yellow-500">★</span>
@@ -1422,25 +1529,117 @@ const MapPage: React.FC = () => {
                         </div>
                       )}
                     </div>
+
+                    {/* Coordinates for reference */}
+                    <div className="text-xs text-muted-foreground/70">
+                      Coordenadas: {selectedPOI.coordinates[1].toFixed(4)},{" "}
+                      {selectedPOI.coordinates[0].toFixed(4)}
+                    </div>
                   </div>
                 </div>
+
                 <button
                   onClick={() => setSelectedPOI(null)}
-                  className="p-1 hover:bg-accent rounded-lg transition-colors duration-200"
+                  className="p-2 hover:bg-accent rounded-lg transition-colors duration-200 flex-shrink-0"
                 >
                   <X className="h-5 w-5 text-muted-foreground" />
                 </button>
               </div>
 
-              <div className="flex space-x-3">
-                <button className="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-xl font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center space-x-2">
-                  <MoveRight className="h-4 w-4" />
-                  <span>Ir para lá</span>
-                </button>
-                <button className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2">
-                  <BookmarkPlus className="h-4 w-4" />
-                  <span>Mais tarde</span>
-                </button>
+              <div className="space-y-3">
+                {/* Main Actions */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      if (map.current) {
+                        map.current.flyTo({
+                          center: selectedPOI.coordinates,
+                          zoom: 18,
+                          duration: 2000,
+                        });
+                        setSelectedPOI(null);
+                      }
+                    }}
+                    className="flex-1 bg-primary text-primary-foreground py-3 px-4 rounded-xl font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <MoveRight className="h-4 w-4" />
+                    <span>Ir para lá</span>
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      try {
+                        await addStop(
+                          selectedPOI.coordinates,
+                          selectedPOI.name,
+                          selectedPOI.fullAddress || selectedPOI.name,
+                        );
+                        setSelectedPOI(null);
+                        // Show success feedback
+                        console.log(
+                          `Parada "${selectedPOI.name}" adicionada à rota!`,
+                        );
+                      } catch (error) {
+                        console.error("Erro ao adicionar parada:", error);
+                      }
+                    }}
+                    className="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Adicionar Parada</span>
+                  </button>
+                </div>
+
+                {/* Secondary Actions */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      // Save to localStorage for "later" functionality
+                      const savedPOIs = JSON.parse(
+                        localStorage.getItem("savedPOIs") || "[]",
+                      );
+                      const poiToSave = {
+                        ...selectedPOI,
+                        savedAt: new Date().toISOString(),
+                      };
+                      savedPOIs.push(poiToSave);
+                      localStorage.setItem(
+                        "savedPOIs",
+                        JSON.stringify(savedPOIs),
+                      );
+                      setSelectedPOI(null);
+                      console.log("Local salvo para mais tarde!");
+                    }}
+                    className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <BookmarkPlus className="h-4 w-4" />
+                    <span>Salvar</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      // Share functionality
+                      if (navigator.share) {
+                        navigator.share({
+                          title: selectedPOI.name,
+                          text: `Confira este local: ${selectedPOI.name}`,
+                          url: `https://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`,
+                        });
+                      } else {
+                        // Fallback to clipboard
+                        const shareText = `${selectedPOI.name} - ${selectedPOI.fullAddress || "Ver no mapa"}\nhttps://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`;
+                        navigator.clipboard.writeText(shareText);
+                        console.log(
+                          "Link copiado para a área de transferência!",
+                        );
+                      }
+                    }}
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    <span>Compartilhar</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1448,14 +1647,14 @@ const MapPage: React.FC = () => {
       </div>
 
       {/* Bottom info bar (mobile) */}
-      <div className="bg-white border-t border-gray-200 p-3 sm:hidden">
+      <div className="bg-card border-t border-border p-3 sm:hidden">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1 text-gray-600">
+            <div className="flex items-center space-x-1 text-muted-foreground">
               <Car className="h-4 w-4" />
               <span>12 min</span>
             </div>
-            <div className="flex items-center space-x-1 text-gray-600">
+            <div className="flex items-center space-x-1 text-muted-foreground">
               <MapPin className="h-4 w-4" />
               <span>2.3 km</span>
             </div>
