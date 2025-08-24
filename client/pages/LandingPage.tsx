@@ -468,9 +468,6 @@ const HomePage = ({
               Viwe é o planejador de rotas mais avançado do mercado. Otimize
               trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
-            <p className="text-base md:text-lg text-foreground max-w-2xl mx-auto mb-4 font-medium">
-              Crie sua conta agora e comece a planejar seus trajetos com a Viwe.
-            </p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-3 lg:mb-4">
             <Link
