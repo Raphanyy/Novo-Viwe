@@ -39,17 +39,16 @@ const MobileLoginPage: React.FC = () => {
         {/* Logo */}
         <div className="flex items-center justify-center">
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2Feab00c94f63d45fc8e3a12589b9a235f?format=webp&width=1200"
+            src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2Feab00c94f63d45fc8e3a12589b9a235f?format=webp&width=1200&quality=100"
             alt="Viwe Logo"
-            className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none pointer-events-none"
+            className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none pointer-events-none antialiased"
             style={{
-              imageRendering: 'crisp-edges',
-              imageRendering: '-webkit-optimize-contrast',
-              imageRendering: 'optimize-contrast',
-              imageRendering: 'pixelated',
-              filter: 'contrast(1.1) saturate(1.05)',
+              imageRendering: 'auto',
+              filter: 'none',
               backfaceVisibility: 'hidden',
               transform: 'translateZ(0)',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
             }}
             draggable={false}
           />
