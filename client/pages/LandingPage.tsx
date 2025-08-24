@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import * as THREE from "three";
 import {
   MapPin,
@@ -22,8 +22,49 @@ import {
   Sparkles,
   Lightbulb,
   Users,
+  TrendingUp,
+  Globe,
+  Cpu,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+
+// === Hooks Utilitários ===
+const useIntersectionObserver = (options = {}) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      { threshold: 0.1, rootMargin: '50px', ...options }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, isIntersecting];
+};
+
+const useParallax = (speed = 0.5) => {
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setOffset(window.pageYOffset * speed);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [speed]);
+
+  return offset;
+};
 
 // === Logo Real da Viwe ===
 const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
@@ -526,7 +567,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Secção de Funcionalidades principais com proporções corrigidas */}
+      {/* Sec��ão de Funcionalidades principais com proporções corrigidas */}
       <section
         ref={featuresRef}
         className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
