@@ -394,14 +394,14 @@ const HomePage = ({
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
             {/* Logo grande alinhada com o texto */}
-            <div className="mb-8 md:mb-12 flex justify-center">
+            <div className="mb-4 md:mb-6 flex justify-center">
               <div className="group relative">
                 <ViweLogo className="h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 xl:h-80 xl:w-80 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
               </div>
             </div>
-            
+
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
               Somos a maior plataforma<br />de rotas inteligentes no mundo
             </h1>
