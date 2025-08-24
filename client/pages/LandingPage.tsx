@@ -227,7 +227,7 @@ const HowItWorksSection = () => {
       title: "Defina seu destino",
       description: "Digite onde você quer ir ou selecione no mapa interativo",
       icon: Target,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-blue-600",
     },
     {
       step: "02",
@@ -235,7 +235,7 @@ const HowItWorksSection = () => {
       description:
         "Nossa IA calcula a melhor rota considerando trânsito e preferências",
       icon: Zap,
-      color: "from-purple-500 to-pink-500",
+      color: "from-blue-600 to-blue-700",
     },
     {
       step: "03",
@@ -243,7 +243,7 @@ const HowItWorksSection = () => {
       description:
         "Siga as instruções em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
-      color: "from-green-500 to-emerald-500",
+      color: "from-blue-700 to-blue-800",
     },
   ];
 
