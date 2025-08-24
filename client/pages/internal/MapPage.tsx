@@ -403,7 +403,7 @@ const MapPage: React.FC = () => {
   }, []); // Remove setMapCleanupCallback from dependencies
 
   // Optimized throttled center pin tracking using performance utils
-  const throttledUpdateCenterPin = useCallback(
+  const throttledUpdateCenterPin = useMemo(() =>
     useCoordinateThrottle(
       updateCenterPin,
       100, // 100ms throttle
@@ -1254,7 +1254,7 @@ const MapPage: React.FC = () => {
                   "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
               </p>
               <div className="text-xs text-muted-foreground/70">
-                Esta é uma vers��o de demonstração da plataforma Viwe.
+                Esta é uma versão de demonstração da plataforma Viwe.
               </div>
             </div>
           </div>
