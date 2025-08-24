@@ -34,9 +34,9 @@ const AccordionPricingCard: React.FC<{
       <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
 
       {/* Cabeçalho do card que funciona como botão do acordeão */}
-      <button 
+      <button
         onClick={onToggle}
-        className="flex items-center justify-between w-full text-left"
+        className="flex items-center justify-between w-full text-left relative z-10"
       >
         <div className="flex-1">
           <h2 className="text-xl font-semibold text-foreground">{plan}</h2>
