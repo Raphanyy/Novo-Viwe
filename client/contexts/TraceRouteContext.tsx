@@ -147,7 +147,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     (() => void) | null
   >(null);
 
-  const startTracing = () => {
+  const startTracing = useCallback(() => {
     setState((prev) => ({
       ...prev,
       isTracing: true,
@@ -157,7 +157,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       routeType: "temporary",
       estimatedCredits: 5, // Default credits estimation
     }));
-  };
+  }, []);
 
   const stopTracing = () => {
     // Limpa o mapa se callback estiver disponível
@@ -345,12 +345,12 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     stopTracing();
   };
 
-  const updateCenterPin = (coordinates: [number, number]) => {
+  const updateCenterPin = useCallback((coordinates: [number, number]) => {
     setState((prev) => ({
       ...prev,
       centerPin: { coordinates },
     }));
-  };
+  }, []);
 
   const startNavigation = () => {
     setState((prev) => ({
