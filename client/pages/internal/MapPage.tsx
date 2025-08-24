@@ -527,15 +527,11 @@ const MapPage: React.FC = () => {
 
       setIsTracingRoute(true);
 
-      try {
+      const result = await handleAsyncError(async () => {
         // Convert stops to coordinates string for Mapbox Directions API
         const coordinates = stops
           .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
           .join(";");
-
-        // Add timeout to prevent hanging requests
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
         // Call Mapbox Directions API using centralized config
         const apiUrl = createMapboxApiUrl(
@@ -547,16 +543,13 @@ const MapPage: React.FC = () => {
           throw new Error('Mapbox token não disponível para traçar rota');
         }
 
-        const response = await fetch(apiUrl, {
-          signal: controller.signal,
-          headers: { 'Accept': 'application/json' }
+        // Use robust fetch with error handling
+        const response = await fetchWithErrorHandling(apiUrl, {}, {
+          timeout: 15000,
+          context: 'TraceRoute',
+          retries: 2,
+          retryDelay: 1000
         });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
         const data = await response.json();
 
@@ -564,47 +557,49 @@ const MapPage: React.FC = () => {
           const route = data.routes[0];
 
           // Remove existing route if any
-          if (map.current.getSource("route")) {
+          if (map.current && map.current.getSource("route")) {
             map.current.removeLayer("route");
             map.current.removeSource("route");
           }
 
           // Add route to map
-          map.current.addSource("route", {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              properties: {},
-              geometry: route.geometry,
-            },
-          });
+          if (map.current) {
+            map.current.addSource("route", {
+              type: "geojson",
+              data: {
+                type: "Feature",
+                properties: {},
+                geometry: route.geometry,
+              },
+            });
 
-          map.current.addLayer({
-            id: "route",
-            type: "line",
-            source: "route",
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
-            paint: {
-              "line-color": "#3b82f6",
-              "line-width": 5,
-              "line-opacity": 0.8,
-            },
-          });
+            map.current.addLayer({
+              id: "route",
+              type: "line",
+              source: "route",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#3b82f6",
+                "line-width": 5,
+                "line-opacity": 0.8,
+              },
+            });
 
-          // Fit map to show entire route
-          const coordinates = route.geometry.coordinates;
-          const bounds = new mapboxgl.LngLatBounds();
-          coordinates.forEach((coord: [number, number]) => {
-            bounds.extend(coord);
-          });
+            // Fit map to show entire route
+            const coordinates = route.geometry.coordinates;
+            const bounds = new mapboxgl.LngLatBounds();
+            coordinates.forEach((coord: [number, number]) => {
+              bounds.extend(coord);
+            });
 
-          map.current.fitBounds(bounds, {
-            padding: 50,
-            duration: 1000,
-          });
+            map.current.fitBounds(bounds, {
+              padding: 50,
+              duration: 1000,
+            });
+          }
 
           console.log("Rota traçada com sucesso:", {
             distance: route.distance,
@@ -615,17 +610,18 @@ const MapPage: React.FC = () => {
           // Marcar rota como traçada no contexto
           setRouteTraced(true);
         }
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          console.warn("Requisição de rota cancelada por timeout");
-        } else {
-          console.error("Erro ao traçar rota:", error);
+      }, 'TraceRoute');
+
+      if (!result.success && result.error) {
+        // Só exibir erro para o usuário se necessário
+        if (result.error.shouldNotifyUser && result.error.type !== ErrorType.ABORT) {
+          console.error("Erro ao traçar rota:", result.error.userMessage);
         }
-      } finally {
-        setIsTracingRoute(false);
       }
+
+      setIsTracingRoute(false);
     },
-    [setRouteTraced],
+    [setRouteTraced, handleAsyncError],
   );
 
   // Memoized POI click handler to prevent recreation
