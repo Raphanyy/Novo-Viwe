@@ -67,13 +67,17 @@ const useParallax = (speed = 0.5) => {
 };
 
 // === Logo Real da Viwe ===
-const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
-  <img
-    src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
-    alt="Viwe Logo"
-    className={`${className} object-contain`}
-  />
-);
+const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
+  <div className="relative group">
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
+      alt="Viwe Logo"
+      className={`${className} object-contain transition-all duration-700 group-hover:scale-110 group-hover:drop-shadow-2xl filter group-hover:brightness-110`}
+      loading="eager"
+    />
+    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
+  </div>
+));
 
 // === Seções Principais ===
 
@@ -567,7 +571,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Sec��ão de Funcionalidades principais com proporções corrigidas */}
+      {/* Secção de Funcionalidades principais com proporções corrigidas */}
       <section
         ref={featuresRef}
         className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
