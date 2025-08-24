@@ -444,10 +444,10 @@ const HomePage = ({
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            {/* Logo compacta para máximo enquadramento */}
-            <div className="mb-1 md:mb-2 lg:mb-3 flex justify-center">
+            {/* Logo posicionada 15% mais acima e com tamanho aumentado */}
+            <div className="mb-1 md:mb-2 lg:mb-3 flex justify-center -translate-y-6">
               <div className="group relative">
-                <ViweLogo className="h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40 xl:h-44 xl:w-44 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
+                <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
               </div>
