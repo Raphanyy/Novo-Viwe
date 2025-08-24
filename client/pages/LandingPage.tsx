@@ -383,7 +383,7 @@ const HomePage = ({
 }) => {
   // Estado para a animação do texto do herói
   const [isHeroTextVisible, setIsHeroTextVisible] = useState(false);
-  // Observer para a se��ão de funcionalidades
+  // Observer para a se����ão de funcionalidades
   const featuresRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
@@ -561,8 +561,7 @@ const HomePage = ({
                 Otimização de Rotas
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Algoritmos de IA calculam o caminho mais eficiente, economizando
-                tempo e combustível.
+                IA calcula rotas mais eficientes. Economia garantida de tempo e combustível.
               </p>
             </div>
 
@@ -579,8 +578,7 @@ const HomePage = ({
                 Previsão de Trânsito
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Dados em tempo real para evitar engarrafamentos com precisão de
-                99%.
+                Dados em tempo real evitam trânsito. Precisão de 99% garantida.
               </p>
             </div>
 
@@ -597,7 +595,7 @@ const HomePage = ({
                 Pontos de Interesse
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Descubra restaurantes, postos e atrações ao longo do caminho.
+                Encontre restaurantes, postos e atrações no seu trajeto facilmente.
               </p>
             </div>
 
@@ -614,7 +612,7 @@ const HomePage = ({
                 Compartilhar Itinerário
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Compartilhe rotas em tempo real com familiares e equipes.
+                Compartilhe rotas em tempo real com família e equipes.
               </p>
             </div>
           </div>
