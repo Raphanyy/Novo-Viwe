@@ -752,223 +752,116 @@ const MapPage: React.FC = () => {
     }
 
     setIsSearching(true);
-    try {
-      // Enhanced context recognition for nationwide search including cities, states, and establishments
-      let businessQuery = query;
-      const lowerQuery = query.toLowerCase();
+
+    // Helper function to enhance query context
+    const enhanceQuery = (originalQuery: string): string => {
+      const lowerQuery = originalQuery.toLowerCase();
 
       // Specific establishment recognition
-      if (
-        lowerQuery.includes("ilha plaza") ||
-        lowerQuery.includes("ilha shopping")
-      ) {
-        businessQuery = "Ilha Plaza Shopping São Paulo";
-      } else if (
-        lowerQuery.includes("quiosque zero oito") ||
-        lowerQuery.includes("quiosque 08")
-      ) {
-        businessQuery = `Quiosque 08 loja comércio São Paulo`;
+      if (lowerQuery.includes("ilha plaza") || lowerQuery.includes("ilha shopping")) {
+        return "Ilha Plaza Shopping São Paulo";
+      } else if (lowerQuery.includes("quiosque zero oito") || lowerQuery.includes("quiosque 08")) {
+        return `Quiosque 08 loja comércio São Paulo`;
       } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
-        businessQuery = "Escola Municipal Alvaro Moreira São Paulo";
+        return "Escola Municipal Alvaro Moreira São Paulo";
       }
       // Brazilian cities and states recognition
       else if (lowerQuery.includes("são paulo") || lowerQuery.includes("sp")) {
-        businessQuery = query.includes("SP") ? query : `${query} São Paulo`;
-      } else if (
-        lowerQuery.includes("rio de janeiro") ||
-        lowerQuery.includes("rj")
-      ) {
-        businessQuery = query.includes("RJ")
-          ? query
-          : `${query} Rio de Janeiro`;
-      } else if (
-        lowerQuery.includes("belo horizonte") ||
-        lowerQuery.includes("mg")
-      ) {
-        businessQuery = query.includes("MG") ? query : `${query} Minas Gerais`;
+        return originalQuery.includes("SP") ? originalQuery : `${originalQuery} São Paulo`;
+      } else if (lowerQuery.includes("rio de janeiro") || lowerQuery.includes("rj")) {
+        return originalQuery.includes("RJ") ? originalQuery : `${originalQuery} Rio de Janeiro`;
+      } else if (lowerQuery.includes("belo horizonte") || lowerQuery.includes("mg")) {
+        return originalQuery.includes("MG") ? originalQuery : `${originalQuery} Minas Gerais`;
       } else if (lowerQuery.includes("brasília") || lowerQuery.includes("df")) {
-        businessQuery = query.includes("DF") ? query : `${query} Brasília DF`;
+        return originalQuery.includes("DF") ? originalQuery : `${originalQuery} Brasília DF`;
       } else if (lowerQuery.includes("salvador") || lowerQuery.includes("ba")) {
-        businessQuery = query.includes("BA")
-          ? query
-          : `${query} Salvador Bahia`;
-      }
-      // Neighborhood and district recognition
-      else if (
-        lowerQuery.includes("bairro") ||
-        lowerQuery.includes("vila") ||
-        lowerQuery.includes("jardim")
-      ) {
-        businessQuery = `${query} bairro`;
+        return originalQuery.includes("BA") ? originalQuery : `${originalQuery} Salvador Bahia`;
       }
       // Business type recognition
-      else if (
-        lowerQuery.includes("shopping") &&
-        !lowerQuery.includes("center")
-      ) {
-        businessQuery = `${query} shopping center`;
-      } else if (
-        lowerQuery.includes("escola") &&
-        !lowerQuery.includes("municipal")
-      ) {
-        businessQuery = `${query} escola`;
+      else if (lowerQuery.includes("shopping") && !lowerQuery.includes("center")) {
+        return `${originalQuery} shopping center`;
+      } else if (lowerQuery.includes("escola") && !lowerQuery.includes("municipal")) {
+        return `${originalQuery} escola`;
       } else if (lowerQuery.includes("quiosque")) {
-        businessQuery = `${query} comercio loja estabelecimento`;
+        return `${originalQuery} comercio loja estabelecimento`;
       }
 
-      let allFeatures: any[] = [];
+      return originalQuery;
+    };
 
-      // Strategy 1: Direct POI search with error handling and timeout
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+    // Helper function to perform search
+    const performSearch = async (searchQuery: string, types: string): Promise<any[]> => {
+      const apiUrl = createMapboxApiUrl(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
+        { country: 'BR', language: 'pt', limit: '8', types }
+      );
 
-        const poiApiUrl = createMapboxApiUrl(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`,
-          { country: 'BR', language: 'pt', limit: '10', types: 'poi' }
-        );
+      if (!apiUrl) {
+        return [];
+      }
 
-        if (!poiApiUrl) {
-          console.warn("Mapbox token not available for search");
-          return;
-        }
-
-        const poiResponse = await fetch(poiApiUrl, {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
+      const result = await handleAsyncError(async () => {
+        const response = await fetchWithErrorHandling(apiUrl, {}, {
+          timeout: 8000,
+          context: 'Search',
+          retries: 1,
+          retryDelay: 500
         });
+        return response.json();
+      }, 'GeocodeSearch');
 
-        clearTimeout(timeoutId);
-
-        if (poiResponse.ok) {
-          const poiData = await poiResponse.json();
-          if (poiData.features) {
-            allFeatures = [...poiData.features];
-          }
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          console.warn("POI search timed out");
-        } else {
-          console.warn(
-            "POI search failed, continuing with other strategies:",
-            error,
-          );
-        }
+      if (result.success && result.data?.features) {
+        return result.data.features;
       }
 
-      // Strategy 2: Enhanced business search (only if we need more results)
+      return [];
+    };
+
+    // Helper function to deduplicate features
+    const deduplicateFeatures = (features: any[]): any[] => {
+      const seen = new Set();
+      return features.filter(feature => {
+        const key = `${feature.text}-${feature.center[0].toFixed(3)}-${feature.center[1].toFixed(3)}`;
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+    };
+
+    try {
+      let allFeatures: any[] = [];
+      const businessQuery = enhanceQuery(query);
+
+      // Strategy 1: Direct POI search
+      const poiFeatures = await performSearch(query, 'poi');
+      allFeatures.push(...poiFeatures);
+
+      // Strategy 2: Enhanced business search (if needed and query was enhanced)
       if (allFeatures.length < 3 && businessQuery !== query) {
-        try {
-          const controller2 = new AbortController();
-          const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
-
-          const enhancedApiUrl = createMapboxApiUrl(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(businessQuery)}.json`,
-            { country: 'BR', language: 'pt', limit: '8', types: 'poi,place,region,district,postcode,locality,neighborhood' }
-          );
-
-          if (!enhancedApiUrl) {
-            console.warn("Mapbox token not available for enhanced search");
-            return;
-          }
-
-          const enhancedResponse = await fetch(enhancedApiUrl, {
-            signal: controller2.signal,
-            headers: { Accept: "application/json" },
-          });
-
-          clearTimeout(timeoutId2);
-
-          if (enhancedResponse.ok) {
-            const enhancedData = await enhancedResponse.json();
-            if (enhancedData.features) {
-              enhancedData.features.forEach((feature: any) => {
-                if (
-                  !allFeatures.find(
-                    (f) =>
-                      f.text === feature.text ||
-                      (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-                        Math.abs(f.center[1] - feature.center[1]) < 0.001),
-                  )
-                ) {
-                  allFeatures.push(feature);
-                }
-              });
-            }
-          }
-        } catch (error) {
-          if (error instanceof Error && error.name === "AbortError") {
-            console.warn("Enhanced search timed out");
-          } else {
-            console.warn("Enhanced search failed:", error);
-          }
-        }
+        const enhancedFeatures = await performSearch(businessQuery, 'poi,place,region,district,postcode,locality,neighborhood');
+        allFeatures.push(...enhancedFeatures);
       }
 
-      // Strategy 3: General search as fallback (only if we still need results)
+      // Strategy 3: General search as fallback (if still need results)
       if (allFeatures.length < 2) {
-        try {
-          const controller3 = new AbortController();
-          const timeoutId3 = setTimeout(() => controller3.abort(), 8000);
-
-          const generalApiUrl = createMapboxApiUrl(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`,
-            { country: 'BR', language: 'pt', limit: '8', types: 'place,address,region,district,postcode,locality,neighborhood' }
-          );
-
-          if (!generalApiUrl) {
-            console.warn("Mapbox token not available for general search");
-            return;
-          }
-
-          const generalResponse = await fetch(generalApiUrl, {
-            signal: controller3.signal,
-            headers: { Accept: "application/json" },
-          });
-
-          clearTimeout(timeoutId3);
-
-          if (generalResponse.ok) {
-            const generalData = await generalResponse.json();
-            if (generalData.features) {
-              const remainingSlots = 5 - allFeatures.length;
-              generalData.features
-                .slice(0, remainingSlots)
-                .forEach((feature: any) => {
-                  if (
-                    !allFeatures.find(
-                      (f) =>
-                        f.text === feature.text ||
-                        (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-                          Math.abs(f.center[1] - feature.center[1]) < 0.001),
-                    )
-                  ) {
-                    allFeatures.push(feature);
-                  }
-                });
-            }
-          }
-        } catch (error) {
-          if (error instanceof Error && error.name === "AbortError") {
-            console.warn("General search timed out");
-          } else {
-            console.warn("General search failed:", error);
-          }
-        }
+        const generalFeatures = await performSearch(query, 'place,address,region,district,postcode,locality,neighborhood');
+        allFeatures.push(...generalFeatures);
       }
 
-      if (allFeatures.length > 0) {
-        const results: SearchResult[] = allFeatures
-          .slice(0, 5)
-          .map((feature: any) => ({
-            id: feature.id,
-            place_name: feature.place_name,
-            text: feature.text,
-            center: feature.center,
-            place_type: feature.place_type,
-            properties: feature.properties || {},
-          }));
+      // Deduplicate and limit results
+      const uniqueFeatures = deduplicateFeatures(allFeatures).slice(0, 5);
+
+      if (uniqueFeatures.length > 0) {
+        const results: SearchResult[] = uniqueFeatures.map((feature: any) => ({
+          id: feature.id,
+          place_name: feature.place_name,
+          text: feature.text,
+          center: feature.center,
+          place_type: feature.place_type,
+          properties: feature.properties || {},
+        }));
 
         setSearchResults(results);
         setShowSearchResults(true);
@@ -977,12 +870,16 @@ const MapPage: React.FC = () => {
         setShowSearchResults(false);
       }
     } catch (error) {
-      console.error("Erro geral na busca:", error);
+      const errorInfo = handleError(error, 'SearchBusinesses');
+      if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
+        console.warn("Erro na busca:", errorInfo.userMessage);
+      }
       setSearchResults([]);
+      setShowSearchResults(false);
     } finally {
       setIsSearching(false);
     }
-  }, []);
+  }, [handleError, handleAsyncError]);
 
   // Optimized debounced search with stable reference
   const handleSearchChange = useCallback(
