@@ -399,26 +399,26 @@ const AdvancedFeaturesSection = () => {
       icon: Smartphone,
       title: "App Mobile Nativo",
       description: "Disponível para iOS e Android com sincronização automática",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: Cloud,
       title: "Sincronização Automática",
       description:
         "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: BarChart3,
       title: "Relatórios Avançados",
       description: "Análise detalhada de tempo, distância e economia",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: Award,
       title: "Suporte Premium",
       description: "Atendimento 24/7 com especialistas em otimização",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
   ];
 
