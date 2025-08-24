@@ -247,7 +247,7 @@ export class ResourceManager {
  */
 export function createResourceManagerHook(React: any) {
   return function useResourceManager(): ResourceManager {
-    const managerRef = React.useRef<ResourceManager | undefined>(undefined);
+    const managerRef = React.useRef(undefined as ResourceManager | undefined);
 
     if (!managerRef.current) {
       managerRef.current = new ResourceManager();
