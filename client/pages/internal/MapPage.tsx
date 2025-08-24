@@ -28,6 +28,7 @@ import {
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
+import ViweLoader from "../../components/shared/ViweLoader";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -35,10 +36,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 if (!mapboxToken) {
-  console.error("VITE_MAPBOX_ACCESS_TOKEN environment variable is not set");
+  console.error("Mapbox token not available. Map cannot be initialized.");
+  console.warn("Please set VITE_MAPBOX_ACCESS_TOKEN in your .env file");
+} else {
+  mapboxgl.accessToken = mapboxToken;
 }
-
-mapboxgl.accessToken = mapboxToken || "";
 
 interface SearchResult {
   id: string;
@@ -1152,9 +1154,7 @@ const MapPage: React.FC = () => {
             placeholder="Buscar cidades, bairros, estabelecimentos..."
           />
           <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
-            {isSearching && (
-              <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
-            )}
+            {isSearching && <ViweLoader size="xs" />}
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -1337,6 +1337,27 @@ const MapPage: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-1 relative">
+        {/* Mapbox Token Missing Fallback */}
+        {!mapboxToken && (
+          <div className="absolute inset-0 z-40 bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
+            <div className="text-center p-8 max-w-md">
+              <div className="mb-6">
+                <ViweLoader size="lg" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-3">
+                Mapa Indisponível
+              </h3>
+              <p className="text-muted-foreground mb-4 text-sm">
+                Token do Mapbox não configurado. Configure
+                VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa.
+              </p>
+              <div className="text-xs text-muted-foreground/70">
+                Esta é uma versão de demonstração da plataforma Viwe.
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Error Fallback */}
         {mapError && (
           <div className="fixed inset-0 z-50 bg-background flex items-center justify-center p-4">

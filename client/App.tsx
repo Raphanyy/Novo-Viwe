@@ -12,6 +12,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 // Public Pages
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
+import MobileLoginPage from "./pages/MobileLoginPage";
+import EmailLoginPage from "./pages/EmailLoginPage";
+import SignupPage from "./pages/SignupPage";
 
 // Internal Pages
 import DashboardPage from "./pages/internal/DashboardPage";
@@ -29,7 +32,7 @@ import AdaptivePublicLayout from "./components/AdaptivePublicLayout";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Platform Context
-import { PlatformProvider } from "./contexts/PlatformContext";
+import { PlatformProvider, usePlatform } from "./contexts/PlatformContext";
 
 // TraceRoute Context
 import { TraceRouteProvider } from "./contexts/TraceRouteContext";
@@ -49,6 +52,8 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppRoutes = () => {
+  const { isMobile, isSSR } = usePlatform();
+
   return (
     <Routes>
       {/* Public Routes */}
@@ -56,9 +61,15 @@ const AppRoutes = () => {
         path="/"
         element={
           <PublicRoute>
-            <AdaptivePublicLayout>
-              <LandingPage />
-            </AdaptivePublicLayout>
+            {/* Mobile: Direct login page without layout */}
+            {isMobile && !isSSR ? (
+              <MobileLoginPage />
+            ) : (
+              /* Desktop/Tablet: Landing page with layout */
+              <AdaptivePublicLayout>
+                <LandingPage />
+              </AdaptivePublicLayout>
+            )}
           </PublicRoute>
         }
       />
@@ -66,9 +77,31 @@ const AppRoutes = () => {
         path="/login"
         element={
           <PublicRoute>
-            <AdaptivePublicLayout>
-              <LoginPage />
-            </AdaptivePublicLayout>
+            {/* Mobile: Direct login page without layout */}
+            {isMobile && !isSSR ? (
+              <MobileLoginPage />
+            ) : (
+              /* Desktop/Tablet: Login page with layout */
+              <AdaptivePublicLayout>
+                <LoginPage />
+              </AdaptivePublicLayout>
+            )}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/login-email"
+        element={
+          <PublicRoute>
+            <EmailLoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <SignupPage />
           </PublicRoute>
         }
       />

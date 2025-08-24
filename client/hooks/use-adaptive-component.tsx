@@ -1,5 +1,6 @@
 import React, { Suspense, useMemo } from "react";
 import { usePlatform } from "../contexts/PlatformContext";
+import { ViweLoaderCenter } from "../components/shared/ViweLoader";
 
 /**
  * Hook para carregar componentes específicos por plataforma dinamicamente
@@ -97,11 +98,7 @@ export const AdaptiveComponent: React.FC<AdaptiveComponentProps> = ({
   const { Component, isLoading, error } = useAdaptiveComponent(name, fallback);
 
   // Default loading component
-  const DefaultLoading = () => (
-    <div className="flex items-center justify-center p-4">
-      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-    </div>
-  );
+  const DefaultLoading = () => <ViweLoaderCenter />;
 
   // Default error component
   const DefaultError = ({

@@ -11,6 +11,7 @@ import {
   Save,
   CheckCircle,
 } from "lucide-react";
+import { ViweLoaderInline } from "./ViweLoader";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -253,7 +254,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           className="w-full"
         >
           {isLoading ? (
-            "Salvando..."
+            <ViweLoaderInline text="Salvando..." />
           ) : isSuccess ? (
             <>
               <CheckCircle className="h-4 w-4 mr-2" />
