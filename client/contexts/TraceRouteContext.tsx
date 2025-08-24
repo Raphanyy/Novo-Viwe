@@ -202,14 +202,14 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       showFinalSummaryModal: false,
       navigationData: {
         startTime: null,
-      totalDistance: 0,
-      remainingDistance: 0,
-      estimatedFuelConsumption: 0,
-      actualFuelConsumption: 0,
-      activeTime: 0,
-      currentStopIndex: 0,
-      optimizationCount: 0,
-      averageStopTime: 0,
+        totalDistance: 0,
+        remainingDistance: 0,
+        estimatedFuelConsumption: 0,
+        actualFuelConsumption: 0,
+        activeTime: 0,
+        currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -420,14 +420,14 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       showFinalSummaryModal: false,
       navigationData: {
         startTime: null,
-      totalDistance: 0,
-      remainingDistance: 0,
-      estimatedFuelConsumption: 0,
-      actualFuelConsumption: 0,
-      activeTime: 0,
-      currentStopIndex: 0,
-      optimizationCount: 0,
-      averageStopTime: 0,
+        totalDistance: 0,
+        remainingDistance: 0,
+        estimatedFuelConsumption: 0,
+        actualFuelConsumption: 0,
+        activeTime: 0,
+        currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -499,13 +499,15 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       const remainingStops = updatedStops.filter((stop) => !stop.isCompleted);
 
       // Calcular tempo médio por parada para melhorar estimativas
-      const completedStopsWithTime = updatedStops.filter(stop =>
-        stop.isCompleted && stop.completedAt && prev.navigationData.startTime
+      const completedStopsWithTime = updatedStops.filter(
+        (stop) =>
+          stop.isCompleted && stop.completedAt && prev.navigationData.startTime,
       );
 
       let averageStopTime = prev.navigationData.averageStopTime;
       if (completedStopsWithTime.length > 0 && prev.navigationData.startTime) {
-        const totalTimeSpent = Date.now() - prev.navigationData.startTime.getTime();
+        const totalTimeSpent =
+          Date.now() - prev.navigationData.startTime.getTime();
         averageStopTime = totalTimeSpent / completedStopsWithTime.length;
       }
 
@@ -534,7 +536,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
             window.dispatchEvent(
               new CustomEvent("traceRoute", {
                 detail: { stops: remainingStops },
-              })
+              }),
             );
           }
         }, 500);
@@ -630,7 +632,9 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
           if (prev.isInActiveNavigation) {
             // Durante navegação, manter paradas concluídas no início e reordenar apenas as restantes
-            const completedStops = prev.stops.filter((stop) => stop.isCompleted);
+            const completedStops = prev.stops.filter(
+              (stop) => stop.isCompleted,
+            );
             const optimizedRemainingStops = optimizedWaypoints.map(
               (waypoint: any, index: number) => {
                 const originalStop = stopsToOptimize[waypoint.waypoint_index];
@@ -681,11 +685,13 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           window.dispatchEvent(
             new CustomEvent("traceRoute", {
               detail: { stops: updatedStops },
-            })
+            }),
           );
         }, 100);
 
-        console.log(`Rota otimizada com sucesso! Distância: ${trip.distance}m, Duração: ${trip.duration}s`);
+        console.log(
+          `Rota otimizada com sucesso! Distância: ${trip.distance}m, Duração: ${trip.duration}s`,
+        );
       } else if (result.error) {
         if (
           result.error.shouldNotifyUser &&
@@ -776,14 +782,14 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       estimatedCredits: 0,
       navigationData: {
         startTime: null,
-      totalDistance: 0,
-      remainingDistance: 0,
-      estimatedFuelConsumption: 0,
-      actualFuelConsumption: 0,
-      activeTime: 0,
-      currentStopIndex: 0,
-      optimizationCount: 0,
-      averageStopTime: 0,
+        totalDistance: 0,
+        remainingDistance: 0,
+        estimatedFuelConsumption: 0,
+        actualFuelConsumption: 0,
+        activeTime: 0,
+        currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
     console.log("Rota finalizada e estado resetado");
@@ -847,14 +853,14 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       showFinalSummaryModal: false,
       navigationData: {
         startTime: null,
-      totalDistance: 0,
-      remainingDistance: 0,
-      estimatedFuelConsumption: 0,
-      actualFuelConsumption: 0,
-      activeTime: 0,
-      currentStopIndex: 0,
-      optimizationCount: 0,
-      averageStopTime: 0,
+        totalDistance: 0,
+        remainingDistance: 0,
+        estimatedFuelConsumption: 0,
+        actualFuelConsumption: 0,
+        activeTime: 0,
+        currentStopIndex: 0,
+        optimizationCount: 0,
+        averageStopTime: 0,
       },
     }));
   };
@@ -920,7 +926,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       const hasEnoughStops = remainingStops.length >= 3;
       const isActiveNavigation = state.isInActiveNavigation;
       const hasCompletedStops = completedStops.length >= 1;
-      const notOptimizedRecently = timeSinceLastOptimization > minTimeBetweenOptimizations;
+      const notOptimizedRecently =
+        timeSinceLastOptimization > minTimeBetweenOptimizations;
       const notOptimizedTooMuch = state.navigationData.optimizationCount < 5; // Máximo 5 otimizações por rota
       const hasGoodPerformanceData = state.navigationData.averageStopTime > 0;
 
@@ -937,14 +944,21 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           ? `Padrão de navegação detectado (tempo médio: ${Math.round(state.navigationData.averageStopTime / 1000 / 60)}min/parada)`
           : "Condições ideais para re-otimização detectadas";
 
-        console.log("🤖 Inteligência adaptativa: Sugerindo otimização inteligente", {
-          remainingStops: remainingStops.length,
-          completedStops: completedStops.length,
-          optimizationCount: state.navigationData.optimizationCount,
-          timeSinceLastOptimization: Math.round(timeSinceLastOptimization / 1000 / 60), // em minutos
-          averageStopTime: Math.round(state.navigationData.averageStopTime / 1000 / 60), // em minutos
-          reason
-        });
+        console.log(
+          "🤖 Inteligência adaptativa: Sugerindo otimização inteligente",
+          {
+            remainingStops: remainingStops.length,
+            completedStops: completedStops.length,
+            optimizationCount: state.navigationData.optimizationCount,
+            timeSinceLastOptimization: Math.round(
+              timeSinceLastOptimization / 1000 / 60,
+            ), // em minutos
+            averageStopTime: Math.round(
+              state.navigationData.averageStopTime / 1000 / 60,
+            ), // em minutos
+            reason,
+          },
+        );
 
         // Auto-otimizar com delay inteligente baseado no comportamento
         const smartDelay = hasGoodPerformanceData

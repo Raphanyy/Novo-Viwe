@@ -64,7 +64,8 @@ const NavigationDetailsModal: React.FC<NavigationDetailsModalProps> = ({
     if (remainingStopsCount === 0) return 0;
 
     // Distribuir distância restante proporcionalmente entre paradas restantes
-    const averageDistancePerStop = state.navigationData.remainingDistance / remainingStopsCount;
+    const averageDistancePerStop =
+      state.navigationData.remainingDistance / remainingStopsCount;
     return Math.round(averageDistancePerStop);
   };
 

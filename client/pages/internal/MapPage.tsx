@@ -1206,7 +1206,9 @@ const MapPage: React.FC = () => {
   // Inteligência adaptativa: monitorar mudanças na navegação
   useEffect(() => {
     if (traceState.isInActiveNavigation && traceState.stops.length > 0) {
-      const completedStops = traceState.stops.filter(stop => stop.isCompleted);
+      const completedStops = traceState.stops.filter(
+        (stop) => stop.isCompleted,
+      );
 
       // Triggerar análise inteligente após cada parada concluída
       if (completedStops.length > 0) {
@@ -1217,7 +1219,11 @@ const MapPage: React.FC = () => {
         return () => clearTimeout(timer);
       }
     }
-  }, [traceState.isInActiveNavigation, traceState.stops.filter(s => s.isCompleted).length, suggestSmartOptimization]);
+  }, [
+    traceState.isInActiveNavigation,
+    traceState.stops.filter((s) => s.isCompleted).length,
+    suggestSmartOptimization,
+  ]);
 
   // Rota é traçada via evento "traceRoute" disparado pelo confirmTrace()
   // Removido useEffect redundante que causava piscar por disparo duplicado
