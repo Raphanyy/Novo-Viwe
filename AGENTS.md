@@ -4,6 +4,13 @@ A production-ready full-stack React application template with integrated Express
 
 While the starter comes with a express server, only create endpoint when strictly neccesary, for example to encapsulate logic that must leave in the server, such as private keys handling, or certain DB operations, db...
 
+## Mapbox Configuration
+
+The application comes with a pre-configured Mapbox token for map functionality:
+- Default token: `pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA`
+- The map should work out of the box without additional configuration
+- To use a different token, set the `VITE_MAPBOX_ACCESS_TOKEN` environment variable
+
 ## Tech Stack
 
 - **PNPM**: Prefer pnpm
