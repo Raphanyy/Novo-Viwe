@@ -722,6 +722,15 @@ const MapPage: React.FC = () => {
             stops: stops.length,
           });
 
+          // Atualizar dados de navegação com métricas reais do Mapbox
+          updateNavigationData({
+            totalDistance: route.distance || 0,
+            remainingDistance: route.distance || 0,
+            estimatedFuelConsumption: route.distance
+              ? (route.distance / 1000) * 0.08 // 8L/100km estimativa
+              : 0,
+          });
+
           // Marcar rota como traçada no contexto
           setRouteTraced(true);
         }
