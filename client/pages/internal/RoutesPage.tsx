@@ -13,7 +13,7 @@ import {
   Link,
   Settings,
   Star,
-  RouteIcon,
+  Route as RouteIcon,
 } from "lucide-react";
 import {
   Accordion,
