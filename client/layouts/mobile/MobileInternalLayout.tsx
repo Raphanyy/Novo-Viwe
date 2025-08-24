@@ -155,11 +155,6 @@ const MobileInternalLayout: React.FC = () => {
   // 2. PLANEJAMENTO - Criando e configurando rota
   const planningNavigationItems = [
     {
-      name: "Cancelar",
-      icon: X,
-      action: "cancel",
-    },
-    {
       name: "Adicionar",
       icon: Plus,
       action: "add",
@@ -173,6 +168,11 @@ const MobileInternalLayout: React.FC = () => {
       name: "Configurar",
       icon: Cog,
       action: "configure",
+    },
+    {
+      name: "Cancelar",
+      icon: X,
+      action: "cancel",
     },
   ];
 
@@ -242,8 +242,13 @@ const MobileInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "summary":
-        // Navega para página de histórico de rotas
-        window.location.href = '/app/rotas';
+        // Navega para página de rotas/histórico
+        if (traceState.isInActiveNavigation || traceState.allStopsCompleted) {
+          openDetailsModal();
+        } else {
+          // Redireciona para página de rotas
+          window.location.href = '/app/rotas';
+        }
         break;
       case "add":
         // PLANEJAMENTO: Adiciona uma nova parada na posição atual do mapa
