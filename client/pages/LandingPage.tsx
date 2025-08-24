@@ -37,25 +37,28 @@ import { Link } from "react-router-dom";
 
 // === Hooks Utilitários ===
 const useIntersectionObserver = (options = {}) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
+        if (entry.isIntersecting && !hasBeenVisible) {
+          setHasBeenVisible(true);
+          observer.disconnect(); // Disconnect after first view
+        }
       },
       { threshold: 0.1, rootMargin: "50px", ...options },
     );
 
-    if (ref.current) {
+    if (ref.current && !hasBeenVisible) {
       observer.observe(ref.current);
     }
 
     return () => observer.disconnect();
-  }, [options]);
+  }, [options, hasBeenVisible]);
 
-  return [ref, isIntersecting];
+  return [ref, hasBeenVisible];
 };
 
 
