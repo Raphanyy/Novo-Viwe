@@ -274,11 +274,17 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           setTimeout(() => {
             setIsSuccess(false);
             onClose();
-            // Finalizar planejamento automaticamente após salvar
+            // Finalizar planejamento automaticamente após salvar - traçar rota diretamente
             console.log(
-              "Chamando showTraceConfirmation() para finalizar planejamento",
+              "Configurações salvas, traçando rota automaticamente...",
             );
-            traceContext.showTraceConfirmation();
+            traceContext.confirmTrace();
+            // Disparar evento para traçar rota no mapa
+            window.dispatchEvent(
+              new CustomEvent("traceRoute", {
+                detail: { stops: formData.stops },
+              }),
+            );
           }, 1500);
 
           return; // Sair early para não executar o resto da função
