@@ -323,16 +323,16 @@ const ActivityPage: React.FC = () => {
 
         {/* Filters */}
         {showFilters && (
-          <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-            <div className="relative z-10 space-y-4">
+          <div className="bg-card rounded-xl p-3 border border-l-4 border-l-primary border-border relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+            <div className="relative z-10 space-y-3">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
+                  className="w-full pl-9 pr-3 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-foreground text-sm"
                   placeholder="Buscar rotas..."
                 />
               </div>
@@ -342,14 +342,14 @@ const ActivityPage: React.FC = () => {
                   <button
                     key={filter.id}
                     onClick={() => setSelectedStatus(filter.id as RouteStatus | "all")}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
                       selectedStatus === filter.id
                         ? "bg-primary text-primary-foreground"
                         : "bg-secondary text-secondary-foreground hover:bg-accent"
                     }`}
                   >
                     <span>{filter.name}</span>
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                    <span className={`text-xs px-1 py-0.5 rounded-full ${
                       selectedStatus === filter.id ? "bg-primary-foreground/20" : "bg-border"
                     }`}>
                       {filter.count}
