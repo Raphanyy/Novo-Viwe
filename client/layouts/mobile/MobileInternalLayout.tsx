@@ -124,53 +124,35 @@ const MobileInternalLayout: React.FC = () => {
     saveAndCompleteRoute,
   } = useTraceRoute();
 
-  const mapNavigationItems = [
+  // === ESTADOS DA NAVBAR DO MAPA ===
+  // Seguindo lógica contextual: Exploração > Planejamento > Navegação > Finalização
+
+  // 1. EXPLORAÇÃO - Estado inicial do mapa
+  const explorationNavigationItems = [
     {
       name: "Voltar",
       icon: ArrowLeft,
       action: "back",
     },
     {
-      name: "Traçar",
+      name: "Planejar",
       icon: PenTool,
       action: "trace",
     },
     {
-      name: "Controle",
-      icon: Gamepad2,
+      name: "Configurar",
+      icon: Cog,
       action: "control",
     },
     {
-      name: "Resumo",
+      name: "Histórico",
       icon: FileText,
       action: "summary",
     },
   ];
 
-  const traceNavigationItems = [
-    {
-      name: "Adicionar",
-      icon: Plus,
-      action: "add",
-    },
-    {
-      name: "Limpar",
-      icon: Trash2,
-      action: "clear",
-    },
-    {
-      name: "Configurar",
-      icon: Cog,
-      action: "configure",
-    },
-    {
-      name: "Traçar",
-      icon: Compass,
-      action: "trace_execute",
-    },
-  ];
-
-  const preparationNavigationItems = [
+  // 2. PLANEJAMENTO - Criando e configurando rota
+  const planningNavigationItems = [
     {
       name: "Cancelar",
       icon: X,
@@ -187,28 +169,14 @@ const MobileInternalLayout: React.FC = () => {
       action: "clear",
     },
     {
-      name: "Traçar",
+      name: "Confirmar",
       icon: Navigation,
       action: "trace_execute",
     },
   ];
 
-  // Nova navbar para rota confirmada: "Navegar" e "Desistir"
-  const traceConfirmedNavigationItems = [
-    {
-      name: "Desistir",
-      icon: X,
-      action: "give_up",
-    },
-    {
-      name: "Navegar",
-      icon: Navigation,
-      action: "start_navigation",
-    },
-  ];
-
-  // Nova navbar para navegação ativa: "Concluir Parada", "Otimizar", "Detalhes", "Ajustes"
-  const activeNavigationItems = [
+  // 3. NAVEGAÇÃO - Rota ativa em andamento
+  const navigationNavigationItems = [
     {
       name: "Concluir",
       icon: Target,
@@ -231,15 +199,15 @@ const MobileInternalLayout: React.FC = () => {
     },
   ];
 
-  // Nova navbar para todas as paradas concluídas: "Resumo" e "Encerrar"
-  const finalSummaryNavigationItems = [
+  // 4. FINALIZAÇÃO - Conclusão e salvamento
+  const finalizationNavigationItems = [
     {
       name: "Resumo",
       icon: Trophy,
       action: "show_summary",
     },
     {
-      name: "Encerrar",
+      name: "Salvar",
       icon: Save,
       action: "save_and_complete",
     },
@@ -248,9 +216,10 @@ const MobileInternalLayout: React.FC = () => {
   const handleMapNavigation = async (action: string) => {
     switch (action) {
       case "back":
-        // Volta ao navbar principal - não faz nada, apenas deixa a página do mapa
+        // Volta ao navbar principal - sai da página do mapa
         break;
       case "trace":
+        // Inicia o planejamento da rota
         startTracing();
         break;
       case "control":
@@ -258,15 +227,16 @@ const MobileInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "summary":
-        // Abre modal de detalhes se estiver navegando, senão abre configuração
+        // Abre histórico de rotas ou detalhes conforme contexto
         if (traceState.isInActiveNavigation || traceState.allStopsCompleted) {
           openDetailsModal();
         } else {
+          // Aqui pode abrir histórico de rotas anteriores
           openConfiguration();
         }
         break;
       case "add":
-        // Adiciona uma parada no centro do mapa
+        // PLANEJAMENTO: Adiciona uma nova parada na posição atual do mapa
         if (traceState.centerPin) {
           await addStop(
             traceState.centerPin.coordinates,
@@ -275,39 +245,51 @@ const MobileInternalLayout: React.FC = () => {
         }
         break;
       case "clear":
+        // PLANEJAMENTO: Remove a última parada adicionada
         removeLastStop();
         break;
       case "configure":
+        // Abre configurações avançadas da rota
         openConfiguration();
         break;
       case "trace_execute":
-        showTraceConfirmation();
+        // PLANEJAMENTO: Abre configuração da rota com as paradas selecionadas
+        openConfiguration();
         break;
       case "cancel":
+        // PLANEJAMENTO: Cancela o planejamento e volta à exploração
         cancelTrace();
         break;
       case "give_up":
+        // Desiste da navegação atual
         giveUpNavigation();
         break;
       case "start_navigation":
+        // Inicia navegação ativa da rota
         startActiveNavigation();
         break;
       case "complete_stop":
+        // NAVEGAÇÃO: Marca a parada atual como concluída
         completeCurrentStop();
         break;
       case "optimize":
+        // NAVEGAÇÃO: Otimiza a ordem das paradas restantes
         await optimizeRoute();
         break;
       case "details":
+        // NAVEGAÇÃO: Mostra detalhes da rota e progresso
         openDetailsModal();
         break;
       case "settings":
+        // NAVEGAÇÃO: Abre ajustes da navegação ativa
         openAdjustmentsModal();
         break;
       case "show_summary":
+        // FINALIZAÇÃO: Mostra resumo completo da rota
         openFinalSummaryModal();
         break;
       case "save_and_complete":
+        // FINALIZAÇÃO: Salva e encerra a rota completamente
         saveAndCompleteRoute();
         break;
     }
@@ -315,19 +297,23 @@ const MobileInternalLayout: React.FC = () => {
 
   const getCurrentNavigationItems = () => {
     if (isMapPage) {
-      // Prioridade: todas paradas concluídas > navegação ativa > rota confirmada > preparação > traçamento > padrão
+      // Fluxo lógico: Exploração > Planejamento > Navegação > Finalização
       if (traceState.allStopsCompleted) {
-        return finalSummaryNavigationItems;
+        // 4. FINALIZAÇÃO - Todas paradas concluídas
+        return finalizationNavigationItems;
       } else if (traceState.isInActiveNavigation) {
-        return activeNavigationItems;
-      } else if (traceState.showTraceConfirmed) {
-        return traceConfirmedNavigationItems;
-      } else if (traceState.isInPreparation) {
-        return preparationNavigationItems;
-      } else if (traceState.isTracing) {
-        return traceNavigationItems;
+        // 3. NAVEGAÇÃO - Rota ativa, navegando entre paradas
+        return navigationNavigationItems;
+      } else if (
+        traceState.isTracing ||
+        traceState.isInPreparation ||
+        traceState.showTraceConfirmed
+      ) {
+        // 2. PLANEJAMENTO - Criando rota, adicionando paradas, confirmando
+        return planningNavigationItems;
       } else {
-        return mapNavigationItems;
+        // 1. EXPLORAÇÃO - Estado inicial, explorando mapa
+        return explorationNavigationItems;
       }
     }
     // Para outras páginas, retorna null para usar navegação padrão
@@ -348,17 +334,23 @@ const MobileInternalLayout: React.FC = () => {
           <Link
             key={item.action}
             to="/app"
-            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-muted-foreground" />
+            <Icon className="h-5 w-5 text-muted-foreground mb-1" />
+            <span className="text-xs text-muted-foreground font-medium">
+              {item.name}
+            </span>
           </Link>
         ) : (
           <button
             key={item.action}
             onClick={() => handleMapNavigation(item.action)}
-            className="flex items-center justify-center p-3 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
+            className="flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 min-w-0 flex-1 hover:bg-muted"
           >
-            <Icon className="h-5 w-5 text-muted-foreground" />
+            <Icon className="h-5 w-5 text-muted-foreground mb-1" />
+            <span className="text-xs text-muted-foreground font-medium">
+              {item.name}
+            </span>
           </button>
         );
       });
@@ -491,9 +483,13 @@ const MobileInternalLayout: React.FC = () => {
 
       {/* Main Content - Optimized for mobile */}
       <main
-        className={`flex-1 overflow-hidden bg-background pb-[73px] ${
-          shouldShowHeader ? "pt-[73px]" : "pt-0"
-        }`}
+        className={`flex-1 overflow-hidden bg-background ${
+          traceState.showConfigModal
+            ? "pb-0"
+            : isMapPage
+              ? "pb-[85px]"
+              : "pb-[73px]"
+        } ${shouldShowHeader ? "pt-[73px]" : "pt-0"}`}
       >
         <div className="h-full overflow-y-auto">
           <Outlet />
@@ -501,11 +497,17 @@ const MobileInternalLayout: React.FC = () => {
       </main>
 
       {/* Bottom Navigation - Mobile Only */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 py-2 safe-area-bottom">
-        <div className="flex items-center justify-around">
-          {renderBottomNavigation()}
-        </div>
-      </nav>
+      {!traceState.showConfigModal && (
+        <nav
+          className={`fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 safe-area-bottom ${
+            isMapPage ? "py-3" : "py-2"
+          }`}
+        >
+          <div className="flex items-center justify-around">
+            {renderBottomNavigation()}
+          </div>
+        </nav>
+      )}
 
       {/* Overlay for mobile menu */}
       {isMenuOpen && (

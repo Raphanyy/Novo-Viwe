@@ -217,6 +217,14 @@ const MapPage: React.FC = () => {
     stopMarkers.current.forEach((marker) => marker.remove());
     stopMarkers.current = [];
 
+    // Clear POI markers
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
+
+    // Clear search markers
+    const existingSearchMarkers = document.querySelectorAll(".search-marker");
+    existingSearchMarkers.forEach((marker) => marker.remove());
+
     // Reset route traced state
     setRouteTraced(false);
   }, [setRouteTraced]);
@@ -634,9 +642,26 @@ const MapPage: React.FC = () => {
     setSelectedPOI(poi);
   }, []);
 
-  // Optimized POI markers update
+  // Store previous filtered POIs to optimize marker updates
+  const prevFilteredPOIsRef = useRef<any[]>([]);
+
+  // Optimized POI markers update - only update when POIs actually change
   useEffect(() => {
     if (!map.current) return;
+
+    const prevPOIs = prevFilteredPOIsRef.current;
+
+    // Compare POI IDs to see what changed
+    const prevIds = new Set(prevPOIs.map((poi) => poi.id));
+    const currentIds = new Set(filteredPOIs.map((poi) => poi.id));
+
+    // Only recreate markers if POIs actually changed
+    const hasChanges =
+      prevPOIs.length !== filteredPOIs.length ||
+      !filteredPOIs.every((poi) => prevIds.has(poi.id)) ||
+      !prevPOIs.every((poi) => currentIds.has(poi.id));
+
+    if (!hasChanges) return;
 
     // Clear existing markers
     markers.current.forEach((marker) => marker.remove());
@@ -657,7 +682,10 @@ const MapPage: React.FC = () => {
 
       markers.current.push(marker);
     });
-  }, [filteredPOIs]);
+
+    // Update reference for next comparison
+    prevFilteredPOIsRef.current = [...filteredPOIs];
+  }, [filteredPOIs, handlePOIClick]);
 
   const handleZoomIn = useCallback(() => {
     if (map.current) {
@@ -1338,14 +1366,13 @@ const MapPage: React.FC = () => {
 
         {/* Trace Confirmation Dialog - Full Page Modal */}
         {traceState.showConfirmDialog && (
-          <div className="fixed inset-0 z-50 bg-background flex flex-col">
+          <div className="fixed inset-0 z-[60] bg-background flex flex-col">
             {/* Header */}
             <ModalHeader
               title="Traçar Rota"
               showBackButton={true}
               onBack={() => {
                 cancelTrace();
-                clearAllMarkersAndRoutes();
               }}
               rightContent={
                 <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -1435,7 +1462,6 @@ const MapPage: React.FC = () => {
                   <button
                     onClick={() => {
                       cancelTrace();
-                      clearAllMarkersAndRoutes();
                     }}
                     className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
                   >

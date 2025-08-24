@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { ViweLoaderInline } from "./ViweLoader";
 import { useTraceRoute, RouteStop } from "../../contexts/TraceRouteContext";
+import { useAddressSearch, SearchResult } from "../../hooks/use-address-search";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -312,8 +313,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           </div>
           <p className="text-xs text-blue-700 mt-1">
             {isInMapPage
-              ? "Configurando rota com paradas do mapa. Salvar manterá as funcionalidades existentes."
-              : "Modo Independente"}
+              ? "Configurando rota com paradas selecionadas."
+              : "Configuração independente de rota."}
           </p>
         </div>
 
@@ -334,23 +335,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             />
           </div>
         </div>
-
-        {/* Aviso para rota imediata */}
-        {isTemporary && (
-          <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg mb-4">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-orange-600" />
-              <div>
-                <span className="font-semibold text-orange-800">
-                  Rota Imediata
-                </span>
-                <p className="text-sm text-orange-700">
-                  Esta rota é válida por 24 horas a partir do início.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Seções de configuração */}
         {configurationSections.map((section) => (
@@ -748,8 +732,21 @@ function StopsPage({
   isInMapPage?: boolean;
 }) {
   const [stops, setStops] = useState<RouteStop[]>(formData);
-  const [newAddress, setNewAddress] = useState("");
-  const [isAddingAddress, setIsAddingAddress] = useState(false);
+
+  // Use the address search hook
+  const {
+    searchResults,
+    isSearching,
+    showResults,
+    searchQuery,
+    handleSearchChange,
+    handleSelectResult,
+    setShowResults,
+  } = useAddressSearch({
+    onSelectResult: handleAddressFromSearch,
+    minQueryLength: 2,
+    debounceMs: 300,
+  });
 
   const handleRemoveStop = (stopId: string) => {
     const newStops = stops.filter((stop) => stop.id !== stopId);
@@ -772,33 +769,21 @@ function StopsPage({
     saveData(reorderedStops);
   };
 
-  const handleAddAddress = async () => {
-    if (!newAddress.trim()) return;
+  // Handle address selection from search results
+  function handleAddressFromSearch(result: SearchResult) {
+    const newStop: RouteStop = {
+      id: `stop-${Date.now()}`,
+      name: result.text,
+      address: result.place_name,
+      coordinates: result.center,
+      order: stops.length + 1,
+      isCompleted: false,
+    };
 
-    setIsAddingAddress(true);
-    try {
-      // Simular geocodificação do endereço
-      // Em um ambiente real, usaria a API do Mapbox para geocodificar
-      const newStop: RouteStop = {
-        id: `stop-${Date.now()}`,
-        name: `Parada ${stops.length + 1}`,
-        address: newAddress.trim(),
-        coordinates: [-23.5505, -46.6333] as [number, number], // São Paulo como exemplo
-        order: stops.length + 1,
-        isCompleted: false,
-      };
-
-      const newStops = [...stops, newStop];
-      setStops(newStops);
-      saveData(newStops);
-      setNewAddress("");
-
-      // Simular delay da API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } finally {
-      setIsAddingAddress(false);
-    }
-  };
+    const newStops = [...stops, newStop];
+    setStops(newStops);
+    saveData(newStops);
+  }
 
   const hasStopsFromMap = isInMapPage && stops.length > 0;
   const shouldShowAddressInput = !isInMapPage || stops.length === 0;
@@ -893,30 +878,111 @@ function StopsPage({
                 : "Digite os endereços das paradas da sua rota."}
             </p>
 
-            <div className="flex space-x-2">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-muted-foreground" />
+              </div>
               <input
                 type="text"
-                value={newAddress}
-                onChange={(e) => setNewAddress(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddAddress();
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => {
+                  if (searchResults.length > 0) {
+                    setShowResults(true);
                   }
                 }}
-                className="flex-1 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Digite o endereço da parada..."
-                disabled={isAddingAddress}
+                className="w-full pl-10 pr-12 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Escreva o endereço"
               />
-              <Button
-                onClick={handleAddAddress}
-                disabled={!newAddress.trim() || isAddingAddress}
-              >
-                {isAddingAddress ? (
-                  <ViweLoaderInline />
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-              </Button>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                {isSearching && <ViweLoaderInline />}
+              </div>
+
+              {/* Search Results Dropdown */}
+              {showResults && searchResults.length > 0 && (
+                <div
+                  className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {searchResults.map((result) => (
+                    <button
+                      key={result.id}
+                      onClick={() => handleSelectResult(result)}
+                      className="w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors duration-200 border-b border-border/50 last:border-b-0 first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                            result.place_type.includes("poi")
+                              ? "bg-green-100"
+                              : result.place_type.includes("place") ||
+                                  result.place_type.includes("locality")
+                                ? "bg-purple-100"
+                                : result.place_type.includes("region") ||
+                                    result.place_type.includes("district")
+                                  ? "bg-orange-100"
+                                  : result.place_type.includes("neighborhood")
+                                    ? "bg-yellow-100"
+                                    : "bg-blue-100"
+                          }`}
+                        >
+                          {result.place_type.includes("poi") ? (
+                            <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                          ) : (
+                            <MapPin
+                              className={`h-4 w-4 ${
+                                result.place_type.includes("poi")
+                                  ? "text-green-600"
+                                  : result.place_type.includes("place") ||
+                                      result.place_type.includes("locality")
+                                    ? "text-purple-600"
+                                    : result.place_type.includes("region") ||
+                                        result.place_type.includes("district")
+                                      ? "text-orange-600"
+                                      : result.place_type.includes(
+                                            "neighborhood",
+                                          )
+                                        ? "text-yellow-600"
+                                        : "text-blue-600"
+                              }`}
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <p className="font-medium text-foreground truncate">
+                              {result.text}
+                            </p>
+                            {result.place_type.includes("poi") && (
+                              <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                                Estabelecimento
+                              </span>
+                            )}
+                            {result.place_type.includes("locality") && (
+                              <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                                Cidade
+                              </span>
+                            )}
+                            {result.place_type.includes("region") && (
+                              <span className="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                                Região
+                              </span>
+                            )}
+                            {result.place_type.includes("neighborhood") && (
+                              <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                                Bairro
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground truncate mt-1">
+                            {result.place_name}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
