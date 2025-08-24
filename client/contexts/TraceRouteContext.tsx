@@ -369,11 +369,17 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   };
 
   const setRouteTraced = (traced: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      isRouteTraced: traced,
-      navigationMode: traced ? "traced" : null,
-    }));
+    setState((prev) => {
+      // Evita re-renders desnecessários quando o valor não mudou
+      if (prev.isRouteTraced === traced) {
+        return prev;
+      }
+      return {
+        ...prev,
+        isRouteTraced: traced,
+        navigationMode: traced ? "traced" : null,
+      };
+    });
   };
 
   const giveUpNavigation = () => {
@@ -695,7 +701,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       estimatedCredits: state.estimatedCredits,
     };
 
-    // Salvar no localStorage (pode ser substituído por API call)
+    // Salvar no localStorage (pode ser substitu��do por API call)
     const existingRoutes = JSON.parse(
       localStorage.getItem("completedRoutes") || "[]",
     );
