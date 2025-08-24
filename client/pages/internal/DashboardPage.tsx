@@ -237,7 +237,9 @@ const DashboardPage: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground relative z-10">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-muted-foreground relative z-10">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground relative z-10">
+                    {stat.label}
+                  </p>
                 </div>
               );
             })}
@@ -335,7 +337,9 @@ const DashboardPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">Bom para viajar</p>
               </div>
             </div>
-            <p className="text-lg font-bold text-foreground relative z-10">24°C</p>
+            <p className="text-lg font-bold text-foreground relative z-10">
+              24°C
+            </p>
           </div>
 
           <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
@@ -352,7 +356,9 @@ const DashboardPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <p className="text-lg font-bold text-green-600 relative z-10">Fluindo</p>
+            <p className="text-lg font-bold text-green-600 relative z-10">
+              Fluindo
+            </p>
           </div>
         </div>
 

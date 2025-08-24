@@ -8,10 +8,12 @@ interface PlanBillingPageProps {
 }
 
 const PlanBillingPage: React.FC<PlanBillingPageProps> = ({ onBack }) => {
-  const [currentView, setCurrentView] = useState<'main' | 'update-plan'>('main');
+  const [currentView, setCurrentView] = useState<"main" | "update-plan">(
+    "main",
+  );
 
-  if (currentView === 'update-plan') {
-    return <UpdatePlanPage onBack={() => setCurrentView('main')} />;
+  if (currentView === "update-plan") {
+    return <UpdatePlanPage onBack={() => setCurrentView("main")} />;
   }
 
   return (
@@ -20,7 +22,7 @@ const PlanBillingPage: React.FC<PlanBillingPageProps> = ({ onBack }) => {
         title="Atualizar meu plano"
         subtitle="Gerencie sua assinatura e upgrade"
         icon={CreditCard}
-        onClick={() => setCurrentView('update-plan')}
+        onClick={() => setCurrentView("update-plan")}
       />
 
       <SettingsSection

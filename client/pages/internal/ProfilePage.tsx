@@ -217,7 +217,9 @@ const ProfilePage: React.FC = () => {
             <Heart className="h-5 w-5 text-blue-500 fill-blue-500" />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-foreground">Avalie sua experiência</h4>
+            <h4 className="font-medium text-foreground">
+              Avalie sua experiência
+            </h4>
           </div>
           <div className="flex items-center space-x-2">
             <ChevronRight className="h-5 w-5 text-muted-foreground" />

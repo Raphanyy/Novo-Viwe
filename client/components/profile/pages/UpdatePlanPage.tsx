@@ -23,9 +23,18 @@ const AccordionPricingCard: React.FC<{
   isOpen: boolean;
   onToggle: () => void;
   isComingSoon: boolean;
-}> = ({ plan, price, description, features, buttonText, isOpen, onToggle, isComingSoon }) => {
-  const buttonClass = isComingSoon 
-    ? "bg-muted text-muted-foreground cursor-not-allowed" 
+}> = ({
+  plan,
+  price,
+  description,
+  features,
+  buttonText,
+  isOpen,
+  onToggle,
+  isComingSoon,
+}) => {
+  const buttonClass = isComingSoon
+    ? "bg-muted text-muted-foreground cursor-not-allowed"
     : "bg-primary hover:bg-primary/90 text-primary-foreground transform hover:scale-105";
 
   return (
@@ -43,17 +52,17 @@ const AccordionPricingCard: React.FC<{
           <span className="text-lg font-bold text-foreground">{price}</span>
         </div>
         {/* Ícone de chevron para indicar estado do acordeão */}
-        <ChevronDown 
-          className={`w-6 h-6 transform transition-transform duration-300 text-primary ${isOpen ? 'rotate-180' : ''}`}
+        <ChevronDown
+          className={`w-6 h-6 transform transition-transform duration-300 text-primary ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {/* Conteúdo colapsável do acordeão */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out relative z-10 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out relative z-10 ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
       >
         <p className="text-muted-foreground mt-6 mb-4">{description}</p>
-        
+
         {/* Lista de recursos */}
         <ul className="space-y-4 text-foreground">
           {features.map((feature, index) => (
@@ -64,9 +73,9 @@ const AccordionPricingCard: React.FC<{
             </li>
           ))}
         </ul>
-        
+
         {/* Botão de ação do card */}
-        <button 
+        <button
           className={`mt-8 w-full py-3 px-6 font-semibold rounded-xl transition duration-300 ${buttonClass}`}
           disabled={isComingSoon}
         >
@@ -96,7 +105,7 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
         "15 rotas imediatas (15 paradas)",
         "5 rotas permanentes (15 paradas)",
         "3 conjuntos de rotas inteligentes",
-        "Navegação e mapas integrados"
+        "Navegação e mapas integrados",
       ],
       buttonText: "Começar Gratuitamente",
       isComingSoon: false,
@@ -109,7 +118,7 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
         "50 rotas imediatas (30 paradas)",
         "25 rotas permanentes (30 paradas)",
         "15 conjuntos de rotas inteligentes",
-        "Navegação e mapas integrados"
+        "Navegação e mapas integrados",
       ],
       buttonText: "Assinar Viwe Premium",
       isComingSoon: false,
@@ -121,7 +130,7 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
       features: [
         "Uso ilimitado",
         "Recursos avançados",
-        "Experiência personalizada"
+        "Experiência personalizada",
       ],
       buttonText: "Disponível em breve",
       isComingSoon: true,
@@ -132,8 +141,12 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
     <div className="p-4 min-h-full bg-background">
       {/* Título e subtítulo da página */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">Nossos Planos</h1>
-        <p className="text-muted-foreground">Escolha de acordo com o que precisar</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Nossos Planos
+        </h1>
+        <p className="text-muted-foreground">
+          Escolha de acordo com o que precisar
+        </p>
       </div>
 
       {/* Seção de planos usando o componente AccordionPricingCard */}
