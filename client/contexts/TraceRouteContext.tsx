@@ -251,6 +251,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     const newStop: RouteStop = {
       id: `stop-${Date.now()}`,
       name: name || `Parada ${state.stops.length + 1}`,
+      code: "", // Campo vazio para ser preenchido pelo usuário
+      notes: "", // Campo vazio para ser preenchido pelo usuário
       coordinates,
       address: finalAddress,
       isCompleted: false,
