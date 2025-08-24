@@ -244,7 +244,7 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
         setIsSearching(false);
       }
     },
-    [enhanceQuery, performSearch, deduplicateFeatures, minQueryLength],
+    [enhanceQuery, performSearch, deduplicateFeatures, minQueryLength, handleError],
   );
 
   // Optimized debounced search with stable reference
