@@ -107,6 +107,7 @@ const MobileInternalLayout: React.FC = () => {
     startTracing,
     addStop,
     removeLastStop,
+    clearAllStops,
     openConfiguration,
     showTraceConfirmation,
     cancelTrace,
@@ -135,19 +136,19 @@ const MobileInternalLayout: React.FC = () => {
       action: "back",
     },
     {
-      name: "Planejar",
+      name: "Traçar",
       icon: PenTool,
       action: "trace",
+    },
+    {
+      name: "Rotas",
+      icon: Route,
+      action: "summary",
     },
     {
       name: "Configurar",
       icon: Cog,
       action: "control",
-    },
-    {
-      name: "Histórico",
-      icon: FileText,
-      action: "summary",
     },
   ];
 
@@ -255,7 +256,7 @@ const MobileInternalLayout: React.FC = () => {
         break;
       case "clear":
         // PLANEJAMENTO: Remove todas as paradas
-        // Implementar função clearAllStops
+        clearAllStops();
         break;
       case "configure":
         // Abre configurações avançadas da rota
