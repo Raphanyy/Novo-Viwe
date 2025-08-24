@@ -560,7 +560,7 @@ const ActivityPage: React.FC = () => {
               return (
                 <div
                   key={route.id}
-                  className={`bg-card rounded-xl border border-l-4 ${statusConfig.borderColor} border-border relative overflow-hidden`}
+                  className="bg-card rounded-xl border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
                   <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
 
