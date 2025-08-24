@@ -57,10 +57,10 @@ const AccordionPricingCard: React.FC<{
         {/* Lista de recursos */}
         <ul className="space-y-4 text-foreground">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-center">
+            <li key={index} className="flex items-start">
               {/* Ícone de checkmark em azul */}
-              <Check className="w-5 h-5 mr-3 text-primary flex-shrink-0" />
-              <span className="whitespace-nowrap overflow-hidden text-ellipsis">{feature}</span>
+              <Check className="w-5 h-5 mr-3 text-primary flex-shrink-0 mt-0.5" />
+              <span className="leading-relaxed">{feature}</span>
             </li>
           ))}
         </ul>
