@@ -36,10 +36,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 if (!mapboxToken) {
-  console.error("VITE_MAPBOX_ACCESS_TOKEN environment variable is not set");
+  console.error("Mapbox token not available. Map cannot be initialized.");
+  console.warn("Please set VITE_MAPBOX_ACCESS_TOKEN in your .env file");
+} else {
+  mapboxgl.accessToken = mapboxToken;
 }
-
-mapboxgl.accessToken = mapboxToken || "";
 
 interface SearchResult {
   id: string;
