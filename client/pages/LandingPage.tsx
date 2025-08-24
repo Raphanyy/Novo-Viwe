@@ -221,6 +221,12 @@ const TestimonialsSection = () => {
             </div>
           ))}
         </div>
+
+        <div className="text-center mt-12">
+          <p className="text-lg md:text-xl text-foreground font-medium">
+            Crie sua conta agora e comece a planejar seus trajetos com a Viwe.
+          </p>
+        </div>
       </div>
     </section>
   );
