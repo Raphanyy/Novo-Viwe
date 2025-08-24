@@ -110,7 +110,17 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         }
       }));
     }
-  }, [isOpen, prefilledStops, isTemporary, traceContext.state.stops]);
+  }, [isOpen]); // Removed problematic dependencies that cause infinite loops
+
+  // Separate effect to handle prefilled stops changes
+  useEffect(() => {
+    if (isOpen && prefilledStops.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        stops: prefilledStops
+      }));
+    }
+  }, [isOpen, prefilledStops]);
 
   // Configuração das seções principais
   const configurationSections: ConfigurationSection[] = [
