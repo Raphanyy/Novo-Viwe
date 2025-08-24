@@ -104,7 +104,7 @@ const DashboardPage: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      label: "Eficiência",
+      label: "Efici��ncia",
       value: "89%",
       change: "+5%",
       icon: TrendingUp,
@@ -116,8 +116,10 @@ const DashboardPage: React.FC = () => {
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Welcome Section */}
-        <div className="bg-black rounded-2xl p-6 text-white">
-          <div className="flex items-center space-x-3 mb-4">
+        <div className="bg-black rounded-2xl p-6 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+          <div className="flex items-center space-x-3 mb-4 relative z-10">
             <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center">
               {user?.avatar ? (
                 <img
