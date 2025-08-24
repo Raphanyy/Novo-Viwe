@@ -502,53 +502,47 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         return;
       }
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const result = await handleAsyncError(async () => {
+        const response = await fetchWithErrorHandling(apiUrl, {}, {
+          timeout: 15000,
+          context: 'OptimizeRoute',
+          retries: 1,
+          retryDelay: 1000
+        });
+        return response.json();
+      }, 'OptimizeRoute');
 
-      const response = await fetch(apiUrl, {
-        signal: controller.signal,
-        headers: { 'Accept': 'application/json' }
-      });
+      if (result.success && result.data?.trips?.length > 0) {
+        const optimizedWaypoints = result.data.waypoints;
 
-      clearTimeout(timeoutId);
+        // Reordena as paradas baseado na otimização
+        setState((prev) => {
+          const reorderedStops = optimizedWaypoints.map(
+            (waypoint: any, index: number) => {
+              const originalStop = prev.stops[waypoint.waypoint_index];
+              return {
+                ...originalStop,
+                order: index + 1,
+              };
+            },
+          );
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.trips && data.trips.length > 0) {
-          const optimizedWaypoints = data.waypoints;
+          return {
+            ...prev,
+            stops: reorderedStops,
+          };
+        });
 
-          // Reordena as paradas baseado na otimização
-          setState((prev) => {
-            const reorderedStops = optimizedWaypoints.map(
-              (waypoint: any, index: number) => {
-                const originalStop = prev.stops[waypoint.waypoint_index];
-                return {
-                  ...originalStop,
-                  order: index + 1,
-                };
-              },
-            );
-
-            return {
-              ...prev,
-              stops: reorderedStops,
-            };
-          });
-
-          console.log("Rota otimizada com sucesso!");
+        console.log("Rota otimizada com sucesso!");
+      } else if (result.error) {
+        if (result.error.shouldNotifyUser && result.error.type !== ErrorType.ABORT) {
+          console.warn("Erro ao otimizar rota:", result.error.userMessage);
         }
-      } else if (response.status === 401) {
-        console.error("Erro ao otimizar rota: Token Mapbox inválido");
-      } else if (response.status === 429) {
-        console.error("Erro ao otimizar rota: Limite de requisições excedido");
-      } else {
-        console.error("Erro ao otimizar rota:", response.statusText);
       }
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.warn("Otimização de rota cancelada por timeout");
-      } else {
-        console.error("Erro ao chamar API de otimização:", error);
+      const errorInfo = handleError(error, 'OptimizeRoute');
+      if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
+        console.warn("Erro ao otimizar rota:", errorInfo.userMessage);
       }
     }
   };
