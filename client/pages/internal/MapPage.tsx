@@ -342,6 +342,10 @@ const MapPage: React.FC = () => {
               (position) => {
                 const { latitude, longitude } = position.coords;
 
+                // Armazenar localização atual do usuário
+                setCurrentUserLocation([longitude, latitude]);
+                console.log("Localização atual armazenada (auto-detect):", [longitude, latitude]);
+
                 if (map.current) {
                   // Smooth fly to user's actual location
                   map.current.flyTo({
@@ -1378,7 +1382,7 @@ const MapPage: React.FC = () => {
                   "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
               </p>
               <div className="text-xs text-muted-foreground/70">
-                Esta é uma versão de demonstração da plataforma Viwe.
+                Esta �� uma versão de demonstração da plataforma Viwe.
               </div>
             </div>
           </div>
