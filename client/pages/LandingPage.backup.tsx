@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-  memo,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
 import {
   MapPin,
@@ -29,208 +22,107 @@ import {
   Sparkles,
   Lightbulb,
   Users,
-  TrendingUp,
-  Globe,
-  Cpu,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// === Hooks Utilitários ===
-const useIntersectionObserver = (options = {}) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const ref = useRef(null);
+// === Logo Real da Viwe ===
+const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
+  <img
+    src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
+    alt="Viwe Logo"
+    className={`${className} object-contain`}
+  />
+);
+
+// === Seções Principais ===
+
+const StatsSection = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.1, rootMargin: "50px", ...options },
+      { threshold: 0.3 },
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
 
     return () => observer.disconnect();
   }, []);
 
-  return [ref, isIntersecting];
-};
-
-const useParallax = (speed = 0.5) => {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setOffset(window.pageYOffset * speed);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [speed]);
-
-  return offset;
-};
-
-// === Logo Real da Viwe ===
-const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
-  <div className="relative group">
-    <img
-      src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
-      alt="Viwe Logo"
-      className={`${className} object-contain transition-all duration-700 group-hover:scale-110 group-hover:drop-shadow-2xl filter group-hover:brightness-110`}
-      loading="eager"
-    />
-    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
-  </div>
-));
-
-// === Seções Principais ===
-
-const StatsSection = memo(() => {
-  const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
-  const [animatedStats, setAnimatedStats] = useState({
-    routes: 0,
-    users: 0,
-    uptime: 0,
-    savings: 0,
-  });
-
-  const finalStats = useMemo(
-    () => ({
-      routes: 1000000,
-      users: 50000,
-      uptime: 99.9,
-      savings: 30,
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const duration = 2000;
-    const steps = 60;
-    const stepDuration = duration / steps;
-
-    let currentStep = 0;
-    const timer = setInterval(() => {
-      currentStep++;
-      const progress = currentStep / steps;
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-
-      setAnimatedStats({
-        routes: Math.floor(finalStats.routes * easeOut),
-        users: Math.floor(finalStats.users * easeOut),
-        uptime: Math.min(finalStats.uptime, finalStats.uptime * easeOut),
-        savings: Math.floor(finalStats.savings * easeOut),
-      });
-
-      if (currentStep >= steps) {
-        clearInterval(timer);
-        setAnimatedStats(finalStats);
-      }
-    }, stepDuration);
-
-    return () => clearInterval(timer);
-  }, [isVisible, finalStats]);
-
-  const stats = useMemo(
-    () => [
-      {
-        number:
-          animatedStats.routes >= 1000000
-            ? "1M+"
-            : `${Math.floor(animatedStats.routes / 1000)}K+`,
-        label: "Rotas Otimizadas",
-        icon: Route,
-        color: "from-blue-500 to-blue-600",
-        gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
-        shadow: "shadow-blue-500/20",
-      },
-      {
-        number:
-          animatedStats.users >= 50000
-            ? "50K+"
-            : `${Math.floor(animatedStats.users / 1000)}K+`,
-        label: "Usuários Ativos",
-        icon: Users,
-        color: "from-blue-600 to-blue-700",
-        gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
-        shadow: "shadow-blue-600/20",
-      },
-      {
-        number: `${animatedStats.uptime.toFixed(1)}%`,
-        label: "Uptime Garantido",
-        icon: Shield,
-        color: "from-blue-400 to-blue-500",
-        gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
-        shadow: "shadow-blue-400/20",
-      },
-      {
-        number: `${animatedStats.savings}%`,
-        label: "Economia de Tempo",
-        icon: Clock,
-        color: "from-blue-700 to-blue-800",
-        gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
-        shadow: "shadow-blue-700/20",
-      },
-    ],
-    [animatedStats],
-  );
+  const stats = [
+    {
+      number: "1M+",
+      label: "Rotas Otimizadas",
+      icon: Route,
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      number: "50K+",
+      label: "Usuários Ativos",
+      icon: Users,
+      color: "from-blue-600 to-blue-700",
+    },
+    {
+      number: "99.9%",
+      label: "Uptime Garantido",
+      icon: Shield,
+      color: "from-blue-400 to-blue-500",
+    },
+    {
+      number: "30%",
+      label: "Economia de Tempo",
+      icon: Clock,
+      color: "from-blue-700 to-blue-800",
+    },
+  ];
 
   return (
     <section
       ref={sectionRef}
       className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
     >
-      {/* Efeitos de fundo melhorados */}
-      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
+      {/* Efeitos de fundo suavizados */}
+      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-blue-600 bg-clip-text text-transparent">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             Números que impressionam
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
             Milhares de pessoas já confiam no Viwe para otimizar suas jornadas
-            diárias
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className={`group text-center transition-all duration-1000 ease-out transform ${
+              className={`text-center transition-all duration-700 delay-${index * 100} ${
                 isVisible
-                  ? "opacity-100 translate-y-0 scale-100"
-                  : "opacity-0 translate-y-8 scale-95"
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
               }`}
-              style={{ transitionDelay: `${index * 150}ms` }}
             >
-              <div className="relative mb-6">
-                <div
-                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden`}
-                >
-                  <stat.icon className="h-9 w-9 md:h-11 md:w-11 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-sm"></div>
-                </div>
-                <div
-                  className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}
-                ></div>
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r ${stat.color} rounded-xl mb-3 md:mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
+              >
+                <stat.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
               </div>
-              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
+              <div className="text-2xl md:text-3xl font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
                 {stat.number}
               </div>
-              <div className="text-muted-foreground font-bold text-base md:text-lg group-hover:text-foreground transition-colors duration-300 leading-tight">
+              <div className="text-muted-foreground font-medium text-sm md:text-base">
                 {stat.label}
               </div>
             </div>
@@ -239,7 +131,7 @@ const StatsSection = memo(() => {
       </div>
     </section>
   );
-});
+};
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -415,26 +307,26 @@ const AdvancedFeaturesSection = () => {
       icon: Smartphone,
       title: "App Mobile Nativo",
       description: "Disponível para iOS e Android com sincronização automática",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-blue-500 to-blue-600",
     },
     {
       icon: Cloud,
       title: "Sincronização Automática",
       description:
         "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-blue-600 to-blue-700",
     },
     {
       icon: BarChart3,
       title: "Relatórios Avançados",
       description: "Análise detalhada de tempo, distância e economia",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-blue-700 to-blue-800",
     },
     {
       icon: Award,
       title: "Suporte Premium",
       description: "Atendimento 24/7 com especialistas em otimização",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-blue-400 to-blue-500",
     },
   ];
 
@@ -614,27 +506,19 @@ const HomePage = ({
       {/* Seção de Estatísticas */}
       <StatsSection />
 
-      {/* Secção de Logos de Confiança aprimorada */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-muted/10 to-secondary/20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-xl font-bold text-foreground mb-2">
-              Confiança de empresas globais
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              Escolhido por líderes em tecnologia e logística
-            </p>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-8 items-center">
+      {/* Secção de Logos de Confiança simplificada */}
+      <section className="py-12 md:py-16 bg-muted/20">
+        <div className="container mx-auto px-6">
+          <h2 className="text-center text-base font-medium text-muted-foreground mb-8">
+            Confiança de empresas em todo o mundo
+          </h2>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 items-center">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="flex justify-center group">
-                <div className="w-24 h-16 bg-gradient-to-br from-card to-muted/30 rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-primary/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <span className="text-muted-foreground group-hover:text-foreground text-xs font-bold transition-colors duration-300 relative z-10">
+              <div key={index} className="flex justify-center">
+                <div className="w-20 h-12 bg-muted/40 rounded-lg flex items-center justify-center opacity-50 hover:opacity-70 transition-opacity">
+                  <span className="text-muted-foreground text-xs font-medium">
                     LOGO
                   </span>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
                 </div>
               </div>
             ))}
@@ -662,89 +546,74 @@ const HomePage = ({
               Tecnologia avançada que faz a diferença na sua jornada
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div
               ref={(el) => (cardRefs.current[0] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 0)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 0)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-primary/20">
-                  <Route className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
-                  Otimização de Rotas
-                </h3>
-                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  IA encontra as melhores rotas automaticamente.
-                </p>
+              <div className="p-3 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl text-primary mb-4 group-hover:scale-105 transition-transform duration-300">
+                <Route className="h-6 w-6" />
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                Otimização de Rotas
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                IA encontra rotas eficientes. Economize tempo e combustível.
+              </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:border-blue-500/50 relative overflow-hidden backdrop-blur-sm"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
-                  <TrafficCone className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
-                  Previsão de Trânsito
-                </h3>
-                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Evite congestionamentos com dados em tempo real.
-                </p>
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl text-blue-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <TrafficCone className="h-6 w-6" />
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/30 to-blue-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-500 transition-colors">
+                Previsão de Trânsito
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Dados em tempo real evitam trânsito. Precisão de 99% garantida.
+              </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-600/20 transition-all duration-500 hover:border-blue-600/50 relative overflow-hidden backdrop-blur-sm"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-600/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-600/20">
-                  <MapPin className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
-                  Pontos de Interesse
-                </h3>
-                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Descubra pontos de interesse pelo caminho.
-                </p>
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-xl text-blue-600 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <MapPin className="h-6 w-6" />
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/30 to-blue-700/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-600 transition-colors">
+                Pontos de Interesse
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Encontre restaurantes, postos e atrações no seu trajeto
+                facilmente.
+              </p>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-700/20 transition-all duration-500 hover:border-blue-700/50 relative overflow-hidden backdrop-blur-sm"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-700/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-700/20">
-                  <Share2 className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-700 transition-colors duration-300">
-                  Compartilhar Itinerário
-                </h3>
-                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Compartilhe rotas em tempo real com família e equipe.
-                </p>
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-xl text-blue-700 mb-4 group-hover:scale-105 transition-transform duration-300">
+                <Share2 className="h-6 w-6" />
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-700 transition-colors">
+                Compartilhar Itinerário
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Compartilhe rotas em tempo real com família e equipes.
+              </p>
             </div>
           </div>
         </div>
@@ -839,6 +708,7 @@ const LandingPage = () => {
     <div className="bg-background min-h-screen text-foreground">
       {/* Conteúdo Principal */}
       <HomePage heroRef={heroRef} />
+
     </div>
   );
 };

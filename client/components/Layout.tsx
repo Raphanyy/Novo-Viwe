@@ -138,13 +138,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* CTA Section - Show on all pages except pricing */}
         {location.pathname !== "/pricing" && (
           <section className="bg-secondary py-20 text-center border-t border-border">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-6 flex flex-col">
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
                 Pronto para sua próxima aventura?
               </h2>
-              <p className="mt-4 text-lg max-w-xl mx-auto text-muted-foreground">
-                Crie sua conta agora e comece a planejar seus trajetos com a
-                Viwe.
+              <p className="mt-4 text-lg max-w-xl self-center text-muted-foreground">
+                Crie sua conta e comece agora mesmo para começar a usar
+                <br />
+                <br />
               </p>
               <div className="mt-8 flex justify-center space-x-4">
                 <Link
