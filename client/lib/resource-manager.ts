@@ -331,16 +331,5 @@ export async function managedFetch(
   }
 }
 
-// Adicionar React import se disponível
-declare global {
-  var React: typeof import('react') | undefined;
-}
-
-// Import React dinamicamente se disponível
-if (typeof window !== 'undefined' && !globalThis.React) {
-  import('react').then(ReactModule => {
-    globalThis.React = ReactModule;
-  }).catch(() => {
-    // React não disponível
-  });
-}
+// Exportar para uso em componentes React
+export { ResourceManager as default };
