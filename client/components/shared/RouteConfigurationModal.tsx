@@ -253,7 +253,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           className="w-full"
         >
           {isLoading ? (
-            "Salvando..."
+            <ViweLoaderInline text="Salvando..." />
           ) : isSuccess ? (
             <>
               <CheckCircle className="h-4 w-4 mr-2" />

@@ -28,6 +28,7 @@ import {
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
+import ViweLoader from "../../components/shared/ViweLoader";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
