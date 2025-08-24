@@ -185,8 +185,8 @@ const MapPage: React.FC = () => {
     [activeFilters],
     (prev, current) => {
       // Comparação customizada para arrays de filtros
-      const [prevFilters] = prev;
-      const [currentFilters] = current;
+      const [prevFilters] = prev as [string[]];
+      const [currentFilters] = current as [string[]];
 
       if (prevFilters.length !== currentFilters.length) return false;
       return prevFilters.every(
