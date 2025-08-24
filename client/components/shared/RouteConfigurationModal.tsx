@@ -336,17 +336,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           </div>
         )}
 
-        {/* Alerta de campos obrigatórios */}
-        {!isFormValid() && (
-          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-yellow-600" />
-              <span className="text-sm font-medium text-yellow-800">
-                Campos obrigatórios: Informações da Rota, Paradas e Programação
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Seções de configuração */}
         {configurationSections.map((section) => (
