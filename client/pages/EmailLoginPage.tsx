@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { ViweLoaderInline } from "../components/shared/ViweLoader";
 
 const EmailLoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -131,10 +132,7 @@ const EmailLoginPage: React.FC = () => {
               className="w-full bg-blue-600 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Entrando...
-                </div>
+                <ViweLoaderInline text="Entrando..." />
               ) : (
                 "Entrar"
               )}

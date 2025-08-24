@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { usePlatform } from "../contexts/PlatformContext";
 import ErrorBoundary from "./ErrorBoundary";
+import { ViweLoaderFullScreen } from "./shared/ViweLoader";
 
 // Lazy load layouts for optimal bundle splitting
 const MobileInternalLayout = React.lazy(
@@ -17,12 +18,7 @@ const DesktopInternalLayout = React.lazy(
 
 // Loading component for layout switching
 const LayoutLoadingFallback: React.FC = () => (
-  <div className="h-screen bg-gray-50 flex items-center justify-center">
-    <div className="flex flex-col items-center space-y-4">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <p className="text-sm text-gray-600">Carregando interface...</p>
-    </div>
-  </div>
+  <ViweLoaderFullScreen text="Carregando interface..." />
 );
 
 /**
