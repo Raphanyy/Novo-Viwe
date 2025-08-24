@@ -716,7 +716,7 @@ const HomePage = ({
                   Compartilhar Itinerário
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Sincronize trajetos com família e equipe.
+                  Compartilhe rotas em tempo real com família e equipe.
                 </p>
               </div>
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
