@@ -498,6 +498,17 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       // Contar paradas restantes
       const remainingStops = updatedStops.filter((stop) => !stop.isCompleted);
 
+      // Calcular tempo médio por parada para melhorar estimativas
+      const completedStopsWithTime = updatedStops.filter(stop =>
+        stop.isCompleted && stop.completedAt && prev.navigationData.startTime
+      );
+
+      let averageStopTime = prev.navigationData.averageStopTime;
+      if (completedStopsWithTime.length > 0 && prev.navigationData.startTime) {
+        const totalTimeSpent = Date.now() - prev.navigationData.startTime.getTime();
+        averageStopTime = totalTimeSpent / completedStopsWithTime.length;
+      }
+
       // Calculate remaining distance from completed stops
       const completedStopsCount = updatedStops.filter(
         (stop) => stop.isCompleted,
