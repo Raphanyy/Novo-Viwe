@@ -63,25 +63,25 @@ const StatsSection = () => {
       number: "1M+",
       label: "Rotas Otimizadas",
       icon: Route,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-blue-600",
     },
     {
       number: "50K+",
       label: "Usuários Ativos",
       icon: Users,
-      color: "from-green-500 to-emerald-500",
+      color: "from-blue-600 to-blue-700",
     },
     {
       number: "99.9%",
       label: "Uptime Garantido",
       icon: Shield,
-      color: "from-purple-500 to-pink-500",
+      color: "from-blue-400 to-blue-500",
     },
     {
       number: "30%",
       label: "Economia de Tempo",
       icon: Clock,
-      color: "from-orange-500 to-red-500",
+      color: "from-blue-700 to-blue-800",
     },
   ];
 
