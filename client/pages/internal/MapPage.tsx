@@ -1365,7 +1365,7 @@ const MapPage: React.FC = () => {
 
         {/* Trace Confirmation Dialog - Full Page Modal */}
         {traceState.showConfirmDialog && (
-          <div className="fixed inset-0 z-50 bg-background flex flex-col">
+          <div className="fixed inset-0 z-[60] bg-background flex flex-col">
             {/* Header */}
             <ModalHeader
               title="Traçar Rota"
