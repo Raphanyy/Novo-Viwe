@@ -1148,8 +1148,9 @@ const MapPage: React.FC = () => {
 
   // Auto-trace route when it becomes traced in context
   useEffect(() => {
-    if (traceState.isRouteTraced && traceState.stops.length >= 2) {
+    if (traceState.isRouteTraced && traceState.stops.length >= 1) {
       // Garantir que a rota seja traçada no mapa quando confirmada
+      // Agora traça desde a localização atual até as paradas
       const timeoutId = setTimeout(() => {
         traceRouteOnMap(traceState.stops);
       }, 100);
