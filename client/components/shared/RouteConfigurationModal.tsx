@@ -82,7 +82,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const location = useLocation();
   const traceContext = useTraceRoute();
   const [currentLevel, setCurrentLevel] = useState(NavigationLevel.PRIMARY);
-  const [selectedSection, setSelectedSection] = useState<keyof FormData | null>(null);
+  const [selectedSection, setSelectedSection] = useState<keyof FormData | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const initializedRef = useRef(false);
@@ -94,17 +96,17 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const [formData, setFormData] = useState<FormData>(() => {
     const currentStops = prefilledStops.length > 0 ? prefilledStops : [];
     return {
-      info: { 
-        routeName: "", 
-        responsible: "", 
-        priority: "media" 
+      info: {
+        routeName: "",
+        responsible: "",
+        priority: "media",
       },
       clients: [],
       routeSet: "",
       stops: currentStops,
-      scheduling: { 
-        type: isTemporary ? "imediata" : "permanente", 
-        date: "" 
+      scheduling: {
+        type: isTemporary ? "imediata" : "permanente",
+        date: "",
       },
     };
   });
@@ -114,17 +116,18 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     if (isOpen && !initializedRef.current) {
       initializedRef.current = true;
       // Get stops from props or context, but don't create dependency loops
-      const stopsToUse = prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
-      setFormData(prev => ({
+      const stopsToUse =
+        prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
+      setFormData((prev) => ({
         ...prev,
         stops: stopsToUse,
         scheduling: {
           ...prev.scheduling,
-          type: isTemporary ? "imediata" : "permanente"
-        }
+          type: isTemporary ? "imediata" : "permanente",
+        },
       }));
     }
-    
+
     if (!isOpen) {
       // Reset initialization flag when modal closes
       initializedRef.current = false;
@@ -157,8 +160,10 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     {
       id: "stops",
       title: "Configurar Paradas",
-      subtitle: isInMapPage 
-        ? (formData.stops.length > 0 ? "Organizar paradas." : "Adicionar do mapa.")
+      subtitle: isInMapPage
+        ? formData.stops.length > 0
+          ? "Organizar paradas."
+          : "Adicionar do mapa."
         : "Adicionar endereços.",
       icon: MapPin,
       component: StopsPage,
@@ -200,7 +205,10 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const isSectionConfigured = (section: keyof FormData): boolean => {
     switch (section) {
       case "info":
-        return formData.info.routeName.trim() !== "" && formData.info.responsible.trim() !== "";
+        return (
+          formData.info.routeName.trim() !== "" &&
+          formData.info.responsible.trim() !== ""
+        );
       case "clients":
         return formData.clients.length > 0;
       case "routeSet":
@@ -208,8 +216,11 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       case "stops":
         return formData.stops.length > 0;
       case "scheduling":
-        return (formData.scheduling.type === "permanente" || 
-                (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""));
+        return (
+          formData.scheduling.type === "permanente" ||
+          (formData.scheduling.type === "imediata" &&
+            formData.scheduling.date.trim() !== "")
+        );
       default:
         return false;
     }
@@ -221,26 +232,29 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       formData.info.routeName.trim() !== "" &&
       formData.info.responsible.trim() !== "" &&
       formData.stops.length > 0 &&
-      (formData.scheduling.type === "permanente" || 
-       (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""))
+      (formData.scheduling.type === "permanente" ||
+        (formData.scheduling.type === "imediata" &&
+          formData.scheduling.date.trim() !== ""))
     );
   };
 
   // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
     if (!isFormValid()) {
-      alert("Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.");
+      alert(
+        "Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.",
+      );
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       if (isInMapPage) {
         // Na página do mapa: manter funções existentes
         await new Promise((resolve) => setTimeout(resolve, 1500));
         console.log("Dados da rota salvos (página mapa):", formData);
-        
+
         // Sincronizar as paradas com o contexto se necessário
         if (traceContext.state.isTracing && formData.stops.length > 0) {
           // Lógica específica para o mapa pode ser adicionada aqui
@@ -248,9 +262,12 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       } else {
         // Fora da página do mapa: não fazer nada por enquanto
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Dados da rota preparados (fora do mapa) - nenhuma ação tomada:", formData);
+        console.log(
+          "Dados da rota preparados (fora do mapa) - nenhuma ação tomada:",
+          formData,
+        );
       }
-      
+
       setIsSuccess(true);
       setIsLoading(false);
 
@@ -296,8 +313,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           <p className="text-xs text-blue-700 mt-1">
             {isInMapPage
               ? "Configurando rota com paradas do mapa. Salvar manterá as funcionalidades existentes."
-              : "Modo Independente"
-            }
+              : "Modo Independente"}
           </p>
         </div>
 
@@ -335,7 +351,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             </div>
           </div>
         )}
-
 
         {/* Seções de configuração */}
         {configurationSections.map((section) => (
@@ -434,19 +449,20 @@ function RouteInfoPage({
 
   const validateField = (name: keyof RouteInfo, value: string) => {
     const newErrors = { ...errors };
-    
-    if (name === 'routeName' && value.trim().length < 3) {
-      newErrors.routeName = 'Nome da rota deve ter pelo menos 3 caracteres';
-    } else if (name === 'routeName') {
+
+    if (name === "routeName" && value.trim().length < 3) {
+      newErrors.routeName = "Nome da rota deve ter pelo menos 3 caracteres";
+    } else if (name === "routeName") {
       delete newErrors.routeName;
     }
-    
-    if (name === 'responsible' && value.trim().length < 2) {
-      newErrors.responsible = 'Nome do responsável deve ter pelo menos 2 caracteres';
-    } else if (name === 'responsible') {
+
+    if (name === "responsible" && value.trim().length < 2) {
+      newErrors.responsible =
+        "Nome do responsável deve ter pelo menos 2 caracteres";
+    } else if (name === "responsible") {
       delete newErrors.responsible;
     }
-    
+
     setErrors(newErrors);
   };
 
@@ -473,7 +489,7 @@ function RouteInfoPage({
             value={data.routeName}
             onChange={handleChange}
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              errors.routeName ? 'border-red-500' : 'border-border'
+              errors.routeName ? "border-red-500" : "border-border"
             }`}
             placeholder="Digite o nome da rota"
             required
@@ -493,7 +509,7 @@ function RouteInfoPage({
             value={data.responsible}
             onChange={handleChange}
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              errors.responsible ? 'border-red-500' : 'border-border'
+              errors.responsible ? "border-red-500" : "border-border"
             }`}
             placeholder="Nome do responsável"
             required
@@ -539,24 +555,28 @@ function ClientsPage({
 
   const validateClient = (client: Client) => {
     const newErrors: { name?: string; phone?: string } = {};
-    
+
     if (!client.name.trim()) {
       newErrors.name = "Nome é obrigatório";
     } else if (client.name.trim().length < 2) {
       newErrors.name = "Nome deve ter pelo menos 2 caracteres";
     }
-    
-    if (client.phone && !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(client.phone) && client.phone.length > 0) {
+
+    if (
+      client.phone &&
+      !/^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(client.phone) &&
+      client.phone.length > 0
+    ) {
       newErrors.phone = "Formato: (11) 99999-9999";
     }
-    
+
     return newErrors;
   };
 
   const handleAddClient = () => {
     const validationErrors = validateClient(newClient);
     setErrors(validationErrors);
-    
+
     if (Object.keys(validationErrors).length === 0 && newClient.name.trim()) {
       const newClients = [...clients, newClient];
       setClients(newClients);
@@ -572,7 +592,7 @@ function ClientsPage({
   };
 
   const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
+    const numbers = value.replace(/\D/g, "");
     if (numbers.length <= 11) {
       const match = numbers.match(/^(\d{2})(\d{4,5})(\d{4})$/);
       if (match) {
@@ -597,7 +617,7 @@ function ClientsPage({
               setErrors({ ...errors, name: undefined });
             }}
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              errors.name ? 'border-red-500' : 'border-border'
+              errors.name ? "border-red-500" : "border-border"
             }`}
             placeholder="Nome do cliente"
           />
@@ -619,7 +639,7 @@ function ClientsPage({
               setErrors({ ...errors, phone: undefined });
             }}
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              errors.phone ? 'border-red-500' : 'border-border'
+              errors.phone ? "border-red-500" : "border-border"
             }`}
             placeholder="(11) 99999-9999"
           />
@@ -651,7 +671,9 @@ function ClientsPage({
             >
               <div>
                 <p className="font-medium text-foreground">{client.name}</p>
-                <p className="text-sm text-muted-foreground">{client.phone || "Sem telefone"}</p>
+                <p className="text-sm text-muted-foreground">
+                  {client.phone || "Sem telefone"}
+                </p>
               </div>
               <Button
                 variant="ghost"
@@ -670,14 +692,14 @@ function ClientsPage({
 }
 
 // Página de Conjunto de Rotas
-function RouteSetPage({ 
-  onBack, 
-  formData, 
-  saveData 
-}: { 
-  onBack: () => void; 
-  formData: string; 
-  saveData: (data: string) => void; 
+function RouteSetPage({
+  onBack,
+  formData,
+  saveData,
+}: {
+  onBack: () => void;
+  formData: string;
+  saveData: (data: string) => void;
 }) {
   const routeSets = ["Zona Sul", "Centro", "Zona Norte", "Zona Oeste"];
 
@@ -688,7 +710,7 @@ function RouteSetPage({
           Selecione um conjunto de rotas para organizar e agrupar esta rota.
         </p>
       </div>
-      
+
       {routeSets.map((set) => (
         <button
           key={set}
@@ -712,15 +734,15 @@ function RouteSetPage({
 }
 
 // Página de Paradas com funcionalidade adaptável
-function StopsPage({ 
-  onBack, 
-  formData, 
-  saveData, 
+function StopsPage({
+  onBack,
+  formData,
+  saveData,
   traceContext,
-  isInMapPage = false
-}: { 
-  onBack: () => void; 
-  formData: RouteStop[]; 
+  isInMapPage = false,
+}: {
+  onBack: () => void;
+  formData: RouteStop[];
   saveData: (data: RouteStop[]) => void;
   traceContext?: ReturnType<typeof useTraceRoute>;
   isInMapPage?: boolean;
@@ -730,7 +752,7 @@ function StopsPage({
   const [isAddingAddress, setIsAddingAddress] = useState(false);
 
   const handleRemoveStop = (stopId: string) => {
-    const newStops = stops.filter(stop => stop.id !== stopId);
+    const newStops = stops.filter((stop) => stop.id !== stopId);
     setStops(newStops);
     saveData(newStops);
   };
@@ -739,20 +761,20 @@ function StopsPage({
     const newStops = [...stops];
     const [removed] = newStops.splice(fromIndex, 1);
     newStops.splice(toIndex, 0, removed);
-    
+
     // Reordenar os números das paradas
     const reorderedStops = newStops.map((stop, index) => ({
       ...stop,
-      order: index + 1
+      order: index + 1,
     }));
-    
+
     setStops(reorderedStops);
     saveData(reorderedStops);
   };
 
   const handleAddAddress = async () => {
     if (!newAddress.trim()) return;
-    
+
     setIsAddingAddress(true);
     try {
       // Simular geocodificação do endereço
@@ -763,16 +785,16 @@ function StopsPage({
         address: newAddress.trim(),
         coordinates: [-23.5505, -46.6333] as [number, number], // São Paulo como exemplo
         order: stops.length + 1,
-        isCompleted: false
+        isCompleted: false,
       };
-      
+
       const newStops = [...stops, newStop];
       setStops(newStops);
       saveData(newStops);
       setNewAddress("");
-      
+
       // Simular delay da API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } finally {
       setIsAddingAddress(false);
     }
@@ -794,7 +816,7 @@ function StopsPage({
               Toque para remover • Organize a ordem
             </span>
           </div>
-          
+
           <div className="space-y-3">
             {stops.map((stop, index) => (
               <div
@@ -812,7 +834,8 @@ function StopsPage({
                     {stop.address || "Endereço não disponível"}
                   </p>
                   <p className="text-xs text-muted-foreground/70 mt-1">
-                    {stop.coordinates[1].toFixed(4)}, {stop.coordinates[0].toFixed(4)}
+                    {stop.coordinates[1].toFixed(4)},{" "}
+                    {stop.coordinates[0].toFixed(4)}
                   </p>
                 </div>
                 <div className="flex flex-col space-y-1">
@@ -848,7 +871,7 @@ function StopsPage({
               </div>
             ))}
           </div>
-          
+
           <div className="pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground text-center">
               As paradas serão visitadas na ordem mostrada acima
@@ -865,19 +888,18 @@ function StopsPage({
               {isInMapPage ? "Adicionar Paradas" : "Configurar Paradas"}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {isInMapPage 
+              {isInMapPage
                 ? "Nenhuma parada foi adicionada do mapa. Adicione endereços manualmente ou use o mapa."
-                : "Digite os endereços das paradas da sua rota."
-              }
+                : "Digite os endereços das paradas da sua rota."}
             </p>
-            
+
             <div className="flex space-x-2">
               <input
                 type="text"
                 value={newAddress}
                 onChange={(e) => setNewAddress(e.target.value)}
                 onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     handleAddAddress();
                   }
                 }}
@@ -885,7 +907,7 @@ function StopsPage({
                 placeholder="Digite o endereço da parada..."
                 disabled={isAddingAddress}
               />
-              <Button 
+              <Button
                 onClick={handleAddAddress}
                 disabled={!newAddress.trim() || isAddingAddress}
               >
@@ -915,8 +937,12 @@ function StopsPage({
                         {stop.order}
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">{stop.name}</p>
-                        <p className="text-xs text-muted-foreground">{stop.address}</p>
+                        <p className="font-medium text-foreground text-sm">
+                          {stop.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {stop.address}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -949,12 +975,13 @@ function StopsPage({
           {stops.length === 0 && (
             <div className="text-center py-8">
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-              <h3 className="font-medium text-foreground mb-2">Nenhuma Parada Configurada</h3>
+              <h3 className="font-medium text-foreground mb-2">
+                Nenhuma Parada Configurada
+              </h3>
               <p className="text-sm text-muted-foreground">
-                {isInMapPage 
+                {isInMapPage
                   ? "Use o mapa para adicionar paradas ou digite os endereços acima"
-                  : "Digite os endereços das paradas acima para começar"
-                }
+                  : "Digite os endereços das paradas acima para começar"}
               </p>
             </div>
           )}
@@ -965,14 +992,14 @@ function StopsPage({
 }
 
 // Página de Programação
-function SchedulingPage({ 
-  onBack, 
-  formData, 
-  saveData 
-}: { 
-  onBack: () => void; 
-  formData: SchedulingData; 
-  saveData: (data: SchedulingData) => void; 
+function SchedulingPage({
+  onBack,
+  formData,
+  saveData,
+}: {
+  onBack: () => void;
+  formData: SchedulingData;
+  saveData: (data: SchedulingData) => void;
 }) {
   const [data, setData] = useState<SchedulingData>(formData);
   const [errors, setErrors] = useState<{ date?: string }>({});
@@ -980,20 +1007,20 @@ function SchedulingPage({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newData = { ...data, [name]: value };
-    
+
     // Validar data se for rota imediata
-    if (name === 'date' && data.type === 'imediata') {
+    if (name === "date" && data.type === "imediata") {
       const selectedDate = new Date(value);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       if (selectedDate < today) {
         setErrors({ date: "Data deve ser hoje ou no futuro" });
       } else {
         setErrors({});
       }
     }
-    
+
     setData(newData);
     saveData(newData);
   };
@@ -1009,7 +1036,7 @@ function SchedulingPage({
   };
 
   // Data mínima é hoje
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="p-4 space-y-4">
@@ -1035,7 +1062,7 @@ function SchedulingPage({
                 </p>
               </div>
             </label>
-            
+
             <label className="flex items-start space-x-3 cursor-pointer">
               <input
                 type="radio"
@@ -1067,7 +1094,7 @@ function SchedulingPage({
               min={today}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                errors.date ? 'border-red-500' : 'border-border'
+                errors.date ? "border-red-500" : "border-border"
               }`}
               required
             />
