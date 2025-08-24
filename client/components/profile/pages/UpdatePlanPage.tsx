@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, Check } from "lucide-react";
+import { ChevronDown, Check, ArrowLeft } from "lucide-react";
 
 interface UpdatePlanPageProps {
   onBack: () => void;
