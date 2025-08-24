@@ -305,7 +305,7 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
   return (
     <>
       {/* Full Page Modal */}
-      <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      <div className="fixed inset-0 z-[60] bg-background flex flex-col">
         {/* Header */}
         <ModalHeader
           title={getHeaderTitle()}
@@ -319,7 +319,7 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
 
       {/* Confirmation Overlays */}
       {showRemoveStopConfirm && (
-        <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4">
           <div className="bg-card rounded-lg p-6 max-w-sm w-full">
             <div className="flex items-center space-x-2 mb-4">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
@@ -359,7 +359,7 @@ const NavigationAdjustmentsModal: React.FC<NavigationAdjustmentsModalProps> = ({
       )}
 
       {showEndRouteConfirm && (
-        <div className="fixed inset-0 z-60 bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-4">
           <div className="bg-card rounded-lg p-6 max-w-sm w-full">
             <div className="flex items-center space-x-2 mb-4">
               <StopCircle className="h-5 w-5 text-red-600" />

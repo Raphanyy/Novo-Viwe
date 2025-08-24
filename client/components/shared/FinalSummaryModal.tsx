@@ -108,7 +108,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+    <div className="fixed inset-0 z-[60] bg-background flex flex-col">
       <ModalHeader
         title="Rota Concluída!"
         showBackButton={true}
