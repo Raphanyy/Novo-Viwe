@@ -405,7 +405,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       mapCleanupCallback();
     }
 
-    // Desiste da navegação e volta ao estado inicial
+    // Desiste da navegaç��o e volta ao estado inicial
     setState((prev) => ({
       ...prev,
       showTraceConfirmed: false,
@@ -526,16 +526,17 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       if (!isRouteCompleted && remainingStops.length > 0) {
         // Aguardar atualização do estado antes de analisar
         setTimeout(() => {
-          // Se não sugeriu otimização inteligente e há poucas paradas, apenas re-traçar
-          if (remainingStops.length < 3) {
+          // Tentar usar inteligência adaptativa primeiro
+          const optimizedIntelligently = state.isInActiveNavigation; // Será executado pela função externa
+
+          // Se não otimizou inteligentemente e há poucas paradas, apenas re-traçar
+          if (!optimizedIntelligently && remainingStops.length < 3) {
             window.dispatchEvent(
               new CustomEvent("traceRoute", {
                 detail: { stops: remainingStops },
               })
             );
           }
-          // A otimização inteligente será executada pela suggestSmartOptimization
-          // quando as condições forem ideais
         }, 500);
       }
 
