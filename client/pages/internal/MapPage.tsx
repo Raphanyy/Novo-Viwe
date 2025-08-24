@@ -1086,12 +1086,12 @@ const MapPage: React.FC = () => {
       }
     };
 
-    window.addEventListener('traceRoute', handleTraceRoute);
-    window.addEventListener('clearRoute', handleClearRoute);
+    window.addEventListener("traceRoute", handleTraceRoute);
+    window.addEventListener("clearRoute", handleClearRoute);
 
     return () => {
-      window.removeEventListener('traceRoute', handleTraceRoute);
-      window.removeEventListener('clearRoute', handleClearRoute);
+      window.removeEventListener("traceRoute", handleTraceRoute);
+      window.removeEventListener("clearRoute", handleClearRoute);
     };
   }, [traceRouteOnMap]);
 

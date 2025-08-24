@@ -476,9 +476,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       );
 
       if (isRouteCompleted) {
-        console.log(
-          "Todas as paradas foram concluídas! Abrindo resumo final.",
-        );
+        console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
         // Quando todas as paradas são concluídas, abrir modal de resumo final
         return {
           ...prev,
@@ -621,9 +619,13 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }
 
     // Se tem paradas incompletas, perguntar se deseja salvar no histórico
-    const incompletedStops = state.stops.filter(stop => !stop.isCompleted);
+    const incompletedStops = state.stops.filter((stop) => !stop.isCompleted);
     if (incompletedStops.length > 0) {
-      console.log("Rota finalizada com", incompletedStops.length, "paradas não concluídas");
+      console.log(
+        "Rota finalizada com",
+        incompletedStops.length,
+        "paradas não concluídas",
+      );
     }
 
     // Encerra toda a navegação e volta ao estado inicial

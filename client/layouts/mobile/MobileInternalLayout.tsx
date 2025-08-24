@@ -271,7 +271,7 @@ const MobileInternalLayout: React.FC = () => {
           openDetailsModal();
         } else {
           // Redireciona para página de rotas
-          window.location.href = '/app/rotas';
+          window.location.href = "/app/rotas";
         }
         break;
       case "add":

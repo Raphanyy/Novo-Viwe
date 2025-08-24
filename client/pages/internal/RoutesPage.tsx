@@ -36,9 +36,13 @@ const RoutesPage: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setCompletedRoutes(parsed.sort((a: any, b: any) =>
-          new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
-        ));
+        setCompletedRoutes(
+          parsed.sort(
+            (a: any, b: any) =>
+              new Date(b.completedAt).getTime() -
+              new Date(a.completedAt).getTime(),
+          ),
+        );
       } catch (error) {
         console.error("Erro ao carregar histórico:", error);
         setCompletedRoutes([]);
@@ -50,14 +54,15 @@ const RoutesPage: React.FC = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
+    const diffInHours =
+      Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 24) {
       return "Hoje";
     } else if (diffInHours < 48) {
       return "Ontem";
     } else {
-      return date.toLocaleDateString('pt-BR');
+      return date.toLocaleDateString("pt-BR");
     }
   };
 
@@ -66,7 +71,8 @@ const RoutesPage: React.FC = () => {
     if (!endTime) return "--";
     const start = new Date(startTime);
     const end = new Date(endTime);
-    const diffInMinutes = Math.abs(end.getTime() - start.getTime()) / (1000 * 60);
+    const diffInMinutes =
+      Math.abs(end.getTime() - start.getTime()) / (1000 * 60);
 
     if (diffInMinutes < 60) {
       return `${Math.round(diffInMinutes)} min`;
@@ -269,102 +275,100 @@ const RoutesPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {activeTab === "history" ? (
-              completedRoutes.map((route) => (
-                <HistoryRouteCard
-                  key={route.routeId}
-                  route={route}
-                  formatDate={formatDate}
-                  formatDuration={formatDuration}
-                />
-              ))
-            ) : (
-              currentRoutes.map((route) => (
-                <div
-                  key={route.id}
-                  className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold text-foreground">
-                          {route.name}
-                        </h3>
-                        {route.isFavorite && (
-                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                        )}
+            {activeTab === "history"
+              ? completedRoutes.map((route) => (
+                  <HistoryRouteCard
+                    key={route.routeId}
+                    route={route}
+                    formatDate={formatDate}
+                    formatDuration={formatDuration}
+                  />
+                ))
+              : currentRoutes.map((route) => (
+                  <div
+                    key={route.id}
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="font-semibold text-foreground">
+                            {route.name}
+                          </h3>
+                          {route.isFavorite && (
+                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                          )}
+                        </div>
+
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span>{route.from}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span>{route.to}</span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="space-y-1 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span>{route.from}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          <span>{route.to}</span>
-                        </div>
-                      </div>
+                      <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
+                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                      </button>
                     </div>
 
-                    <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-4 text-sm">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {route.duration}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-4 text-sm">
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {route.duration}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {route.distance}
+                          </span>
+                        </div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
+                        >
+                          {route.traffic === "light" && "Livre"}
+                          {route.traffic === "normal" && "Normal"}
+                          {route.traffic === "heavy" && "Intenso"}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {route.distance}
+
+                      {route.savings && (
+                        <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
+                          -{route.savings}
                         </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {activeTab === "planned"
+                          ? `Agendada para ${(route as any).scheduledFor}`
+                          : `Última vez: ${(route as any).lastUsed}`}
+                      </span>
+
+                      <div className="flex items-center space-x-2">
+                        <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                          <Share2 className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                          <Edit3 className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
+                          <Navigation className="h-4 w-4" />
+                          <span className="text-sm font-medium">Navegar</span>
+                        </button>
                       </div>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
-                      >
-                        {route.traffic === "light" && "Livre"}
-                        {route.traffic === "normal" && "Normal"}
-                        {route.traffic === "heavy" && "Intenso"}
-                      </span>
-                    </div>
-
-                    {route.savings && (
-                      <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
-                        -{route.savings}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {activeTab === "planned"
-                        ? `Agendada para ${(route as any).scheduledFor}`
-                        : `Última vez: ${(route as any).lastUsed}`}
-                    </span>
-
-                    <div className="flex items-center space-x-2">
-                      <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                        <Share2 className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                        <Edit3 className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
-                        <Navigation className="h-4 w-4" />
-                        <span className="text-sm font-medium">Navegar</span>
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))}
           </div>
         )}
       </div>
@@ -410,7 +414,9 @@ const HistoryRouteCard: React.FC<{
   formatDate: (date: string) => string;
   formatDuration: (start: string, end?: string) => string;
 }> = ({ route, formatDate, formatDuration }) => {
-  const completedStops = route.stops.filter((stop: any) => stop.isCompleted).length;
+  const completedStops = route.stops.filter(
+    (stop: any) => stop.isCompleted,
+  ).length;
   const totalStops = route.stops.length;
   const completionRate = Math.round((completedStops / totalStops) * 100);
 
@@ -423,7 +429,8 @@ const HistoryRouteCard: React.FC<{
           </div>
           <div>
             <h3 className="font-medium text-foreground">
-              Rota {route.routeId ? route.routeId.split('-')[1].slice(-4) : 'N/A'}
+              Rota{" "}
+              {route.routeId ? route.routeId.split("-")[1].slice(-4) : "N/A"}
             </h3>
             <p className="text-sm text-muted-foreground">
               {formatDate(route.completedAt)}
@@ -449,15 +456,15 @@ const HistoryRouteCard: React.FC<{
         </div>
         <div className="text-center">
           <div className="text-sm font-medium text-foreground">
-            {route.navigationData?.totalDistance ?
-              `${(route.navigationData.totalDistance / 1000).toFixed(1)} km` : '--'
-            }
+            {route.navigationData?.totalDistance
+              ? `${(route.navigationData.totalDistance / 1000).toFixed(1)} km`
+              : "--"}
           </div>
           <div className="text-xs text-muted-foreground">Distância</div>
         </div>
         <div className="text-center">
           <div className="text-sm font-medium text-foreground">
-            {route.estimatedCredits || '--'}
+            {route.estimatedCredits || "--"}
           </div>
           <div className="text-xs text-muted-foreground">Créditos</div>
         </div>
@@ -475,15 +482,23 @@ const HistoryRouteCard: React.FC<{
 
       {/* Primeiras paradas */}
       <div className="space-y-1">
-        <div className="text-xs font-medium text-muted-foreground mb-2">Paradas:</div>
+        <div className="text-xs font-medium text-muted-foreground mb-2">
+          Paradas:
+        </div>
         {route.stops.slice(0, 2).map((stop: any, index: number) => (
           <div key={stop.id} className="flex items-center space-x-2 text-sm">
-            <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
-              stop.isCompleted ? 'bg-green-500' : 'bg-gray-300'
-            }`} />
-            <span className={`truncate ${
-              stop.isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'
-            }`}>
+            <div
+              className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                stop.isCompleted ? "bg-green-500" : "bg-gray-300"
+              }`}
+            />
+            <span
+              className={`truncate ${
+                stop.isCompleted
+                  ? "text-muted-foreground line-through"
+                  : "text-foreground"
+              }`}
+            >
               {stop.name}
             </span>
           </div>
