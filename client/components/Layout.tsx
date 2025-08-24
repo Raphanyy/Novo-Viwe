@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Rocket, Menu, X, Compass } from "lucide-react";
 
+// === Logo Real da Viwe ===
+const ViweLogo = ({ className = "h-8 w-8" }: { className?: string }) => (
+  <img 
+    src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
+    alt="Viwe Logo"
+    className={`${className} object-contain`}
+  />
+);
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -23,9 +32,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border py-4 transition-all duration-300">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <Rocket className="h-8 w-8 text-primary" />
-            <Link to="/" className="font-bold text-xl ml-2 text-foreground">
+          <div className="flex items-center group">
+            <ViweLogo className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+            <Link to="/" className="font-bold text-xl ml-2 text-foreground group-hover:text-primary transition-colors">
               Viwe
             </Link>
           </div>
@@ -155,7 +164,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <div className="flex items-center">
-              <Compass className="h-6 w-6 text-primary" />
+              <ViweLogo className="h-6 w-6" />
               <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
             </div>
             <p className="mt-4 text-sm max-w-xs">
