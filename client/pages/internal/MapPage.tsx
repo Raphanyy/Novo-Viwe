@@ -1066,7 +1066,7 @@ const MapPage: React.FC = () => {
           {/* Search Results Dropdown */}
           {showSearchResults && searchResults.length > 0 && (
             <div
-              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {searchResults.map((result) => (
