@@ -344,8 +344,8 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                   {hasValidFuelData ? (
                     <>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="bg-orange-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
+                        <div className="bg-orange-600/10 border border-orange-600/20 p-3 rounded-lg">
+                          <div className="text-sm text-muted-foreground">
                             Combustível Estimado
                           </div>
                           <div className="text-lg font-semibold text-orange-600">
@@ -355,8 +355,8 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                             L
                           </div>
                         </div>
-                        <div className="bg-green-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
+                        <div className="bg-green-600/10 border border-green-600/20 p-3 rounded-lg">
+                          <div className="text-sm text-muted-foreground">
                             Combustível Real
                           </div>
                           <div className="text-lg font-semibold text-green-600">
@@ -366,20 +366,20 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                       </div>
 
                       {fuelEconomy > 0 ? (
-                        <div className="bg-green-100 p-3 rounded-lg">
+                        <div className="bg-green-600/10 border border-green-600/20 p-3 rounded-lg">
                           <div className="flex items-center space-x-2">
                             <TrendingUp className="h-4 w-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-800">
+                            <span className="text-sm font-medium text-green-600">
                               Você economizou {fuelEconomy.toFixed(1)}L de
                               combustível!
                             </span>
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-blue-100 p-3 rounded-lg">
+                        <div className="bg-blue-600/10 border border-blue-600/20 p-3 rounded-lg">
                           <div className="flex items-center space-x-2">
                             <Fuel className="h-4 w-4 text-blue-600" />
-                            <span className="text-sm font-medium text-blue-800">
+                            <span className="text-sm font-medium text-blue-600">
                               Consumo dentro do esperado.
                             </span>
                           </div>
@@ -388,11 +388,11 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                     </>
                   ) : (
                     <div className="text-center py-8">
-                      <Fuel className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-600 mb-2">
+                      <Fuel className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                      <h4 className="font-medium text-foreground mb-2">
                         Dados de combustível não disponíveis
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         A rota foi muito curta para calcular o consumo de
                         combustível.
                       </p>
