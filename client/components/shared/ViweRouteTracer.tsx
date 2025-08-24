@@ -26,7 +26,7 @@ const ViweRouteTracer: React.FC<ViweRouteTracerProps> = ({
           {isTracing ? (
             <ViweLoaderInline text="" />
           ) : (
-            <Zap className="h-5 w-5 text-yellow-300" />
+            <Zap className="h-5 w-5 text-green-600" />
           )}
         </div>
         <div className="flex-1 min-w-0">
