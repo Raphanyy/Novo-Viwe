@@ -81,6 +81,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Botão Atualize sua foto */}
+        <div className="mb-4">
+          <button
+            type="button"
+            className="inline-flex items-center space-x-2 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+          >
+            <Camera className="h-4 w-4" />
+            <span>Atualize sua foto</span>
+          </button>
+        </div>
+
         <div>
           <label
             htmlFor="name"
