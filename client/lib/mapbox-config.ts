@@ -100,8 +100,9 @@ class MapboxConfigManager {
    * Valida se um token Mapbox tem formato válido
    */
   private isValidMapboxToken(token: string): boolean {
-    // Token Mapbox deve começar com 'pk.' e ter pelo menos 50 caracteres
-    const tokenRegex = /^pk\.[a-zA-Z0-9_-]{40,}$/;
+    // Token Mapbox deve começar com 'pk.' e ter formato JWT (com pontos)
+    // Formato: pk.header.payload.signature
+    const tokenRegex = /^pk\.[a-zA-Z0-9_.-]{40,}$/;
     return tokenRegex.test(token);
   }
 
