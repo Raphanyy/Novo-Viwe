@@ -14,9 +14,12 @@ import {
   Star,
   Calendar,
   Activity,
+  Users,
+  FolderOpen,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
+import { Progress } from "../../components/ui/progress";
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -50,65 +53,77 @@ const DashboardPage: React.FC = () => {
     },
   ];
 
-  const quickActions = [
+  const statistics = [
     {
-      name: "Nova Rota",
-      icon: Plus,
-      action: openRouteModal,
-      color: "bg-blue-100 text-blue-600",
-      description: "Planejar viagem",
-    },
-    {
-      name: "Mapa",
-      icon: MapPin,
-      path: "/app/mapa",
-      color: "bg-green-100 text-green-600",
-      description: "Ver localizações",
-    },
-    {
-      name: "Atividade",
-      icon: Activity,
-      path: "/app/atividade",
-      color: "bg-purple-100 text-purple-600",
-      description: "Histórico",
-    },
-    {
-      name: "Configurar",
-      icon: Navigation,
-      path: "/app/opcoes",
-      color: "bg-yellow-100 text-yellow-600",
-      description: "Preferências",
-    },
-  ];
-
-  const stats = [
-    {
-      label: "Rotas este mês",
+      name: "Rotas este mês",
       value: "47",
       change: "+12%",
       icon: Route,
       color: "text-blue-600",
+      description: "Total de rotas criadas",
     },
     {
-      label: "Tempo economizado",
+      name: "Tempo economizado",
       value: "3.2h",
       change: "+18%",
       icon: Clock,
       color: "text-green-600",
+      description: "Otimização de trajetos",
     },
     {
-      label: "Distância total",
+      name: "Distância total",
       value: "342km",
       change: "+8%",
       icon: Car,
       color: "text-purple-600",
+      description: "Percorridos este mês",
     },
     {
-      label: "Efici��ncia",
+      name: "Eficiência",
       value: "89%",
       change: "+5%",
       icon: TrendingUp,
       color: "text-yellow-600",
+      description: "Média de otimização",
+    },
+  ];
+
+  const consumptionData = [
+    {
+      label: "Rotas Permanentes",
+      current: 47,
+      limit: 100,
+      percentage: 47,
+      icon: Route,
+      color: "text-blue-600",
+      description: "47 de 100 rotas utilizadas",
+    },
+    {
+      label: "Rotas Imediatas",
+      current: 23,
+      limit: 50,
+      percentage: 46,
+      icon: Zap,
+      color: "text-yellow-600",
+      description: "23 de 50 rotas utilizadas",
+    },
+    {
+      label: "Conjuntos criados",
+      current: 8,
+      limit: 20,
+      percentage: 40,
+      icon: FolderOpen,
+      color: "text-purple-600",
+      description: "8 de 20 conjuntos criados",
+    },
+    {
+      label: "Clientes Adicionados",
+      current: 156,
+      limit: 500,
+      percentage: 31,
+      icon: Users,
+      color: "text-green-600",
+      description: "156 de 500 clientes",
     },
   ];
 
@@ -153,77 +168,17 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Ações Rápidas
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-
-              if (action.action) {
-                // Para ações que usam modal (Nova Rota)
-                return (
-                  <button
-                    key={action.name}
-                    onClick={action.action}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-l-4 border-l-primary border-border relative overflow-hidden"
-                  >
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                    <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
-                      {action.name}
-                    </h4>
-                    <p className="text-xs text-muted-foreground relative z-10">
-                      {action.description}
-                    </p>
-                  </button>
-                );
-              } else {
-                // Para ações que usam Link (outras ações)
-                return (
-                  <Link
-                    key={action.name}
-                    to={action.path}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-l-4 border-l-primary border-border relative overflow-hidden"
-                  >
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                    <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
-                      {action.name}
-                    </h4>
-                    <p className="text-xs text-muted-foreground relative z-10">
-                      {action.description}
-                    </p>
-                  </Link>
-                );
-              }
-            })}
-          </div>
-        </div>
-
         {/* Statistics */}
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-3">
             Estatísticas
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {stats.map((stat) => {
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {statistics.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div
-                  key={stat.label}
+                  key={stat.name}
                   className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
                   {/* Gradient overlay */}
@@ -237,9 +192,52 @@ const DashboardPage: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground relative z-10">
                     {stat.value}
                   </p>
+                  <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
+                    {stat.name}
+                  </h4>
                   <p className="text-xs text-muted-foreground relative z-10">
-                    {stat.label}
+                    {stat.description}
                   </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Painel de Consumo */}
+        <div>
+          <h3 className="text-lg font-semibold text-foreground mb-3">
+            Painel de Consumo
+          </h3>
+          <div className="space-y-4">
+            {consumptionData.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.label}
+                  className="bg-card rounded-2xl p-5 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                >
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`h-5 w-5 ${item.color}`} />
+                        <h4 className="font-semibold text-foreground">
+                          {item.label}
+                        </h4>
+                      </div>
+                      <span className="text-sm font-medium text-foreground">
+                        {item.current}/{item.limit}
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      <Progress value={item.percentage} className="h-2" />
+                      <p className="text-xs text-muted-foreground">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               );
             })}

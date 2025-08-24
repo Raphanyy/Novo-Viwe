@@ -15,7 +15,6 @@ import {
   Sliders,
   LogOut,
   User,
-  Rocket,
   ArrowLeft,
   Navigation,
   Target,
@@ -403,10 +402,7 @@ const MobileInternalLayout: React.FC = () => {
         <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="flex items-center">
-              <Rocket className="h-6 w-6 text-blue-600" />
-              <span className="font-bold text-lg ml-2 text-foreground">
-                Viwe
-              </span>
+              <span className="font-bold text-lg text-foreground">Viwe</span>
             </div>
             <div className="w-px h-6 bg-border"></div>
             <h1 className="text-lg font-semibold text-foreground">
