@@ -206,8 +206,8 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       formData.info.routeName.trim() !== "" &&
       formData.info.responsible.trim() !== "" &&
       formData.stops.length > 0 &&
-      formData.scheduling.type !== "" &&
-      (formData.scheduling.type === "permanente" || formData.scheduling.date !== "")
+      (formData.scheduling.type === "permanente" ||
+       (formData.scheduling.type === "imediata" && formData.scheduling.date.trim() !== ""))
     );
   };
 
