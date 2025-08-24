@@ -709,54 +709,6 @@ const LandingPage = () => {
       {/* Conteúdo Principal */}
       <HomePage heroRef={heroRef} />
 
-      {/* CTA Section balanceada */}
-      <section className="bg-gradient-to-r from-primary via-blue-600 to-blue-700 py-20 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white mb-6">
-              Revolucione suas jornadas agora!
-            </h2>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
-              Mais de 50.000 usuários já otimizaram suas rotas com o Viwe.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-              <Link
-                to="/login"
-                className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  Começar gratuitamente
-                </span>
-              </Link>
-              <button className="bg-black text-white px-8 py-3 rounded-full border border-white font-semibold hover:bg-black/90 transition-all duration-300">
-                <span className="flex items-center justify-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Falar com vendas
-                </span>
-              </button>
-            </div>
-
-            {/* Garantias */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-white/80 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-white" />
-                <span>Teste grátis por 30 dias</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-white" />
-                <span>Sem cartão de crédito</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-white" />
-                <span>Suporte 24/7</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
