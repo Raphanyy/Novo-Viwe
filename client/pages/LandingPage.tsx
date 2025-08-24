@@ -733,7 +733,7 @@ const HomePage = ({
       {/* Como Funciona */}
       <HowItWorksSection />
 
-      {/* Recursos Avançados */}
+      {/* Recursos Avan��ados */}
       <AdvancedFeaturesSection />
 
       {/* Testemunhos */}
@@ -806,6 +806,11 @@ const LandingPage = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      // Cancel animation frame to prevent memory leaks
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
       window.removeEventListener("resize", handleResize);
       if (
         heroRef.current &&
