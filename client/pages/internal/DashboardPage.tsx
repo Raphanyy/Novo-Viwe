@@ -262,9 +262,11 @@ const DashboardPage: React.FC = () => {
             {recentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-border"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-l-4 border-l-primary border-border relative overflow-hidden"
               >
-                <div className="flex items-center justify-between">
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                <div className="flex items-center justify-between relative z-10">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
                       <h4 className="font-semibold text-foreground">
