@@ -14,6 +14,7 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import MobileLoginPage from "./pages/MobileLoginPage";
 import EmailLoginPage from "./pages/EmailLoginPage";
+import SignupPage from "./pages/SignupPage";
 
 // Internal Pages
 import DashboardPage from "./pages/internal/DashboardPage";
@@ -93,6 +94,14 @@ const AppRoutes = () => {
         element={
           <PublicRoute>
             <EmailLoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <SignupPage />
           </PublicRoute>
         }
       />
