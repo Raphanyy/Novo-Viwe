@@ -25,6 +25,10 @@ import {
   RotateCcw,
   Loader2,
   Share2,
+  Trash2,
+  CheckCircle,
+  Info,
+  Settings,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import ModalHeader from "../../components/shared/ModalHeader";
@@ -109,6 +113,15 @@ const MapPage: React.FC = () => {
     stopNavigation,
     setMapCleanupCallback,
     addStop,
+    clearAllStops,
+    showTraceConfirmation,
+    startActiveNavigation,
+    giveUpNavigation,
+    completeCurrentStop,
+    optimizeRoute,
+    openDetailsModal,
+    openAdjustmentsModal,
+    endRoute,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
@@ -1351,16 +1364,197 @@ const MapPage: React.FC = () => {
           <Target className="h-5 w-5 text-gray-600" />
         </button>
 
-        {/* Route Suggestion Button - Hidden when tracing */}
-        {!traceState.isTracing && (
+        {/* Route Control Buttons */}
+        {!traceState.isTracing && !traceState.showTraceConfirmed && !traceState.isInActiveNavigation && (
           <div className="absolute bottom-4 left-4 right-4 z-10">
             <button
-              onClick={openRouteModal}
+              onClick={() => {
+                startTracing();
+              }}
               className="w-full bg-blue-600 text-white p-4 rounded-2xl shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
             >
               <RouteIcon className="h-5 w-5" />
-              <span className="font-semibold">Criar Nova Rota</span>
+              <span className="font-semibold">Traçar</span>
             </button>
+          </div>
+        )}
+
+        {/* Planning Mode Controls */}
+        {traceState.isTracing && !traceState.showTraceConfirmed && !traceState.isInActiveNavigation && (
+          <div className="absolute bottom-4 left-4 right-4 z-10 space-y-3">
+            {/* Primary Action Button */}
+            <button
+              onClick={async () => {
+                if (traceState.centerPin) {
+                  await addStop(traceState.centerPin.coordinates, `Parada ${traceState.stops.length + 1}`);
+                  // Auto-trace route if we have 2+ stops
+                  if (traceState.stops.length >= 1) {
+                    await traceRouteOnMap([...traceState.stops, {
+                      coordinates: traceState.centerPin.coordinates,
+                      id: 'temp',
+                      name: 'temp',
+                      order: traceState.stops.length + 1
+                    }]);
+                  }
+                }
+              }}
+              className="w-full bg-green-600 text-white p-4 rounded-2xl shadow-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <Plus className="h-5 w-5" />
+              <span className="font-semibold">Adicionar</span>
+              {traceState.stops.length > 0 && (
+                <span className="bg-white/20 px-2 py-1 rounded-full text-sm">({traceState.stops.length})</span>
+              )}
+            </button>
+
+            {/* Secondary Controls Row */}
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                onClick={() => {
+                  cancelTrace();
+                }}
+                className="bg-gray-600 text-white p-3 rounded-xl shadow-lg hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+              >
+                <X className="h-4 w-4" />
+                <span className="text-sm font-medium">Cancelar</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  clearAllStops();
+                  // Clear route from map
+                  if (map.current && map.current.getSource("route")) {
+                    map.current.removeLayer("route");
+                    map.current.removeSource("route");
+                  }
+                }}
+                disabled={traceState.stops.length === 0}
+                className={`p-3 rounded-xl shadow-lg transition-colors duration-200 flex items-center justify-center space-x-1 ${
+                  traceState.stops.length === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-red-600 text-white hover:bg-red-700'
+                }`}
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="text-sm font-medium">Limpar</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  openRouteModal();
+                }}
+                className="bg-purple-600 text-white p-3 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="text-sm font-medium">Configurar</span>
+              </button>
+            </div>
+
+            {/* Show trace button when we have stops */}
+            {traceState.stops.length >= 2 && (
+              <button
+                onClick={() => {
+                  showTraceConfirmation();
+                }}
+                className="w-full bg-orange-600 text-white p-3 rounded-xl shadow-lg hover:bg-orange-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
+                <RouteIcon className="h-4 w-4" />
+                <span className="font-medium">Finalizar Planejamento</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Navigation Confirmed - Show Navigate/Cancel */}
+        {traceState.showTraceConfirmed && !traceState.isInActiveNavigation && (
+          <div className="absolute bottom-4 left-4 right-4 z-10 space-y-3">
+            <button
+              onClick={() => {
+                startActiveNavigation();
+              }}
+              className="w-full bg-blue-600 text-white p-4 rounded-2xl shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <Navigation className="h-5 w-5" />
+              <span className="font-semibold">Navegar</span>
+            </button>
+
+            <button
+              onClick={() => {
+                giveUpNavigation();
+              }}
+              className="w-full bg-gray-600 text-white p-3 rounded-xl shadow-lg hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <X className="h-4 w-4" />
+              <span className="font-medium">Cancelar</span>
+            </button>
+          </div>
+        )}
+
+        {/* Active Navigation Controls */}
+        {traceState.isInActiveNavigation && (
+          <div className="absolute bottom-4 left-4 right-4 z-10 space-y-3">
+            {/* Primary Action - Complete Current Stop */}
+            <button
+              onClick={() => {
+                completeCurrentStop();
+              }}
+              disabled={traceState.isPaused}
+              className={`w-full p-4 rounded-2xl shadow-lg transition-colors duration-200 flex items-center justify-center space-x-2 ${
+                traceState.isPaused
+                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                  : 'bg-green-600 text-white hover:bg-green-700'
+              }`}
+            >
+              <CheckCircle className="h-5 w-5" />
+              <span className="font-semibold">
+                {traceState.navigationData.currentStopIndex < traceState.stops.length
+                  ? `Concluir Parada ${traceState.navigationData.currentStopIndex + 1}`
+                  : 'Todas Concluídas'}
+              </span>
+            </button>
+
+            {/* Secondary Controls Row */}
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={() => {
+                  optimizeRoute();
+                }}
+                className="bg-yellow-600 text-white p-3 rounded-xl shadow-lg hover:bg-yellow-700 transition-colors duration-200 flex items-center justify-center flex-col"
+              >
+                <RotateCcw className="h-4 w-4" />
+                <span className="text-xs font-medium mt-1">Otimizar</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  openDetailsModal();
+                }}
+                className="bg-blue-600 text-white p-3 rounded-xl shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center flex-col"
+              >
+                <Info className="h-4 w-4" />
+                <span className="text-xs font-medium mt-1">Resumo</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  openAdjustmentsModal();
+                }}
+                className="bg-purple-600 text-white p-3 rounded-xl shadow-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center flex-col"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="text-xs font-medium mt-1">Ajustes</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  endRoute();
+                }}
+                className="bg-red-600 text-white p-3 rounded-xl shadow-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center flex-col"
+              >
+                <X className="h-4 w-4" />
+                <span className="text-xs font-medium mt-1">Finalizar</span>
+              </button>
+            </div>
           </div>
         )}
 
