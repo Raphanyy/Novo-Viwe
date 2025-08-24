@@ -330,7 +330,7 @@ const HowItWorksSection = () => {
       step: "03",
       title: "Navegue com confiança",
       description:
-        "Siga as instruções em tempo real e chegue mais rápido ao destino",
+        "Siga as instru��ões em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
       color: "from-blue-700 to-blue-800",
     },
@@ -653,7 +653,7 @@ const HomePage = ({
                   Otimização de Rotas
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  IA avançada encontra as rotas mais eficientes. Economize tempo, combustível e reduza stress.
+                  IA encontra rotas eficientes. Economize tempo e combustível.
                 </p>
               </div>
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -674,7 +674,7 @@ const HomePage = ({
                   Previsão de Trânsito
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Dados em tempo real com precisão de 99%. Evite congestionamentos e chegue sempre no horário.
+                  Dados em tempo real evitam trânsito. Precisão de 99%.
                 </p>
               </div>
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/30 to-blue-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -695,7 +695,7 @@ const HomePage = ({
                   Pontos de Interesse
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Descubra restaurantes, postos e atrações estrategicamente posicionados no seu trajeto.
+                  Encontre restaurantes, postos e atrações no trajeto.
                 </p>
               </div>
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/30 to-blue-700/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -716,7 +716,7 @@ const HomePage = ({
                   Compartilhar Itinerário
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
-                  Sincronize e compartilhe rotas em tempo real com família, equipes e colaboradores.
+                  Compartilhe rotas em tempo real com família e equipes.
                 </p>
               </div>
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
