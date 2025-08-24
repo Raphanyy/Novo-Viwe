@@ -363,32 +363,32 @@ const ActivityPage: React.FC = () => {
 
         {/* Statistics */}
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas do Período</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas</h3>
+          <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div
                   key={stat.label}
-                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  className="bg-card rounded-xl p-3 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-2">
-                      <Icon className={`h-5 w-5 ${stat.color}`} />
+                    <div className="flex items-center justify-between mb-1">
+                      <Icon className={`h-4 w-4 ${stat.color}`} />
                       <span className="text-xs text-green-600 font-medium">
                         {stat.change}
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-foreground">
-                      {stat.value}
-                    </p>
-                    <h4 className="font-semibold text-foreground text-sm mb-1">
-                      {stat.label}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      {stat.description}
-                    </p>
+                    <div className="flex items-baseline space-x-1">
+                      <p className="text-lg font-bold text-foreground leading-none">
+                        {stat.value}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-foreground">{stat.label}</span>
+                      <span className="text-muted-foreground">{stat.description}</span>
+                    </div>
                   </div>
                 </div>
               );
