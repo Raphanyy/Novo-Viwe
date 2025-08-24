@@ -8,6 +8,8 @@ import {
 export interface RouteStop {
   id: string;
   name: string;
+  code?: string; // Código/ID da parada
+  notes?: string; // Anotação da parada
   coordinates: [number, number]; // [lng, lat]
   address?: string;
   isCompleted?: boolean;
@@ -63,7 +65,6 @@ interface TraceRouteContextType {
   openConfiguration: () => void;
   closeConfiguration: () => void;
   setInPreparation: (value: boolean) => void;
-  showTraceConfirmation: () => void;
   hideTraceConfirmation: () => void;
   confirmTrace: () => void;
   cancelTrace: () => void;
@@ -258,17 +259,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
     setState((prev) => {
       const newStops = [...prev.stops, newStop];
-      // Automaticamente mostrar confirmação se tiver 2+ paradas
-      const shouldShowConfirmation = newStops.length >= 2 && prev.isTracing;
 
       return {
         ...prev,
         stops: newStops,
         estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
-        // Mostrar confirmação automaticamente quando tiver 2+ paradas
-        showConfirmDialog: shouldShowConfirmation
-          ? true
-          : prev.showConfirmDialog,
       };
     });
   };
@@ -307,13 +302,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     setState((prev) => ({
       ...prev,
       isInPreparation: value,
-    }));
-  };
-
-  const showTraceConfirmation = () => {
-    setState((prev) => ({
-      ...prev,
-      showConfirmDialog: true,
     }));
   };
 
@@ -762,7 +750,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     openConfiguration,
     closeConfiguration,
     setInPreparation,
-    showTraceConfirmation,
     hideTraceConfirmation,
     confirmTrace,
     cancelTrace,

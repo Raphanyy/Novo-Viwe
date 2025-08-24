@@ -274,11 +274,17 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           setTimeout(() => {
             setIsSuccess(false);
             onClose();
-            // Finalizar planejamento automaticamente após salvar
+            // Finalizar planejamento automaticamente após salvar - traçar rota diretamente
             console.log(
-              "Chamando showTraceConfirmation() para finalizar planejamento",
+              "Configurações salvas, traçando rota automaticamente...",
             );
-            traceContext.showTraceConfirmation();
+            traceContext.confirmTrace();
+            // Disparar evento para traçar rota no mapa
+            window.dispatchEvent(
+              new CustomEvent("traceRoute", {
+                detail: { stops: formData.stops },
+              }),
+            );
           }, 1500);
 
           return; // Sair early para não executar o resto da função
@@ -803,11 +809,21 @@ function StopsPage({
     saveData(reorderedStops);
   };
 
+  const handleUpdateStop = (stopId: string, updates: Partial<RouteStop>) => {
+    const newStops = stops.map((stop) =>
+      stop.id === stopId ? { ...stop, ...updates } : stop,
+    );
+    setStops(newStops);
+    saveData(newStops);
+  };
+
   // Handle address selection from search results
   function handleAddressFromSearch(result: SearchResult) {
     const newStop: RouteStop = {
       id: `stop-${Date.now()}`,
       name: result.text,
+      code: "", // Campo vazio para ser preenchido pelo usuário
+      notes: "", // Campo vazio para ser preenchido pelo usuário
       address: result.place_name,
       coordinates: result.center,
       order: stops.length + 1,
@@ -836,57 +852,120 @@ function StopsPage({
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {stops.map((stop, index) => (
               <div
                 key={stop.id}
-                className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg"
+                className="p-4 bg-muted/50 rounded-lg border border-border/50"
               >
-                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
-                  {stop.order}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-foreground text-sm truncate">
-                    {stop.name}
-                  </h4>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {stop.address || "Endereço não disponível"}
-                  </p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">
-                    {stop.coordinates[1].toFixed(4)},{" "}
-                    {stop.coordinates[0].toFixed(4)}
-                  </p>
-                </div>
-                <div className="flex flex-col space-y-1">
-                  {index > 0 && (
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                      {stop.order}
+                    </div>
+                    <h4 className="font-medium text-foreground text-sm">
+                      Parada {stop.order}
+                    </h4>
+                  </div>
+
+                  <div className="flex items-center space-x-1">
+                    {index > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReorderStops(index, index - 1)}
+                        className="h-6 w-6 p-0"
+                        title="Mover para cima"
+                      >
+                        ↑
+                      </Button>
+                    )}
+                    {index < stops.length - 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReorderStops(index, index + 1)}
+                        className="h-6 w-6 p-0"
+                        title="Mover para baixo"
+                      >
+                        ↓
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleReorderStops(index, index - 1)}
-                      className="h-6 w-6 p-0"
+                      onClick={() => handleRemoveStop(stop.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 h-6 w-6 p-0"
+                      title="Remover parada"
                     >
-                      ↑
+                      <Trash2 className="h-3 w-3" />
                     </Button>
-                  )}
-                  {index < stops.length - 1 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleReorderStops(index, index + 1)}
-                      className="h-6 w-6 p-0"
-                    >
-                      ↓
-                    </Button>
-                  )}
+                  </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRemoveStop(stop.id)}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+
+                <div className="space-y-3">
+                  {/* Nome da Parada */}
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">
+                      Nome da Parada
+                    </label>
+                    <input
+                      type="text"
+                      value={stop.name || ""}
+                      onChange={(e) =>
+                        handleUpdateStop(stop.id, { name: e.target.value })
+                      }
+                      className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Ex: Casa do João, Escritório, etc."
+                    />
+                  </div>
+
+                  {/* Código/ID */}
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">
+                      Código / ID
+                    </label>
+                    <input
+                      type="text"
+                      value={stop.code || ""}
+                      onChange={(e) =>
+                        handleUpdateStop(stop.id, { code: e.target.value })
+                      }
+                      className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Ex: A001, CLI-123, etc."
+                    />
+                  </div>
+
+                  {/* Anotação */}
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">
+                      Anotação
+                    </label>
+                    <textarea
+                      value={stop.notes || ""}
+                      onChange={(e) =>
+                        handleUpdateStop(stop.id, { notes: e.target.value })
+                      }
+                      className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                      placeholder="Observações, instruções especiais, etc."
+                      rows={2}
+                    />
+                  </div>
+
+                  {/* Endereço (somente leitura) */}
+                  <div>
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">
+                      Endereço
+                    </label>
+                    <div className="w-full px-3 py-2 text-sm bg-muted/50 border border-border rounded-lg text-muted-foreground">
+                      {stop.address || "Endereço não disponível"}
+                    </div>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
+                      📍 {stop.coordinates[1].toFixed(4)},{" "}
+                      {stop.coordinates[0].toFixed(4)}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

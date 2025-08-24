@@ -100,7 +100,6 @@ const TabletInternalLayout: React.FC = () => {
     addStop,
     removeLastStop,
     openConfiguration,
-    showTraceConfirmation,
     cancelTrace,
     openFinalSummaryModal,
     closeFinalSummaryModal,
@@ -208,7 +207,8 @@ const TabletInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "trace_execute":
-        showTraceConfirmation();
+        // Esta ação foi removida - agora usar modal de configuração
+        openConfiguration();
         break;
       case "cancel":
         cancelTrace();

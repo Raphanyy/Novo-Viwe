@@ -121,7 +121,6 @@ const MapPage: React.FC = () => {
     setMapCleanupCallback,
     addStop,
     clearAllStops,
-    showTraceConfirmation,
     startActiveNavigation,
     giveUpNavigation,
     completeCurrentStop,
@@ -133,6 +132,7 @@ const MapPage: React.FC = () => {
     endRoute,
     startTracing,
     closeFinalSummaryModal,
+    saveAndCompleteRoute,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
@@ -1509,141 +1509,14 @@ const MapPage: React.FC = () => {
         <FinalSummaryModal
           isOpen={traceState.showFinalSummaryModal}
           onClose={closeFinalSummaryModal}
+          onSaveAndComplete={() => {
+            try {
+              saveAndCompleteRoute();
+            } catch (error) {
+              console.error("Erro ao salvar rota:", error);
+            }
+          }}
         />
-
-        {/* Trace Confirmation Dialog - Full Page Modal */}
-        {traceState.showConfirmDialog && (
-          <div className="fixed inset-0 z-[60] bg-background flex flex-col">
-            {/* Header */}
-            <ModalHeader
-              title="Traçar Rota"
-              showBackButton={true}
-              onBack={() => {
-                cancelTrace();
-              }}
-              rightContent={
-                <AlertTriangle className="h-5 w-5 text-orange-600" />
-              }
-            />
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="max-w-md mx-auto space-y-6">
-                {/* Route Summary Card */}
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                      <AlertTriangle className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-foreground">
-                        Confirmar Traçado da Rota
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Consome {traceState.estimatedCredits} créditos
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="bg-muted/50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-foreground">
-                          Paradas configuradas
-                        </span>
-                        <span className="text-lg font-bold text-primary">
-                          {traceState.stops.length}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Esta ação irá traçar a rota completa no mapa conectando
-                        todas as paradas.
-                      </p>
-                    </div>
-
-                    {traceState.stops.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-foreground">
-                          Paradas da rota:
-                        </h4>
-                        <div className="max-h-32 overflow-y-auto space-y-1">
-                          {traceState.stops.slice(0, 3).map((stop, index) => (
-                            <div
-                              key={stop.id}
-                              className="flex items-center space-x-2 text-xs"
-                            >
-                              <div className="w-4 h-4 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[10px] font-medium">
-                                {index + 1}
-                              </div>
-                              <span className="text-muted-foreground truncate">
-                                {stop.name}
-                              </span>
-                            </div>
-                          ))}
-                          {traceState.stops.length > 3 && (
-                            <div className="text-xs text-muted-foreground ml-6">
-                              +{traceState.stops.length - 3} paradas adicionais
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
-                        <AlertTriangle className="h-4 w-4 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-800">
-                          Importante
-                        </span>
-                      </div>
-                      <p className="text-xs text-orange-700 mt-1">
-                        O traçado da rota irá otimizar o caminho entre as
-                        paradas para economizar tempo e combustível.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => {
-                      cancelTrace();
-                    }}
-                    className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={async () => {
-                      confirmTrace();
-                      // Traçar a rota no mapa
-                      await traceRouteOnMap(traceState.stops);
-                    }}
-                    disabled={isTracingRoute}
-                    className={`flex-1 py-3 px-4 rounded-xl font-medium transition-colors duration-200 ${
-                      isTracingRoute
-                        ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
-                        : "bg-primary text-primary-foreground hover:bg-primary/90"
-                    }`}
-                  >
-                    {isTracingRoute ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Traçando...
-                      </>
-                    ) : (
-                      <>
-                        <RouteIcon className="h-4 w-4 mr-2" />
-                        Confirmar Traçado
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* POI Details Modal - Enhanced */}
         {selectedPOI && (

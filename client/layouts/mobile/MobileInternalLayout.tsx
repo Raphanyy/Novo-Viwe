@@ -109,7 +109,6 @@ const MobileInternalLayout: React.FC = () => {
     removeLastStop,
     clearAllStops,
     openConfiguration,
-    showTraceConfirmation,
     cancelTrace,
     giveUpNavigation,
     startActiveNavigation,
