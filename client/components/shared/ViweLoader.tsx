@@ -11,7 +11,7 @@ interface ViweLoaderProps {
 
 const sizeClasses = {
   xs: "w-4 h-4",
-  sm: "w-6 h-6", 
+  sm: "w-6 h-6",
   md: "w-8 h-8",
   lg: "w-12 h-12",
   xl: "w-16 h-16",
@@ -32,8 +32,8 @@ const ViweLoader: React.FC<ViweLoaderProps> = ({
       <div
         className="absolute inset-0 bg-background z-10"
         style={{
-          transform: 'translateX(-100%)',
-          animation: 'viweSlideRight 1.5s ease-out infinite',
+          transform: "translateX(-100%)",
+          animation: "viweSlideRight 1.5s ease-out infinite",
         }}
       />
       <img
@@ -41,9 +41,9 @@ const ViweLoader: React.FC<ViweLoaderProps> = ({
         alt="Viwe Logo"
         className="w-full h-full object-contain select-none pointer-events-none"
         style={{
-          filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.3))',
-          backfaceVisibility: 'hidden',
-          transform: 'translateZ(0)',
+          filter: "drop-shadow(0 0 10px rgba(59, 130, 246, 0.3))",
+          backfaceVisibility: "hidden",
+          transform: "translateZ(0)",
         }}
         draggable={false}
       />
@@ -89,9 +89,7 @@ const ViweLoader: React.FC<ViweLoaderProps> = ({
   return (
     <div className="flex items-center">
       <LogoAnimation />
-      {withText && (
-        <span className="ml-2 text-sm">{withText}</span>
-      )}
+      {withText && <span className="ml-2 text-sm">{withText}</span>}
     </div>
   );
 };

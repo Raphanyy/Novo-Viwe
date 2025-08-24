@@ -1154,9 +1154,7 @@ const MapPage: React.FC = () => {
             placeholder="Buscar cidades, bairros, estabelecimentos..."
           />
           <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
-            {isSearching && (
-              <ViweLoader size="xs" />
-            )}
+            {isSearching && <ViweLoader size="xs" />}
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -1350,7 +1348,8 @@ const MapPage: React.FC = () => {
                 Mapa Indisponível
               </h3>
               <p className="text-muted-foreground mb-4 text-sm">
-                Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa.
+                Token do Mapbox não configurado. Configure
+                VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa.
               </p>
               <div className="text-xs text-muted-foreground/70">
                 Esta é uma versão de demonstração da plataforma Viwe.

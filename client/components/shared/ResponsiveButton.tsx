@@ -71,9 +71,7 @@ const ResponsiveButton = React.forwardRef<
         disabled={disabled || loading}
         {...props}
       >
-        {loading && (
-          <ViweLoader size="xs" className="mr-2" />
-        )}
+        {loading && <ViweLoader size="xs" className="mr-2" />}
         {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
         {children}
         {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}

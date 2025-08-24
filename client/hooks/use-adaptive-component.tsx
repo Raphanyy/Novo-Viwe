@@ -98,9 +98,7 @@ export const AdaptiveComponent: React.FC<AdaptiveComponentProps> = ({
   const { Component, isLoading, error } = useAdaptiveComponent(name, fallback);
 
   // Default loading component
-  const DefaultLoading = () => (
-    <ViweLoaderCenter />
-  );
+  const DefaultLoading = () => <ViweLoaderCenter />;
 
   // Default error component
   const DefaultError = ({

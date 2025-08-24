@@ -14,8 +14,8 @@ const MapboxSetupGuide: React.FC = () => {
       </div>
 
       <p className="text-muted-foreground mb-6 text-sm">
-        Para ativar a funcionalidade completa do mapa, você precisa configurar um token do Mapbox.
-        Siga os passos abaixo:
+        Para ativar a funcionalidade completa do mapa, você precisa configurar
+        um token do Mapbox. Siga os passos abaixo:
       </p>
 
       <div className="space-y-4">
@@ -51,7 +51,8 @@ const MapboxSetupGuide: React.FC = () => {
               Obter Access Token
             </h4>
             <p className="text-sm text-muted-foreground mb-2">
-              No painel do Mapbox, acesse a seção "Access tokens" e copie seu token público.
+              No painel do Mapbox, acesse a seção "Access tokens" e copie seu
+              token público.
             </p>
             <a
               href="https://account.mapbox.com/access-tokens/"
@@ -91,7 +92,8 @@ const MapboxSetupGuide: React.FC = () => {
               Reiniciar aplicação
             </h4>
             <p className="text-sm text-muted-foreground">
-              Reinicie o servidor de desenvolvimento para que as mudanças tenham efeito.
+              Reinicie o servidor de desenvolvimento para que as mudanças tenham
+              efeito.
             </p>
           </div>
         </div>
@@ -99,8 +101,9 @@ const MapboxSetupGuide: React.FC = () => {
 
       <div className="mt-6 pt-4 border-t border-border">
         <p className="text-xs text-muted-foreground">
-          💡 <strong>Dica:</strong> O plano gratuito do Mapbox permite até 50.000 visualizações de mapa por mês,
-          suficiente para desenvolvimento e teste.
+          💡 <strong>Dica:</strong> O plano gratuito do Mapbox permite até
+          50.000 visualizações de mapa por mês, suficiente para desenvolvimento
+          e teste.
         </p>
       </div>
     </div>

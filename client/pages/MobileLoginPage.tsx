@@ -50,8 +50,8 @@ const MobileLoginPage: React.FC = () => {
             <div
               className="absolute inset-0 bg-background z-10"
               style={{
-                transform: 'translateX(-100%)',
-                animation: 'slideRight 2s ease-out forwards',
+                transform: "translateX(-100%)",
+                animation: "slideRight 2s ease-out forwards",
               }}
             />
             <img
@@ -59,9 +59,9 @@ const MobileLoginPage: React.FC = () => {
               alt="Viwe Logo"
               className="w-full h-full object-contain select-none pointer-events-none"
               style={{
-                filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.2))',
-                backfaceVisibility: 'hidden',
-                transform: 'translateZ(0)',
+                filter: "drop-shadow(0 0 20px rgba(59, 130, 246, 0.2))",
+                backfaceVisibility: "hidden",
+                transform: "translateZ(0)",
               }}
               draggable={false}
             />
