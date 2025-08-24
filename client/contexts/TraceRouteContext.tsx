@@ -502,20 +502,20 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         `Parada ${currentStopIndex + 1} concluída! Próxima: ${nextStopIndex + 1}/${totalStops}`,
       );
 
-      // Auto-otimizar quando há 3+ paradas restantes
-      if (!isRouteCompleted && remainingStops.length >= 3) {
-        console.log(`${remainingStops.length} paradas restantes - iniciando otimização automática...`);
+      // Usar inteligência adaptativa para decidir se deve otimizar
+      if (!isRouteCompleted && remainingStops.length > 0) {
+        // Aguardar atualização do estado antes de analisar
         setTimeout(() => {
-          optimizeRoute();
-        }, 1000); // Delay para permitir que o estado seja atualizado
-      } else if (!isRouteCompleted && remainingStops.length > 0) {
-        // Com poucas paradas restantes, apenas re-traçar a rota para o próximo destino
-        setTimeout(() => {
-          window.dispatchEvent(
-            new CustomEvent("traceRoute", {
-              detail: { stops: remainingStops },
-            })
-          );
+          // Se não sugeriu otimização inteligente e há poucas paradas, apenas re-traçar
+          if (remainingStops.length < 3) {
+            window.dispatchEvent(
+              new CustomEvent("traceRoute", {
+                detail: { stops: remainingStops },
+              })
+            );
+          }
+          // A otimização inteligente será executada pela suggestSmartOptimization
+          // quando as condições forem ideais
         }, 500);
       }
 
