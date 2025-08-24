@@ -135,81 +135,102 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
           </div>
         )}
 
-        {/* Estatísticas Principais */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-card border border-border rounded-lg p-4 text-center">
-            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-green-600">
-              {routeStats.completedStops}
-            </div>
-            <div className="text-sm text-muted-foreground">Paradas Concluídas</div>
-          </div>
+        {/* Resumo Detalhado */}
+        <Accordion type="multiple" className="w-full">
+          {/* Estatísticas Gerais da Rota */}
+          <AccordionItem value="general-stats">
+            <AccordionTrigger className="text-left">
+              <div className="flex items-center space-x-2">
+                <Route className="h-4 w-4 text-blue-600" />
+                <div>
+                  <span className="font-medium">Estatísticas Gerais</span>
+                  <p className="text-sm text-muted-foreground">
+                    Resumo principal da rota.
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">Paradas Concluídas</div>
+                    <div className="text-lg font-semibold text-green-600">
+                      {routeStats.completedStops} de {routeStats.totalStops}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">Tempo Total</div>
+                    <div className="text-lg font-semibold text-blue-600">
+                      {routeStats.totalTime > 0 ? formatTime(routeStats.totalTime) : "N/A"}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">Distância Percorrida</div>
+                    <div className="text-lg font-semibold text-purple-600">
+                      {routeStats.totalDistance > 0 ? formatDistance(routeStats.totalDistance) : "N/A"}
+                    </div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="text-sm text-muted-foreground">Combustível Usado</div>
+                    <div className="text-lg font-semibold text-orange-600">
+                      {routeStats.fuelUsed > 0 ? `${routeStats.fuelUsed.toFixed(1)}L` : "N/A"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-          <div className="bg-card border border-border rounded-lg p-4 text-center">
-            <Clock className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-blue-600">
-              {routeStats.totalTime > 0
-                ? formatTime(routeStats.totalTime)
-                : "N/A"}
-            </div>
-            <div className="text-sm text-muted-foreground">Tempo Total</div>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-4 text-center">
-            <Route className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-purple-600">
-              {routeStats.totalDistance > 0
-                ? formatDistance(routeStats.totalDistance)
-                : "N/A"}
-            </div>
-            <div className="text-sm text-muted-foreground">Distância</div>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-4 text-center">
-            <Fuel className="h-8 w-8 text-orange-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-orange-600">
-              {routeStats.fuelUsed > 0
-                ? routeStats.fuelUsed.toFixed(1)
-                : "N/A"}
-              L
-            </div>
-            <div className="text-sm text-muted-foreground">Combustível</div>
-          </div>
-        </div>
-
-          {/* Badges de Conquistas */}
+          {/* Conquistas e Badges */}
           {hasValidData && (
-            <div className="flex flex-wrap gap-2 justify-center">
-              {routeStats.efficiency === 100 && (
-                <Badge className="bg-green-100 text-green-700 border-green-200">
-                  <Star className="h-3 w-3 mr-1" />
-                  Rota 100% Completa
-                </Badge>
-              )}
-              {routeStats.fuelSaved > 0 && (
-                <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Economia de Combustível
-                </Badge>
-              )}
-              {routeStats.totalTime > 0 &&
-                routeStats.totalTime < 60 * 60 * 1000 && (
-                  <Badge className="bg-purple-100 text-purple-700 border-purple-200">
-                    <Clock className="h-3 w-3 mr-1" />
-                    Rota Rápida
-                  </Badge>
-                )}
-              {routeStats.efficiency >= 80 && routeStats.efficiency < 100 && (
-                <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200">
-                  <Award className="h-3 w-3 mr-1" />
-                  Boa Eficiência
-                </Badge>
-              )}
-            </div>
+            <AccordionItem value="achievements">
+              <AccordionTrigger className="text-left">
+                <div className="flex items-center space-x-2">
+                  <Trophy className="h-4 w-4 text-yellow-600" />
+                  <div>
+                    <span className="font-medium">Conquistas</span>
+                    <p className="text-sm text-muted-foreground">
+                      Badges e reconhecimentos.
+                    </p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap gap-2">
+                  {routeStats.efficiency === 100 && (
+                    <Badge className="bg-green-600/10 text-green-600 border-green-600/20">
+                      <Star className="h-3 w-3 mr-1" />
+                      Rota 100% Completa
+                    </Badge>
+                  )}
+                  {routeStats.fuelSaved > 0 && (
+                    <Badge className="bg-blue-600/10 text-blue-600 border-blue-600/20">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      Economia de Combustível
+                    </Badge>
+                  )}
+                  {routeStats.totalTime > 0 && routeStats.totalTime < 60 * 60 * 1000 && (
+                    <Badge className="bg-purple-600/10 text-purple-600 border-purple-600/20">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Rota Rápida
+                    </Badge>
+                  )}
+                  {routeStats.efficiency >= 80 && routeStats.efficiency < 100 && (
+                    <Badge className="bg-yellow-600/10 text-yellow-600 border-yellow-600/20">
+                      <Award className="h-3 w-3 mr-1" />
+                      Boa Eficiência
+                    </Badge>
+                  )}
+                  {(routeStats.efficiency < 80 || routeStats.efficiency === 0) && (
+                    <div className="text-sm text-muted-foreground">
+                      Nenhuma conquista obtida nesta rota.
+                    </div>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           )}
-
-          {/* Resumo Detalhado */}
-          <Accordion type="multiple" className="w-full">
             {/* Desempenho da Viagem */}
             <AccordionItem value="performance">
               <AccordionTrigger className="text-left">
