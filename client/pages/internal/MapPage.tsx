@@ -1147,7 +1147,7 @@ const MapPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 truncate">
+                      <p className="text-sm text-muted-foreground truncate">
                         {result.place_name}
                       </p>
                       {result.properties.category && (
