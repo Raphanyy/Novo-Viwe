@@ -1331,7 +1331,8 @@ function SchedulingPage({
               {isTodayToggle && (
                 <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                   <p className="text-sm text-primary font-medium">
-                    ✓ Rota programada para hoje ({new Date().toLocaleDateString('pt-BR')})
+                    ✓ Rota programada para hoje (
+                    {new Date().toLocaleDateString("pt-BR")})
                   </p>
                   <p className="text-xs text-primary/80 mt-1">
                     A rota será válida por 24 horas a partir de hoje

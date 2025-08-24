@@ -657,7 +657,9 @@ const MapPage: React.FC = () => {
           const route = data.routes[0];
 
           // Verificar se é a mesma rota para evitar redesenho desnecessário
-          const routeGeometryString = JSON.stringify(route.geometry.coordinates);
+          const routeGeometryString = JSON.stringify(
+            route.geometry.coordinates,
+          );
           if (lastRouteGeometryRef.current === routeGeometryString) {
             console.log("Rota idêntica já está no mapa, pulando redesenho");
             setRouteTraced(true);
