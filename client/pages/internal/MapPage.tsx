@@ -926,12 +926,10 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Clear search timeout on unmount
+  // Cleanup all resources on unmount
   useEffect(() => {
     return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      resourceManager.current!.destroy();
     };
   }, []);
 
