@@ -125,6 +125,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         scheduling: {
           ...prev.scheduling,
           type: "imediata", // Por padrão sempre imediata
+          date: new Date().toISOString().split("T")[0], // Data padrão é hoje
         },
       }));
     }
