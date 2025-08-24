@@ -135,8 +135,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="pt-24">
         {children}
 
-        {/* CTA Section - Show on all pages except pricing */}
-        {location.pathname !== "/pricing" && (
+        {/* CTA Section - Show on all pages except pricing and login */}
+        {location.pathname !== "/pricing" && location.pathname !== "/login" && (
           <section className="bg-secondary py-20 text-center border-t border-border">
             <div className="container mx-auto px-6 flex flex-col">
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
@@ -163,8 +163,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-secondary text-muted-foreground py-16 border-t border-border">
+      {/* Footer - Hide on login page */}
+      {location.pathname !== "/login" && (
+        <footer className="bg-secondary text-muted-foreground py-16 border-t border-border">
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <div className="flex items-center">
@@ -289,7 +290,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </p>
           </div>
         </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };
