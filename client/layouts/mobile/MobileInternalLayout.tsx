@@ -493,7 +493,7 @@ const MobileInternalLayout: React.FC = () => {
       </main>
 
       {/* Bottom Navigation - Mobile Only */}
-      {!traceState.showConfirmDialog && (
+      {!traceState.showConfigModal && (
         <nav className={`fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 safe-area-bottom ${
           isMapPage ? "py-3" : "py-2"
         }`}>
