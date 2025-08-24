@@ -155,11 +155,19 @@ const MapPage: React.FC = () => {
     );
   }, []);
 
-  const filteredPOIs = useMemo(() => {
+  // Otimizar filteredPOIs usando memoização estável
+  const filteredPOIs = useStableMemo(() => {
     return pointsOfInterest.filter(
       (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
     );
-  }, [activeFilters]);
+  }, [activeFilters], (prev, current) => {
+    // Comparação customizada para arrays de filtros
+    const [prevFilters] = prev;
+    const [currentFilters] = current;
+
+    if (prevFilters.length !== currentFilters.length) return false;
+    return prevFilters.every((filter: string, index: number) => filter === currentFilters[index]);
+  });
 
   // Function to clear all markers and routes from map (optimized)
   const clearAllMarkersAndRoutes = useCallback(() => {
