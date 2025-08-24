@@ -958,80 +958,12 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Clear search timeout on unmount and add comprehensive error filtering
+  // Clear search timeout on unmount
   useEffect(() => {
-    // Store original console.error to restore later
-    const originalConsoleError = console.error;
-
-    // Override console.error temporarily to filter Mapbox AbortErrors
-    console.error = (...args: any[]) => {
-      const message = args.join(" ");
-      if (
-        message.includes("AbortError") &&
-        (message.includes("signal is aborted") || message.includes("mapbox"))
-      ) {
-        // Silently ignore Mapbox AbortErrors
-        return;
-      }
-      // Call original console.error for other errors
-      originalConsoleError.apply(console, args);
-    };
-
-    // Add global error handler for network issues and filter out expected AbortErrors
-    const handleGlobalError = (event: ErrorEvent) => {
-      // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
-      if (
-        event.message.includes("AbortError") ||
-        event.message.includes("aborted without reason") ||
-        event.message.includes("signal is aborted") ||
-        event.message.includes("operation was aborted") ||
-        event.message.includes("cancelled")
-      ) {
-        event.preventDefault(); // Prevent the error from being logged to console
-        return;
-      }
-
-      if (
-        event.message.includes("Failed to fetch") ||
-        event.message.includes("NetworkError")
-      ) {
-        console.warn(
-          "Network error detected, search may be affected:",
-          event.message,
-        );
-      }
-    };
-
-    // Handle unhandled promise rejections (including AbortErrors from async operations)
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      if (
-        event.reason &&
-        (event.reason.name === "AbortError" ||
-          (event.reason.message &&
-            (event.reason.message.includes("aborted") ||
-              event.reason.message.includes("cancelled") ||
-              event.reason.message.includes("signal is aborted"))))
-      ) {
-        event.preventDefault(); // Prevent the error from being logged
-        return;
-      }
-    };
-
-    window.addEventListener("error", handleGlobalError);
-    window.addEventListener("unhandledrejection", handleUnhandledRejection);
-
     return () => {
-      // Restore original console.error
-      console.error = originalConsoleError;
-
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
-      window.removeEventListener("error", handleGlobalError);
-      window.removeEventListener(
-        "unhandledrejection",
-        handleUnhandledRejection,
-      );
     };
   }, []);
 
