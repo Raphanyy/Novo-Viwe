@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import "../styles/logo-animation.css";
 
 const MobileLoginPage: React.FC = () => {
   const { login } = useAuth();
