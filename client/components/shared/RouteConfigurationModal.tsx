@@ -336,7 +336,6 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           </div>
         </div>
 
-
         {/* Seções de configuração */}
         {configurationSections.map((section) => (
           <div key={section.id} className="relative">
@@ -940,7 +939,9 @@ function StopsPage({
                                     : result.place_type.includes("region") ||
                                         result.place_type.includes("district")
                                       ? "text-orange-600"
-                                      : result.place_type.includes("neighborhood")
+                                      : result.place_type.includes(
+                                            "neighborhood",
+                                          )
                                         ? "text-yellow-600"
                                         : "text-blue-600"
                               }`}

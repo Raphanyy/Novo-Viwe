@@ -1,5 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useErrorHandler, ErrorType, fetchWithErrorHandling } from "../lib/error-handling";
+import {
+  useErrorHandler,
+  ErrorType,
+  fetchWithErrorHandling,
+} from "../lib/error-handling";
 import { createMapboxApiUrl } from "../lib/mapbox-config";
 import { ResourceManager } from "../lib/resource-manager";
 
@@ -30,12 +34,10 @@ interface UseAddressSearchOptions {
   debounceMs?: number;
 }
 
-export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddressSearchReturn => {
-  const {
-    onSelectResult,
-    minQueryLength = 3,
-    debounceMs = 300
-  } = options;
+export const useAddressSearch = (
+  options: UseAddressSearchOptions = {},
+): UseAddressSearchReturn => {
+  const { onSelectResult, minQueryLength = 3, debounceMs = 300 } = options;
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -73,10 +75,7 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
       return "Escola Municipal Alvaro Moreira São Paulo";
     }
     // Brazilian cities and states recognition
-    else if (
-      lowerQuery.includes("são paulo") ||
-      lowerQuery.includes("sp")
-    ) {
+    else if (lowerQuery.includes("são paulo") || lowerQuery.includes("sp")) {
       return originalQuery.includes("SP")
         ? originalQuery
         : `${originalQuery} São Paulo`;
@@ -94,17 +93,11 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
       return originalQuery.includes("MG")
         ? originalQuery
         : `${originalQuery} Minas Gerais`;
-    } else if (
-      lowerQuery.includes("brasília") ||
-      lowerQuery.includes("df")
-    ) {
+    } else if (lowerQuery.includes("brasília") || lowerQuery.includes("df")) {
       return originalQuery.includes("DF")
         ? originalQuery
         : `${originalQuery} Brasília DF`;
-    } else if (
-      lowerQuery.includes("salvador") ||
-      lowerQuery.includes("ba")
-    ) {
+    } else if (lowerQuery.includes("salvador") || lowerQuery.includes("ba")) {
       return originalQuery.includes("BA")
         ? originalQuery
         : `${originalQuery} Salvador Bahia`;
@@ -128,39 +121,39 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
   }, []);
 
   // Helper function to perform search
-  const performSearch = useCallback(async (
-    searchQuery: string,
-    types: string,
-  ): Promise<any[]> => {
-    const apiUrl = createMapboxApiUrl(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
-      { country: "BR", language: "pt", limit: "8", types },
-    );
-
-    if (!apiUrl) {
-      return [];
-    }
-
-    const result = await handleAsyncError(async () => {
-      const response = await fetchWithErrorHandling(
-        apiUrl,
-        {},
-        {
-          timeout: 8000,
-          context: "Search",
-          retries: 1,
-          retryDelay: 500,
-        },
+  const performSearch = useCallback(
+    async (searchQuery: string, types: string): Promise<any[]> => {
+      const apiUrl = createMapboxApiUrl(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
+        { country: "BR", language: "pt", limit: "8", types },
       );
-      return response.json();
-    }, "GeocodeSearch");
 
-    if (result.success && result.data?.features) {
-      return result.data.features;
-    }
+      if (!apiUrl) {
+        return [];
+      }
 
-    return [];
-  }, [handleAsyncError]);
+      const result = await handleAsyncError(async () => {
+        const response = await fetchWithErrorHandling(
+          apiUrl,
+          {},
+          {
+            timeout: 8000,
+            context: "Search",
+            retries: 1,
+            retryDelay: 500,
+          },
+        );
+        return response.json();
+      }, "GeocodeSearch");
+
+      if (result.success && result.data?.features) {
+        return result.data.features;
+      }
+
+      return [];
+    },
+    [handleAsyncError],
+  );
 
   // Helper function to deduplicate features
   const deduplicateFeatures = useCallback((features: any[]): any[] => {
@@ -244,7 +237,13 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
         setIsSearching(false);
       }
     },
-    [enhanceQuery, performSearch, deduplicateFeatures, minQueryLength, handleError],
+    [
+      enhanceQuery,
+      performSearch,
+      deduplicateFeatures,
+      minQueryLength,
+      handleError,
+    ],
   );
 
   // Optimized debounced search with stable reference
@@ -267,14 +266,17 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
   );
 
   // Handle result selection
-  const handleSelectResult = useCallback((result: SearchResult) => {
-    setSearchQuery(result.text);
-    setShowResults(false);
-    
-    if (onSelectResult) {
-      onSelectResult(result);
-    }
-  }, [onSelectResult]);
+  const handleSelectResult = useCallback(
+    (result: SearchResult) => {
+      setSearchQuery(result.text);
+      setShowResults(false);
+
+      if (onSelectResult) {
+        onSelectResult(result);
+      }
+    },
+    [onSelectResult],
+  );
 
   // Clear results
   const clearResults = useCallback(() => {

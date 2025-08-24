@@ -304,7 +304,11 @@ const MobileInternalLayout: React.FC = () => {
       } else if (traceState.isInActiveNavigation) {
         // 3. NAVEGAÇÃO - Rota ativa, navegando entre paradas
         return navigationNavigationItems;
-      } else if (traceState.isTracing || traceState.isInPreparation || traceState.showTraceConfirmed) {
+      } else if (
+        traceState.isTracing ||
+        traceState.isInPreparation ||
+        traceState.showTraceConfirmed
+      ) {
         // 2. PLANEJAMENTO - Criando rota, adicionando paradas, confirmando
         return planningNavigationItems;
       } else {
@@ -494,9 +498,11 @@ const MobileInternalLayout: React.FC = () => {
 
       {/* Bottom Navigation - Mobile Only */}
       {!traceState.showConfigModal && (
-        <nav className={`fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 safe-area-bottom ${
-          isMapPage ? "py-3" : "py-2"
-        }`}>
+        <nav
+          className={`fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border px-2 safe-area-bottom ${
+            isMapPage ? "py-3" : "py-2"
+          }`}
+        >
           <div className="flex items-center justify-around">
             {renderBottomNavigation()}
           </div>
