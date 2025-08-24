@@ -23,6 +23,7 @@ import SettingsSection from "../../components/profile/SettingsSection";
 // Import secondary pages
 import PersonalInfoPage from "../../components/profile/pages/PersonalInfoPage";
 import PasswordPage from "../../components/profile/pages/PasswordPage";
+import PlanBillingPage from "../../components/profile/pages/PlanBillingPage";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -79,6 +80,7 @@ const ProfilePage: React.FC = () => {
           subtitle: "Gerencie sua assinatura e pagamentos",
           icon: CreditCard,
           hasSettings: true,
+          component: PlanBillingPage,
         },
         {
           id: "data-export",
