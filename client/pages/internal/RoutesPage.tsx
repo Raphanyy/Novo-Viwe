@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   MapPin,
   Plus,
-  Clock,
   Calendar,
   Search,
   Filter,
@@ -12,7 +11,6 @@ import {
   Share2,
   Link,
   Settings,
-  Star,
   Route as RouteIcon,
 } from "lucide-react";
 import {
