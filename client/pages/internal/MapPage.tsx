@@ -25,9 +25,16 @@ import {
   RotateCcw,
   Loader2,
   Share2,
+  Trash2,
+  CheckCircle,
+  Info,
+  Settings,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import ModalHeader from "../../components/shared/ModalHeader";
+import NavigationDetailsModal from "../../components/shared/NavigationDetailsModal";
+import NavigationAdjustmentsModal from "../../components/shared/NavigationAdjustmentsModal";
+import FinalSummaryModal from "../../components/shared/FinalSummaryModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
@@ -109,6 +116,19 @@ const MapPage: React.FC = () => {
     stopNavigation,
     setMapCleanupCallback,
     addStop,
+    clearAllStops,
+    showTraceConfirmation,
+    startActiveNavigation,
+    giveUpNavigation,
+    completeCurrentStop,
+    optimizeRoute,
+    openDetailsModal,
+    openAdjustmentsModal,
+    closeDetailsModal,
+    closeAdjustmentsModal,
+    endRoute,
+    startTracing,
+    closeFinalSummaryModal,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
@@ -1051,6 +1071,30 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Event listeners para integração com navbar
+  useEffect(() => {
+    const handleTraceRoute = async (event: any) => {
+      const { stops } = event.detail;
+      await traceRouteOnMap(stops);
+    };
+
+    const handleClearRoute = () => {
+      // Clear route from map
+      if (map.current && map.current.getSource("route")) {
+        map.current.removeLayer("route");
+        map.current.removeSource("route");
+      }
+    };
+
+    window.addEventListener("traceRoute", handleTraceRoute);
+    window.addEventListener("clearRoute", handleClearRoute);
+
+    return () => {
+      window.removeEventListener("traceRoute", handleTraceRoute);
+      window.removeEventListener("clearRoute", handleClearRoute);
+    };
+  }, [traceRouteOnMap]);
+
   // Cleanup all resources on unmount
   useEffect(() => {
     return () => {
@@ -1351,18 +1395,21 @@ const MapPage: React.FC = () => {
           <Target className="h-5 w-5 text-gray-600" />
         </button>
 
-        {/* Route Suggestion Button - Hidden when tracing */}
-        {!traceState.isTracing && (
-          <div className="absolute bottom-4 left-4 right-4 z-10">
-            <button
-              onClick={openRouteModal}
-              className="w-full bg-blue-600 text-white p-4 rounded-2xl shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
-            >
-              <RouteIcon className="h-5 w-5" />
-              <span className="font-semibold">Criar Nova Rota</span>
-            </button>
-          </div>
-        )}
+        {/* REMOVIDO: Todos os controles de rota agora são controlados pelo navbar */}
+
+        {/* Navigation Modals */}
+        <NavigationDetailsModal
+          isOpen={traceState.showDetailsModal}
+          onClose={closeDetailsModal}
+        />
+        <NavigationAdjustmentsModal
+          isOpen={traceState.showAdjustmentsModal}
+          onClose={closeAdjustmentsModal}
+        />
+        <FinalSummaryModal
+          isOpen={traceState.showFinalSummaryModal}
+          onClose={closeFinalSummaryModal}
+        />
 
         {/* Trace Confirmation Dialog - Full Page Modal */}
         {traceState.showConfirmDialog && (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import {
@@ -24,10 +24,64 @@ import {
 
 const RoutesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    "recent" | "favorites" | "planned"
+    "recent" | "favorites" | "planned" | "history"
   >("recent");
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [searchQuery, setSearchQuery] = useState("");
+  const [completedRoutes, setCompletedRoutes] = useState<any[]>([]);
+
+  // Carregar rotas concluídas do localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("completedRoutes");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setCompletedRoutes(
+          parsed.sort(
+            (a: any, b: any) =>
+              new Date(b.completedAt).getTime() -
+              new Date(a.completedAt).getTime(),
+          ),
+        );
+      } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+        setCompletedRoutes([]);
+      }
+    }
+  }, []);
+
+  // Formatar data para exibição
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours =
+      Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+    if (diffInHours < 24) {
+      return "Hoje";
+    } else if (diffInHours < 48) {
+      return "Ontem";
+    } else {
+      return date.toLocaleDateString("pt-BR");
+    }
+  };
+
+  // Formatar duração
+  const formatDuration = (startTime: string, endTime?: string) => {
+    if (!endTime) return "--";
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffInMinutes =
+      Math.abs(end.getTime() - start.getTime()) / (1000 * 60);
+
+    if (diffInMinutes < 60) {
+      return `${Math.round(diffInMinutes)} min`;
+    } else {
+      const hours = Math.floor(diffInMinutes / 60);
+      const minutes = Math.round(diffInMinutes % 60);
+      return `${hours}h ${minutes}m`;
+    }
+  };
 
   // Rotas mockadas
   const routes = {
@@ -53,7 +107,7 @@ const RoutesPage: React.FC = () => {
         distance: "8.2 km",
         traffic: "light",
         savings: "5 min",
-        lastUsed: "1 dia atrás",
+        lastUsed: "1 dia atr��s",
         isFavorite: false,
       },
       {
@@ -138,6 +192,7 @@ const RoutesPage: React.FC = () => {
     { id: "recent", name: "Recentes", count: routes.recent.length },
     { id: "favorites", name: "Favoritas", count: routes.favorites.length },
     { id: "planned", name: "Agendadas", count: routes.planned.length },
+    { id: "history", name: "Histórico", count: completedRoutes.length },
   ];
 
   const currentRoutes = routes[activeTab] || [];
@@ -208,6 +263,7 @@ const RoutesPage: React.FC = () => {
               {activeTab === "favorites" &&
                 "Marque rotas como favoritas para acesso rápido"}
               {activeTab === "planned" && "Agende suas viagens futuras"}
+              {activeTab === "history" && "Rotas concluídas aparecerão aqui"}
             </p>
             <button
               onClick={openRouteModal}
@@ -219,91 +275,100 @@ const RoutesPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {currentRoutes.map((route) => (
-              <div
-                key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="font-semibold text-foreground">
-                        {route.name}
-                      </h3>
-                      {route.isFavorite && (
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+            {activeTab === "history"
+              ? completedRoutes.map((route) => (
+                  <HistoryRouteCard
+                    key={route.routeId}
+                    route={route}
+                    formatDate={formatDate}
+                    formatDuration={formatDuration}
+                  />
+                ))
+              : currentRoutes.map((route) => (
+                  <div
+                    key={route.id}
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="font-semibold text-foreground">
+                            {route.name}
+                          </h3>
+                          {route.isFavorite && (
+                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                          )}
+                        </div>
+
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span>{route.from}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span>{route.to}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
+                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-4 text-sm">
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {route.duration}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {route.distance}
+                          </span>
+                        </div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
+                        >
+                          {route.traffic === "light" && "Livre"}
+                          {route.traffic === "normal" && "Normal"}
+                          {route.traffic === "heavy" && "Intenso"}
+                        </span>
+                      </div>
+
+                      {route.savings && (
+                        <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
+                          -{route.savings}
+                        </span>
                       )}
                     </div>
 
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>{route.from}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span>{route.to}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
-                    <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-4 text-sm">
-                    <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {route.duration}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {activeTab === "planned"
+                          ? `Agendada para ${(route as any).scheduledFor}`
+                          : `Última vez: ${(route as any).lastUsed}`}
                       </span>
+
+                      <div className="flex items-center space-x-2">
+                        <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                          <Share2 className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                          <Edit3 className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
+                          <Navigation className="h-4 w-4" />
+                          <span className="text-sm font-medium">Navegar</span>
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {route.distance}
-                      </span>
-                    </div>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
-                    >
-                      {route.traffic === "light" && "Livre"}
-                      {route.traffic === "normal" && "Normal"}
-                      {route.traffic === "heavy" && "Intenso"}
-                    </span>
                   </div>
-
-                  {route.savings && (
-                    <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
-                      -{route.savings}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
-                    {activeTab === "planned"
-                      ? `Agendada para ${(route as any).scheduledFor}`
-                      : `Última vez: ${(route as any).lastUsed}`}
-                  </span>
-
-                  <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                      <Share2 className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                      <Edit3 className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
-                      <Navigation className="h-4 w-4" />
-                      <span className="text-sm font-medium">Navegar</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
           </div>
         )}
       </div>
@@ -339,6 +404,111 @@ const RoutesPage: React.FC = () => {
 
       {/* Bottom padding for mobile navigation */}
       <div className="h-2 sm:hidden"></div>
+    </div>
+  );
+};
+
+// Componente para rotas de histórico
+const HistoryRouteCard: React.FC<{
+  route: any;
+  formatDate: (date: string) => string;
+  formatDuration: (start: string, end?: string) => string;
+}> = ({ route, formatDate, formatDuration }) => {
+  const completedStops = route.stops.filter(
+    (stop: any) => stop.isCompleted,
+  ).length;
+  const totalStops = route.stops.length;
+  const completionRate = Math.round((completedStops / totalStops) * 100);
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <RouteIcon className="h-5 w-5 text-green-600" />
+          </div>
+          <div>
+            <h3 className="font-medium text-foreground">
+              Rota{" "}
+              {route.routeId ? route.routeId.split("-")[1].slice(-4) : "N/A"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {formatDate(route.completedAt)}
+            </p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-sm font-medium text-foreground">
+            {completedStops}/{totalStops} paradas
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {completionRate}% concluído
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-3">
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {formatDuration(route.navigationData?.startTime, route.completedAt)}
+          </div>
+          <div className="text-xs text-muted-foreground">Duração</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {route.navigationData?.totalDistance
+              ? `${(route.navigationData.totalDistance / 1000).toFixed(1)} km`
+              : "--"}
+          </div>
+          <div className="text-xs text-muted-foreground">Distância</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {route.estimatedCredits || "--"}
+          </div>
+          <div className="text-xs text-muted-foreground">Créditos</div>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-3">
+        <div className="w-full bg-muted rounded-full h-2">
+          <div
+            className="bg-green-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${completionRate}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Primeiras paradas */}
+      <div className="space-y-1">
+        <div className="text-xs font-medium text-muted-foreground mb-2">
+          Paradas:
+        </div>
+        {route.stops.slice(0, 2).map((stop: any, index: number) => (
+          <div key={stop.id} className="flex items-center space-x-2 text-sm">
+            <div
+              className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                stop.isCompleted ? "bg-green-500" : "bg-gray-300"
+              }`}
+            />
+            <span
+              className={`truncate ${
+                stop.isCompleted
+                  ? "text-muted-foreground line-through"
+                  : "text-foreground"
+              }`}
+            >
+              {stop.name}
+            </span>
+          </div>
+        ))}
+        {route.stops.length > 2 && (
+          <div className="text-xs text-muted-foreground ml-5">
+            +{route.stops.length - 2} mais paradas
+          </div>
+        )}
+      </div>
     </div>
   );
 };

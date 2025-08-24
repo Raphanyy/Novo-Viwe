@@ -322,6 +322,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       isRouteTraced: true,
       navigationMode: "traced",
       showTraceConfirmed: true, // Ativa o modo "Navegar/Desistir"
+      isTracing: false, // Sai do modo de traçamento
     }));
     console.log("Tracing confirmed! Drawing route...");
   };
@@ -426,8 +427,10 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         remainingDistance: totalDistance,
         estimatedFuelConsumption: totalDistance / 10000, // Estimativa simples
         currentStopIndex: 0,
+        activeTime: 0,
       },
     }));
+    console.log("Navegação ativa iniciada com", state.stops.length, "paradas");
   };
 
   const stopActiveNavigation = () => {
@@ -473,9 +476,20 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       );
 
       if (isRouteCompleted) {
-        console.log(
-          "Todas as paradas foram concluídas! Mostrando opções de resumo e encerramento.",
-        );
+        console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
+        // Quando todas as paradas são concluídas, abrir modal de resumo final
+        return {
+          ...prev,
+          stops: updatedStops,
+          navigationData: {
+            ...prev.navigationData,
+            currentStopIndex: nextStopIndex,
+            remainingDistance: 0,
+          },
+          isInActiveNavigation: false,
+          allStopsCompleted: true,
+          showFinalSummaryModal: true, // Abrir automaticamente o modal de resumo final
+        };
       }
 
       return {
@@ -486,10 +500,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           currentStopIndex: nextStopIndex,
           remainingDistance: Math.max(0, remainingDistance),
         },
-        // Se todas as paradas foram concluídas, mostra estado de conclusão
-        isInActiveNavigation: !isRouteCompleted,
-        showTraceConfirmed: !isRouteCompleted, // Só mostra se não completou tudo
-        allStopsCompleted: isRouteCompleted, // Novo estado para todas paradas concluídas
       };
     });
   };
@@ -608,6 +618,16 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       mapCleanupCallback();
     }
 
+    // Se tem paradas incompletas, perguntar se deseja salvar no histórico
+    const incompletedStops = state.stops.filter((stop) => !stop.isCompleted);
+    if (incompletedStops.length > 0) {
+      console.log(
+        "Rota finalizada com",
+        incompletedStops.length,
+        "paradas não concluídas",
+      );
+    }
+
     // Encerra toda a navegação e volta ao estado inicial
     setState((prev) => ({
       ...prev,
@@ -621,6 +641,12 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       isPaused: false,
       allStopsCompleted: false,
       showFinalSummaryModal: false,
+      // Reset to initial state
+      isTracing: false,
+      stops: [],
+      centerPin: null,
+      routeType: null,
+      estimatedCredits: 0,
       navigationData: {
         startTime: null,
         totalDistance: 0,
@@ -631,6 +657,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         currentStopIndex: 0,
       },
     }));
+    console.log("Rota finalizada e estado resetado");
   };
 
   const openFinalSummaryModal = () => {

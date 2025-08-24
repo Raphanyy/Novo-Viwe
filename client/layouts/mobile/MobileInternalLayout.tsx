@@ -107,6 +107,7 @@ const MobileInternalLayout: React.FC = () => {
     startTracing,
     addStop,
     removeLastStop,
+    clearAllStops,
     openConfiguration,
     showTraceConfirmation,
     cancelTrace,
@@ -135,29 +136,24 @@ const MobileInternalLayout: React.FC = () => {
       action: "back",
     },
     {
-      name: "Planejar",
+      name: "Traçar",
       icon: PenTool,
       action: "trace",
+    },
+    {
+      name: "Rotas",
+      icon: Route,
+      action: "summary",
     },
     {
       name: "Configurar",
       icon: Cog,
       action: "control",
     },
-    {
-      name: "Histórico",
-      icon: FileText,
-      action: "summary",
-    },
   ];
 
-  // 2. PLANEJAMENTO - Criando e configurando rota
+  // 2a. PLANEJAMENTO INICIAL - Adicionando primeiras paradas
   const planningNavigationItems = [
-    {
-      name: "Cancelar",
-      icon: X,
-      action: "cancel",
-    },
     {
       name: "Adicionar",
       icon: Plus,
@@ -169,9 +165,52 @@ const MobileInternalLayout: React.FC = () => {
       action: "clear",
     },
     {
-      name: "Confirmar",
+      name: "Configurar",
+      icon: Cog,
+      action: "configure",
+    },
+    {
+      name: "Cancelar",
+      icon: X,
+      action: "cancel",
+    },
+  ];
+
+  // 2b. PLANEJAMENTO PRONTO - Com 2+ paradas, pronto para traçar
+  const planningReadyNavigationItems = [
+    {
+      name: "Adicionar",
+      icon: Plus,
+      action: "add",
+    },
+    {
+      name: "Limpar",
+      icon: Trash2,
+      action: "clear",
+    },
+    {
+      name: "Finalizar",
       icon: Navigation,
-      action: "trace_execute",
+      action: "finalize_planning",
+    },
+    {
+      name: "Cancelar",
+      icon: X,
+      action: "cancel",
+    },
+  ];
+
+  // 2.5. ROTA TRAÇADA - Pronto para navegar
+  const routeTracedNavigationItems = [
+    {
+      name: "Cancelar",
+      icon: X,
+      action: "give_up",
+    },
+    {
+      name: "Navegar",
+      icon: Navigation,
+      action: "start_navigation",
     },
   ];
 
@@ -227,12 +266,12 @@ const MobileInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "summary":
-        // Abre histórico de rotas ou detalhes conforme contexto
+        // Navega para página de rotas/histórico
         if (traceState.isInActiveNavigation || traceState.allStopsCompleted) {
           openDetailsModal();
         } else {
-          // Aqui pode abrir histórico de rotas anteriores
-          openConfiguration();
+          // Redireciona para página de rotas
+          window.location.href = "/app/rotas";
         }
         break;
       case "add":
@@ -245,16 +284,16 @@ const MobileInternalLayout: React.FC = () => {
         }
         break;
       case "clear":
-        // PLANEJAMENTO: Remove a última parada adicionada
-        removeLastStop();
+        // PLANEJAMENTO: Remove todas as paradas
+        clearAllStops();
         break;
       case "configure":
         // Abre configurações avançadas da rota
         openConfiguration();
         break;
-      case "trace_execute":
-        // PLANEJAMENTO: Abre configuração da rota com as paradas selecionadas
-        openConfiguration();
+      case "finalize_planning":
+        // PLANEJAMENTO: Finaliza planejamento e abre confirmação para traçar rota
+        showTraceConfirmation();
         break;
       case "cancel":
         // PLANEJAMENTO: Cancela o planejamento e volta à exploração
@@ -297,20 +336,23 @@ const MobileInternalLayout: React.FC = () => {
 
   const getCurrentNavigationItems = () => {
     if (isMapPage) {
-      // Fluxo lógico: Exploração > Planejamento > Navegação > Finalização
+      // Fluxo lógico: Exploração > Planejamento > Rota Traçada > Navegação > Finalização
       if (traceState.allStopsCompleted) {
-        // 4. FINALIZAÇÃO - Todas paradas concluídas
+        // 5. FINALIZAÇÃO - Todas paradas concluídas
         return finalizationNavigationItems;
       } else if (traceState.isInActiveNavigation) {
-        // 3. NAVEGAÇÃO - Rota ativa, navegando entre paradas
+        // 4. NAVEGAÇÃO - Rota ativa, navegando entre paradas
         return navigationNavigationItems;
-      } else if (
-        traceState.isTracing ||
-        traceState.isInPreparation ||
-        traceState.showTraceConfirmed
-      ) {
-        // 2. PLANEJAMENTO - Criando rota, adicionando paradas, confirmando
-        return planningNavigationItems;
+      } else if (traceState.showTraceConfirmed && !traceState.isTracing) {
+        // 3. ROTA TRAÇADA - Pronto para iniciar navegação
+        return routeTracedNavigationItems;
+      } else if (traceState.isTracing) {
+        // 2. PLANEJAMENTO - Criando rota, adicionando paradas
+        if (traceState.stops.length >= 2) {
+          return planningReadyNavigationItems;
+        } else {
+          return planningNavigationItems;
+        }
       } else {
         // 1. EXPLORAÇÃO - Estado inicial, explorando mapa
         return explorationNavigationItems;
