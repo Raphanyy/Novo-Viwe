@@ -103,6 +103,7 @@ const MapPage: React.FC = () => {
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
+  const [currentUserLocation, setCurrentUserLocation] = useState<[number, number] | null>(null);
 
   const {
     state: traceState,
