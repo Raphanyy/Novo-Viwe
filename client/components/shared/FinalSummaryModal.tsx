@@ -110,7 +110,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
       showBackButton={true}
       onBack={handleClose}
       rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
-      fullPage={true}
+      fullPage={false}
       size="xl"
     >
       <div className="p-6 space-y-6">
