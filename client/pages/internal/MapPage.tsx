@@ -854,9 +854,8 @@ const MapPage: React.FC = () => {
     (query: string) => {
       setSearchQuery(query);
 
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      // Remove previous search timeout if exists
+      resourceManager.current!.removeResource('searchTimeout');
 
       // Only search if query has meaningful content
       if (query.trim().length < 2) {
@@ -865,7 +864,8 @@ const MapPage: React.FC = () => {
         return;
       }
 
-      searchTimeoutRef.current = setTimeout(() => {
+      // Create managed timeout for search debouncing
+      createManagedTimeout(resourceManager.current!, 'searchTimeout', () => {
         searchBusinesses(query);
       }, 300);
     },
