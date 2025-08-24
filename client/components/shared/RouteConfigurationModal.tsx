@@ -101,24 +101,27 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     };
   });
 
-  // Sincronizar com as paradas do contexto quando o modal abrir (apenas uma vez)
+  // Sincronizar com as paradas quando o modal abrir (apenas uma vez por abertura)
   useEffect(() => {
     if (isOpen && !initializedRef.current) {
       initializedRef.current = true;
-      const currentStops = prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
+      // Get stops from props or context, but don't create dependency loops
+      const stopsToUse = prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
       setFormData(prev => ({
         ...prev,
-        stops: currentStops,
+        stops: stopsToUse,
         scheduling: {
           ...prev.scheduling,
           type: isTemporary ? "imediata" : "permanente"
         }
       }));
-    } else if (!isOpen) {
+    }
+
+    if (!isOpen) {
       // Reset initialization flag when modal closes
       initializedRef.current = false;
     }
-  }, [isOpen, isTemporary, prefilledStops, traceContext.state.stops]);
+  }, [isOpen]); // Only depend on isOpen
 
   // Configuração das seções principais
   const configurationSections: ConfigurationSection[] = [
