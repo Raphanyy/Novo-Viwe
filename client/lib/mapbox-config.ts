@@ -44,13 +44,18 @@ class MapboxConfigManager {
     }
 
     try {
-      const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+      // Token padrão da plataforma (fornecido pelo administrador)
+      const DEFAULT_TOKEN = 'pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA';
+
+      // Priorizar variável de ambiente, usar token padrão como fallback
+      const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || DEFAULT_TOKEN;
 
       // Log de debug para ajudar na resolução de problemas
       console.debug('Mapbox token check:', {
         exists: !!token,
         length: token?.length || 0,
-        prefix: token?.substring(0, 3) || 'N/A'
+        prefix: token?.substring(0, 3) || 'N/A',
+        source: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ? 'environment' : 'default'
       });
 
       if (!token || token.trim() === '') {
