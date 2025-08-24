@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { handleError, handleAsyncError, ErrorType, fetchWithErrorHandling } from "../lib/error-handling";
 import { createMapboxApiUrl } from "../lib/mapbox-config";
-import { resourceManager } from "../lib/resource-manager";
+import { ResourceManager } from "../lib/resource-manager";
 
 export interface SearchResult {
   id: string;
