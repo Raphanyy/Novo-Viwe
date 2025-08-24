@@ -21,9 +21,9 @@ const PersonalInfoPage: React.FC<PersonalInfoPageProps> = ({ onBack }) => {
           Informações importantes
         </h3>
         <div className="space-y-2 text-sm text-muted-foreground">
-          <p>• Seu nome será exibido para outros usuários do aplicativo</p>
-          <p>• Alterações no email podem requerer verificação</p>
-          <p>• Mantenha suas informações atualizadas para melhor experiência</p>
+          <p>• Seu nome não aparece para outros usuários</p>
+          <p>• Mantém a mesma, não altera</p>
+          <p>• Mantenha suas informações atualizadas</p>
         </div>
       </div>
     </div>
