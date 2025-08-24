@@ -29,7 +29,10 @@ const AccordionPricingCard: React.FC<{
     : "bg-primary hover:bg-primary/90 text-primary-foreground transform hover:scale-105";
 
   return (
-    <div className="bg-card rounded-xl p-6 border border-border">
+    <div className="bg-card rounded-xl p-6 border border-l-4 border-l-primary border-border relative overflow-hidden">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+
       {/* Cabeçalho do card que funciona como botão do acordeão */}
       <button 
         onClick={onToggle}
