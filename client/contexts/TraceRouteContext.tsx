@@ -906,29 +906,53 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     suggestSmartOptimization: () => {
       const remainingStops = state.stops.filter((stop) => !stop.isCompleted);
       const completedStops = state.stops.filter((stop) => stop.isCompleted);
+      const now = new Date();
 
-      // Análise inteligente de quando otimizar
+      // Verificar se otimizou recentemente (evitar spam de otimizações)
+      const lastOptimization = state.navigationData.lastOptimizationTime;
+      const timeSinceLastOptimization = lastOptimization
+        ? now.getTime() - lastOptimization.getTime()
+        : Infinity;
+      const minTimeBetweenOptimizations = 5 * 60 * 1000; // 5 minutos
+
+      // Análise inteligente mais sofisticada
+      const hasEnoughStops = remainingStops.length >= 3;
+      const isActiveNavigation = state.isInActiveNavigation;
+      const hasCompletedStops = completedStops.length >= 1;
+      const notOptimizedRecently = timeSinceLastOptimization > minTimeBetweenOptimizations;
+      const notOptimizedTooMuch = state.navigationData.optimizationCount < 5; // Máximo 5 otimizações por rota
+      const hasGoodPerformanceData = state.navigationData.averageStopTime > 0;
+
       const shouldOptimize =
-        // Há pelo menos 3 paradas restantes
-        remainingStops.length >= 3 &&
-        // Está em navegação ativa
-        state.isInActiveNavigation &&
-        // Já completou pelo menos uma parada (tem dados para análise)
-        completedStops.length >= 1 &&
-        // Não otimizou recentemente (evitar spam)
+        hasEnoughStops &&
+        isActiveNavigation &&
+        hasCompletedStops &&
+        notOptimizedRecently &&
+        notOptimizedTooMuch &&
         !state.isTracing;
 
       if (shouldOptimize) {
-        console.log("🤖 Inteligência adaptativa: Sugerindo otimização baseada no comportamento", {
+        const reason = hasGoodPerformanceData
+          ? `Padrão de navegação detectado (tempo médio: ${Math.round(state.navigationData.averageStopTime / 1000 / 60)}min/parada)`
+          : "Condições ideais para re-otimização detectadas";
+
+        console.log("🤖 Inteligência adaptativa: Sugerindo otimização inteligente", {
           remainingStops: remainingStops.length,
           completedStops: completedStops.length,
-          reason: "Condições ideais para re-otimização detectadas"
+          optimizationCount: state.navigationData.optimizationCount,
+          timeSinceLastOptimization: Math.round(timeSinceLastOptimization / 1000 / 60), // em minutos
+          averageStopTime: Math.round(state.navigationData.averageStopTime / 1000 / 60), // em minutos
+          reason
         });
 
-        // Auto-otimizar se condições são ideais
+        // Auto-otimizar com delay inteligente baseado no comportamento
+        const smartDelay = hasGoodPerformanceData
+          ? Math.min(2000, state.navigationData.averageStopTime / 10) // Delay proporcional ao tempo médio
+          : 1000;
+
         setTimeout(() => {
           optimizeRoute();
-        }, 500);
+        }, smartDelay);
 
         return true;
       }
