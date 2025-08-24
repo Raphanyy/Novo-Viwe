@@ -98,6 +98,8 @@ interface TraceRouteContextType {
   setMapCleanupCallback: (callback: () => void) => void;
   // Atualizar dados de navegação com métricas reais do Mapbox
   updateNavigationData: (data: Partial<NavigationData>) => void;
+  // Sugerir otimização inteligente baseada no comportamento
+  suggestSmartOptimization: () => boolean;
 }
 
 const TraceRouteContext = createContext<TraceRouteContextType | undefined>(
