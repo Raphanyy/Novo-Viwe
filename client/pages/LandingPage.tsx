@@ -224,7 +224,7 @@ const StatsSection = memo(() => {
             >
               <div className="relative mb-6">
                 <div
-                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden`}
+                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 transition-all duration-500 relative overflow-hidden`}
                 >
                   <stat.icon className="h-9 w-9 md:h-11 md:w-11 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
@@ -701,7 +701,7 @@ const HomePage = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-primary/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <Route className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
@@ -722,7 +722,7 @@ const HomePage = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-500/20">
                   <TrafficCone className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
@@ -743,7 +743,7 @@ const HomePage = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-600/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-600/20">
                   <MapPin className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
@@ -764,7 +764,7 @@ const HomePage = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-700/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-700/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-700/20">
                   <Share2 className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-700 transition-colors duration-300">
