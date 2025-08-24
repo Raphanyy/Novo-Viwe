@@ -442,10 +442,10 @@ const HomePage = ({
           ref={heroRef}
         ></div>
 
-        {/* Efeitos de brilho suavizados */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-blue-500/5 opacity-30"></div>
-        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+        {/* Efeitos de brilho intensificados */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-blue-500/10 opacity-50"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
 
         <div className="container mx-auto px-6 relative z-10 w-full">
           <div
@@ -527,7 +527,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Secção de Funcionalidades principais com proporç��es corrigidas */}
+      {/* Secção de Funcionalidades principais com proporções corrigidas */}
       <section
         ref={featuresRef}
         className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
