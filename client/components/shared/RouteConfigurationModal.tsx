@@ -171,7 +171,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     },
     {
       id: "scheduling",
-      title: "Programa��ão",
+      title: "Programação",
       subtitle: "Tipo e data.",
       icon: Calendar,
       component: SchedulingPage,
@@ -374,7 +374,10 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         <div className="pt-4 border-t border-border">
           <Button
             onClick={handleFinalSubmit}
-            disabled={isLoading || !isFormValid()}
+            disabled={isLoading ||
+              (isInMapPage && traceContext.state.isTracing
+                ? formData.stops.length < 2
+                : !isFormValid())}
             className="w-full"
           >
             {isLoading ? (
