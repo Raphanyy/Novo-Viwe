@@ -378,7 +378,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             onClick={handleFinalSubmit}
             disabled={isLoading ||
               (isInMapPage && traceContext.state.isTracing
-                ? formData.stops.length < 2
+                ? formData.stops.length < 1
                 : !isFormValid())}
             className="w-full"
           >
