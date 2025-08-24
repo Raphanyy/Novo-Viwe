@@ -1153,7 +1153,7 @@ const MapPage: React.FC = () => {
           />
           <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
             {isSearching && (
-              <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+              <ViweLoader size="xs" />
             )}
           </div>
           <button
