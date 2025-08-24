@@ -31,6 +31,9 @@ export interface NavigationData {
   actualFuelConsumption: number; // em litros
   activeTime: number; // em milissegundos
   currentStopIndex: number; // índice da próxima parada a ser concluída
+  lastOptimizationTime?: Date; // última otimização realizada
+  optimizationCount: number; // número de otimizações realizadas
+  averageStopTime: number; // tempo médio por parada em milissegundos
 }
 
 export interface TraceRouteState {
