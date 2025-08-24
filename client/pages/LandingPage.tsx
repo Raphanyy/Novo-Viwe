@@ -428,8 +428,8 @@ const HomePage = ({
 
   return (
     <React.Fragment>
-      {/* Secção Hero otimizada para desktop */}
-      <section className="relative overflow-hidden py-12 md:py-16 lg:py-20 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-center">
+      {/* Secção Hero maximamente enquadrada */}
+      <section className="relative overflow-hidden py-8 md:py-12 lg:py-16 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-center">
         <div
           className="absolute inset-0 z-0 pointer-events-none opacity-30"
           ref={heroRef}
@@ -444,29 +444,29 @@ const HomePage = ({
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            {/* Logo mantendo o tamanho mas com espaçamento otimizado */}
-            <div className="mb-3 md:mb-4 lg:mb-6 flex justify-center">
+            {/* Logo com tamanho otimizado para enquadramento perfeito */}
+            <div className="mb-2 md:mb-3 lg:mb-4 flex justify-center">
               <div className="group relative">
-                <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
+                <ViweLogo className="h-28 w-28 md:h-36 md:w-36 lg:h-44 lg:w-44 xl:h-48 xl:w-48 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-4 lg:mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-foreground leading-[1.1] tracking-tight mb-3 lg:mb-4">
               Somos a maior plataforma
               <br />
               de rotas inteligentes no mundo
             </h1>
-            <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6 lg:mb-8">
+            <p className="text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-4 lg:mb-6">
               Viwe é o planejador de rotas mais avançado do mercado. Otimize
               trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6 lg:mb-8">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-4 lg:mb-6">
             <Link
               to="/login"
-              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-7 py-3.5 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
             >
               <span className="flex items-center justify-center gap-2">
                 <Sparkles className="h-5 w-5" />
@@ -474,21 +474,21 @@ const HomePage = ({
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
-            <button className="group flex items-center justify-center gap-2 text-foreground px-8 py-4 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-300">
+            <button className="group flex items-center justify-center gap-2 text-foreground px-7 py-3.5 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-300">
               <Play className="h-5 w-5" />
               Ver demonstração
             </button>
           </div>
 
-          {/* Badge de confiança simplificado */}
+          {/* Badge de confiança compacto */}
           <div className="flex justify-center">
-            <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+            <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-3 py-1.5 flex items-center gap-2">
               <div className="flex -space-x-1">
-                <div className="w-6 h-6 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
-                <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
-                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
+                <div className="w-5 h-5 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
+                <div className="w-5 h-5 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
+                <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
               </div>
-              <span className="text-muted-foreground text-sm">
+              <span className="text-muted-foreground text-xs">
                 Mais de <strong className="text-foreground">50K</strong>{" "}
                 usuários
               </span>
