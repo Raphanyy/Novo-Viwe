@@ -152,7 +152,7 @@ const MobileInternalLayout: React.FC = () => {
     },
   ];
 
-  // 2a. PLANEJAMENTO INICIAL - Adicionando primeiras paradas
+  // 2. PLANEJAMENTO - Adicionando e configurando paradas
   const planningNavigationItems = [
     {
       name: "Adicionar",
@@ -168,30 +168,6 @@ const MobileInternalLayout: React.FC = () => {
       name: "Configurar",
       icon: Cog,
       action: "configure",
-    },
-    {
-      name: "Cancelar",
-      icon: X,
-      action: "cancel",
-    },
-  ];
-
-  // 2b. PLANEJAMENTO PRONTO - Com 2+ paradas, pronto para traçar
-  const planningReadyNavigationItems = [
-    {
-      name: "Adicionar",
-      icon: Plus,
-      action: "add",
-    },
-    {
-      name: "Limpar",
-      icon: Trash2,
-      action: "clear",
-    },
-    {
-      name: "Finalizar",
-      icon: Navigation,
-      action: "finalize_planning",
     },
     {
       name: "Cancelar",
