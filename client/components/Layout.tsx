@@ -4,7 +4,7 @@ import { Rocket, Menu, X, Compass } from "lucide-react";
 
 // === Logo Real da Viwe ===
 const ViweLogo = ({ className = "h-8 w-8" }: { className?: string }) => (
-  <img 
+  <img
     src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
     alt="Viwe Logo"
     className={`${className} object-contain`}
@@ -34,7 +34,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center group">
             <ViweLogo className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
-            <Link to="/" className="font-bold text-xl ml-2 text-foreground group-hover:text-primary transition-colors">
+            <Link
+              to="/"
+              className="font-bold text-xl ml-2 text-foreground group-hover:text-primary transition-colors"
+            >
               Viwe
             </Link>
           </div>
@@ -165,7 +168,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div>
             <div className="flex items-center">
               <ViweLogo className="h-6 w-6" />
-              <span className="font-bold text-lg ml-2 text-foreground">Viwe</span>
+              <span className="font-bold text-lg ml-2 text-foreground">
+                Viwe
+              </span>
             </div>
             <p className="mt-4 text-sm max-w-xs">
               Planejador de rotas <br /> para o mundo.

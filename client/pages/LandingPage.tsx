@@ -27,7 +27,7 @@ import { Link } from "react-router-dom";
 
 // === Logo Real da Viwe ===
 const ViweLogo = ({ className = "h-16 w-16" }: { className?: string }) => (
-  <img 
+  <img
     src="https://cdn.builder.io/api/v1/image/assets%2F6c1daba7e59b4ec58eff5c97822a2701%2Fd6f16773cb7b41a3a689efc7c5e77e61?format=webp&width=800"
     alt="Viwe Logo"
     className={`${className} object-contain`}
@@ -48,7 +48,7 @@ const StatsSection = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     if (sectionRef.current) {
@@ -59,18 +59,41 @@ const StatsSection = () => {
   }, []);
 
   const stats = [
-    { number: "1M+", label: "Rotas Otimizadas", icon: Route, color: "from-blue-500 to-cyan-500" },
-    { number: "50K+", label: "Usuários Ativos", icon: Users, color: "from-green-500 to-emerald-500" },
-    { number: "99.9%", label: "Uptime Garantido", icon: Shield, color: "from-purple-500 to-pink-500" },
-    { number: "30%", label: "Economia de Tempo", icon: Clock, color: "from-orange-500 to-red-500" },
+    {
+      number: "1M+",
+      label: "Rotas Otimizadas",
+      icon: Route,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      number: "50K+",
+      label: "Usuários Ativos",
+      icon: Users,
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      number: "99.9%",
+      label: "Uptime Garantido",
+      icon: Shield,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      number: "30%",
+      label: "Economia de Tempo",
+      icon: Clock,
+      color: "from-orange-500 to-red-500",
+    },
   ];
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
+    >
       {/* Efeitos de fundo suavizados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
       <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl"></div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
@@ -80,22 +103,28 @@ const StatsSection = () => {
             Milhares de pessoas já confiam no Viwe para otimizar suas jornadas
           </p>
         </div>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {stats.map((stat, index) => (
             <div
               key={index}
               className={`text-center transition-all duration-700 delay-${index * 100} ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
               }`}
             >
-              <div className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r ${stat.color} rounded-xl mb-3 md:mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}>
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r ${stat.color} rounded-xl mb-3 md:mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
+              >
                 <stat.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
               </div>
               <div className="text-2xl md:text-3xl font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
                 {stat.number}
               </div>
-              <div className="text-muted-foreground font-medium text-sm md:text-base">{stat.label}</div>
+              <div className="text-muted-foreground font-medium text-sm md:text-base">
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>
@@ -115,7 +144,7 @@ const TestimonialsSection = () => {
       company: "TechCorp",
     },
     {
-      name: "Carlos Mendes", 
+      name: "Carlos Mendes",
       role: "Motorista de App",
       avatar: "CM",
       text: "Melhor aplicativo de rotas que já usei. A previsão de trânsito é incrivelmente precisa.",
@@ -138,7 +167,9 @@ const TestimonialsSection = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
             <Heart className="h-4 w-4 text-primary" />
-            <span className="text-primary font-medium text-sm">Amado pelos usuários</span>
+            <span className="text-primary font-medium text-sm">
+              Amado pelos usuários
+            </span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             O que nossos usuários dizem
@@ -147,7 +178,7 @@ const TestimonialsSection = () => {
             Milhares de pessoas já otimizaram suas jornadas com o Viwe
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             <div
@@ -156,7 +187,10 @@ const TestimonialsSection = () => {
             >
               <div className="flex items-center space-x-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
+                  <Star
+                    key={i}
+                    className="h-4 w-4 text-yellow-500 fill-current"
+                  />
                 ))}
               </div>
               <blockquote className="text-card-foreground mb-6 leading-relaxed">
@@ -167,9 +201,15 @@ const TestimonialsSection = () => {
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <div className="font-semibold text-card-foreground">{testimonial.name}</div>
-                  <div className="text-muted-foreground text-sm">{testimonial.role}</div>
-                  <div className="text-primary text-xs font-medium">{testimonial.company}</div>
+                  <div className="font-semibold text-card-foreground">
+                    {testimonial.name}
+                  </div>
+                  <div className="text-muted-foreground text-sm">
+                    {testimonial.role}
+                  </div>
+                  <div className="text-primary text-xs font-medium">
+                    {testimonial.company}
+                  </div>
                 </div>
               </div>
             </div>
@@ -187,21 +227,23 @@ const HowItWorksSection = () => {
       title: "Defina seu destino",
       description: "Digite onde você quer ir ou selecione no mapa interativo",
       icon: Target,
-      color: "from-blue-500 to-cyan-500"
+      color: "from-blue-500 to-cyan-500",
     },
     {
-      step: "02", 
+      step: "02",
       title: "Otimização inteligente",
-      description: "Nossa IA calcula a melhor rota considerando trânsito e preferências",
+      description:
+        "Nossa IA calcula a melhor rota considerando trânsito e preferências",
       icon: Zap,
-      color: "from-purple-500 to-pink-500"
+      color: "from-purple-500 to-pink-500",
     },
     {
       step: "03",
       title: "Navegue com confiança",
-      description: "Siga as instruções em tempo real e chegue mais rápido ao destino",
+      description:
+        "Siga as instruções em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
-      color: "from-green-500 to-emerald-500"
+      color: "from-green-500 to-emerald-500",
     },
   ];
 
@@ -211,7 +253,9 @@ const HowItWorksSection = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
             <Lightbulb className="h-4 w-4 text-primary" />
-            <span className="text-primary font-medium text-sm">Como funciona</span>
+            <span className="text-primary font-medium text-sm">
+              Como funciona
+            </span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             Três passos simples
@@ -227,14 +271,16 @@ const HowItWorksSection = () => {
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-primary to-primary/20 transform -translate-x-1/2 z-0 rounded-full"></div>
               )}
-              
-              <div className={`relative z-10 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${step.color} rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300`}>
+
+              <div
+                className={`relative z-10 inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${step.color} rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300`}
+              >
                 <step.icon className="h-8 w-8 md:h-10 md:w-10 text-white" />
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-accent-foreground text-xs font-bold">
                   {step.step}
                 </div>
               </div>
-              
+
               <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                 {step.title}
               </h3>
@@ -260,7 +306,8 @@ const AdvancedFeaturesSection = () => {
     {
       icon: Cloud,
       title: "Sincronização Automática",
-      description: "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
+      description:
+        "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
       gradient: "from-purple-500 to-pink-500",
     },
     {
@@ -274,7 +321,7 @@ const AdvancedFeaturesSection = () => {
       title: "Suporte Premium",
       description: "Atendimento 24/7 com especialistas em otimização",
       gradient: "from-orange-500 to-red-500",
-    }
+    },
   ];
 
   return (
@@ -283,7 +330,9 @@ const AdvancedFeaturesSection = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-primary font-medium text-sm">Recursos avançados</span>
+            <span className="text-primary font-medium text-sm">
+              Recursos avançados
+            </span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             Tecnologia de ponta
@@ -299,14 +348,16 @@ const AdvancedFeaturesSection = () => {
               key={index}
               className="group bg-card p-6 rounded-2xl border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
             >
-              <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-xl mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}>
+              <div
+                className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-xl mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
+              >
                 <feature.icon className="h-6 w-6 text-white" />
               </div>
-              
+
               <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
                 {feature.title}
               </h3>
-              
+
               <p className="text-muted-foreground leading-relaxed text-sm">
                 {feature.description}
               </p>
@@ -383,12 +434,12 @@ const HomePage = ({
           className="absolute inset-0 z-0 pointer-events-none opacity-30"
           ref={heroRef}
         ></div>
-        
+
         {/* Efeitos de brilho suavizados */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-purple-500/5 opacity-30"></div>
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
-        
+
         <div className="container mx-auto px-6 relative z-10">
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
@@ -403,10 +454,13 @@ const HomePage = ({
             </div>
 
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
-              Somos a maior plataforma<br />de rotas inteligentes no mundo
+              Somos a maior plataforma
+              <br />
+              de rotas inteligentes no mundo
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Viwe é o planejador de rotas mais avançado do mercado. Otimize trajetos com IA, organize conjuntos, economize tempo e muito mais.
+              Viwe é o planejador de rotas mais avançado do mercado. Otimize
+              trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
@@ -425,7 +479,7 @@ const HomePage = ({
               Ver demonstração
             </button>
           </div>
-          
+
           {/* Badge de confiança simplificado */}
           <div className="mt-8 flex justify-center">
             <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
@@ -434,7 +488,10 @@ const HomePage = ({
                 <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
                 <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
               </div>
-              <span className="text-muted-foreground text-sm">Mais de <strong className="text-foreground">50K</strong> usuários</span>
+              <span className="text-muted-foreground text-sm">
+                Mais de <strong className="text-foreground">50K</strong>{" "}
+                usuários
+              </span>
             </div>
           </div>
         </div>
@@ -453,7 +510,9 @@ const HomePage = ({
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex justify-center">
                 <div className="w-20 h-12 bg-muted/40 rounded-lg flex items-center justify-center opacity-50 hover:opacity-70 transition-opacity">
-                  <span className="text-muted-foreground text-xs font-medium">LOGO</span>
+                  <span className="text-muted-foreground text-xs font-medium">
+                    LOGO
+                  </span>
                 </div>
               </div>
             ))}
@@ -470,7 +529,9 @@ const HomePage = ({
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
               <Zap className="h-4 w-4 text-primary" />
-              <span className="text-primary font-medium text-sm">Funcionalidades principais</span>
+              <span className="text-primary font-medium text-sm">
+                Funcionalidades principais
+              </span>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               Recursos para otimizar sua viagem
@@ -493,10 +554,11 @@ const HomePage = ({
                 Otimização de Rotas
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Algoritmos de IA calculam o caminho mais eficiente, economizando tempo e combustível.
+                Algoritmos de IA calculam o caminho mais eficiente, economizando
+                tempo e combustível.
               </p>
             </div>
-            
+
             <div
               ref={(el) => (cardRefs.current[1] = el)}
               className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-green-500/50 hover:shadow-xl group"
@@ -510,10 +572,11 @@ const HomePage = ({
                 Previsão de Trânsito
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Dados em tempo real para evitar engarrafamentos com precisão de 99%.
+                Dados em tempo real para evitar engarrafamentos com precisão de
+                99%.
               </p>
             </div>
-            
+
             <div
               ref={(el) => (cardRefs.current[2] = el)}
               className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-yellow-500/50 hover:shadow-xl group"
@@ -530,7 +593,7 @@ const HomePage = ({
                 Descubra restaurantes, postos e atrações ao longo do caminho.
               </p>
             </div>
-            
+
             <div
               ref={(el) => (cardRefs.current[3] = el)}
               className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-purple-500/50 hover:shadow-xl group"
@@ -653,14 +716,15 @@ const LandingPage = () => {
       {/* CTA Section balanceada */}
       <section className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 py-20 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
-        
+
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white mb-6">
               Pronto para revolucionar suas jornadas?
             </h2>
             <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
-              Junte-se a mais de 50.000 usuários que já otimizaram suas rotas com o Viwe.
+              Junte-se a mais de 50.000 usuários que já otimizaram suas rotas
+              com o Viwe.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
@@ -679,7 +743,7 @@ const LandingPage = () => {
                 </span>
               </button>
             </div>
-            
+
             {/* Garantias */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-white/80 text-sm">
               <div className="flex items-center gap-2">
