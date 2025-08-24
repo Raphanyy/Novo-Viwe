@@ -305,7 +305,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
   };
 
-
   const hideTraceConfirmation = () => {
     setState((prev) => ({
       ...prev,

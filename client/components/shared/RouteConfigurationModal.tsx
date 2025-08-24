@@ -961,7 +961,8 @@ function StopsPage({
                       {stop.address || "Endereço não disponível"}
                     </div>
                     <p className="text-xs text-muted-foreground/70 mt-1">
-                      📍 {stop.coordinates[1].toFixed(4)}, {stop.coordinates[0].toFixed(4)}
+                      📍 {stop.coordinates[1].toFixed(4)},{" "}
+                      {stop.coordinates[0].toFixed(4)}
                     </p>
                   </div>
                 </div>

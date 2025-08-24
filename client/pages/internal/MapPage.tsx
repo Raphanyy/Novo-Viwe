@@ -1518,7 +1518,6 @@ const MapPage: React.FC = () => {
           }}
         />
 
-
         {/* POI Details Modal - Enhanced */}
         {selectedPOI && (
           <div className="fixed inset-x-4 bottom-4 z-45 animate-in slide-in-from-bottom duration-300">
