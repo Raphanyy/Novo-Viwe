@@ -47,7 +47,7 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
       className={`${className} object-contain transition-all duration-700 group-hover:scale-110 group-hover:drop-shadow-2xl filter group-hover:brightness-110`}
       loading="eager"
     />
-    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
   </div>
 ));
 
