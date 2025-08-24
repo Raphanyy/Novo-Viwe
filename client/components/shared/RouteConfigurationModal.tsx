@@ -409,7 +409,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       {/* Header */}
       <ModalHeader
         title={getHeaderTitle()}
-        showBackButton={currentLevel !== NavigationLevel.PRIMARY}
+        showBackButton={true}
         onBack={currentLevel === NavigationLevel.PRIMARY ? onClose : goBack}
       />
 
