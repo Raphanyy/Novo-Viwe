@@ -243,7 +243,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                   </div>
 
                   {state.navigationData.startTime && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-muted-foreground">
                       <strong>Viagem realizada:</strong>{" "}
                       {state.navigationData.startTime.toLocaleDateString(
                         "pt-BR",
@@ -280,11 +280,11 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                 <div className="space-y-3">
                   {completedStops.length === 0 ? (
                     <div className="text-center py-8">
-                      <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-600 mb-2">
+                      <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                      <h4 className="font-medium text-foreground mb-2">
                         Nenhuma parada concluída
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         A rota foi encerrada sem paradas concluídas.
                       </p>
                     </div>
@@ -292,22 +292,22 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                     completedStops.map((stop, index) => (
                       <div
                         key={stop.id}
-                        className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg"
+                        className="flex items-start space-x-3 p-3 bg-green-600/10 border border-green-600/20 rounded-lg"
                       >
                         <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
                           {stop.order}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">
+                          <h4 className="font-medium text-foreground">
                             {stop.name}
                           </h4>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {stop.address}
                           </p>
                           {stop.completedAt && (
                             <div className="flex items-center space-x-1 mt-1">
-                              <Calendar className="h-3 w-3 text-gray-400" />
-                              <span className="text-xs text-gray-500">
+                              <Calendar className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
                                 Concluída às{" "}
                                 {stop.completedAt.toLocaleTimeString("pt-BR", {
                                   hour: "2-digit",
