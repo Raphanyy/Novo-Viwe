@@ -57,7 +57,7 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     setHasChanges(true);
   };
 
@@ -92,9 +92,21 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
   };
 
   const statusOptions = [
-    { value: "active", label: "Ativa", description: "Rota disponível para uso imediato" },
-    { value: "scheduled", label: "Agendada", description: "Rota programada para data específica" },
-    { value: "draft", label: "Rascunho", description: "Rota em desenvolvimento" },
+    {
+      value: "active",
+      label: "Ativa",
+      description: "Rota disponível para uso imediato",
+    },
+    {
+      value: "scheduled",
+      label: "Agendada",
+      description: "Rota programada para data específica",
+    },
+    {
+      value: "draft",
+      label: "Rascunho",
+      description: "Rota em desenvolvimento",
+    },
   ];
 
   const availableSets = [
@@ -121,7 +133,9 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
               </button>
               <div className="flex-1">
                 <h1 className="text-xl font-bold">Configurações da Rota</h1>
-                <p className="text-gray-300 text-sm">Altere as configurações da rota</p>
+                <p className="text-gray-300 text-sm">
+                  Altere as configurações da rota
+                </p>
               </div>
               <div className="flex items-center space-x-2">
                 {hasChanges && (
@@ -140,9 +154,11 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
           <div className="relative z-10">
             <div className="flex items-center space-x-2 mb-4">
               <Type className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Informações Básicas</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Informações Básicas
+              </h3>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
@@ -163,7 +179,9 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   rows={3}
                   className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground resize-none"
                   placeholder="Descreva o propósito desta rota"
@@ -179,9 +197,11 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
           <div className="relative z-10">
             <div className="flex items-center space-x-2 mb-4">
               <Settings className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Status e Agendamento</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Status e Agendamento
+              </h3>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
@@ -189,18 +209,27 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
                 </label>
                 <div className="space-y-2">
                   {statusOptions.map((option) => (
-                    <label key={option.value} className="flex items-center p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
+                    <label
+                      key={option.value}
+                      className="flex items-center p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                    >
                       <input
                         type="radio"
                         name="status"
                         value={option.value}
                         checked={formData.status === option.value}
-                        onChange={(e) => handleInputChange("status", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("status", e.target.value)
+                        }
                         className="w-4 h-4 text-primary border-border focus:ring-primary"
                       />
                       <div className="ml-3">
-                        <div className="text-sm font-medium text-foreground">{option.label}</div>
-                        <div className="text-xs text-muted-foreground">{option.description}</div>
+                        <div className="text-sm font-medium text-foreground">
+                          {option.label}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {option.description}
+                        </div>
                       </div>
                     </label>
                   ))}
@@ -214,8 +243,21 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
                   </label>
                   <input
                     type="datetime-local"
-                    value={formData.scheduledDate ? new Date(formData.scheduledDate).toISOString().slice(0, 16) : ""}
-                    onChange={(e) => handleInputChange("scheduledDate", e.target.value ? new Date(e.target.value).toISOString() : "")}
+                    value={
+                      formData.scheduledDate
+                        ? new Date(formData.scheduledDate)
+                            .toISOString()
+                            .slice(0, 16)
+                        : ""
+                    }
+                    onChange={(e) =>
+                      handleInputChange(
+                        "scheduledDate",
+                        e.target.value
+                          ? new Date(e.target.value).toISOString()
+                          : "",
+                      )
+                    }
                     className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                   />
                 </div>
@@ -230,22 +272,32 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
           <div className="relative z-10">
             <div className="flex items-center space-x-2 mb-4">
               <Target className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Organização</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                Organização
+              </h3>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="flex items-center space-x-3 p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.isFavorite}
-                    onChange={(e) => handleInputChange("isFavorite", e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("isFavorite", e.target.checked)
+                    }
                     className="w-4 h-4 text-primary border-border focus:ring-primary rounded"
                   />
-                  <Star className={`h-4 w-4 ${formData.isFavorite ? "text-yellow-500 fill-current" : "text-muted-foreground"}`} />
+                  <Star
+                    className={`h-4 w-4 ${formData.isFavorite ? "text-yellow-500 fill-current" : "text-muted-foreground"}`}
+                  />
                   <div>
-                    <div className="text-sm font-medium text-foreground">Marcar como Favorita</div>
-                    <div className="text-xs text-muted-foreground">Facilita o acesso rápido à rota</div>
+                    <div className="text-sm font-medium text-foreground">
+                      Marcar como Favorita
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Facilita o acesso rápido à rota
+                    </div>
                   </div>
                 </label>
               </div>
@@ -256,12 +308,16 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
                 </label>
                 <select
                   value={formData.linkedSet}
-                  onChange={(e) => handleInputChange("linkedSet", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("linkedSet", e.target.value)
+                  }
                   className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                 >
                   <option value="">Nenhum conjunto</option>
                   {availableSets.map((set) => (
-                    <option key={set} value={set}>{set}</option>
+                    <option key={set} value={set}>
+                      {set}
+                    </option>
                   ))}
                 </select>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -278,22 +334,32 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
           <div className="relative z-10">
             <div className="flex items-center space-x-2 mb-4">
               <RouteIcon className="h-5 w-5 text-secondary" />
-              <h3 className="text-lg font-semibold text-foreground">Informações da Rota</h3>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Somente leitura</span>
+              <h3 className="text-lg font-semibold text-foreground">
+                Informações da Rota
+              </h3>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                Somente leitura
+              </span>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-muted-foreground">Paradas</p>
-                <p className="font-medium text-foreground">{route.stopCount} paradas</p>
+                <p className="font-medium text-foreground">
+                  {route.stopCount} paradas
+                </p>
               </div>
               <div>
                 <p className="text-muted-foreground">Distância Total</p>
-                <p className="font-medium text-foreground">{route.totalDistance}</p>
+                <p className="font-medium text-foreground">
+                  {route.totalDistance}
+                </p>
               </div>
               <div>
                 <p className="text-muted-foreground">Duração Estimada</p>
-                <p className="font-medium text-foreground">{route.estimatedDuration}</p>
+                <p className="font-medium text-foreground">
+                  {route.estimatedDuration}
+                </p>
               </div>
               <div>
                 <p className="text-muted-foreground">Criada em</p>
@@ -320,7 +386,7 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
               <Save className="h-4 w-4" />
               <span>Salvar Alterações</span>
             </button>
-            
+
             <button
               onClick={handleReset}
               disabled={!hasChanges}
@@ -345,8 +411,12 @@ const RouteSettingsPage: React.FC<RouteSettingsPageProps> = ({
                   <AlertCircle className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Alterações não salvas</h3>
-                  <p className="text-sm text-muted-foreground">Você tem alterações pendentes</p>
+                  <h3 className="font-semibold text-foreground">
+                    Alterações não salvas
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Você tem alterações pendentes
+                  </p>
                 </div>
               </div>
               <p className="text-sm text-foreground mb-6">

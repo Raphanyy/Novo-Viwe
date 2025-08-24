@@ -328,7 +328,9 @@ const DashboardPage: React.FC = () => {
           <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="flex items-center justify-center space-x-2 relative z-10">
             <Heart className="h-6 w-6 text-blue-600 fill-current" />
-            <p className="text-sm font-medium text-foreground">Avalie esta tela</p>
+            <p className="text-sm font-medium text-foreground">
+              Avalie esta tela
+            </p>
           </div>
         </div>
 

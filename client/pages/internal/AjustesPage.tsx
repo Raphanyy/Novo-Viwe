@@ -12,7 +12,8 @@ const AjustesPage: React.FC = () => {
           Disponível em breve
         </h1>
         <p className="text-muted-foreground max-w-md">
-          Esta funcionalidade está sendo desenvolvida e estará disponível em breve.
+          Esta funcionalidade está sendo desenvolvida e estará disponível em
+          breve.
         </p>
       </div>
     </div>

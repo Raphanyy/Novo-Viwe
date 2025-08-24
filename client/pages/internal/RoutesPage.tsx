@@ -43,7 +43,9 @@ type ViewMode = "list" | "details" | "settings";
 
 const RoutesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<"all" | "active" | "scheduled" | "draft">("all");
+  const [selectedFilter, setSelectedFilter] = useState<
+    "all" | "active" | "scheduled" | "draft"
+  >("all");
   const [selectedRoute, setSelectedRoute] = useState<RouteData | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
@@ -61,7 +63,7 @@ const RoutesPage: React.FC = () => {
       totalDistance: "12.5 km",
       isFavorite: true,
       linkedSet: "Rotas Diárias",
-      lastModified: "2024-01-20T08:30:00"
+      lastModified: "2024-01-20T08:30:00",
     },
     {
       id: 2,
@@ -73,7 +75,7 @@ const RoutesPage: React.FC = () => {
       estimatedDuration: "45 min",
       totalDistance: "18.2 km",
       isFavorite: false,
-      lastModified: "2024-01-19T14:15:00"
+      lastModified: "2024-01-19T14:15:00",
     },
     {
       id: 3,
@@ -86,7 +88,7 @@ const RoutesPage: React.FC = () => {
       estimatedDuration: "1h 20min",
       totalDistance: "25.8 km",
       isFavorite: false,
-      lastModified: "2024-01-20T10:45:00"
+      lastModified: "2024-01-20T10:45:00",
     },
     {
       id: 4,
@@ -100,7 +102,7 @@ const RoutesPage: React.FC = () => {
       totalDistance: "35.4 km",
       isFavorite: true,
       linkedSet: "Rotas de Lazer",
-      lastModified: "2024-01-19T16:22:00"
+      lastModified: "2024-01-19T16:22:00",
     },
     {
       id: 5,
@@ -112,14 +114,14 @@ const RoutesPage: React.FC = () => {
       estimatedDuration: "3h 45min",
       totalDistance: "85.7 km",
       isFavorite: false,
-      lastModified: "2024-01-21T11:30:00"
-    }
+      lastModified: "2024-01-21T11:30:00",
+    },
   ];
 
   const statusConfig = {
     active: { label: "Ativa", color: "text-green-600" },
     scheduled: { label: "Agendada", color: "text-blue-600" },
-    draft: { label: "Rascunho", color: "text-yellow-600" }
+    draft: { label: "Rascunho", color: "text-yellow-600" },
   };
 
   const formatDate = (dateString: string) => {
@@ -132,14 +134,19 @@ const RoutesPage: React.FC = () => {
     return `${date.toLocaleDateString("pt-BR")} às ${date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
   };
 
-  const filteredRoutes = routes.filter(route => {
-    const matchesSearch = route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          route.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = selectedFilter === "all" || route.status === selectedFilter;
+  const filteredRoutes = routes.filter((route) => {
+    const matchesSearch =
+      route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      route.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      selectedFilter === "all" || route.status === selectedFilter;
     return matchesSearch && matchesFilter;
   });
 
-  const handleRouteAction = (route: RouteData, action: "details" | "settings") => {
+  const handleRouteAction = (
+    route: RouteData,
+    action: "details" | "settings",
+  ) => {
     setSelectedRoute(route);
     setViewMode(action);
   };
@@ -151,8 +158,8 @@ const RoutesPage: React.FC = () => {
 
   if (viewMode === "details" && selectedRoute) {
     return (
-      <RouteDetailsPage 
-        route={selectedRoute} 
+      <RouteDetailsPage
+        route={selectedRoute}
         onBack={handleBackToList}
         onOpenSettings={() => setViewMode("settings")}
       />
@@ -161,8 +168,8 @@ const RoutesPage: React.FC = () => {
 
   if (viewMode === "settings" && selectedRoute) {
     return (
-      <RouteSettingsPage 
-        route={selectedRoute} 
+      <RouteSettingsPage
+        route={selectedRoute}
         onBack={handleBackToList}
         onSave={(updatedRoute) => {
           // Aqui você salvaria as alterações
@@ -183,7 +190,9 @@ const RoutesPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h1 className="text-xl font-bold">Rotas</h1>
-                <p className="text-gray-300 text-xs">Gerenciamento de rotas criadas</p>
+                <p className="text-gray-300 text-xs">
+                  Gerenciamento de rotas criadas
+                </p>
               </div>
               <button
                 onClick={openRouteModal}
@@ -217,9 +226,13 @@ const RoutesPage: React.FC = () => {
                         : "bg-card/20 text-gray-300 hover:bg-card/30"
                     }`}
                   >
-                    {filter === "all" ? "Todas" : 
-                     filter === "active" ? "Ativas" :
-                     filter === "scheduled" ? "Agendadas" : "Rascunhos"}
+                    {filter === "all"
+                      ? "Todas"
+                      : filter === "active"
+                        ? "Ativas"
+                        : filter === "scheduled"
+                          ? "Agendadas"
+                          : "Rascunhos"}
                   </button>
                 ))}
               </div>
@@ -242,7 +255,9 @@ const RoutesPage: React.FC = () => {
                 Nenhuma rota encontrada
               </h3>
               <p className="text-muted-foreground mb-4">
-                {searchQuery ? "Tente ajustar sua busca" : "Crie sua primeira rota para começar"}
+                {searchQuery
+                  ? "Tente ajustar sua busca"
+                  : "Crie sua primeira rota para começar"}
               </p>
               <button
                 onClick={openRouteModal}
@@ -273,7 +288,9 @@ const RoutesPage: React.FC = () => {
                             <h4 className="font-semibold text-foreground">
                               {route.name}
                             </h4>
-                            <span className={`text-xs font-medium ${statusConfig[route.status].color}`}>
+                            <span
+                              className={`text-xs font-medium ${statusConfig[route.status].color}`}
+                            >
                               {statusConfig[route.status].label}
                             </span>
                           </div>
@@ -287,8 +304,7 @@ const RoutesPage: React.FC = () => {
                               <span>
                                 {route.scheduledDate
                                   ? `Agendada: ${formatDateTime(route.scheduledDate)}`
-                                  : `Criada: ${formatDate(route.createdAt)}`
-                                }
+                                  : `Criada: ${formatDate(route.createdAt)}`}
                               </span>
                             </span>
                           </div>
@@ -302,28 +318,44 @@ const RoutesPage: React.FC = () => {
                       {/* Route Info */}
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-muted-foreground">Distância Total</p>
-                          <p className="font-medium text-foreground">{route.totalDistance}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Distância Total
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {route.totalDistance}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Última Modificação</p>
-                          <p className="font-medium text-foreground">{formatDateTime(route.lastModified)}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Última Modificação
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {formatDateTime(route.lastModified)}
+                          </p>
                         </div>
                       </div>
 
                       {route.description && (
                         <div>
-                          <p className="text-sm text-muted-foreground">Descrição</p>
-                          <p className="text-sm text-foreground mt-1">{route.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Descrição
+                          </p>
+                          <p className="text-sm text-foreground mt-1">
+                            {route.description}
+                          </p>
                         </div>
                       )}
 
                       {route.linkedSet && (
                         <div>
-                          <p className="text-sm text-muted-foreground">Conjunto Vinculado</p>
+                          <p className="text-sm text-muted-foreground">
+                            Conjunto Vinculado
+                          </p>
                           <div className="flex items-center space-x-2 mt-1">
                             <Link className="h-4 w-4 text-primary" />
-                            <span className="text-sm text-primary font-medium">{route.linkedSet}</span>
+                            <span className="text-sm text-primary font-medium">
+                              {route.linkedSet}
+                            </span>
                           </div>
                         </div>
                       )}

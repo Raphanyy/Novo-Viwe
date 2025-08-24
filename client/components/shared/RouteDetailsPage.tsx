@@ -51,9 +51,21 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
   const [showShareOptions, setShowShareOptions] = useState(false);
 
   const statusConfig = {
-    active: { label: "Ativa", color: "text-green-600 bg-green-100", icon: Play },
-    scheduled: { label: "Agendada", color: "text-blue-600 bg-blue-100", icon: Calendar },
-    draft: { label: "Rascunho", color: "text-yellow-600 bg-yellow-100", icon: Edit3 }
+    active: {
+      label: "Ativa",
+      color: "text-green-600 bg-green-100",
+      icon: Play,
+    },
+    scheduled: {
+      label: "Agendada",
+      color: "text-blue-600 bg-blue-100",
+      icon: Calendar,
+    },
+    draft: {
+      label: "Rascunho",
+      color: "text-yellow-600 bg-yellow-100",
+      icon: Edit3,
+    },
   };
 
   const formatDateTime = (dateString: string) => {
@@ -126,10 +138,14 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
                     <Star className="h-5 w-5 text-yellow-400 fill-current" />
                   )}
                 </div>
-                <p className="text-gray-300 text-sm">Detalhes e configurações</p>
+                <p className="text-gray-300 text-sm">
+                  Detalhes e configurações
+                </p>
               </div>
               <div className="flex items-center space-x-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig[route.status].color}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig[route.status].color}`}
+                >
                   <StatusIcon className="h-3 w-3" />
                   <span>{statusConfig[route.status].label}</span>
                 </span>
@@ -142,28 +158,38 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
         <div className="bg-card rounded-xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Visão Geral</h3>
-            
+            <h3 className="text-lg font-semibold text-foreground mb-4">
+              Visão Geral
+            </h3>
+
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Paradas</p>
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span className="font-semibold text-foreground">{route.stopCount} paradas</span>
+                  <span className="font-semibold text-foreground">
+                    {route.stopCount} paradas
+                  </span>
                 </div>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Duração Estimada</p>
+                <p className="text-sm text-muted-foreground">
+                  Duração Estimada
+                </p>
                 <div className="flex items-center space-x-2">
                   <Clock className="h-4 w-4 text-primary" />
-                  <span className="font-semibold text-foreground">{route.estimatedDuration}</span>
+                  <span className="font-semibold text-foreground">
+                    {route.estimatedDuration}
+                  </span>
                 </div>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Distância Total</p>
                 <div className="flex items-center space-x-2">
                   <RouteIcon className="h-4 w-4 text-primary" />
-                  <span className="font-semibold text-foreground">{route.totalDistance}</span>
+                  <span className="font-semibold text-foreground">
+                    {route.totalDistance}
+                  </span>
                 </div>
               </div>
               <div className="space-y-1">
@@ -173,10 +199,9 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   <span className="font-semibold text-foreground text-sm">
-                    {route.scheduledDate 
+                    {route.scheduledDate
                       ? formatDateTime(route.scheduledDate)
-                      : formatDateTime(route.createdAt)
-                    }
+                      : formatDateTime(route.createdAt)}
                   </span>
                 </div>
               </div>
@@ -193,8 +218,12 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
               <div className="mt-4 p-3 bg-primary/10 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <Link className="h-4 w-4 text-primary" />
-                  <span className="text-sm text-muted-foreground">Vinculada ao conjunto:</span>
-                  <span className="font-medium text-primary">{route.linkedSet}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Vinculada ao conjunto:
+                  </span>
+                  <span className="font-medium text-primary">
+                    {route.linkedSet}
+                  </span>
                 </div>
               </div>
             )}
@@ -205,8 +234,10 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
         <div className="bg-card rounded-xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Ações Principais</h3>
-            
+            <h3 className="text-lg font-semibold text-foreground mb-4">
+              Ações Principais
+            </h3>
+
             <div className="grid grid-cols-1 gap-3">
               <button
                 onClick={handleStartNavigation}
@@ -220,12 +251,14 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
                 <button
                   onClick={handleToggleFavorite}
                   className={`p-3 rounded-xl transition-colors flex items-center justify-center space-x-2 ${
-                    route.isFavorite 
-                      ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200" 
+                    route.isFavorite
+                      ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                   }`}
                 >
-                  <Star className={`h-4 w-4 ${route.isFavorite ? "fill-current" : ""}`} />
+                  <Star
+                    className={`h-4 w-4 ${route.isFavorite ? "fill-current" : ""}`}
+                  />
                   <span className="text-sm font-medium">
                     {route.isFavorite ? "Desfavoritar" : "Favoritar"}
                   </span>
@@ -247,8 +280,10 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
         <div className="bg-card rounded-xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Ações Secundárias</h3>
-            
+            <h3 className="text-lg font-semibold text-foreground mb-4">
+              Ações Secundárias
+            </h3>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="relative">
                 <button
@@ -296,9 +331,7 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
                 <span className="text-sm font-medium">Vincular Conjunto</span>
               </button>
 
-              <button
-                className="bg-green-50 text-green-700 p-3 rounded-xl hover:bg-green-100 transition-colors flex items-center justify-center space-x-2"
-              >
+              <button className="bg-green-50 text-green-700 p-3 rounded-xl hover:bg-green-100 transition-colors flex items-center justify-center space-x-2">
                 <Copy className="h-4 w-4" />
                 <span className="text-sm font-medium">Duplicar</span>
               </button>
@@ -323,12 +356,17 @@ const RouteDetailsPage: React.FC<RouteDetailsPageProps> = ({
                   <AlertTriangle className="h-5 w-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Excluir Rota</h3>
-                  <p className="text-sm text-muted-foreground">Esta ação não pode ser desfeita</p>
+                  <h3 className="font-semibold text-foreground">
+                    Excluir Rota
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Esta ação não pode ser desfeita
+                  </p>
                 </div>
               </div>
               <p className="text-sm text-foreground mb-6">
-                Tem certeza que deseja excluir a rota <strong>"{route.name}"</strong>?
+                Tem certeza que deseja excluir a rota{" "}
+                <strong>"{route.name}"</strong>?
               </p>
               <div className="flex space-x-3">
                 <button
