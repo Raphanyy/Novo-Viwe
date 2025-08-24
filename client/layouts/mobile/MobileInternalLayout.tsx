@@ -267,15 +267,6 @@ const MobileInternalLayout: React.FC = () => {
         // Abre configurações avançadas da rota
         openConfiguration();
         break;
-      case "finalize_planning":
-        // PLANEJAMENTO: Finaliza planejamento e abre confirmação para traçar rota
-        if (traceState.stops.length >= 2) {
-          showTraceConfirmation();
-        } else {
-          // Se n��o tem paradas suficientes, mostrar feedback
-          alert("Adicione pelo menos 2 paradas para traçar a rota");
-        }
-        break;
       case "cancel":
         // PLANEJAMENTO: Cancela o planejamento e volta à exploração
         cancelTrace();
