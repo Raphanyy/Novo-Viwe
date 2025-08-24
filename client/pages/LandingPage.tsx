@@ -561,14 +561,14 @@ const HomePage = ({
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-green-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-green-500/20 to-green-500/10 rounded-xl text-green-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl text-blue-500 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <TrafficCone className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-green-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-500 transition-colors">
                 Previsão de Trânsito
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
@@ -579,14 +579,14 @@ const HomePage = ({
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-yellow-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-600/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 rounded-xl text-yellow-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-xl text-blue-600 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <MapPin className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-yellow-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-600 transition-colors">
                 Pontos de Interesse
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
@@ -596,14 +596,14 @@ const HomePage = ({
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-purple-500/50 hover:shadow-xl group"
+              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-700/50 hover:shadow-xl group"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-xl text-purple-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-xl text-blue-700 mb-4 group-hover:scale-105 transition-transform duration-300">
                 <Share2 className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-purple-500 transition-colors">
+              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-700 transition-colors">
                 Compartilhar Itinerário
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
