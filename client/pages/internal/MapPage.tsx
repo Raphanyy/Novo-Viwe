@@ -35,6 +35,7 @@ import ModalHeader from "../../components/shared/ModalHeader";
 import NavigationDetailsModal from "../../components/shared/NavigationDetailsModal";
 import NavigationAdjustmentsModal from "../../components/shared/NavigationAdjustmentsModal";
 import FinalSummaryModal from "../../components/shared/FinalSummaryModal";
+import ViweRouteTracer from "../../components/shared/ViweRouteTracer";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
