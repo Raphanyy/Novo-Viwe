@@ -670,18 +670,10 @@ const LandingPage = () => {
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    let mouseX = 0,
-      mouseY = 0;
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-
     const animate = () => {
       requestAnimationFrame(animate);
-      plane.rotation.x = mouseY * 0.03;
-      plane.rotation.y = mouseX * 0.03;
+      plane.rotation.x += 0.0003;
+      plane.rotation.y += 0.0005;
       plane.rotation.z += 0.0005;
       renderer.render(scene, camera);
     };
