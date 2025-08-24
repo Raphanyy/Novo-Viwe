@@ -44,9 +44,9 @@ const AdaptiveModal: React.FC<AdaptiveModalProps> = ({
   const useFullScreen = fullPage || isMobile;
 
   const modalClasses = useFullScreen
-    ? "fixed inset-0 z-50 bg-background"
+    ? "fixed inset-0 z-[60] bg-background"
     : cn(
-        "fixed inset-0 z-50 flex items-center justify-center p-4",
+        "fixed inset-0 z-[60] flex items-center justify-center p-4",
         "bg-black bg-opacity-50",
       );
 
