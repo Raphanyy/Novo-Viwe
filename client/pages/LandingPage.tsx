@@ -466,7 +466,7 @@ const HomePage = ({
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-3 lg:mb-4">
             <Link
               to="/login"
-              className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-6 py-3 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+              className="group bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
             >
               <span className="flex items-center justify-center gap-2">
                 <Sparkles className="h-4 w-4" />
@@ -474,7 +474,7 @@ const HomePage = ({
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
-            <button className="group flex items-center justify-center gap-2 text-foreground px-6 py-3 rounded-full border border-border font-semibold hover:bg-secondary transition-all duration-300">
+            <button className="group flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full border border-border font-semibold hover:bg-white/90 transition-all duration-300">
               <Play className="h-4 w-4" />
               Ver demonstração
             </button>
