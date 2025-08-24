@@ -687,44 +687,44 @@ const HomePage = ({
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-600/20 transition-all duration-500 hover:border-blue-600/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-600/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <MapPin className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Pontos de Interesse
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Descubra pontos de interesse pelo caminho.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/30 to-blue-700/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-700/20 transition-all duration-500 hover:border-blue-700/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-700/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <Share2 className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Compartilhar Itinerário
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Compartilhe rotas em tempo real com família e equipe.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
           </div>
         </div>
