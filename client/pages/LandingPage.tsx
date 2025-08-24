@@ -682,9 +682,9 @@ const LandingPage = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      plane.rotation.x = mouseY * 0.05;
-      plane.rotation.y = mouseX * 0.05;
-      plane.rotation.z += 0.001;
+      plane.rotation.x = mouseY * 0.1;
+      plane.rotation.y = mouseX * 0.1;
+      plane.rotation.z += 0.003;
       renderer.render(scene, camera);
     };
     animate();
