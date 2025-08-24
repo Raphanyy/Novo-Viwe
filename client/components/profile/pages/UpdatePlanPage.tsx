@@ -93,10 +93,10 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
       price: "R$ 0,00",
       description: "Funcionalidades básicas e recursos nativos.",
       features: [
-        "Até 15 rotas Imediatas com até 15 paradas",
-        "Até 5 Rotas permanentes com até 15 paradas",
-        "Até 3 conjuntos de rotas inteligentes",
-        "Modo de navegação e mapa integrados"
+        "15 rotas imediatas (15 paradas)",
+        "5 rotas permanentes (15 paradas)",
+        "3 conjuntos de rotas inteligentes",
+        "Navegação e mapas integrados"
       ],
       buttonText: "Começar Gratuitamente",
       isComingSoon: false,
@@ -106,10 +106,10 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
       price: "R$ 29,90",
       description: "Eleve sua experiência com funcionalidades extras.",
       features: [
-        "Até 50 rotas imediatas com até 30 paradas",
-        "Até 25 rotas permanentes com até 30 paradas",
-        "Até 15 conjuntos de rotas inteligentes",
-        "Modo de navegação e mapa integrados"
+        "50 rotas imediatas (30 paradas)",
+        "25 rotas permanentes (30 paradas)",
+        "15 conjuntos de rotas inteligentes",
+        "Navegação e mapas integrados"
       ],
       buttonText: "Assinar Viwe Premium",
       isComingSoon: false,
@@ -120,8 +120,8 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
       description: "Acesso ilimitado e recursos avançados.",
       features: [
         "Uso ilimitado",
-        "Recursos Adicionais",
-        "Experiência Personalizada"
+        "Recursos avançados",
+        "Experiência personalizada"
       ],
       buttonText: "Disponível em breve",
       isComingSoon: true,
