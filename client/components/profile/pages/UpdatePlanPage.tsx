@@ -138,32 +138,42 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
   ];
 
   return (
-    <div className="p-4 min-h-full bg-background">
-      {/* Título e subtítulo da página */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Nossos Planos
-        </h1>
-        <p className="text-muted-foreground">
-          Escolha de acordo com o que precisar
-        </p>
+    <div className="min-h-full bg-background">
+      {/* Header local com botão de voltar */}
+      <div className="bg-card border-b border-border px-4 py-3 flex items-center space-x-2">
+        <button
+          onClick={onBack}
+          className="p-2 hover:bg-accent rounded-lg transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5 text-foreground" />
+        </button>
+        <h1 className="text-lg font-semibold text-foreground">Nossos Planos</h1>
       </div>
 
-      {/* Seção de planos usando o componente AccordionPricingCard */}
-      <div className="space-y-4">
-        {plansData.map((plan, index) => (
-          <AccordionPricingCard
-            key={index}
-            plan={plan.plan}
-            price={plan.price}
-            description={plan.description}
-            features={plan.features}
-            buttonText={plan.buttonText}
-            isOpen={index === openIndex}
-            onToggle={() => handleToggle(index)}
-            isComingSoon={plan.isComingSoon}
-          />
-        ))}
+      <div className="p-4">
+        {/* Subtítulo da página */}
+        <div className="mb-6">
+          <p className="text-muted-foreground">
+            Escolha de acordo com o que precisar
+          </p>
+        </div>
+
+        {/* Seção de planos usando o componente AccordionPricingCard */}
+        <div className="space-y-4">
+          {plansData.map((plan, index) => (
+            <AccordionPricingCard
+              key={index}
+              plan={plan.plan}
+              price={plan.price}
+              description={plan.description}
+              features={plan.features}
+              buttonText={plan.buttonText}
+              isOpen={index === openIndex}
+              onToggle={() => handleToggle(index)}
+              isComingSoon={plan.isComingSoon}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
