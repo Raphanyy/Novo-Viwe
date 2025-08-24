@@ -865,15 +865,20 @@ const MapPage: React.FC = () => {
           const controller2 = new AbortController();
           const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
 
-          const enhancedResponse = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-              businessQuery,
-            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
-            {
-              signal: controller2.signal,
-              headers: { Accept: "application/json" },
-            },
+          const enhancedApiUrl = createMapboxApiUrl(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(businessQuery)}.json`,
+            { country: 'BR', language: 'pt', limit: '8', types: 'poi,place,region,district,postcode,locality,neighborhood' }
           );
+
+          if (!enhancedApiUrl) {
+            console.warn("Mapbox token not available for enhanced search");
+            return;
+          }
+
+          const enhancedResponse = await fetch(enhancedApiUrl, {
+            signal: controller2.signal,
+            headers: { Accept: "application/json" },
+          });
 
           clearTimeout(timeoutId2);
 
@@ -909,15 +914,20 @@ const MapPage: React.FC = () => {
           const controller3 = new AbortController();
           const timeoutId3 = setTimeout(() => controller3.abort(), 8000);
 
-          const generalResponse = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-              query,
-            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
-            {
-              signal: controller3.signal,
-              headers: { Accept: "application/json" },
-            },
+          const generalApiUrl = createMapboxApiUrl(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`,
+            { country: 'BR', language: 'pt', limit: '8', types: 'place,address,region,district,postcode,locality,neighborhood' }
           );
+
+          if (!generalApiUrl) {
+            console.warn("Mapbox token not available for general search");
+            return;
+          }
+
+          const generalResponse = await fetch(generalApiUrl, {
+            signal: controller3.signal,
+            headers: { Accept: "application/json" },
+          });
 
           clearTimeout(timeoutId3);
 
