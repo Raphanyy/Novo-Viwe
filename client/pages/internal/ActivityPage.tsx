@@ -74,7 +74,9 @@ interface StatCard {
 
 const ActivityPage: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("month");
-  const [selectedStatus, setSelectedStatus] = useState<RouteStatus | "all">("all");
+  const [selectedStatus, setSelectedStatus] = useState<RouteStatus | "all">(
+    "all",
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [expandedTrip, setExpandedTrip] = useState<number | null>(null);
   const [selectedRoute, setSelectedRoute] = useState<RouteDetails | null>(null);
@@ -209,7 +211,8 @@ const ActivityPage: React.FC = () => {
       traffic: "normal",
       cost: "R$ 12,50",
       status: "completed",
-      description: "Rota diária para o trabalho, otimizada para evitar trânsito",
+      description:
+        "Rota diária para o trabalho, otimizada para evitar trânsito",
     },
     {
       id: 2,
@@ -273,10 +276,26 @@ const ActivityPage: React.FC = () => {
 
   const statusFilters = [
     { id: "all", name: "Todas", count: routes.length },
-    { id: "completed", name: "Concluídas", count: routes.filter(r => r.status === "completed").length },
-    { id: "paused", name: "Pausadas", count: routes.filter(r => r.status === "paused").length },
-    { id: "configured", name: "Configuradas", count: routes.filter(r => r.status === "configured").length },
-    { id: "forgotten", name: "Esquecidas", count: routes.filter(r => r.status === "forgotten").length },
+    {
+      id: "completed",
+      name: "Concluídas",
+      count: routes.filter((r) => r.status === "completed").length,
+    },
+    {
+      id: "paused",
+      name: "Pausadas",
+      count: routes.filter((r) => r.status === "paused").length,
+    },
+    {
+      id: "configured",
+      name: "Configuradas",
+      count: routes.filter((r) => r.status === "configured").length,
+    },
+    {
+      id: "forgotten",
+      name: "Esquecidas",
+      count: routes.filter((r) => r.status === "forgotten").length,
+    },
   ];
 
   const getStatusConfig = (status: RouteStatus) => {
@@ -286,35 +305,35 @@ const ActivityPage: React.FC = () => {
           color: "text-green-600 bg-green-100",
           icon: CheckCircle,
           label: "Concluída",
-          borderColor: "border-l-green-500"
+          borderColor: "border-l-green-500",
         };
       case "paused":
         return {
           color: "text-yellow-600 bg-yellow-100",
           icon: Pause,
           label: "Pausada",
-          borderColor: "border-l-yellow-500"
+          borderColor: "border-l-yellow-500",
         };
       case "configured":
         return {
           color: "text-blue-600 bg-blue-100",
           icon: Settings,
           label: "Configurada",
-          borderColor: "border-l-blue-500"
+          borderColor: "border-l-blue-500",
         };
       case "forgotten":
         return {
           color: "text-red-600 bg-red-100",
           icon: XCircle,
           label: "Esquecida",
-          borderColor: "border-l-red-500"
+          borderColor: "border-l-red-500",
         };
       default:
         return {
           color: "text-gray-600 bg-gray-100",
           icon: Info,
           label: "Desconhecido",
-          borderColor: "border-l-gray-500"
+          borderColor: "border-l-gray-500",
         };
     }
   };
@@ -338,11 +357,13 @@ const ActivityPage: React.FC = () => {
     return "text-red-600";
   };
 
-  const filteredRoutes = routes.filter(route => {
-    const matchesStatus = selectedStatus === "all" || route.status === selectedStatus;
-    const matchesSearch = route.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         route.startAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         route.endAddress.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredRoutes = routes.filter((route) => {
+    const matchesStatus =
+      selectedStatus === "all" || route.status === selectedStatus;
+    const matchesSearch =
+      route.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      route.startAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      route.endAddress.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -362,7 +383,9 @@ const ActivityPage: React.FC = () => {
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`p-2 rounded-lg transition-colors duration-200 ${
-                    showFilters ? "bg-primary/20" : "bg-card/20 hover:bg-card/30"
+                    showFilters
+                      ? "bg-primary/20"
+                      : "bg-card/20 hover:bg-card/30"
                   }`}
                 >
                   <Filter className="h-4 w-4" />
@@ -412,7 +435,9 @@ const ActivityPage: React.FC = () => {
                 {statusFilters.map((filter) => (
                   <button
                     key={filter.id}
-                    onClick={() => setSelectedStatus(filter.id as RouteStatus | "all")}
+                    onClick={() =>
+                      setSelectedStatus(filter.id as RouteStatus | "all")
+                    }
                     className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
                       selectedStatus === filter.id
                         ? "bg-primary text-primary-foreground"
@@ -420,9 +445,13 @@ const ActivityPage: React.FC = () => {
                     }`}
                   >
                     <span>{filter.name}</span>
-                    <span className={`text-xs px-1 py-0.5 rounded-full ${
-                      selectedStatus === filter.id ? "bg-primary-foreground/20" : "bg-border"
-                    }`}>
+                    <span
+                      className={`text-xs px-1 py-0.5 rounded-full ${
+                        selectedStatus === filter.id
+                          ? "bg-primary-foreground/20"
+                          : "bg-border"
+                      }`}
+                    >
                       {filter.count}
                     </span>
                   </button>
@@ -434,7 +463,9 @@ const ActivityPage: React.FC = () => {
 
         {/* Statistics */}
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas Detalhadas</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-3">
+            Estatísticas Detalhadas
+          </h3>
           <Accordion type="single" collapsible className="space-y-3">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
@@ -452,9 +483,13 @@ const ActivityPage: React.FC = () => {
                         <Icon className={`h-5 w-5 ${stat.color}`} />
                         <div className="text-left">
                           <div className="flex items-center space-x-2">
-                            <h4 className="font-semibold text-foreground">{stat.label}</h4>
+                            <h4 className="font-semibold text-foreground">
+                              {stat.label}
+                            </h4>
                           </div>
-                          <p className="text-sm text-muted-foreground">{stat.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {stat.description}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -465,8 +500,12 @@ const ActivityPage: React.FC = () => {
                       {/* Valor principal e mudança */}
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <p className="text-3xl font-bold text-foreground">{stat.value}</p>
-                          <p className="text-sm font-medium text-foreground">{stat.details.subtitle}</p>
+                          <p className="text-3xl font-bold text-foreground">
+                            {stat.value}
+                          </p>
+                          <p className="text-sm font-medium text-foreground">
+                            {stat.details.subtitle}
+                          </p>
                         </div>
                         <span className="text-sm text-green-600 font-medium bg-green-100 px-3 py-1 rounded-full">
                           {stat.change}
@@ -475,9 +514,16 @@ const ActivityPage: React.FC = () => {
 
                       <div className="grid grid-cols-2 gap-3 mb-4">
                         {stat.details.items.map((item, itemIndex) => (
-                          <div key={itemIndex} className="flex justify-between items-center p-2 bg-background/50 rounded-lg">
-                            <span className="text-xs text-muted-foreground">{item.label}</span>
-                            <span className="text-sm font-medium text-foreground">{item.value}</span>
+                          <div
+                            key={itemIndex}
+                            className="flex justify-between items-center p-2 bg-background/50 rounded-lg"
+                          >
+                            <span className="text-xs text-muted-foreground">
+                              {item.label}
+                            </span>
+                            <span className="text-sm font-medium text-foreground">
+                              {item.value}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -485,7 +531,9 @@ const ActivityPage: React.FC = () => {
                       <div className="p-3 bg-accent/50 rounded-lg">
                         <div className="flex items-start space-x-2">
                           <TrendingUp className="h-4 w-4 text-primary mt-0.5" />
-                          <p className="text-xs text-muted-foreground leading-relaxed">{stat.details.trend}</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {stat.details.trend}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -508,7 +556,7 @@ const ActivityPage: React.FC = () => {
             {filteredRoutes.map((route) => {
               const statusConfig = getStatusConfig(route.status);
               const StatusIcon = statusConfig.icon;
-              
+
               return (
                 <div
                   key={route.id}
@@ -521,18 +569,24 @@ const ActivityPage: React.FC = () => {
                       <div
                         className="flex-1 text-left cursor-pointer"
                         onClick={() =>
-                          setExpandedTrip(expandedTrip === route.id ? null : route.id)
+                          setExpandedTrip(
+                            expandedTrip === route.id ? null : route.id,
+                          )
                         }
                       >
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="font-semibold text-foreground text-sm">
                             {route.name}
                           </h3>
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}
+                          >
                             <StatusIcon className="h-3 w-3" />
                             <span>{statusConfig.label}</span>
                           </span>
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}
+                          >
                             {route.efficiency}%
                           </span>
                         </div>
@@ -540,7 +594,9 @@ const ActivityPage: React.FC = () => {
                         <div className="flex items-center space-x-3 text-xs text-muted-foreground">
                           <span className="flex items-center space-x-1">
                             <Calendar className="h-3 w-3" />
-                            <span>{new Date(route.date).toLocaleDateString("pt-BR")}</span>
+                            <span>
+                              {new Date(route.date).toLocaleDateString("pt-BR")}
+                            </span>
                           </span>
                           <span className="flex items-center space-x-1">
                             <Clock className="h-3 w-3" />
@@ -568,7 +624,9 @@ const ActivityPage: React.FC = () => {
                         </button>
                         <button
                           onClick={() =>
-                            setExpandedTrip(expandedTrip === route.id ? null : route.id)
+                            setExpandedTrip(
+                              expandedTrip === route.id ? null : route.id,
+                            )
                           }
                           className="p-1 hover:bg-accent rounded-lg transition-colors"
                         >
@@ -588,40 +646,60 @@ const ActivityPage: React.FC = () => {
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div>
                             <p className="text-muted-foreground">Origem</p>
-                            <p className="text-foreground font-medium">{route.startAddress}</p>
+                            <p className="text-foreground font-medium">
+                              {route.startAddress}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Destino</p>
-                            <p className="text-foreground font-medium">{route.endAddress}</p>
+                            <p className="text-foreground font-medium">
+                              {route.endAddress}
+                            </p>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
                           <div className="text-center p-2 bg-green-50 rounded-lg">
                             <Clock className="h-4 w-4 text-green-600 mx-auto mb-1" />
-                            <p className="text-xs text-muted-foreground">Tempo</p>
-                            <p className="text-green-600 font-bold text-sm">{route.savings.time}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Tempo
+                            </p>
+                            <p className="text-green-600 font-bold text-sm">
+                              {route.savings.time}
+                            </p>
                           </div>
                           <div className="text-center p-2 bg-blue-50 rounded-lg">
                             <Fuel className="h-4 w-4 text-blue-600 mx-auto mb-1" />
-                            <p className="text-xs text-muted-foreground">Combustível</p>
-                            <p className="text-blue-600 font-bold text-sm">{route.savings.fuel}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Combustível
+                            </p>
+                            <p className="text-blue-600 font-bold text-sm">
+                              {route.savings.fuel}
+                            </p>
                           </div>
                           <div className="text-center p-2 bg-purple-50 rounded-lg">
                             <DollarSign className="h-4 w-4 text-purple-600 mx-auto mb-1" />
-                            <p className="text-xs text-muted-foreground">Economia</p>
-                            <p className="text-purple-600 font-bold text-sm">{route.savings.money}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Economia
+                            </p>
+                            <p className="text-purple-600 font-bold text-sm">
+                              {route.savings.money}
+                            </p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between pt-2 border-t border-border">
                           <div className="flex items-center space-x-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
+                            >
                               {route.traffic === "light" && "Livre"}
                               {route.traffic === "normal" && "Normal"}
                               {route.traffic === "heavy" && "Intenso"}
                             </span>
-                            <span className="text-xs text-muted-foreground">{route.cost}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {route.cost}
+                            </span>
                           </div>
 
                           <div className="flex items-center space-x-2">
@@ -649,9 +727,13 @@ const ActivityPage: React.FC = () => {
           {filteredRoutes.length === 0 && (
             <div className="text-center py-8">
               <AlertTriangle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-foreground mb-1">Nenhuma rota encontrada</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-1">
+                Nenhuma rota encontrada
+              </h3>
               <p className="text-sm text-muted-foreground">
-                {searchTerm ? "Tente ajustar sua busca" : "Nenhuma rota nos filtros selecionados"}
+                {searchTerm
+                  ? "Tente ajustar sua busca"
+                  : "Nenhuma rota nos filtros selecionados"}
               </p>
             </div>
           )}
@@ -680,7 +762,9 @@ const ActivityPage: React.FC = () => {
                 <p className="text-xs text-gray-300">Meta próximo mês</p>
                 <span className="text-xs text-gray-400">75%</span>
               </div>
-              <p className="text-sm font-medium mb-2">50 viagens com 90%+ eficiência</p>
+              <p className="text-sm font-medium mb-2">
+                50 viagens com 90%+ eficiência
+              </p>
               <Progress value={75} className="h-2" />
             </div>
           </div>
@@ -712,8 +796,12 @@ const ActivityPage: React.FC = () => {
                       <StatusIcon className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground">{selectedRoute.name}</h3>
-                      <p className="text-sm text-muted-foreground">{statusConfig.label}</p>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        {selectedRoute.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {statusConfig.label}
+                      </p>
                     </div>
                   </>
                 );
@@ -723,7 +811,9 @@ const ActivityPage: React.FC = () => {
             {/* Description */}
             {selectedRoute.description && (
               <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-foreground">{selectedRoute.description}</p>
+                <p className="text-sm text-foreground">
+                  {selectedRoute.description}
+                </p>
               </div>
             )}
 
@@ -731,40 +821,58 @@ const ActivityPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-foreground">Origem</p>
-                <p className="text-sm text-muted-foreground">{selectedRoute.startAddress}</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedRoute.startAddress}
+                </p>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-foreground">Destino</p>
-                <p className="text-sm text-muted-foreground">{selectedRoute.endAddress}</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedRoute.endAddress}
+                </p>
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">Data e Hora</p>
+                <p className="text-sm font-medium text-foreground">
+                  Data e Hora
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(selectedRoute.date).toLocaleDateString("pt-BR")} às {selectedRoute.time}
+                  {new Date(selectedRoute.date).toLocaleDateString("pt-BR")} às{" "}
+                  {selectedRoute.time}
                 </p>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-foreground">Duração</p>
-                <p className="text-sm text-muted-foreground">{selectedRoute.duration}</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedRoute.duration}
+                </p>
               </div>
             </div>
 
             {/* Performance Metrics */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-foreground">Métricas de Performance</h4>
+              <h4 className="font-semibold text-foreground">
+                Métricas de Performance
+              </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Eficiência</p>
                   <div className="flex items-center space-x-2">
-                    <Progress value={selectedRoute.efficiency} className="flex-1 h-2" />
-                    <span className={`text-sm font-medium ${getEfficiencyColor(selectedRoute.efficiency)}`}>
+                    <Progress
+                      value={selectedRoute.efficiency}
+                      className="flex-1 h-2"
+                    />
+                    <span
+                      className={`text-sm font-medium ${getEfficiencyColor(selectedRoute.efficiency)}`}
+                    >
                       {selectedRoute.efficiency}%
                     </span>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Distância</p>
-                  <p className="text-lg font-semibold text-foreground">{selectedRoute.distance}</p>
+                  <p className="text-lg font-semibold text-foreground">
+                    {selectedRoute.distance}
+                  </p>
                 </div>
               </div>
             </div>
@@ -773,18 +881,30 @@ const ActivityPage: React.FC = () => {
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <Clock className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Tempo Economizado</p>
-                <p className="font-bold text-green-600">{selectedRoute.savings.time}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Tempo Economizado
+                </p>
+                <p className="font-bold text-green-600">
+                  {selectedRoute.savings.time}
+                </p>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <Fuel className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Combustível Poupado</p>
-                <p className="font-bold text-blue-600">{selectedRoute.savings.fuel}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Combustível Poupado
+                </p>
+                <p className="font-bold text-blue-600">
+                  {selectedRoute.savings.fuel}
+                </p>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <DollarSign className="h-6 w-6 text-purple-600 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground mb-1">Valor Economizado</p>
-                <p className="font-bold text-purple-600">{selectedRoute.savings.money}</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Valor Economizado
+                </p>
+                <p className="font-bold text-purple-600">
+                  {selectedRoute.savings.money}
+                </p>
               </div>
             </div>
 
