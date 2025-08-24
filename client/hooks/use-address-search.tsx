@@ -160,7 +160,7 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
     }
 
     return [];
-  }, []);
+  }, [handleAsyncError]);
 
   // Helper function to deduplicate features
   const deduplicateFeatures = useCallback((features: any[]): any[] => {
