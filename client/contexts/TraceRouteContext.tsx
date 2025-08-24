@@ -211,30 +211,26 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         if (!apiUrl) {
           finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
         } else {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const result = await handleAsyncError(async () => {
+            const response = await fetchWithErrorHandling(apiUrl, {}, {
+              timeout: 8000,
+              context: 'AddressLookup',
+              retries: 1,
+              retryDelay: 500
+            });
+            return response.json();
+          }, 'AddressLookup');
 
-          const response = await fetch(apiUrl, {
-            signal: controller.signal,
-            headers: { 'Accept': 'application/json' }
-          });
-
-          clearTimeout(timeoutId);
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data.features && data.features.length > 0) {
-              finalAddress = data.features[0].place_name;
-            } else {
-              finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
-            }
+          if (result.success && result.data?.features?.length > 0) {
+            finalAddress = result.data.features[0].place_name;
           } else {
             finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
           }
         }
       } catch (error) {
-        if (!(error instanceof Error && error.name === 'AbortError')) {
-          console.warn("Error fetching address:", error);
+        const errorInfo = handleError(error, 'AddStopAddress');
+        if (errorInfo.type !== ErrorType.ABORT) {
+          console.debug("Error fetching address, using coordinates:", errorInfo.message);
         }
         finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
       }
