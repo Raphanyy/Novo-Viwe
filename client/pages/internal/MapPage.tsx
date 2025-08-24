@@ -1607,14 +1607,14 @@ const MapPage: React.FC = () => {
       </div>
 
       {/* Bottom info bar (mobile) */}
-      <div className="bg-white border-t border-gray-200 p-3 sm:hidden">
+      <div className="bg-card border-t border-border p-3 sm:hidden">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1 text-gray-600">
+            <div className="flex items-center space-x-1 text-muted-foreground">
               <Car className="h-4 w-4" />
               <span>12 min</span>
             </div>
-            <div className="flex items-center space-x-1 text-gray-600">
+            <div className="flex items-center space-x-1 text-muted-foreground">
               <MapPin className="h-4 w-4" />
               <span>2.3 km</span>
             </div>
