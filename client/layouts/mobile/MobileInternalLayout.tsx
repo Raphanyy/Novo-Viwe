@@ -269,21 +269,27 @@ const MobileInternalLayout: React.FC = () => {
         startActiveNavigation();
         break;
       case "complete_stop":
+        // NAVEGAÇÃO: Marca a parada atual como concluída
         completeCurrentStop();
         break;
       case "optimize":
+        // NAVEGAÇÃO: Otimiza a ordem das paradas restantes
         await optimizeRoute();
         break;
       case "details":
+        // NAVEGAÇÃO: Mostra detalhes da rota e progresso
         openDetailsModal();
         break;
       case "settings":
+        // NAVEGAÇÃO: Abre ajustes da navegação ativa
         openAdjustmentsModal();
         break;
       case "show_summary":
+        // FINALIZAÇÃO: Mostra resumo completo da rota
         openFinalSummaryModal();
         break;
       case "save_and_complete":
+        // FINALIZAÇÃO: Salva e encerra a rota completamente
         saveAndCompleteRoute();
         break;
     }
