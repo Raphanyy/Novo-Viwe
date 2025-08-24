@@ -272,9 +272,6 @@ const DashboardPage: React.FC = () => {
                       <h4 className="font-semibold text-foreground">
                         {route.name}
                       </h4>
-                      <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
-                        -{route.savings}
-                      </span>
                     </div>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <span className="flex items-center space-x-1">
