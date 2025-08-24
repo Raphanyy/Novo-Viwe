@@ -578,17 +578,6 @@ const ActivityPage: React.FC = () => {
                           <h3 className="font-semibold text-foreground text-sm">
                             {route.name}
                           </h3>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center space-x-1 ${statusConfig.color}`}
-                          >
-                            <StatusIcon className="h-3 w-3" />
-                            <span>{statusConfig.label}</span>
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getEfficiencyColor(route.efficiency)} bg-opacity-10`}
-                          >
-                            {route.efficiency}%
-                          </span>
                         </div>
 
                         <div className="flex items-center space-x-3 text-xs text-muted-foreground">
