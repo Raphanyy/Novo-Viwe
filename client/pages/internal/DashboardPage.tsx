@@ -14,9 +14,12 @@ import {
   Star,
   Calendar,
   Activity,
+  Users,
+  FolderOpen,
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
+import { Progress } from "../../components/ui/progress";
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
