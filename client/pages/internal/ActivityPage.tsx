@@ -435,7 +435,7 @@ const ActivityPage: React.FC = () => {
         {/* Statistics */}
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-3">Estatísticas Detalhadas</h3>
-          <Accordion type="multiple" className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-3">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
@@ -453,15 +453,9 @@ const ActivityPage: React.FC = () => {
                         <div className="text-left">
                           <div className="flex items-center space-x-2">
                             <h4 className="font-semibold text-foreground">{stat.label}</h4>
-                            <span className="text-xs text-green-600 font-medium bg-green-100 px-2 py-0.5 rounded-full">
-                              {stat.change}
-                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground">{stat.description}</p>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                       </div>
                     </div>
                   </AccordionTrigger>
