@@ -279,25 +279,25 @@ const ActivityPage: React.FC = () => {
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Header */}
-        <div className="bg-black rounded-2xl p-6 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+        <div className="bg-black rounded-2xl p-4 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <div>
-                <h1 className="text-2xl font-bold mb-1">Histórico de Atividades</h1>
-                <p className="text-gray-300 text-sm">Acompanhe todas as suas rotas e viagens</p>
+                <h1 className="text-xl font-bold">Atividades</h1>
+                <p className="text-gray-300 text-xs">Histórico de rotas</p>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`p-3 rounded-xl transition-colors duration-200 ${
+                  className={`p-2 rounded-lg transition-colors duration-200 ${
                     showFilters ? "bg-primary/20" : "bg-card/20 hover:bg-card/30"
                   }`}
                 >
-                  <Filter className="h-5 w-5" />
+                  <Filter className="h-4 w-4" />
                 </button>
-                <button className="p-3 bg-card/20 hover:bg-card/30 transition-colors duration-200 rounded-xl">
-                  <Download className="h-5 w-5" />
+                <button className="p-2 bg-card/20 hover:bg-card/30 transition-colors duration-200 rounded-lg">
+                  <Download className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -308,7 +308,7 @@ const ActivityPage: React.FC = () => {
                 <button
                   key={period.id}
                   onClick={() => setSelectedPeriod(period.id)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                     selectedPeriod === period.id
                       ? "bg-primary/20 text-white border border-primary/30"
                       : "bg-card/20 text-gray-300 hover:bg-card/30"
