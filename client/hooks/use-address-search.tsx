@@ -43,6 +43,9 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
   const [searchQuery, setSearchQuery] = useState("");
   const resourceManagerRef = useRef(new ResourceManager());
 
+  // Use error handler hook
+  const { handleError, handleAsyncError } = useErrorHandler();
+
   // Cleanup ResourceManager on unmount
   useEffect(() => {
     const manager = resourceManagerRef.current;
