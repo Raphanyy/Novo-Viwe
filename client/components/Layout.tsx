@@ -135,8 +135,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="pt-24">
         {children}
 
-        {/* CTA Section - Show on all pages except pricing */}
-        {location.pathname !== "/pricing" && (
+        {/* CTA Section - Show on all pages except pricing and login */}
+        {location.pathname !== "/pricing" && location.pathname !== "/login" && (
           <section className="bg-secondary py-20 text-center border-t border-border">
             <div className="container mx-auto px-6 flex flex-col">
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
@@ -163,133 +163,135 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-secondary text-muted-foreground py-16 border-t border-border">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div>
-            <div className="flex items-center">
-              <ViweLogo className="h-6 w-6" />
-              <span className="font-bold text-lg ml-2 text-foreground">
-                Viwe
-              </span>
+      {/* Footer - Hide on login page */}
+      {location.pathname !== "/login" && (
+        <footer className="bg-secondary text-muted-foreground py-16 border-t border-border">
+          <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div>
+              <div className="flex items-center">
+                <ViweLogo className="h-6 w-6" />
+                <span className="font-bold text-lg ml-2 text-foreground">
+                  Viwe
+                </span>
+              </div>
+              <p className="mt-4 text-sm max-w-xs">
+                Planejador de rotas <br /> para o mundo.
+              </p>
             </div>
-            <p className="mt-4 text-sm max-w-xs">
-              Planejador de rotas <br /> para o mundo.
-            </p>
+            <div>
+              <h4 className="font-semibold text-foreground">Funcionalidades</h4>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <Link
+                    to="/features"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Otimização
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/features"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Trânsito
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/features"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Pontos de interesse
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/features"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Compartilhar
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground">Empresa</h4>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <Link
+                    to="/about"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Sobre nós
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Contato
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground">Ajuda</h4>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Suporte
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Termos de uso
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Política de privacidade
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground">Idioma</h4>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    Português (Brasil)
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-200"
+                  >
+                    English (United States)
+                  </a>
+                </li>
+              </ul>
+              <p className="mt-6 text-xs text-muted-foreground/60">
+                © 2024 Viwe. Todos os direitos reservados.
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Funcionalidades</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link
-                  to="/features"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Otimização
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/features"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Trânsito
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/features"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Pontos de interesse
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/features"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Compartilhar
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Empresa</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link
-                  to="/about"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Sobre nós
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Contato
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Ajuda</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Suporte
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Termos de uso
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Política de privacidade
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground">Idioma</h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  Português (Brasil)
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="hover:text-foreground transition-colors duration-200"
-                >
-                  English (United States)
-                </a>
-              </li>
-            </ul>
-            <p className="mt-6 text-xs text-muted-foreground/60">
-              © 2024 Viwe. Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };

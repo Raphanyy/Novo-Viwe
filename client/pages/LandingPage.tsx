@@ -36,42 +36,6 @@ import {
 import { Link } from "react-router-dom";
 
 // === Hooks Utilitários ===
-const useIntersectionObserver = (options = {}) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-      },
-      { threshold: 0.1, rootMargin: "50px", ...options },
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return [ref, isIntersecting];
-};
-
-const useParallax = (speed = 0.5) => {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setOffset(window.pageYOffset * speed);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [speed]);
-
-  return offset;
-};
 
 // === Logo Real da Viwe ===
 const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
@@ -82,20 +46,21 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
       className={`${className} object-contain transition-all duration-700 group-hover:scale-110 group-hover:drop-shadow-2xl filter group-hover:brightness-110`}
       loading="eager"
     />
-    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/20 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 scale-150"></div>
   </div>
 ));
 
 // === Seções Principais ===
 
 const StatsSection = memo(() => {
-  const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const sectionRef = useRef(null);
   const [animatedStats, setAnimatedStats] = useState({
     routes: 0,
     users: 0,
     uptime: 0,
     savings: 0,
   });
+  const [hasStarted, setHasStarted] = useState(false);
 
   const finalStats = useMemo(
     () => ({
@@ -108,7 +73,14 @@ const StatsSection = memo(() => {
   );
 
   useEffect(() => {
-    if (!isVisible) return;
+    const timer = setTimeout(() => {
+      setHasStarted(true);
+    }, 1000); // Start after 1 second
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
 
     const duration = 2000;
     const steps = 60;
@@ -134,7 +106,7 @@ const StatsSection = memo(() => {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [isVisible, finalStats]);
+  }, [hasStarted]);
 
   const stats = useMemo(
     () => [
@@ -145,9 +117,9 @@ const StatsSection = memo(() => {
             : `${Math.floor(animatedStats.routes / 1000)}K+`,
         label: "Rotas Otimizadas",
         icon: Route,
-        color: "from-blue-500 to-blue-600",
-        gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
-        shadow: "shadow-blue-500/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number:
@@ -156,25 +128,25 @@ const StatsSection = memo(() => {
             : `${Math.floor(animatedStats.users / 1000)}K+`,
         label: "Usuários Ativos",
         icon: Users,
-        color: "from-blue-600 to-blue-700",
-        gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
-        shadow: "shadow-blue-600/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number: `${animatedStats.uptime.toFixed(1)}%`,
         label: "Uptime Garantido",
         icon: Shield,
-        color: "from-blue-400 to-blue-500",
-        gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
-        shadow: "shadow-blue-400/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
       {
         number: `${animatedStats.savings}%`,
         label: "Economia de Tempo",
         icon: Clock,
-        color: "from-blue-700 to-blue-800",
-        gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
-        shadow: "shadow-blue-700/20",
+        color: "from-primary to-primary",
+        gradient: "bg-gradient-to-r from-primary/10 to-primary/10",
+        shadow: "shadow-primary/20",
       },
     ],
     [animatedStats],
@@ -185,17 +157,21 @@ const StatsSection = memo(() => {
       ref={sectionRef}
       className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
     >
+      {/* Background Pattern - Decorative Squares for Stats */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-24 h-24 border-2 border-primary rounded-xl transform rotate-12"></div>
+        <div className="absolute top-20 right-20 w-32 h-32 border-2 border-primary rounded-xl transform -rotate-6"></div>
+        <div className="absolute bottom-10 left-1/4 w-20 h-20 border-2 border-primary rounded-xl transform rotate-45"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 border-2 border-primary/60 rounded-xl transform -rotate-12"></div>
+      </div>
       {/* Efeitos de fundo melhorados */}
-      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
+      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-primary/5 rounded-full blur-3xl opacity-50"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-blue-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-primary bg-clip-text text-transparent">
             Números que impressionam
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -209,7 +185,7 @@ const StatsSection = memo(() => {
             <div
               key={index}
               className={`group text-center transition-all duration-1000 ease-out transform ${
-                isVisible
+                hasStarted
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-8 scale-95"
               }`}
@@ -217,7 +193,7 @@ const StatsSection = memo(() => {
             >
               <div className="relative mb-6">
                 <div
-                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden`}
+                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 transition-all duration-500 relative overflow-hidden`}
                 >
                   <stat.icon className="h-9 w-9 md:h-11 md:w-11 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
@@ -227,7 +203,7 @@ const StatsSection = memo(() => {
                   className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}
                 ></div>
               </div>
-              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
+              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-primary to-primary bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
                 {stat.number}
               </div>
               <div className="text-muted-foreground font-bold text-base md:text-lg group-hover:text-foreground transition-colors duration-300 leading-tight">
@@ -270,8 +246,15 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-secondary/50">
-      <div className="container mx-auto px-6">
+    <section className="py-16 md:py-20 bg-secondary/50 relative overflow-hidden">
+      {/* Background Pattern - Decorative Squares for Testimonials */}
+      <div className="absolute inset-0 opacity-6">
+        <div className="absolute top-12 left-12 w-20 h-20 border-2 border-primary/40 rounded-xl transform rotate-12"></div>
+        <div className="absolute top-24 right-16 w-32 h-32 border-2 border-primary/30 rounded-xl transform -rotate-6"></div>
+        <div className="absolute bottom-16 left-20 w-24 h-24 border-2 border-muted-foreground/20 rounded-xl transform rotate-45"></div>
+        <div className="absolute bottom-12 right-12 w-28 h-28 border-2 border-primary/25 rounded-xl transform -rotate-12"></div>
+      </div>
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
             <Heart className="h-4 w-4 text-primary" />
@@ -311,7 +294,7 @@ const TestimonialsSection = () => {
                 "{testimonial.text}"
               </blockquote>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm mr-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm mr-3">
                   {testimonial.avatar}
                 </div>
                 <div>
@@ -341,7 +324,7 @@ const HowItWorksSection = () => {
       title: "Defina seu destino",
       description: "Digite onde você quer ir ou selecione no mapa interativo",
       icon: Target,
-      color: "from-blue-500 to-blue-600",
+      color: "from-primary to-primary",
     },
     {
       step: "02",
@@ -349,7 +332,7 @@ const HowItWorksSection = () => {
       description:
         "Nossa IA calcula a melhor rota considerando trânsito e preferências",
       icon: Zap,
-      color: "from-blue-600 to-blue-700",
+      color: "from-primary to-primary",
     },
     {
       step: "03",
@@ -357,7 +340,7 @@ const HowItWorksSection = () => {
       description:
         "Siga as instruções em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
-      color: "from-blue-700 to-blue-800",
+      color: "from-primary to-primary",
     },
   ];
 
@@ -415,26 +398,26 @@ const AdvancedFeaturesSection = () => {
       icon: Smartphone,
       title: "App Mobile Nativo",
       description: "Disponível para iOS e Android com sincronização automática",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: Cloud,
       title: "Sincronização Automática",
       description:
         "Suas rotas ficam salvas e sincronizadas em todos os dispositivos",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: BarChart3,
       title: "Relatórios Avançados",
       description: "Análise detalhada de tempo, distância e economia",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
     {
       icon: Award,
       title: "Suporte Premium",
       description: "Atendimento 24/7 com especialistas em otimização",
-      gradient: "from-primary to-blue-600",
+      gradient: "from-primary to-primary",
     },
   ];
 
@@ -503,23 +486,12 @@ const HomePage = ({
     return () => clearTimeout(timer);
   }, []);
 
-  // Observer para a seção de funcionalidades
+  // Timer para a seção de funcionalidades
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsFeaturesVisible(true);
-          observer.disconnect();
-        }
-      },
-      { root: null, rootMargin: "0px", threshold: 0.2 },
-    );
-    if (featuresRef.current) {
-      observer.observe(featuresRef.current);
-    }
-    return () => {
-      if (featuresRef.current) observer.unobserve(featuresRef.current);
-    };
+    const timer = setTimeout(() => {
+      setIsFeaturesVisible(true);
+    }, 1500); // Start after 1.5 seconds
+    return () => clearTimeout(timer);
   }, []);
 
   // Lógica para o efeito 3D nos cards
@@ -550,9 +522,9 @@ const HomePage = ({
         ></div>
 
         {/* Efeitos de brilho intensificados */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-blue-500/10 opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 opacity-50"></div>
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
 
         <div className="container mx-auto px-6 relative z-10 w-full">
           <div
@@ -563,7 +535,7 @@ const HomePage = ({
               <div className="group relative">
                 <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-blue-500/15 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-primary/15 rounded-full blur-2xl opacity-10 group-hover:opacity-25 transition-opacity duration-300"></div>
               </div>
             </div>
 
@@ -598,9 +570,9 @@ const HomePage = ({
           <div className="flex justify-center">
             <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-3 py-1 flex items-center gap-2">
               <div className="flex -space-x-1">
-                <div className="w-4 h-4 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-primary to-primary rounded-full border border-background"></div>
               </div>
               <span className="text-muted-foreground text-xs">
                 Mais de <strong className="text-foreground">50K</strong>{" "}
@@ -630,11 +602,11 @@ const HomePage = ({
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex justify-center group">
                 <div className="w-24 h-16 bg-gradient-to-br from-card to-muted/30 rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-primary/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <span className="text-muted-foreground group-hover:text-foreground text-xs font-bold transition-colors duration-300 relative z-10">
                     LOGO
                   </span>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
                 </div>
               </div>
             ))}
@@ -642,11 +614,18 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Secção de Funcionalidades principais com proporções corrigidas */}
+      {/* Secção de Funcionalidades principais com proporç��es corrigidas */}
       <section
         ref={featuresRef}
-        className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
+        className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 relative overflow-hidden ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
       >
+        {/* Background Pattern - Decorative Squares for Features */}
+        <div className="absolute inset-0 opacity-8">
+          <div className="absolute top-16 left-16 w-36 h-36 border-2 border-muted-foreground/20 rounded-2xl transform rotate-12"></div>
+          <div className="absolute top-32 right-24 w-20 h-20 border-2 border-primary/30 rounded-2xl transform -rotate-6"></div>
+          <div className="absolute bottom-24 left-24 w-24 h-24 border-2 border-primary/25 rounded-2xl transform rotate-6"></div>
+          <div className="absolute bottom-16 right-16 w-32 h-32 border-2 border-muted-foreground/15 rounded-2xl transform -rotate-12"></div>
+        </div>
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
@@ -671,7 +650,7 @@ const HomePage = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-primary/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <Route className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
@@ -681,70 +660,70 @@ const HomePage = ({
                   IA encontra as melhores rotas automaticamente.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:border-blue-500/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <TrafficCone className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Previsão de Trânsito
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Evite congestionamentos com dados em tempo real.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/30 to-blue-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-600/20 transition-all duration-500 hover:border-blue-600/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-600/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <MapPin className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Pontos de Interesse
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Descubra pontos de interesse pelo caminho.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/30 to-blue-700/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-700/20 transition-all duration-500 hover:border-blue-700/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-700/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <Share2 className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Compartilhar Itinerário
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Compartilhe rotas em tempo real com família e equipe.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
           </div>
         </div>
@@ -801,12 +780,17 @@ const LandingPage = () => {
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
+    // Controlled animation loop with proper cleanup
+    let animationId: number;
     const animate = () => {
-      requestAnimationFrame(animate);
+      if (!plane || !renderer || !scene || !camera) return;
+
       plane.rotation.x += 0.0003;
       plane.rotation.y += 0.0005;
       plane.rotation.z += 0.0005;
       renderer.render(scene, camera);
+
+      animationId = requestAnimationFrame(animate);
     };
     animate();
 
@@ -821,6 +805,11 @@ const LandingPage = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      // Cancel animation frame to prevent memory leaks
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
       window.removeEventListener("resize", handleResize);
       if (
         heroRef.current &&
