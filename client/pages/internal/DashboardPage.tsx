@@ -168,17 +168,19 @@ const DashboardPage: React.FC = () => {
                   <button
                     key={action.name}
                     onClick={action.action}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-border"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-l-4 border-l-primary border-border relative overflow-hidden"
                   >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
                     <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
+                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
                       {action.name}
                     </h4>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground relative z-10">
                       {action.description}
                     </p>
                   </button>
