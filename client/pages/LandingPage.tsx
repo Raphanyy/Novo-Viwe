@@ -37,7 +37,6 @@ import { Link } from "react-router-dom";
 
 // === Hooks Utilitários ===
 
-
 // === Logo Real da Viwe ===
 const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
   <div className="relative group">
