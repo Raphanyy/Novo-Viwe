@@ -41,7 +41,7 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const resourceManagerRef = useRef(resourceManager());
+  const resourceManagerRef = useRef(new ResourceManager());
 
   // Helper function to enhance query context
   const enhanceQuery = useCallback((originalQuery: string): string => {
