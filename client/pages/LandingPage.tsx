@@ -603,11 +603,11 @@ const HomePage = ({
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="flex justify-center group">
                 <div className="w-24 h-16 bg-gradient-to-br from-card to-muted/30 rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-110 hover:shadow-xl hover:shadow-primary/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <span className="text-muted-foreground group-hover:text-foreground text-xs font-bold transition-colors duration-300 relative z-10">
                     LOGO
                   </span>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/20 rounded-xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
                 </div>
               </div>
             ))}
@@ -624,7 +624,7 @@ const HomePage = ({
         <div className="absolute inset-0 opacity-8">
           <div className="absolute top-16 left-16 w-36 h-36 border-2 border-muted-foreground/20 rounded-2xl transform rotate-12"></div>
           <div className="absolute top-32 right-24 w-20 h-20 border-2 border-primary/30 rounded-2xl transform -rotate-6"></div>
-          <div className="absolute bottom-24 left-24 w-24 h-24 border-2 border-blue-500/25 rounded-2xl transform rotate-6"></div>
+          <div className="absolute bottom-24 left-24 w-24 h-24 border-2 border-primary/25 rounded-2xl transform rotate-6"></div>
           <div className="absolute bottom-16 right-16 w-32 h-32 border-2 border-muted-foreground/15 rounded-2xl transform -rotate-12"></div>
         </div>
         <div className="container mx-auto px-6">
