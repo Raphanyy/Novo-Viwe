@@ -13,6 +13,18 @@ const PersonalInfoPage: React.FC<PersonalInfoPageProps> = ({ onBack }) => {
       {/* Perfil atual */}
       <ProfileCard variant="secondary" showEditButton={false} />
 
+      {/* Botão Atualize sua foto */}
+      <button className="w-full bg-card rounded-lg p-3 border border-border text-left transition-colors hover:bg-accent/50">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10">
+            <Camera className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h4 className="text-sm font-medium text-foreground">Atualize sua foto</h4>
+          </div>
+        </div>
+      </button>
+
       {/* Formulário de edição */}
       <ProfileForm />
 
