@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import {
@@ -24,10 +24,58 @@ import {
 
 const RoutesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    "recent" | "favorites" | "planned"
+    "recent" | "favorites" | "planned" | "history"
   >("recent");
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [searchQuery, setSearchQuery] = useState("");
+  const [completedRoutes, setCompletedRoutes] = useState<any[]>([]);
+
+  // Carregar rotas concluídas do localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("completedRoutes");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setCompletedRoutes(parsed.sort((a: any, b: any) =>
+          new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+        ));
+      } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+        setCompletedRoutes([]);
+      }
+    }
+  }, []);
+
+  // Formatar data para exibição
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+    if (diffInHours < 24) {
+      return "Hoje";
+    } else if (diffInHours < 48) {
+      return "Ontem";
+    } else {
+      return date.toLocaleDateString('pt-BR');
+    }
+  };
+
+  // Formatar duração
+  const formatDuration = (startTime: string, endTime?: string) => {
+    if (!endTime) return "--";
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffInMinutes = Math.abs(end.getTime() - start.getTime()) / (1000 * 60);
+
+    if (diffInMinutes < 60) {
+      return `${Math.round(diffInMinutes)} min`;
+    } else {
+      const hours = Math.floor(diffInMinutes / 60);
+      const minutes = Math.round(diffInMinutes % 60);
+      return `${hours}h ${minutes}m`;
+    }
+  };
 
   // Rotas mockadas
   const routes = {
