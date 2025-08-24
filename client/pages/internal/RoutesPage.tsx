@@ -404,4 +404,98 @@ const RoutesPage: React.FC = () => {
   );
 };
 
+// Componente para rotas de histórico
+const HistoryRouteCard: React.FC<{
+  route: any;
+  formatDate: (date: string) => string;
+  formatDuration: (start: string, end?: string) => string;
+}> = ({ route, formatDate, formatDuration }) => {
+  const completedStops = route.stops.filter((stop: any) => stop.isCompleted).length;
+  const totalStops = route.stops.length;
+  const completionRate = Math.round((completedStops / totalStops) * 100);
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <RouteIcon className="h-5 w-5 text-green-600" />
+          </div>
+          <div>
+            <h3 className="font-medium text-foreground">
+              Rota {route.routeId ? route.routeId.split('-')[1].slice(-4) : 'N/A'}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {formatDate(route.completedAt)}
+            </p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-sm font-medium text-foreground">
+            {completedStops}/{totalStops} paradas
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {completionRate}% concluído
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-3">
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {formatDuration(route.navigationData?.startTime, route.completedAt)}
+          </div>
+          <div className="text-xs text-muted-foreground">Duração</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {route.navigationData?.totalDistance ?
+              `${(route.navigationData.totalDistance / 1000).toFixed(1)} km` : '--'
+            }
+          </div>
+          <div className="text-xs text-muted-foreground">Distância</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm font-medium text-foreground">
+            {route.estimatedCredits || '--'}
+          </div>
+          <div className="text-xs text-muted-foreground">Créditos</div>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-3">
+        <div className="w-full bg-muted rounded-full h-2">
+          <div
+            className="bg-green-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${completionRate}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Primeiras paradas */}
+      <div className="space-y-1">
+        <div className="text-xs font-medium text-muted-foreground mb-2">Paradas:</div>
+        {route.stops.slice(0, 2).map((stop: any, index: number) => (
+          <div key={stop.id} className="flex items-center space-x-2 text-sm">
+            <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+              stop.isCompleted ? 'bg-green-500' : 'bg-gray-300'
+            }`} />
+            <span className={`truncate ${
+              stop.isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'
+            }`}>
+              {stop.name}
+            </span>
+          </div>
+        ))}
+        {route.stops.length > 2 && (
+          <div className="text-xs text-muted-foreground ml-5">
+            +{route.stops.length - 2} mais paradas
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default RoutesPage;
