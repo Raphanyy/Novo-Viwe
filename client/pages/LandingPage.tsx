@@ -36,30 +36,6 @@ import {
 import { Link } from "react-router-dom";
 
 // === Hooks Utilitários ===
-const useIntersectionObserver = (options = {}) => {
-  const [hasBeenVisible, setHasBeenVisible] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasBeenVisible) {
-          setHasBeenVisible(true);
-          observer.disconnect(); // Disconnect after first view
-        }
-      },
-      { threshold: 0.1, rootMargin: "50px", ...options },
-    );
-
-    if (ref.current && !hasBeenVisible) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [options, hasBeenVisible]);
-
-  return [ref, hasBeenVisible];
-};
 
 
 // === Logo Real da Viwe ===
@@ -78,14 +54,14 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
 // === Seções Principais ===
 
 const StatsSection = memo(() => {
-  const observerOptions = useMemo(() => ({ threshold: 0.2 }), []);
-  const [sectionRef, hasBeenVisible] = useIntersectionObserver(observerOptions);
+  const sectionRef = useRef(null);
   const [animatedStats, setAnimatedStats] = useState({
     routes: 0,
     users: 0,
     uptime: 0,
     savings: 0,
   });
+  const [hasStarted, setHasStarted] = useState(false);
 
   const finalStats = useMemo(
     () => ({
@@ -98,7 +74,14 @@ const StatsSection = memo(() => {
   );
 
   useEffect(() => {
-    if (!hasBeenVisible) return;
+    const timer = setTimeout(() => {
+      setHasStarted(true);
+    }, 1000); // Start after 1 second
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
 
     const duration = 2000;
     const steps = 60;
@@ -124,7 +107,7 @@ const StatsSection = memo(() => {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [hasBeenVisible]);
+  }, [hasStarted]);
 
   const stats = useMemo(
     () => [
@@ -203,7 +186,7 @@ const StatsSection = memo(() => {
             <div
               key={index}
               className={`group text-center transition-all duration-1000 ease-out transform ${
-                hasBeenVisible
+                hasStarted
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-8 scale-95"
               }`}
@@ -504,23 +487,12 @@ const HomePage = ({
     return () => clearTimeout(timer);
   }, []);
 
-  // Observer para a seção de funcionalidades
+  // Timer para a seção de funcionalidades
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsFeaturesVisible(true);
-          observer.disconnect();
-        }
-      },
-      { root: null, rootMargin: "0px", threshold: 0.2 },
-    );
-    if (featuresRef.current) {
-      observer.observe(featuresRef.current);
-    }
-    return () => {
-      if (featuresRef.current) observer.unobserve(featuresRef.current);
-    };
+    const timer = setTimeout(() => {
+      setIsFeaturesVisible(true);
+    }, 1500); // Start after 1.5 seconds
+    return () => clearTimeout(timer);
   }, []);
 
   // Lógica para o efeito 3D nos cards
