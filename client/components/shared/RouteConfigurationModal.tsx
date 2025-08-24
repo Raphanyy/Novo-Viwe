@@ -392,7 +392,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                {isInMapPage && traceContext.state.isTracing && formData.stops.length >= 2
+                {isInMapPage && traceContext.state.isTracing && formData.stops.length >= 1
                   ? "Finalizar Planejamento"
                   : isInMapPage
                     ? "Salvar Configurações"
