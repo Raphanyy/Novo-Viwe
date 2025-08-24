@@ -98,7 +98,7 @@ const StatsSection = memo(() => {
   );
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!hasBeenVisible) return;
 
     const duration = 2000;
     const steps = 60;
@@ -124,7 +124,7 @@ const StatsSection = memo(() => {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [isVisible]);
+  }, [hasBeenVisible]);
 
   const stats = useMemo(
     () => [
@@ -206,7 +206,7 @@ const StatsSection = memo(() => {
             <div
               key={index}
               className={`group text-center transition-all duration-1000 ease-out transform ${
-                isVisible
+                hasBeenVisible
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-8 scale-95"
               }`}
