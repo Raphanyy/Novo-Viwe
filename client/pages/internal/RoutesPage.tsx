@@ -119,9 +119,9 @@ const RoutesPage: React.FC = () => {
   ];
 
   const statusConfig = {
-    active: { label: "Ativa", color: "text-green-600 bg-green-100" },
-    scheduled: { label: "Agendada", color: "text-blue-600 bg-blue-100" },
-    draft: { label: "Rascunho", color: "text-yellow-600 bg-yellow-100" }
+    active: { label: "Ativa", color: "text-green-600" },
+    scheduled: { label: "Agendada", color: "text-blue-600" },
+    draft: { label: "Rascunho", color: "text-yellow-600" }
   };
 
   const formatDate = (dateString: string) => {
@@ -275,10 +275,7 @@ const RoutesPage: React.FC = () => {
                             <h4 className="font-semibold text-foreground">
                               {route.name}
                             </h4>
-                            {route.isFavorite && (
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            )}
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig[route.status].color}`}>
+                            <span className={`text-xs font-medium ${statusConfig[route.status].color}`}>
                               {statusConfig[route.status].label}
                             </span>
                           </div>
@@ -290,15 +287,11 @@ const RoutesPage: React.FC = () => {
                             <span className="flex items-center space-x-1">
                               <Calendar className="h-3 w-3" />
                               <span>
-                                {route.scheduledDate 
+                                {route.scheduledDate
                                   ? `Agendada: ${formatDateTime(route.scheduledDate)}`
                                   : `Criada: ${formatDate(route.createdAt)}`
                                 }
                               </span>
-                            </span>
-                            <span className="flex items-center space-x-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{route.estimatedDuration}</span>
                             </span>
                           </div>
                         </div>
