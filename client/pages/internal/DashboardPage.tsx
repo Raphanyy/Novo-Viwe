@@ -168,10 +168,10 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Statistics */}
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-3">
-            Ações Rápidas
+            Estatísticas
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {quickActions.map((action) => {
