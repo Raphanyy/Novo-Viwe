@@ -1509,6 +1509,13 @@ const MapPage: React.FC = () => {
         <FinalSummaryModal
           isOpen={traceState.showFinalSummaryModal}
           onClose={closeFinalSummaryModal}
+          onSaveAndComplete={() => {
+            try {
+              saveAndCompleteRoute();
+            } catch (error) {
+              console.error("Erro ao salvar rota:", error);
+            }
+          }}
         />
 
         {/* Trace Confirmation Dialog - Full Page Modal */}
