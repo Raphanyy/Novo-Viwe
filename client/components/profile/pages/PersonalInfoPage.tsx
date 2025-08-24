@@ -22,6 +22,9 @@ const PersonalInfoPage: React.FC<PersonalInfoPageProps> = ({ onBack }) => {
           <div className="flex-1">
             <h4 className="text-sm font-medium text-foreground">Atualize sua foto</h4>
           </div>
+          <div className="flex items-center space-x-2">
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
       </button>
 
