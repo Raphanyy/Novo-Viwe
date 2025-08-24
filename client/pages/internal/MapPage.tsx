@@ -32,6 +32,9 @@ import {
 } from "lucide-react";
 import RouteConfigurationModal from "../../components/shared/RouteConfigurationModal";
 import ModalHeader from "../../components/shared/ModalHeader";
+import NavigationDetailsModal from "../../components/shared/NavigationDetailsModal";
+import NavigationAdjustmentsModal from "../../components/shared/NavigationAdjustmentsModal";
+import FinalSummaryModal from "../../components/shared/FinalSummaryModal";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
@@ -121,8 +124,11 @@ const MapPage: React.FC = () => {
     optimizeRoute,
     openDetailsModal,
     openAdjustmentsModal,
+    closeDetailsModal,
+    closeAdjustmentsModal,
     endRoute,
     startTracing,
+    closeFinalSummaryModal,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
@@ -1558,6 +1564,20 @@ const MapPage: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Navigation Modals */}
+        <NavigationDetailsModal
+          isOpen={traceState.showDetailsModal}
+          onClose={closeDetailsModal}
+        />
+        <NavigationAdjustmentsModal
+          isOpen={traceState.showAdjustmentsModal}
+          onClose={closeAdjustmentsModal}
+        />
+        <FinalSummaryModal
+          isOpen={traceState.showFinalSummaryModal}
+          onClose={closeFinalSummaryModal}
+        />
 
         {/* Trace Confirmation Dialog - Full Page Modal */}
         {traceState.showConfirmDialog && (
