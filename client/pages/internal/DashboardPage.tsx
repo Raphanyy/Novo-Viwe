@@ -289,7 +289,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Tips & Insights */}
-        <div className="bg-gradient-to-r from-muted to-secondary rounded-2xl p-6 border border-border">
+        <div className="bg-black rounded-2xl p-6 border border-border">
           <div className="flex items-start space-x-3">
             <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <Zap className="h-5 w-5 text-primary" />
