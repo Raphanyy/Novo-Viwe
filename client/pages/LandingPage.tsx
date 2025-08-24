@@ -716,7 +716,7 @@ const LandingPage = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white mb-6">
-              Pronto para revolucionar suas jornadas?
+              Revolucione suas jornadas agora!
             </h2>
             <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
               Mais de 50.000 usuários já otimizaram suas rotas com o Viwe.
