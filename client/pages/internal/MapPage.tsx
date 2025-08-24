@@ -1151,13 +1151,13 @@ const MapPage: React.FC = () => {
                         {result.place_name}
                       </p>
                       {result.properties.category && (
-                        <p className="text-xs text-gray-400 capitalize">
+                        <p className="text-xs text-muted-foreground/70 capitalize">
                           {result.properties.category.replace(/[_,]/g, " ")}
                         </p>
                       )}
                       {!result.properties.category &&
                         result.place_type.length > 0 && (
-                          <p className="text-xs text-gray-400 capitalize">
+                          <p className="text-xs text-muted-foreground/70 capitalize">
                             {result.place_type[0].replace("_", " ")}
                           </p>
                         )}
