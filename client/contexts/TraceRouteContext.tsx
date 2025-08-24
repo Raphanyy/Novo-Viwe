@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { useErrorHandler, fetchWithErrorHandling, ErrorType } from "../lib/error-handling";
+import {
+  useErrorHandler,
+  fetchWithErrorHandling,
+  ErrorType,
+} from "../lib/error-handling";
 
 export interface RouteStop {
   id: string;
@@ -205,21 +209,25 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         const { createMapboxApiUrl } = await import("../lib/mapbox-config");
         const apiUrl = createMapboxApiUrl(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json`,
-          { limit: '1', language: 'pt' }
+          { limit: "1", language: "pt" },
         );
 
         if (!apiUrl) {
           finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
         } else {
           const result = await handleAsyncError(async () => {
-            const response = await fetchWithErrorHandling(apiUrl, {}, {
-              timeout: 8000,
-              context: 'AddressLookup',
-              retries: 1,
-              retryDelay: 500
-            });
+            const response = await fetchWithErrorHandling(
+              apiUrl,
+              {},
+              {
+                timeout: 8000,
+                context: "AddressLookup",
+                retries: 1,
+                retryDelay: 500,
+              },
+            );
             return response.json();
-          }, 'AddressLookup');
+          }, "AddressLookup");
 
           if (result.success && result.data?.features?.length > 0) {
             finalAddress = result.data.features[0].place_name;
@@ -228,9 +236,12 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           }
         }
       } catch (error) {
-        const errorInfo = handleError(error, 'AddStopAddress');
+        const errorInfo = handleError(error, "AddStopAddress");
         if (errorInfo.type !== ErrorType.ABORT) {
-          console.debug("Error fetching address, using coordinates:", errorInfo.message);
+          console.debug(
+            "Error fetching address, using coordinates:",
+            errorInfo.message,
+          );
         }
         finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
       }
@@ -494,7 +505,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       const { createMapboxApiUrl } = await import("../lib/mapbox-config");
       const apiUrl = createMapboxApiUrl(
         `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinatesString}`,
-        { source: 'first', destination: 'last', roundtrip: 'false' }
+        { source: "first", destination: "last", roundtrip: "false" },
       );
 
       if (!apiUrl) {
@@ -503,14 +514,18 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       }
 
       const result = await handleAsyncError(async () => {
-        const response = await fetchWithErrorHandling(apiUrl, {}, {
-          timeout: 15000,
-          context: 'OptimizeRoute',
-          retries: 1,
-          retryDelay: 1000
-        });
+        const response = await fetchWithErrorHandling(
+          apiUrl,
+          {},
+          {
+            timeout: 15000,
+            context: "OptimizeRoute",
+            retries: 1,
+            retryDelay: 1000,
+          },
+        );
         return response.json();
-      }, 'OptimizeRoute');
+      }, "OptimizeRoute");
 
       if (result.success && result.data?.trips?.length > 0) {
         const optimizedWaypoints = result.data.waypoints;
@@ -535,12 +550,15 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
         console.log("Rota otimizada com sucesso!");
       } else if (result.error) {
-        if (result.error.shouldNotifyUser && result.error.type !== ErrorType.ABORT) {
+        if (
+          result.error.shouldNotifyUser &&
+          result.error.type !== ErrorType.ABORT
+        ) {
           console.warn("Erro ao otimizar rota:", result.error.userMessage);
         }
       }
     } catch (error) {
-      const errorInfo = handleError(error, 'OptimizeRoute');
+      const errorInfo = handleError(error, "OptimizeRoute");
       if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
         console.warn("Erro ao otimizar rota:", errorInfo.userMessage);
       }

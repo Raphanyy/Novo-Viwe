@@ -75,13 +75,15 @@ const MapboxSetupGuide: React.FC = () => {
               Configurar variável de ambiente (opcional)
             </h4>
             <p className="text-sm text-muted-foreground mb-2">
-              Para usar seu próprio token, adicione-o ao arquivo .env na raiz do projeto:
+              Para usar seu próprio token, adicione-o ao arquivo .env na raiz do
+              projeto:
             </p>
             <div className="bg-muted p-3 rounded-lg text-sm font-mono text-foreground">
               VITE_MAPBOX_ACCESS_TOKEN="seu_token_aqui"
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              <strong>Token padrão:</strong> A aplicação já possui um token pré-configurado e funcionará sem configuração adicional.
+              <strong>Token padrão:</strong> A aplicação já possui um token
+              pré-configurado e funcionará sem configuração adicional.
             </p>
           </div>
         </div>

@@ -5,12 +5,12 @@
 
 // Tipos para categorização de erros
 export enum ErrorType {
-  ABORT = 'ABORT',
-  NETWORK = 'NETWORK', 
-  MAPBOX_API = 'MAPBOX_API',
-  TIMEOUT = 'TIMEOUT',
-  VALIDATION = 'VALIDATION',
-  UNKNOWN = 'UNKNOWN'
+  ABORT = "ABORT",
+  NETWORK = "NETWORK",
+  MAPBOX_API = "MAPBOX_API",
+  TIMEOUT = "TIMEOUT",
+  VALIDATION = "VALIDATION",
+  UNKNOWN = "UNKNOWN",
 }
 
 export interface ErrorInfo {
@@ -27,7 +27,7 @@ export interface ErrorInfo {
  */
 export function analyzeError(error: unknown): ErrorInfo {
   // AbortError - geralmente esperado durante cleanup
-  if (error instanceof Error && error.name === 'AbortError') {
+  if (error instanceof Error && error.name === "AbortError") {
     return {
       type: ErrorType.ABORT,
       message: error.message,
@@ -38,38 +38,41 @@ export function analyzeError(error: unknown): ErrorInfo {
   }
 
   // TypeError - geralmente erro de rede
-  if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+  if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
     return {
       type: ErrorType.NETWORK,
-      message: 'Erro de conectividade de rede',
+      message: "Erro de conectividade de rede",
       originalError: error,
       shouldLog: true,
       shouldNotifyUser: true,
-      userMessage: 'Verifique sua conexão com a internet e tente novamente.',
+      userMessage: "Verifique sua conexão com a internet e tente novamente.",
     };
   }
 
   // Timeout customizado
-  if (error instanceof Error && error.message.toLowerCase().includes('timeout')) {
+  if (
+    error instanceof Error &&
+    error.message.toLowerCase().includes("timeout")
+  ) {
     return {
       type: ErrorType.TIMEOUT,
-      message: 'Operação expirou por timeout',
+      message: "Operação expirou por timeout",
       originalError: error,
       shouldLog: true,
       shouldNotifyUser: true,
-      userMessage: 'A operação demorou muito para responder. Tente novamente.',
+      userMessage: "A operação demorou muito para responder. Tente novamente.",
     };
   }
 
   // Erro de validação
-  if (error instanceof Error && error.message.includes('validation')) {
+  if (error instanceof Error && error.message.includes("validation")) {
     return {
       type: ErrorType.VALIDATION,
       message: error.message,
       originalError: error,
       shouldLog: true,
       shouldNotifyUser: true,
-      userMessage: 'Dados inválidos fornecidos.',
+      userMessage: "Dados inválidos fornecidos.",
     };
   }
 
@@ -81,7 +84,7 @@ export function analyzeError(error: unknown): ErrorInfo {
       originalError: error,
       shouldLog: true,
       shouldNotifyUser: true,
-      userMessage: 'Ocorreu um erro inesperado. Tente novamente.',
+      userMessage: "Ocorreu um erro inesperado. Tente novamente.",
     };
   }
 
@@ -91,7 +94,7 @@ export function analyzeError(error: unknown): ErrorInfo {
     message: String(error),
     shouldLog: true,
     shouldNotifyUser: true,
-    userMessage: 'Ocorreu um erro inesperado. Tente novamente.',
+    userMessage: "Ocorreu um erro inesperado. Tente novamente.",
   };
 }
 
@@ -120,16 +123,20 @@ export class ErrorLogger {
    */
   public logError(error: unknown, context?: string): ErrorInfo {
     const errorInfo = analyzeError(error);
-    
+
     if (errorInfo.shouldLog) {
-      const prefix = context ? `[${context}]` : '';
-      
+      const prefix = context ? `[${context}]` : "";
+
       if (errorInfo.type === ErrorType.NETWORK) {
         this.originalConsoleWarn(`${prefix} Network error:`, errorInfo.message);
       } else if (errorInfo.type === ErrorType.TIMEOUT) {
         this.originalConsoleWarn(`${prefix} Timeout:`, errorInfo.message);
       } else {
-        this.originalConsoleError(`${prefix} Error:`, errorInfo.message, errorInfo.originalError);
+        this.originalConsoleError(
+          `${prefix} Error:`,
+          errorInfo.message,
+          errorInfo.originalError,
+        );
       }
     }
 
@@ -142,26 +149,26 @@ export class ErrorLogger {
   public installGlobalFilters(): void {
     // Filtrar console.error para AbortErrors
     console.error = (...args: any[]) => {
-      const message = args.join(' ');
-      
+      const message = args.join(" ");
+
       // Filtrar AbortErrors conhecidos do Mapbox
       if (
-        message.includes('AbortError') &&
-        (message.includes('signal is aborted') || 
-         message.includes('mapbox') ||
-         message.includes('aborted without reason') ||
-         message.includes('operation was aborted'))
+        message.includes("AbortError") &&
+        (message.includes("signal is aborted") ||
+          message.includes("mapbox") ||
+          message.includes("aborted without reason") ||
+          message.includes("operation was aborted"))
       ) {
         return; // Silenciar
       }
-      
+
       this.originalConsoleError.apply(console, args);
     };
 
     // Handler global para erros não capturados
-    window.addEventListener('error', (event: ErrorEvent) => {
-      const errorInfo = this.logError(event.error, 'Global');
-      
+    window.addEventListener("error", (event: ErrorEvent) => {
+      const errorInfo = this.logError(event.error, "Global");
+
       // Prevenir que AbortErrors sejam exibidos no console
       if (errorInfo.type === ErrorType.ABORT) {
         event.preventDefault();
@@ -169,14 +176,17 @@ export class ErrorLogger {
     });
 
     // Handler global para promises rejeitadas
-    window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
-      const errorInfo = this.logError(event.reason, 'Unhandled Promise');
-      
-      // Prevenir que AbortErrors sejam exibidos no console
-      if (errorInfo.type === ErrorType.ABORT) {
-        event.preventDefault();
-      }
-    });
+    window.addEventListener(
+      "unhandledrejection",
+      (event: PromiseRejectionEvent) => {
+        const errorInfo = this.logError(event.reason, "Unhandled Promise");
+
+        // Prevenir que AbortErrors sejam exibidos no console
+        if (errorInfo.type === ErrorType.ABORT) {
+          event.preventDefault();
+        }
+      },
+    );
   }
 
   /**
@@ -199,15 +209,15 @@ export interface FetchWithErrorHandlingOptions {
 }
 
 export async function fetchWithErrorHandling(
-  url: string, 
+  url: string,
   init?: RequestInit,
-  options: FetchWithErrorHandlingOptions = {}
+  options: FetchWithErrorHandlingOptions = {},
 ): Promise<Response> {
   const {
     timeout = 10000,
-    context = 'Fetch',
+    context = "Fetch",
     retries = 0,
-    retryDelay = 1000
+    retryDelay = 1000,
   } = options;
 
   const logger = ErrorLogger.getInstance();
@@ -219,7 +229,7 @@ export async function fetchWithErrorHandling(
       const timeoutId = setTimeout(() => controller.abort(), timeout);
 
       // Combinar signals se um já foi fornecido
-      const signal = init?.signal 
+      const signal = init?.signal
         ? AbortSignal.any([init.signal, controller.signal])
         : controller.signal;
 
@@ -227,9 +237,9 @@ export async function fetchWithErrorHandling(
         ...init,
         signal,
         headers: {
-          'Accept': 'application/json',
-          ...init?.headers
-        }
+          Accept: "application/json",
+          ...init?.headers,
+        },
       });
 
       clearTimeout(timeoutId);
@@ -243,12 +253,13 @@ export async function fetchWithErrorHandling(
         } else if (response.status >= 500) {
           throw new Error(`Server error: ${response.statusText}`);
         } else {
-          throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+          throw new Error(
+            `HTTP error ${response.status}: ${response.statusText}`,
+          );
         }
       }
 
       return response;
-
     } catch (error) {
       const errorInfo = logger.logError(error, context);
 
@@ -258,8 +269,13 @@ export async function fetchWithErrorHandling(
       }
 
       // Se é um erro de rede e ainda temos tentativas, tentar novamente
-      if (errorInfo.type === ErrorType.NETWORK || errorInfo.type === ErrorType.TIMEOUT) {
-        await new Promise(resolve => setTimeout(resolve, retryDelay * (attempt + 1)));
+      if (
+        errorInfo.type === ErrorType.NETWORK ||
+        errorInfo.type === ErrorType.TIMEOUT
+      ) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, retryDelay * (attempt + 1)),
+        );
         continue;
       }
 
@@ -268,7 +284,7 @@ export async function fetchWithErrorHandling(
     }
   }
 
-  throw new Error('Máximo de tentativas excedido');
+  throw new Error("Máximo de tentativas excedido");
 }
 
 /**
@@ -283,7 +299,7 @@ export function useErrorHandler() {
 
   const handleAsyncError = async (
     asyncFn: () => Promise<any>,
-    context?: string
+    context?: string,
   ): Promise<{ success: boolean; error?: ErrorInfo; data?: any }> => {
     try {
       const data = await asyncFn();
@@ -302,8 +318,8 @@ export const errorLogger = ErrorLogger.getInstance();
 errorLogger.installGlobalFilters();
 
 // Cleanup na saída da página
-if (typeof window !== 'undefined') {
-  window.addEventListener('beforeunload', () => {
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeunload", () => {
     errorLogger.removeGlobalFilters();
   });
 }

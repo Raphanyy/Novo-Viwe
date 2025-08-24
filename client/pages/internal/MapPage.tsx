@@ -31,10 +31,28 @@ import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { mapboxConfig, isMapboxAvailable, getMapboxToken, getMapboxError, createMapboxApiUrl } from "../../lib/mapbox-config";
-import { useErrorHandler, fetchWithErrorHandling, ErrorType } from "../../lib/error-handling";
-import { ResourceManager, createManagedTimeout } from "../../lib/resource-manager";
-import { useCoordinateThrottle, useStableMemo, useSearchFilter, useStableCallback } from "../../lib/performance-utils";
+import {
+  mapboxConfig,
+  isMapboxAvailable,
+  getMapboxToken,
+  getMapboxError,
+  createMapboxApiUrl,
+} from "../../lib/mapbox-config";
+import {
+  useErrorHandler,
+  fetchWithErrorHandling,
+  ErrorType,
+} from "../../lib/error-handling";
+import {
+  ResourceManager,
+  createManagedTimeout,
+} from "../../lib/resource-manager";
+import {
+  useCoordinateThrottle,
+  useStableMemo,
+  useSearchFilter,
+  useStableCallback,
+} from "../../lib/performance-utils";
 
 interface SearchResult {
   id: string;
@@ -156,18 +174,24 @@ const MapPage: React.FC = () => {
   }, []);
 
   // Otimizar filteredPOIs usando memoização estável
-  const filteredPOIs = useStableMemo(() => {
-    return pointsOfInterest.filter(
-      (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
-    );
-  }, [activeFilters], (prev, current) => {
-    // Comparação customizada para arrays de filtros
-    const [prevFilters] = prev;
-    const [currentFilters] = current;
+  const filteredPOIs = useStableMemo(
+    () => {
+      return pointsOfInterest.filter(
+        (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
+      );
+    },
+    [activeFilters],
+    (prev, current) => {
+      // Comparação customizada para arrays de filtros
+      const [prevFilters] = prev;
+      const [currentFilters] = current;
 
-    if (prevFilters.length !== currentFilters.length) return false;
-    return prevFilters.every((filter: string, index: number) => filter === currentFilters[index]);
-  });
+      if (prevFilters.length !== currentFilters.length) return false;
+      return prevFilters.every(
+        (filter: string, index: number) => filter === currentFilters[index],
+      );
+    },
+  );
 
   // Function to clear all markers and routes from map (optimized)
   const clearAllMarkersAndRoutes = useCallback(() => {
@@ -193,7 +217,10 @@ const MapPage: React.FC = () => {
     if (!isMapboxAvailable()) {
       const errorMessage = getMapboxError();
       console.error("Mapbox not available:", errorMessage);
-      setMapError(errorMessage || "Token do Mapbox não configurado. Entre em contato com o suporte.");
+      setMapError(
+        errorMessage ||
+          "Token do Mapbox não configurado. Entre em contato com o suporte.",
+      );
       return;
     }
 
@@ -254,68 +281,78 @@ const MapPage: React.FC = () => {
 
       // Register cleanup callback after map is initialized
       // Use setTimeout to avoid immediate execution during render
-      createManagedTimeout(resourceManager.current!, 'setCleanupCallback', () => {
-        setMapCleanupCallback(clearAllMarkersAndRoutes);
-      }, 0);
+      createManagedTimeout(
+        resourceManager.current!,
+        "setCleanupCallback",
+        () => {
+          setMapCleanupCallback(clearAllMarkersAndRoutes);
+        },
+        0,
+      );
 
       // Auto-activate find my location when entering the map page
-      createManagedTimeout(resourceManager.current!, 'autoLocation', () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
+      createManagedTimeout(
+        resourceManager.current!,
+        "autoLocation",
+        () => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
 
-              if (map.current) {
-                // Smooth fly to user's actual location
-                map.current.flyTo({
-                  center: [longitude, latitude],
-                  zoom: 15,
-                  duration: 3000,
-                });
+                if (map.current) {
+                  // Smooth fly to user's actual location
+                  map.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: 15,
+                    duration: 3000,
+                  });
 
-                // Update the current location marker
-                const currentLocationEl = document.createElement("div");
-                currentLocationEl.className =
-                  "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
-                currentLocationEl.innerHTML =
-                  '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
+                  // Update the current location marker
+                  const currentLocationEl = document.createElement("div");
+                  currentLocationEl.className =
+                    "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
+                  currentLocationEl.innerHTML =
+                    '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
 
-                // Remove default marker and add user's actual location
-                const existingMarkers =
-                  document.querySelectorAll(".mapboxgl-marker");
-                existingMarkers.forEach((marker) => {
-                  const markerEl = marker.querySelector(
-                    ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
-                  );
-                  if (markerEl) {
-                    marker.remove();
-                  }
-                });
+                  // Remove default marker and add user's actual location
+                  const existingMarkers =
+                    document.querySelectorAll(".mapboxgl-marker");
+                  existingMarkers.forEach((marker) => {
+                    const markerEl = marker.querySelector(
+                      ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
+                    );
+                    if (markerEl) {
+                      marker.remove();
+                    }
+                  });
 
-                new mapboxgl.Marker(currentLocationEl)
-                  .setLngLat([longitude, latitude])
-                  .addTo(map.current);
-              }
-            },
-            (error) => {
-              // Silently handle geolocation errors on auto-detect
-              console.debug(
-                "Auto-location failed (user can still use manual button):",
-                error.message,
-              );
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 300000, // 5 minutes cache
-            },
-          );
-        }
-      }, 1500); // Wait 1.5s for map to fully initialize
+                  new mapboxgl.Marker(currentLocationEl)
+                    .setLngLat([longitude, latitude])
+                    .addTo(map.current);
+                }
+              },
+              (error) => {
+                // Silently handle geolocation errors on auto-detect
+                console.debug(
+                  "Auto-location failed (user can still use manual button):",
+                  error.message,
+                );
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000, // 5 minutes cache
+              },
+            );
+          }
+        },
+        1500,
+      ); // Wait 1.5s for map to fully initialize
 
       // Adicionar o mapa ao ResourceManager para cleanup automático
       if (map.current) {
-        resourceManager.current!.addMapboxMap('mainMap', map.current);
+        resourceManager.current!.addMapboxMap("mainMap", map.current);
       }
 
       return () => {
@@ -364,7 +401,7 @@ const MapPage: React.FC = () => {
   const throttledUpdateCenterPin = useCoordinateThrottle(
     updateCenterPin,
     100, // 100ms throttle
-    0.0001 // 0.0001 degree tolerance
+    0.0001, // 0.0001 degree tolerance
   );
 
   // Optimized center pin tracking when tracing starts/stops
@@ -387,14 +424,24 @@ const MapPage: React.FC = () => {
       };
 
       // Adicionar listeners usando ResourceManager
-      resourceManager.current!.addEventListener('mapMove', map.current, 'move', updateCenterCoords);
-      resourceManager.current!.addEventListener('mapZoom', map.current, 'zoom', updateCenterCoords);
+      resourceManager.current!.addEventListener(
+        "mapMove",
+        map.current,
+        "move",
+        updateCenterCoords,
+      );
+      resourceManager.current!.addEventListener(
+        "mapZoom",
+        map.current,
+        "zoom",
+        updateCenterCoords,
+      );
 
       // Cleanup function
       return () => {
         // ResourceManager remove os listeners automaticamente
-        resourceManager.current!.removeResource('mapMove');
-        resourceManager.current!.removeResource('mapZoom');
+        resourceManager.current!.removeResource("mapMove");
+        resourceManager.current!.removeResource("mapZoom");
 
         // Reset refs on cleanup
         lastUpdateTimeRef.current = 0;
@@ -490,20 +537,24 @@ const MapPage: React.FC = () => {
         // Call Mapbox Directions API using centralized config
         const apiUrl = createMapboxApiUrl(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`,
-          { steps: 'true', geometries: 'geojson' }
+          { steps: "true", geometries: "geojson" },
         );
 
         if (!apiUrl) {
-          throw new Error('Mapbox token não disponível para traçar rota');
+          throw new Error("Mapbox token não disponível para traçar rota");
         }
 
         // Use robust fetch with error handling
-        const response = await fetchWithErrorHandling(apiUrl, {}, {
-          timeout: 15000,
-          context: 'TraceRoute',
-          retries: 2,
-          retryDelay: 1000
-        });
+        const response = await fetchWithErrorHandling(
+          apiUrl,
+          {},
+          {
+            timeout: 15000,
+            context: "TraceRoute",
+            retries: 2,
+            retryDelay: 1000,
+          },
+        );
 
         const data = await response.json();
 
@@ -564,11 +615,14 @@ const MapPage: React.FC = () => {
           // Marcar rota como traçada no contexto
           setRouteTraced(true);
         }
-      }, 'TraceRoute');
+      }, "TraceRoute");
 
       if (!result.success && result.error) {
         // Só exibir erro para o usuário se necessário
-        if (result.error.shouldNotifyUser && result.error.type !== ErrorType.ABORT) {
+        if (
+          result.error.shouldNotifyUser &&
+          result.error.type !== ErrorType.ABORT
+        ) {
           console.error("Erro ao traçar rota:", result.error.userMessage);
         }
       }
@@ -698,142 +752,197 @@ const MapPage: React.FC = () => {
   }, []);
 
   // Enhanced search with business name recognition and robust error handling
-  const searchBusinesses = useCallback(async (query: string) => {
-    if (!query.trim() || query.length < 3) {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-
-    setIsSearching(true);
-
-    // Helper function to enhance query context
-    const enhanceQuery = (originalQuery: string): string => {
-      const lowerQuery = originalQuery.toLowerCase();
-
-      // Specific establishment recognition
-      if (lowerQuery.includes("ilha plaza") || lowerQuery.includes("ilha shopping")) {
-        return "Ilha Plaza Shopping São Paulo";
-      } else if (lowerQuery.includes("quiosque zero oito") || lowerQuery.includes("quiosque 08")) {
-        return `Quiosque 08 loja comércio São Paulo`;
-      } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
-        return "Escola Municipal Alvaro Moreira São Paulo";
-      }
-      // Brazilian cities and states recognition
-      else if (lowerQuery.includes("são paulo") || lowerQuery.includes("sp")) {
-        return originalQuery.includes("SP") ? originalQuery : `${originalQuery} São Paulo`;
-      } else if (lowerQuery.includes("rio de janeiro") || lowerQuery.includes("rj")) {
-        return originalQuery.includes("RJ") ? originalQuery : `${originalQuery} Rio de Janeiro`;
-      } else if (lowerQuery.includes("belo horizonte") || lowerQuery.includes("mg")) {
-        return originalQuery.includes("MG") ? originalQuery : `${originalQuery} Minas Gerais`;
-      } else if (lowerQuery.includes("brasília") || lowerQuery.includes("df")) {
-        return originalQuery.includes("DF") ? originalQuery : `${originalQuery} Brasília DF`;
-      } else if (lowerQuery.includes("salvador") || lowerQuery.includes("ba")) {
-        return originalQuery.includes("BA") ? originalQuery : `${originalQuery} Salvador Bahia`;
-      }
-      // Business type recognition
-      else if (lowerQuery.includes("shopping") && !lowerQuery.includes("center")) {
-        return `${originalQuery} shopping center`;
-      } else if (lowerQuery.includes("escola") && !lowerQuery.includes("municipal")) {
-        return `${originalQuery} escola`;
-      } else if (lowerQuery.includes("quiosque")) {
-        return `${originalQuery} comercio loja estabelecimento`;
-      }
-
-      return originalQuery;
-    };
-
-    // Helper function to perform search
-    const performSearch = async (searchQuery: string, types: string): Promise<any[]> => {
-      const apiUrl = createMapboxApiUrl(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
-        { country: 'BR', language: 'pt', limit: '8', types }
-      );
-
-      if (!apiUrl) {
-        return [];
-      }
-
-      const result = await handleAsyncError(async () => {
-        const response = await fetchWithErrorHandling(apiUrl, {}, {
-          timeout: 8000,
-          context: 'Search',
-          retries: 1,
-          retryDelay: 500
-        });
-        return response.json();
-      }, 'GeocodeSearch');
-
-      if (result.success && result.data?.features) {
-        return result.data.features;
-      }
-
-      return [];
-    };
-
-    // Helper function to deduplicate features
-    const deduplicateFeatures = (features: any[]): any[] => {
-      const seen = new Set();
-      return features.filter(feature => {
-        const key = `${feature.text}-${feature.center[0].toFixed(3)}-${feature.center[1].toFixed(3)}`;
-        if (seen.has(key)) {
-          return false;
-        }
-        seen.add(key);
-        return true;
-      });
-    };
-
-    try {
-      let allFeatures: any[] = [];
-      const businessQuery = enhanceQuery(query);
-
-      // Strategy 1: Direct POI search
-      const poiFeatures = await performSearch(query, 'poi');
-      allFeatures.push(...poiFeatures);
-
-      // Strategy 2: Enhanced business search (if needed and query was enhanced)
-      if (allFeatures.length < 3 && businessQuery !== query) {
-        const enhancedFeatures = await performSearch(businessQuery, 'poi,place,region,district,postcode,locality,neighborhood');
-        allFeatures.push(...enhancedFeatures);
-      }
-
-      // Strategy 3: General search as fallback (if still need results)
-      if (allFeatures.length < 2) {
-        const generalFeatures = await performSearch(query, 'place,address,region,district,postcode,locality,neighborhood');
-        allFeatures.push(...generalFeatures);
-      }
-
-      // Deduplicate and limit results
-      const uniqueFeatures = deduplicateFeatures(allFeatures).slice(0, 5);
-
-      if (uniqueFeatures.length > 0) {
-        const results: SearchResult[] = uniqueFeatures.map((feature: any) => ({
-          id: feature.id,
-          place_name: feature.place_name,
-          text: feature.text,
-          center: feature.center,
-          place_type: feature.place_type,
-          properties: feature.properties || {},
-        }));
-
-        setSearchResults(results);
-        setShowSearchResults(true);
-      } else {
+  const searchBusinesses = useCallback(
+    async (query: string) => {
+      if (!query.trim() || query.length < 3) {
         setSearchResults([]);
         setShowSearchResults(false);
+        return;
       }
-    } catch (error) {
-      const errorInfo = handleError(error, 'SearchBusinesses');
-      if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
-        console.warn("Erro na busca:", errorInfo.userMessage);
+
+      setIsSearching(true);
+
+      // Helper function to enhance query context
+      const enhanceQuery = (originalQuery: string): string => {
+        const lowerQuery = originalQuery.toLowerCase();
+
+        // Specific establishment recognition
+        if (
+          lowerQuery.includes("ilha plaza") ||
+          lowerQuery.includes("ilha shopping")
+        ) {
+          return "Ilha Plaza Shopping São Paulo";
+        } else if (
+          lowerQuery.includes("quiosque zero oito") ||
+          lowerQuery.includes("quiosque 08")
+        ) {
+          return `Quiosque 08 loja comércio São Paulo`;
+        } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
+          return "Escola Municipal Alvaro Moreira São Paulo";
+        }
+        // Brazilian cities and states recognition
+        else if (
+          lowerQuery.includes("são paulo") ||
+          lowerQuery.includes("sp")
+        ) {
+          return originalQuery.includes("SP")
+            ? originalQuery
+            : `${originalQuery} São Paulo`;
+        } else if (
+          lowerQuery.includes("rio de janeiro") ||
+          lowerQuery.includes("rj")
+        ) {
+          return originalQuery.includes("RJ")
+            ? originalQuery
+            : `${originalQuery} Rio de Janeiro`;
+        } else if (
+          lowerQuery.includes("belo horizonte") ||
+          lowerQuery.includes("mg")
+        ) {
+          return originalQuery.includes("MG")
+            ? originalQuery
+            : `${originalQuery} Minas Gerais`;
+        } else if (
+          lowerQuery.includes("brasília") ||
+          lowerQuery.includes("df")
+        ) {
+          return originalQuery.includes("DF")
+            ? originalQuery
+            : `${originalQuery} Brasília DF`;
+        } else if (
+          lowerQuery.includes("salvador") ||
+          lowerQuery.includes("ba")
+        ) {
+          return originalQuery.includes("BA")
+            ? originalQuery
+            : `${originalQuery} Salvador Bahia`;
+        }
+        // Business type recognition
+        else if (
+          lowerQuery.includes("shopping") &&
+          !lowerQuery.includes("center")
+        ) {
+          return `${originalQuery} shopping center`;
+        } else if (
+          lowerQuery.includes("escola") &&
+          !lowerQuery.includes("municipal")
+        ) {
+          return `${originalQuery} escola`;
+        } else if (lowerQuery.includes("quiosque")) {
+          return `${originalQuery} comercio loja estabelecimento`;
+        }
+
+        return originalQuery;
+      };
+
+      // Helper function to perform search
+      const performSearch = async (
+        searchQuery: string,
+        types: string,
+      ): Promise<any[]> => {
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
+          { country: "BR", language: "pt", limit: "8", types },
+        );
+
+        if (!apiUrl) {
+          return [];
+        }
+
+        const result = await handleAsyncError(async () => {
+          const response = await fetchWithErrorHandling(
+            apiUrl,
+            {},
+            {
+              timeout: 8000,
+              context: "Search",
+              retries: 1,
+              retryDelay: 500,
+            },
+          );
+          return response.json();
+        }, "GeocodeSearch");
+
+        if (result.success && result.data?.features) {
+          return result.data.features;
+        }
+
+        return [];
+      };
+
+      // Helper function to deduplicate features
+      const deduplicateFeatures = (features: any[]): any[] => {
+        const seen = new Set();
+        return features.filter((feature) => {
+          const key = `${feature.text}-${feature.center[0].toFixed(3)}-${feature.center[1].toFixed(3)}`;
+          if (seen.has(key)) {
+            return false;
+          }
+          seen.add(key);
+          return true;
+        });
+      };
+
+      try {
+        let allFeatures: any[] = [];
+        const businessQuery = enhanceQuery(query);
+
+        // Strategy 1: Direct POI search
+        const poiFeatures = await performSearch(query, "poi");
+        allFeatures.push(...poiFeatures);
+
+        // Strategy 2: Enhanced business search (if needed and query was enhanced)
+        if (allFeatures.length < 3 && businessQuery !== query) {
+          const enhancedFeatures = await performSearch(
+            businessQuery,
+            "poi,place,region,district,postcode,locality,neighborhood",
+          );
+          allFeatures.push(...enhancedFeatures);
+        }
+
+        // Strategy 3: General search as fallback (if still need results)
+        if (allFeatures.length < 2) {
+          const generalFeatures = await performSearch(
+            query,
+            "place,address,region,district,postcode,locality,neighborhood",
+          );
+          allFeatures.push(...generalFeatures);
+        }
+
+        // Deduplicate and limit results
+        const uniqueFeatures = deduplicateFeatures(allFeatures).slice(0, 5);
+
+        if (uniqueFeatures.length > 0) {
+          const results: SearchResult[] = uniqueFeatures.map(
+            (feature: any) => ({
+              id: feature.id,
+              place_name: feature.place_name,
+              text: feature.text,
+              center: feature.center,
+              place_type: feature.place_type,
+              properties: feature.properties || {},
+            }),
+          );
+
+          setSearchResults(results);
+          setShowSearchResults(true);
+        } else {
+          setSearchResults([]);
+          setShowSearchResults(false);
+        }
+      } catch (error) {
+        const errorInfo = handleError(error, "SearchBusinesses");
+        if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
+          console.warn("Erro na busca:", errorInfo.userMessage);
+        }
+        setSearchResults([]);
+        setShowSearchResults(false);
+      } finally {
+        setIsSearching(false);
       }
-      setSearchResults([]);
-      setShowSearchResults(false);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [handleError, handleAsyncError]);
+    },
+    [handleError, handleAsyncError],
+  );
 
   // Optimized debounced search with stable reference
   const handleSearchChange = useCallback(
@@ -841,7 +950,7 @@ const MapPage: React.FC = () => {
       setSearchQuery(query);
 
       // Remove previous search timeout if exists
-      resourceManager.current!.removeResource('searchTimeout');
+      resourceManager.current!.removeResource("searchTimeout");
 
       // Only search if query has meaningful content
       if (query.trim().length < 2) {
@@ -851,9 +960,14 @@ const MapPage: React.FC = () => {
       }
 
       // Create managed timeout for search debouncing
-      createManagedTimeout(resourceManager.current!, 'searchTimeout', () => {
-        searchBusinesses(query);
-      }, 300);
+      createManagedTimeout(
+        resourceManager.current!,
+        "searchTimeout",
+        () => {
+          searchBusinesses(query);
+        },
+        300,
+      );
     },
     [searchBusinesses],
   );
@@ -1126,24 +1240,25 @@ const MapPage: React.FC = () => {
       {/* Map Container */}
       <div className="flex-1 relative">
         {/* Mapbox Token Missing Fallback */}
-      {!isMapboxAvailable() && (
-        <div className="absolute inset-0 z-40 bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
-          <div className="text-center p-8 max-w-md">
-            <div className="mb-6">
-              <ViweLoader size="lg" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-3">
-              Mapa Indisponível
-            </h3>
-            <p className="text-muted-foreground mb-4 text-sm">
-              {getMapboxError() || "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
-            </p>
-            <div className="text-xs text-muted-foreground/70">
-              Esta é uma versão de demonstração da plataforma Viwe.
+        {!isMapboxAvailable() && (
+          <div className="absolute inset-0 z-40 bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
+            <div className="text-center p-8 max-w-md">
+              <div className="mb-6">
+                <ViweLoader size="lg" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-3">
+                Mapa Indisponível
+              </h3>
+              <p className="text-muted-foreground mb-4 text-sm">
+                {getMapboxError() ||
+                  "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
+              </p>
+              <div className="text-xs text-muted-foreground/70">
+                Esta é uma versão de demonstração da plataforma Viwe.
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
         {/* Error Fallback */}
         {mapError && (

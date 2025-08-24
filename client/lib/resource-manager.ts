@@ -5,12 +5,12 @@
 
 // Tipos para diferentes tipos de recursos
 export enum ResourceType {
-  TIMEOUT = 'TIMEOUT',
-  INTERVAL = 'INTERVAL',
-  EVENT_LISTENER = 'EVENT_LISTENER',
-  ABORT_CONTROLLER = 'ABORT_CONTROLLER',
-  MAPBOX_MAP = 'MAPBOX_MAP',
-  CUSTOM = 'CUSTOM'
+  TIMEOUT = "TIMEOUT",
+  INTERVAL = "INTERVAL",
+  EVENT_LISTENER = "EVENT_LISTENER",
+  ABORT_CONTROLLER = "ABORT_CONTROLLER",
+  MAPBOX_MAP = "MAPBOX_MAP",
+  CUSTOM = "CUSTOM",
 }
 
 export interface Resource {
@@ -35,7 +35,7 @@ export class ResourceManager {
       id,
       type: ResourceType.TIMEOUT,
       cleanup: () => clearTimeout(timeoutId),
-      metadata: { timeoutId }
+      metadata: { timeoutId },
     });
   }
 
@@ -47,7 +47,7 @@ export class ResourceManager {
       id,
       type: ResourceType.INTERVAL,
       cleanup: () => clearInterval(intervalId),
-      metadata: { intervalId }
+      metadata: { intervalId },
     });
   }
 
@@ -55,17 +55,17 @@ export class ResourceManager {
    * Adiciona um event listener para gerenciamento
    */
   addEventListener(
-    id: string, 
-    target: EventTarget, 
-    event: string, 
+    id: string,
+    target: EventTarget,
+    event: string,
     listener: EventListener,
-    options?: AddEventListenerOptions
+    options?: AddEventListenerOptions,
   ): void {
     this.addResource({
       id,
       type: ResourceType.EVENT_LISTENER,
       cleanup: () => target.removeEventListener(event, listener, options),
-      metadata: { target, event, listener, options }
+      metadata: { target, event, listener, options },
     });
   }
 
@@ -81,7 +81,7 @@ export class ResourceManager {
           controller.abort();
         }
       },
-      metadata: { controller }
+      metadata: { controller },
     });
   }
 
@@ -94,16 +94,16 @@ export class ResourceManager {
       type: ResourceType.MAPBOX_MAP,
       cleanup: () => {
         try {
-          if (map && typeof map.remove === 'function') {
+          if (map && typeof map.remove === "function") {
             map.stop(); // Para operações pendentes
             map.remove(); // Remove o mapa
           }
         } catch (error) {
           // Silenciar erros de cleanup do Mapbox
-          console.debug('Mapbox cleanup warning:', error);
+          console.debug("Mapbox cleanup warning:", error);
         }
       },
-      metadata: { map }
+      metadata: { map },
     });
   }
 
@@ -115,7 +115,7 @@ export class ResourceManager {
       id,
       type: ResourceType.CUSTOM,
       cleanup,
-      metadata
+      metadata,
     });
   }
 
@@ -124,7 +124,9 @@ export class ResourceManager {
    */
   private addResource(resource: Resource): void {
     if (this.isDestroyed) {
-      console.warn(`Tentativa de adicionar recurso ${resource.id} após destruição do ResourceManager`);
+      console.warn(
+        `Tentativa de adicionar recurso ${resource.id} após destruição do ResourceManager`,
+      );
       resource.cleanup(); // Cleanup imediato se já foi destruído
       return;
     }
@@ -166,14 +168,14 @@ export class ResourceManager {
    * Verifica se tem recursos de um tipo específico
    */
   hasResourcesOfType(type: ResourceType): boolean {
-    return Array.from(this.resources.values()).some(r => r.type === type);
+    return Array.from(this.resources.values()).some((r) => r.type === type);
   }
 
   /**
    * Obtém todos os recursos de um tipo específico
    */
   getResourcesOfType(type: ResourceType): Resource[] {
-    return Array.from(this.resources.values()).filter(r => r.type === type);
+    return Array.from(this.resources.values()).filter((r) => r.type === type);
   }
 
   /**
@@ -181,7 +183,7 @@ export class ResourceManager {
    */
   cleanupResourcesOfType(type: ResourceType): void {
     const resources = this.getResourcesOfType(type);
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       this.cleanupResource(resource);
       this.resources.delete(resource.id);
     });
@@ -191,12 +193,15 @@ export class ResourceManager {
    * Obtém estatísticas dos recursos
    */
   getStats(): Record<ResourceType, number> {
-    const stats = Object.values(ResourceType).reduce((acc, type) => {
-      acc[type] = 0;
-      return acc;
-    }, {} as Record<ResourceType, number>);
+    const stats = Object.values(ResourceType).reduce(
+      (acc, type) => {
+        acc[type] = 0;
+        return acc;
+      },
+      {} as Record<ResourceType, number>,
+    );
 
-    this.resources.forEach(resource => {
+    this.resources.forEach((resource) => {
       stats[resource.type]++;
     });
 
@@ -212,12 +217,12 @@ export class ResourceManager {
     }
 
     this.isDestroyed = true;
-    
+
     // Limpar todos os recursos
-    this.resources.forEach(resource => {
+    this.resources.forEach((resource) => {
       this.cleanupResource(resource);
     });
-    
+
     this.resources.clear();
   }
 
@@ -267,13 +272,13 @@ export function createManagedTimeout(
   manager: ResourceManager,
   id: string,
   callback: () => void,
-  delay: number
+  delay: number,
 ): void {
   const timeoutId = setTimeout(() => {
     callback();
     manager.removeResource(id); // Auto-remove após execução
   }, delay);
-  
+
   manager.addTimeout(id, timeoutId);
 }
 
@@ -284,7 +289,7 @@ export function createManagedInterval(
   manager: ResourceManager,
   id: string,
   callback: () => void,
-  interval: number
+  interval: number,
 ): void {
   const intervalId = setInterval(callback, interval);
   manager.addInterval(id, intervalId);
@@ -295,7 +300,7 @@ export function createManagedInterval(
  */
 export function createManagedAbortController(
   manager: ResourceManager,
-  id: string
+  id: string,
 ): AbortController {
   const controller = new AbortController();
   manager.addAbortController(id, controller);
@@ -309,16 +314,16 @@ export async function managedFetch(
   manager: ResourceManager,
   id: string,
   url: string,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> {
   const controller = createManagedAbortController(manager, id);
-  
+
   try {
     const response = await fetch(url, {
       ...init,
-      signal: controller.signal
+      signal: controller.signal,
     });
-    
+
     // Remove o controller após sucesso
     manager.removeResource(id);
     return response;

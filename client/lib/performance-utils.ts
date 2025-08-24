@@ -3,42 +3,48 @@
  * Throttling, debouncing, memoização e outras otimizações
  */
 
-import { useCallback, useRef, useMemo, useState, useEffect } from 'react';
+import { useCallback, useRef, useMemo, useState, useEffect } from "react";
 
 /**
  * Hook para throttling de funções com controle de tempo
  */
 export function useThrottle<T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
 ): T {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const lastExecRef = useRef<number>(0);
   const lastArgsRef = useRef<Parameters<T>>();
 
-  return useCallback((...args: Parameters<T>) => {
-    const now = Date.now();
-    
-    lastArgsRef.current = args;
+  return useCallback(
+    (...args: Parameters<T>) => {
+      const now = Date.now();
 
-    if (now - lastExecRef.current >= delay) {
-      // Se passou tempo suficiente, executar imediatamente
-      lastExecRef.current = now;
-      return func(...args);
-    } else {
-      // Se não passou tempo suficiente, agendar execução
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      
-      timeoutRef.current = setTimeout(() => {
-        lastExecRef.current = Date.now();
-        if (lastArgsRef.current) {
-          func(...lastArgsRef.current);
+      lastArgsRef.current = args;
+
+      if (now - lastExecRef.current >= delay) {
+        // Se passou tempo suficiente, executar imediatamente
+        lastExecRef.current = now;
+        return func(...args);
+      } else {
+        // Se não passou tempo suficiente, agendar execução
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
         }
-      }, delay - (now - lastExecRef.current));
-    }
-  }, [func, delay]) as T;
+
+        timeoutRef.current = setTimeout(
+          () => {
+            lastExecRef.current = Date.now();
+            if (lastArgsRef.current) {
+              func(...lastArgsRef.current);
+            }
+          },
+          delay - (now - lastExecRef.current),
+        );
+      }
+    },
+    [func, delay],
+  ) as T;
 }
 
 /**
@@ -46,19 +52,22 @@ export function useThrottle<T extends (...args: any[]) => any>(
  */
 export function useDebounce<T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
 ): T {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  return useCallback((...args: Parameters<T>) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    timeoutRef.current = setTimeout(() => {
-      func(...args);
-    }, delay);
-  }, [func, delay]) as T;
+  return useCallback(
+    (...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        func(...args);
+      }, delay);
+    },
+    [func, delay],
+  ) as T;
 }
 
 /**
@@ -67,7 +76,10 @@ export function useDebounce<T extends (...args: any[]) => any>(
 export function useStableMemo<T>(
   factory: () => T,
   deps: React.DependencyList,
-  compareFn?: (prev: React.DependencyList, current: React.DependencyList) => boolean
+  compareFn?: (
+    prev: React.DependencyList,
+    current: React.DependencyList,
+  ) => boolean,
 ): T {
   const ref = useRef<{ deps: React.DependencyList; value: T }>();
 
@@ -77,7 +89,7 @@ export function useStableMemo<T>(
       return ref.current.value;
     }
 
-    const hasChanged = compareFn 
+    const hasChanged = compareFn
       ? !compareFn(ref.current.deps, deps)
       : !areArraysEqual(ref.current.deps, deps);
 
@@ -92,13 +104,16 @@ export function useStableMemo<T>(
 /**
  * Compara arrays de dependências
  */
-function areArraysEqual(a: React.DependencyList, b: React.DependencyList): boolean {
+function areArraysEqual(
+  a: React.DependencyList,
+  b: React.DependencyList,
+): boolean {
   if (a.length !== b.length) return false;
-  
+
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false;
   }
-  
+
   return true;
 }
 
@@ -108,33 +123,36 @@ function areArraysEqual(a: React.DependencyList, b: React.DependencyList): boole
 export function useCoordinateThrottle(
   callback: (coords: [number, number]) => void,
   delay: number = 100,
-  tolerance: number = 0.0001
+  tolerance: number = 0.0001,
 ) {
   const lastCoordsRef = useRef<[number, number] | null>(null);
   const lastUpdateRef = useRef<number>(0);
 
-  const throttledCallback = useCallback((coords: [number, number]) => {
-    const now = Date.now();
-    const timeSinceLastUpdate = now - lastUpdateRef.current;
+  const throttledCallback = useCallback(
+    (coords: [number, number]) => {
+      const now = Date.now();
+      const timeSinceLastUpdate = now - lastUpdateRef.current;
 
-    // Verificar se tempo suficiente passou
-    if (timeSinceLastUpdate < delay) return;
+      // Verificar se tempo suficiente passou
+      if (timeSinceLastUpdate < delay) return;
 
-    // Verificar se movimento é significativo
-    const lastCoords = lastCoordsRef.current;
-    if (lastCoords) {
-      const deltaLng = Math.abs(coords[0] - lastCoords[0]);
-      const deltaLat = Math.abs(coords[1] - lastCoords[1]);
+      // Verificar se movimento é significativo
+      const lastCoords = lastCoordsRef.current;
+      if (lastCoords) {
+        const deltaLng = Math.abs(coords[0] - lastCoords[0]);
+        const deltaLat = Math.abs(coords[1] - lastCoords[1]);
 
-      if (deltaLng < tolerance && deltaLat < tolerance) {
-        return; // Movimento muito pequeno, ignorar
+        if (deltaLng < tolerance && deltaLat < tolerance) {
+          return; // Movimento muito pequeno, ignorar
+        }
       }
-    }
 
-    lastUpdateRef.current = now;
-    lastCoordsRef.current = coords;
-    callback(coords);
-  }, [callback, delay, tolerance]);
+      lastUpdateRef.current = now;
+      lastCoordsRef.current = coords;
+      callback(coords);
+    },
+    [callback, delay, tolerance],
+  );
 
   return throttledCallback;
 }
@@ -145,44 +163,47 @@ export function useCoordinateThrottle(
 export function useDistanceCalculation() {
   const cache = useRef<Map<string, number>>(new Map());
 
-  const calculateDistance = useCallback((
-    point1: [number, number],
-    point2: [number, number]
-  ): number => {
-    // Criar chave única para o cache
-    const key = `${point1[0].toFixed(6)},${point1[1].toFixed(6)}-${point2[0].toFixed(6)},${point2[1].toFixed(6)}`;
-    
-    // Verificar cache
-    if (cache.current.has(key)) {
-      return cache.current.get(key)!;
-    }
+  const calculateDistance = useCallback(
+    (point1: [number, number], point2: [number, number]): number => {
+      // Criar chave única para o cache
+      const key = `${point1[0].toFixed(6)},${point1[1].toFixed(6)}-${point2[0].toFixed(6)},${point2[1].toFixed(6)}`;
 
-    // Calcular distância usando fórmula de Haversine
-    const [lng1, lat1] = point1;
-    const [lng2, lat2] = point2;
-    
-    const R = 6371000; // Raio da Terra em metros
-    const dLat = toRadians(lat2 - lat1);
-    const dLng = toRadians(lng2 - lng1);
-    
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
+      // Verificar cache
+      if (cache.current.has(key)) {
+        return cache.current.get(key)!;
+      }
 
-    // Cachear resultado
-    cache.current.set(key, distance);
-    
-    // Limitar tamanho do cache
-    if (cache.current.size > 1000) {
-      const firstKey = cache.current.keys().next().value;
-      cache.current.delete(firstKey);
-    }
+      // Calcular distância usando fórmula de Haversine
+      const [lng1, lat1] = point1;
+      const [lng2, lat2] = point2;
 
-    return distance;
-  }, []);
+      const R = 6371000; // Raio da Terra em metros
+      const dLat = toRadians(lat2 - lat1);
+      const dLng = toRadians(lng2 - lng1);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) *
+          Math.cos(toRadians(lat2)) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+
+      // Cachear resultado
+      cache.current.set(key, distance);
+
+      // Limitar tamanho do cache
+      if (cache.current.size > 1000) {
+        const firstKey = cache.current.keys().next().value;
+        cache.current.delete(firstKey);
+      }
+
+      return distance;
+    },
+    [],
+  );
 
   const clearCache = useCallback(() => {
     cache.current.clear();
@@ -205,14 +226,20 @@ export function useVirtualizedList<T>(
   items: T[],
   itemHeight: number,
   containerHeight: number,
-  overscan: number = 5
+  overscan: number = 5,
 ) {
   const [scrollTop, setScrollTop] = useState(0);
 
   const visibleRange = useMemo(() => {
-    const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
+    const startIndex = Math.max(
+      0,
+      Math.floor(scrollTop / itemHeight) - overscan,
+    );
     const visibleCount = Math.ceil(containerHeight / itemHeight);
-    const endIndex = Math.min(items.length - 1, startIndex + visibleCount + overscan * 2);
+    const endIndex = Math.min(
+      items.length - 1,
+      startIndex + visibleCount + overscan * 2,
+    );
 
     return { startIndex, endIndex };
   }, [scrollTop, itemHeight, containerHeight, overscan, items.length]);
@@ -229,7 +256,7 @@ export function useVirtualizedList<T>(
     totalHeight,
     offsetY,
     setScrollTop,
-    visibleRange
+    visibleRange,
   };
 }
 
@@ -240,7 +267,7 @@ export function useSearchFilter<T>(
   items: T[],
   searchTerm: string,
   searchFields: (keyof T)[],
-  debounceMs: number = 300
+  debounceMs: number = 300,
 ) {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
@@ -260,14 +287,14 @@ export function useSearchFilter<T>(
     }
 
     const lowercaseSearch = debouncedSearchTerm.toLowerCase();
-    
-    return items.filter(item => {
-      return searchFields.some(field => {
+
+    return items.filter((item) => {
+      return searchFields.some((field) => {
         const value = item[field];
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
           return value.toLowerCase().includes(lowercaseSearch);
         }
-        if (typeof value === 'number') {
+        if (typeof value === "number") {
           return value.toString().includes(lowercaseSearch);
         }
         return false;
@@ -283,7 +310,7 @@ export function useSearchFilter<T>(
  */
 export function useStableCallback<T extends (...args: any[]) => any>(
   callback: T,
-  deps: React.DependencyList
+  deps: React.DependencyList,
 ): T {
   const callbackRef = useRef<T>(callback);
   const depsRef = useRef<React.DependencyList>(deps);
@@ -337,7 +364,7 @@ export function useShallowMemo<T extends Record<string, any>>(obj: T): T {
  */
 export function useLazyLoad<T>(
   loadFn: () => Promise<T>,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
@@ -350,7 +377,7 @@ export function useLazyLoad<T>(
       const result = await loadFn();
       setData(result);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Unknown error'));
+      setError(err instanceof Error ? err : new Error("Unknown error"));
     } finally {
       setLoading(false);
     }

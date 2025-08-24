@@ -45,25 +45,29 @@ class MapboxConfigManager {
 
     try {
       // Token padrão da plataforma (fornecido pelo administrador)
-      const DEFAULT_TOKEN = 'pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA';
+      const DEFAULT_TOKEN =
+        "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
 
       // Priorizar variável de ambiente, usar token padrão como fallback
       const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || DEFAULT_TOKEN;
 
       // Log de debug para ajudar na resolução de problemas
-      console.debug('Mapbox token check:', {
+      console.debug("Mapbox token check:", {
         exists: !!token,
         length: token?.length || 0,
-        prefix: token?.substring(0, 3) || 'N/A',
-        source: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ? 'environment' : 'default'
+        prefix: token?.substring(0, 3) || "N/A",
+        source: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+          ? "environment"
+          : "default",
       });
 
-      if (!token || token.trim() === '') {
+      if (!token || token.trim() === "") {
         this.config = {
           token: null,
           isValid: false,
           isAvailable: false,
-          errorMessage: "Token do Mapbox não configurado. Crie um arquivo .env na raiz do projeto com VITE_MAPBOX_ACCESS_TOKEN=seu_token_aqui",
+          errorMessage:
+            "Token do Mapbox não configurado. Crie um arquivo .env na raiz do projeto com VITE_MAPBOX_ACCESS_TOKEN=seu_token_aqui",
         };
       } else if (!this.isValidMapboxToken(token)) {
         const reason = this.getTokenValidationReason(token);
@@ -88,7 +92,7 @@ class MapboxConfigManager {
         token: null,
         isValid: false,
         isAvailable: false,
-        errorMessage: `Erro ao inicializar Mapbox: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+        errorMessage: `Erro ao inicializar Mapbox: ${error instanceof Error ? error.message : "Erro desconhecido"}`,
       };
     }
 
@@ -114,7 +118,7 @@ class MapboxConfigManager {
       return "token muito curto";
     }
 
-    if (!token.startsWith('pk.')) {
+    if (!token.startsWith("pk.")) {
       return "deve começar com 'pk.'";
     }
 
@@ -124,7 +128,7 @@ class MapboxConfigManager {
 
     const invalidChars = token.match(/[^a-zA-Z0-9._-]/g);
     if (invalidChars) {
-      return `contém caracteres inválidos: ${invalidChars.join(', ')}`;
+      return `contém caracteres inválidos: ${invalidChars.join(", ")}`;
     }
 
     return "formato não reconhecido";
@@ -177,13 +181,16 @@ class MapboxConfigManager {
   /**
    * Testa conectividade com a API do Mapbox
    */
-  public async testConnectivity(): Promise<{ success: boolean; error?: string }> {
+  public async testConnectivity(): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
     const config = this.getConfig();
-    
+
     if (!config.isAvailable || !config.token) {
-      return { 
-        success: false, 
-        error: config.errorMessage || "Token não disponível" 
+      return {
+        success: false,
+        error: config.errorMessage || "Token não disponível",
       };
     }
 
@@ -193,11 +200,11 @@ class MapboxConfigManager {
 
       const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/test.json?access_token=${config.token}&limit=1`,
-        { 
+        {
           signal: controller.signal,
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        }
+          method: "GET",
+          headers: { Accept: "application/json" },
+        },
       );
 
       clearTimeout(timeoutId);
@@ -207,17 +214,23 @@ class MapboxConfigManager {
       } else if (response.status === 401) {
         return { success: false, error: "Token Mapbox inválido ou expirado" };
       } else if (response.status === 429) {
-        return { success: false, error: "Limite de requisições do Mapbox excedido" };
+        return {
+          success: false,
+          error: "Limite de requisições do Mapbox excedido",
+        };
       } else {
-        return { success: false, error: `Erro da API Mapbox: ${response.status}` };
+        return {
+          success: false,
+          error: `Erro da API Mapbox: ${response.status}`,
+        };
       }
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         return { success: false, error: "Timeout na conexão com Mapbox" };
       }
-      return { 
-        success: false, 
-        error: `Erro de conectividade: ${error instanceof Error ? error.message : 'Erro desconhecido'}` 
+      return {
+        success: false,
+        error: `Erro de conectividade: ${error instanceof Error ? error.message : "Erro desconhecido"}`,
       };
     }
   }
@@ -225,16 +238,19 @@ class MapboxConfigManager {
   /**
    * Cria uma URL da API Mapbox com o token
    */
-  public createApiUrl(endpoint: string, params: Record<string, string> = {}): string | null {
+  public createApiUrl(
+    endpoint: string,
+    params: Record<string, string> = {},
+  ): string | null {
     const config = this.getConfig();
-    
+
     if (!config.isAvailable || !config.token) {
       return null;
     }
 
     const url = new URL(endpoint);
-    url.searchParams.set('access_token', config.token);
-    
+    url.searchParams.set("access_token", config.token);
+
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
@@ -250,8 +266,10 @@ export const mapboxConfig = MapboxConfigManager.getInstance();
 export const isMapboxAvailable = () => mapboxConfig.isMapboxAvailable();
 export const getMapboxToken = () => mapboxConfig.getToken();
 export const getMapboxError = () => mapboxConfig.getErrorMessage();
-export const createMapboxApiUrl = (endpoint: string, params?: Record<string, string>) => 
-  mapboxConfig.createApiUrl(endpoint, params);
+export const createMapboxApiUrl = (
+  endpoint: string,
+  params?: Record<string, string>,
+) => mapboxConfig.createApiUrl(endpoint, params);
 
 // Inicializar automaticamente
 mapboxConfig.initialize();
