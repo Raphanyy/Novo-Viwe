@@ -217,6 +217,14 @@ const MapPage: React.FC = () => {
     stopMarkers.current.forEach((marker) => marker.remove());
     stopMarkers.current = [];
 
+    // Clear POI markers
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
+
+    // Clear search markers
+    const existingSearchMarkers = document.querySelectorAll(".search-marker");
+    existingSearchMarkers.forEach((marker) => marker.remove());
+
     // Reset route traced state
     setRouteTraced(false);
   }, [setRouteTraced]);
