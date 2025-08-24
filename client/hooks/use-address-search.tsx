@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { handleError, handleAsyncError, ErrorType, fetchWithErrorHandling } from "../lib/error-handling";
+import { useErrorHandler, ErrorType, fetchWithErrorHandling } from "../lib/error-handling";
 import { createMapboxApiUrl } from "../lib/mapbox-config";
 import { ResourceManager } from "../lib/resource-manager";
 
