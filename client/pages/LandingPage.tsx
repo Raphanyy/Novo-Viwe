@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
 import * as THREE from "three";
 import {
   MapPin,
@@ -38,7 +45,7 @@ const useIntersectionObserver = (options = {}) => {
       ([entry]) => {
         setIsIntersecting(entry.isIntersecting);
       },
-      { threshold: 0.1, rootMargin: '50px', ...options }
+      { threshold: 0.1, rootMargin: "50px", ...options },
     );
 
     if (ref.current) {
@@ -59,8 +66,8 @@ const useParallax = (speed = 0.5) => {
       setOffset(window.pageYOffset * speed);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [speed]);
 
   return offset;
@@ -87,15 +94,18 @@ const StatsSection = memo(() => {
     routes: 0,
     users: 0,
     uptime: 0,
-    savings: 0
+    savings: 0,
   });
 
-  const finalStats = useMemo(() => ({
-    routes: 1000000,
-    users: 50000,
-    uptime: 99.9,
-    savings: 30
-  }), []);
+  const finalStats = useMemo(
+    () => ({
+      routes: 1000000,
+      users: 50000,
+      uptime: 99.9,
+      savings: 30,
+    }),
+    [],
+  );
 
   useEffect(() => {
     if (!isVisible) return;
@@ -113,8 +123,8 @@ const StatsSection = memo(() => {
       setAnimatedStats({
         routes: Math.floor(finalStats.routes * easeOut),
         users: Math.floor(finalStats.users * easeOut),
-        uptime: Math.min(finalStats.uptime, (finalStats.uptime * easeOut)),
-        savings: Math.floor(finalStats.savings * easeOut)
+        uptime: Math.min(finalStats.uptime, finalStats.uptime * easeOut),
+        savings: Math.floor(finalStats.savings * easeOut),
       });
 
       if (currentStep >= steps) {
@@ -126,40 +136,49 @@ const StatsSection = memo(() => {
     return () => clearInterval(timer);
   }, [isVisible, finalStats]);
 
-  const stats = useMemo(() => [
-    {
-      number: animatedStats.routes >= 1000000 ? "1M+" : `${Math.floor(animatedStats.routes / 1000)}K+`,
-      label: "Rotas Otimizadas",
-      icon: Route,
-      color: "from-blue-500 to-blue-600",
-      gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
-      shadow: "shadow-blue-500/20"
-    },
-    {
-      number: animatedStats.users >= 50000 ? "50K+" : `${Math.floor(animatedStats.users / 1000)}K+`,
-      label: "Usuários Ativos",
-      icon: Users,
-      color: "from-blue-600 to-blue-700",
-      gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
-      shadow: "shadow-blue-600/20"
-    },
-    {
-      number: `${animatedStats.uptime.toFixed(1)}%`,
-      label: "Uptime Garantido",
-      icon: Shield,
-      color: "from-blue-400 to-blue-500",
-      gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
-      shadow: "shadow-blue-400/20"
-    },
-    {
-      number: `${animatedStats.savings}%`,
-      label: "Economia de Tempo",
-      icon: Clock,
-      color: "from-blue-700 to-blue-800",
-      gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
-      shadow: "shadow-blue-700/20"
-    },
-  ], [animatedStats]);
+  const stats = useMemo(
+    () => [
+      {
+        number:
+          animatedStats.routes >= 1000000
+            ? "1M+"
+            : `${Math.floor(animatedStats.routes / 1000)}K+`,
+        label: "Rotas Otimizadas",
+        icon: Route,
+        color: "from-blue-500 to-blue-600",
+        gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
+        shadow: "shadow-blue-500/20",
+      },
+      {
+        number:
+          animatedStats.users >= 50000
+            ? "50K+"
+            : `${Math.floor(animatedStats.users / 1000)}K+`,
+        label: "Usuários Ativos",
+        icon: Users,
+        color: "from-blue-600 to-blue-700",
+        gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
+        shadow: "shadow-blue-600/20",
+      },
+      {
+        number: `${animatedStats.uptime.toFixed(1)}%`,
+        label: "Uptime Garantido",
+        icon: Shield,
+        color: "from-blue-400 to-blue-500",
+        gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
+        shadow: "shadow-blue-400/20",
+      },
+      {
+        number: `${animatedStats.savings}%`,
+        label: "Economia de Tempo",
+        icon: Clock,
+        color: "from-blue-700 to-blue-800",
+        gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
+        shadow: "shadow-blue-700/20",
+      },
+    ],
+    [animatedStats],
+  );
 
   return (
     <section
@@ -168,7 +187,10 @@ const StatsSection = memo(() => {
     >
       {/* Efeitos de fundo melhorados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div
+        className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: "1s" }}
+      ></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -177,7 +199,8 @@ const StatsSection = memo(() => {
             Números que impressionam
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Milhares de pessoas já confiam no Viwe para otimizar suas jornadas diárias
+            Milhares de pessoas já confiam no Viwe para otimizar suas jornadas
+            diárias
           </p>
         </div>
 
@@ -200,7 +223,9 @@ const StatsSection = memo(() => {
                   <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
                   <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-sm"></div>
                 </div>
-                <div className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}></div>
+                <div
+                  className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}
+                ></div>
               </div>
               <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
                 {stat.number}
@@ -814,7 +839,6 @@ const LandingPage = () => {
     <div className="bg-background min-h-screen text-foreground">
       {/* Conteúdo Principal */}
       <HomePage heroRef={heroRef} />
-
     </div>
   );
 };
