@@ -252,13 +252,24 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
     try {
       if (isInMapPage) {
-        // Na página do mapa: manter funções existentes
+        // Na página do mapa: salvar configurações e finalizar planejamento
         await new Promise((resolve) => setTimeout(resolve, 1500));
         console.log("Dados da rota salvos (página mapa):", formData);
 
-        // Sincronizar as paradas com o contexto se necessário
-        if (traceContext.state.isTracing && formData.stops.length > 0) {
-          // Lógica específica para o mapa pode ser adicionada aqui
+        // Se estiver no modo de traçamento e tiver paradas suficientes, finalizar planejamento
+        if (traceContext.state.isTracing && formData.stops.length >= 2) {
+          // Fechar modal primeiro
+          setIsSuccess(true);
+          setIsLoading(false);
+
+          setTimeout(() => {
+            setIsSuccess(false);
+            onClose();
+            // Finalizar planejamento automaticamente após salvar
+            traceContext.showTraceConfirmation();
+          }, 1500);
+
+          return; // Sair early para não executar o resto da função
         }
       } else {
         // Fora da página do mapa: não fazer nada por enquanto
