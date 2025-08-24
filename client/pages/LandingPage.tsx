@@ -79,7 +79,7 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
 
 const StatsSection = memo(() => {
   const observerOptions = useMemo(() => ({ threshold: 0.2 }), []);
-  const [sectionRef, isVisible] = useIntersectionObserver(observerOptions);
+  const [sectionRef, hasBeenVisible] = useIntersectionObserver(observerOptions);
   const [animatedStats, setAnimatedStats] = useState({
     routes: 0,
     users: 0,
