@@ -122,6 +122,7 @@ const MapPage: React.FC = () => {
     openDetailsModal,
     openAdjustmentsModal,
     endRoute,
+    startTracing,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
