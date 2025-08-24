@@ -132,14 +132,14 @@ const DashboardPage: React.FC = () => {
               )}
             </div>
             <div>
-              <p className="text-blue-100 text-sm">Bem-vindo de volta!</p>
+              <p className="text-gray-300 text-sm">Bem-vindo de volta!</p>
               <h2 className="text-xl font-bold">{user?.name}</h2>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 text-sm mb-1">Próxima viagem</p>
+              <p className="text-gray-300 text-sm mb-1">Próxima viagem</p>
               <p className="font-semibold">Casa → Trabalho em 8h</p>
             </div>
             <button
