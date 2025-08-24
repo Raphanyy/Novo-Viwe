@@ -193,7 +193,11 @@ const TestimonialsSection = () => {
                   />
                 ))}
               </div>
-              <blockquote className="text-card-foreground mb-6 leading-relaxed line-clamp-2">
+              <blockquote className="text-card-foreground mb-6 leading-relaxed overflow-hidden" style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical'
+              }}>
                 "{testimonial.text}"
               </blockquote>
               <div className="flex items-center">
