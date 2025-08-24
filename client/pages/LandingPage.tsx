@@ -661,28 +661,28 @@ const HomePage = ({
                   IA encontra as melhores rotas automaticamente.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:border-blue-500/50 relative overflow-hidden backdrop-blur-sm"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-primary/20">
                   <TrafficCone className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
                   Previsão de Trânsito
                 </h3>
                 <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
                   Evite congestionamentos com dados em tempo real.
                 </p>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/30 to-blue-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
