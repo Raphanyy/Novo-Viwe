@@ -352,34 +352,11 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Throttled and optimized center pin tracking
-  const lastUpdateTimeRef = useRef<number>(0);
-  const lastCoordinatesRef = useRef<[number, number] | null>(null);
-
-  // Throttled update function with coordinate comparison
-  const throttledUpdateCenterPin = useCallback(
-    (coordinates: [number, number]) => {
-      const now = Date.now();
-      const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
-
-      // Only update if enough time has passed (throttle to 100ms)
-      if (timeSinceLastUpdate < 100) return;
-
-      // Only update if coordinates changed significantly (0.0001 degree threshold)
-      const lastCoords = lastCoordinatesRef.current;
-      if (lastCoords) {
-        const deltaLng = Math.abs(coordinates[0] - lastCoords[0]);
-        const deltaLat = Math.abs(coordinates[1] - lastCoords[1]);
-
-        // Skip update if movement is too small
-        if (deltaLng < 0.0001 && deltaLat < 0.0001) return;
-      }
-
-      lastUpdateTimeRef.current = now;
-      lastCoordinatesRef.current = coordinates;
-      updateCenterPin(coordinates);
-    },
-    [updateCenterPin],
+  // Optimized throttled center pin tracking using performance utils
+  const throttledUpdateCenterPin = useCoordinateThrottle(
+    updateCenterPin,
+    100, // 100ms throttle
+    0.0001 // 0.0001 degree tolerance
   );
 
   // Optimized center pin tracking when tracing starts/stops
