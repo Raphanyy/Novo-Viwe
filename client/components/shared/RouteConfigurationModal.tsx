@@ -1183,6 +1183,7 @@ function SchedulingPage({
 }) {
   const [data, setData] = useState<SchedulingData>(formData);
   const [errors, setErrors] = useState<{ date?: string }>({});
+  const [isTodayToggle, setIsTodayToggle] = useState(true); // Toggle "Hoje" on por padrão
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -1218,11 +1219,20 @@ function SchedulingPage({
     saveData(newData);
   };
 
-  const setTodayDate = () => {
-    const newData = { ...data, date: today };
-    setData(newData);
-    saveData(newData);
-    setErrors({});
+  const handleTodayToggle = (checked: boolean) => {
+    setIsTodayToggle(checked);
+    if (checked) {
+      // Se toggle está ON, definir data como hoje
+      const newData = { ...data, date: today };
+      setData(newData);
+      saveData(newData);
+      setErrors({});
+    } else {
+      // Se toggle está OFF, limpar data para permitir configuração
+      const newData = { ...data, date: "" };
+      setData(newData);
+      saveData(newData);
+    }
   };
 
   // Data mínima é hoje
@@ -1274,37 +1284,66 @@ function SchedulingPage({
 
         {data.type === "imediata" && (
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-medium text-foreground">
-                Data de Execução <span className="text-red-500">*</span>
-              </label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={setTodayDate}
-                className="h-7 px-3 text-xs"
-              >
-                Hoje
-              </Button>
+            <div className="space-y-3">
+              {/* Toggle Hoje */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium text-foreground">
+                    Executar Hoje
+                  </label>
+                  <p className="text-xs text-muted-foreground">
+                    Rota será executada na data de hoje
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isTodayToggle}
+                    onChange={(e) => handleTodayToggle(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              {/* Campo de data (só aparece quando toggle está OFF) */}
+              {!isTodayToggle && (
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Data de Execução <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={data.date}
+                    min={today}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                      errors.date ? "border-red-500" : "border-border"
+                    }`}
+                    required
+                  />
+                  {errors.date && (
+                    <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-1">
+                    A rota será válida por 24 horas a partir da data selecionada
+                  </p>
+                </div>
+              )}
+
+              {/* Informação quando toggle está ON */}
+              {isTodayToggle && (
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                  <p className="text-sm text-primary font-medium">
+                    ✓ Rota programada para hoje ({new Date().toLocaleDateString('pt-BR')})
+                  </p>
+                  <p className="text-xs text-primary/80 mt-1">
+                    A rota será válida por 24 horas a partir de hoje
+                  </p>
+                </div>
+              )}
             </div>
-            <input
-              type="date"
-              name="date"
-              value={data.date}
-              min={today}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                errors.date ? "border-red-500" : "border-border"
-              }`}
-              required
-            />
-            {errors.date && (
-              <p className="text-red-500 text-xs mt-1">{errors.date}</p>
-            )}
-            <p className="text-xs text-muted-foreground mt-1">
-              A rota será válida por 24 horas a partir da data selecionada
-            </p>
           </div>
         )}
       </div>
