@@ -1,5 +1,5 @@
 import React from "react";
-import ModalHeader from "./ModalHeader";
+import AdaptiveModal from "./AdaptiveModal";
 import {
   Accordion,
   AccordionContent,
@@ -102,20 +102,18 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
     creditsUsed: state.estimatedCredits || 0,
   };
 
-  // Evita renderizar se não está aberto
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-[60] bg-background flex flex-col">
-      <ModalHeader
-        title="Rota Concluída!"
-        showBackButton={true}
-        onBack={handleClose}
-        rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
-      />
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+    <AdaptiveModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Rota Concluída!"
+      showBackButton={true}
+      onBack={handleClose}
+      rightContent={<Trophy className="h-5 w-5 text-yellow-600" />}
+      fullPage={true}
+      size="xl"
+    >
+      <div className="p-4 sm:p-6">
         <div className="space-y-6">
           {/* Aviso se não há dados suficientes */}
           {!hasValidData && (
@@ -427,7 +425,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </AdaptiveModal>
   );
 };
 
