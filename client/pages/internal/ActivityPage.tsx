@@ -415,15 +415,15 @@ const ActivityPage: React.FC = () => {
                   className={`bg-card rounded-2xl border border-l-4 ${statusConfig.borderColor} border-border relative overflow-hidden`}
                 >
                   <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                  
-                  <button
-                    onClick={() =>
-                      setExpandedTrip(expandedTrip === route.id ? null : route.id)
-                    }
-                    className="w-full p-4 hover:bg-accent/50 transition-colors duration-200 relative z-10"
-                  >
+
+                  <div className="relative z-10 p-4 hover:bg-accent/50 transition-colors duration-200">
                     <div className="flex items-center justify-between">
-                      <div className="flex-1 text-left">
+                      <div
+                        className="flex-1 text-left cursor-pointer"
+                        onClick={() =>
+                          setExpandedTrip(expandedTrip === route.id ? null : route.id)
+                        }
+                      >
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="font-semibold text-foreground">
                             {route.name}
@@ -468,14 +468,21 @@ const ActivityPage: React.FC = () => {
                         <span className="text-green-600 text-sm font-medium">
                           -{route.savings.time}
                         </span>
-                        {expandedTrip === route.id ? (
-                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                        ) : (
-                          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                        )}
+                        <button
+                          onClick={() =>
+                            setExpandedTrip(expandedTrip === route.id ? null : route.id)
+                          }
+                          className="p-1 hover:bg-accent rounded-lg transition-colors"
+                        >
+                          {expandedTrip === route.id ? (
+                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                          )}
+                        </button>
                       </div>
                     </div>
-                  </button>
+                  </div>
 
                   {expandedTrip === route.id && (
                     <div className="border-t border-border p-4 bg-background/50 relative z-10">
