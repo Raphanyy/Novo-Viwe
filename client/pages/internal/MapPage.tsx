@@ -400,15 +400,16 @@ const MapPage: React.FC = () => {
         }
       };
 
-      map.current.on("move", updateCenterCoords);
-      map.current.on("zoom", updateCenterCoords);
+      // Adicionar listeners usando ResourceManager
+      resourceManager.current!.addEventListener('mapMove', map.current, 'move', updateCenterCoords);
+      resourceManager.current!.addEventListener('mapZoom', map.current, 'zoom', updateCenterCoords);
 
-      // Cleanup function to remove listeners when tracing stops
+      // Cleanup function
       return () => {
-        if (map.current) {
-          map.current.off("move", updateCenterCoords);
-          map.current.off("zoom", updateCenterCoords);
-        }
+        // ResourceManager remove os listeners automaticamente
+        resourceManager.current!.removeResource('mapMove');
+        resourceManager.current!.removeResource('mapZoom');
+
         // Reset refs on cleanup
         lastUpdateTimeRef.current = 0;
         lastCoordinatesRef.current = null;
