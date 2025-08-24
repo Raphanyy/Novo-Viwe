@@ -1372,7 +1372,6 @@ const MapPage: React.FC = () => {
               showBackButton={true}
               onBack={() => {
                 cancelTrace();
-                clearAllMarkersAndRoutes();
               }}
               rightContent={
                 <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -1462,7 +1461,6 @@ const MapPage: React.FC = () => {
                   <button
                     onClick={() => {
                       cancelTrace();
-                      clearAllMarkersAndRoutes();
                     }}
                     className="flex-1 bg-secondary text-secondary-foreground py-3 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200"
                   >
