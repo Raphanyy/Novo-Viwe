@@ -822,6 +822,8 @@ function StopsPage({
     const newStop: RouteStop = {
       id: `stop-${Date.now()}`,
       name: result.text,
+      code: "", // Campo vazio para ser preenchido pelo usuário
+      notes: "", // Campo vazio para ser preenchido pelo usuário
       address: result.place_name,
       coordinates: result.center,
       order: stops.length + 1,
