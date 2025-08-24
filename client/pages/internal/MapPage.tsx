@@ -33,6 +33,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { mapboxConfig, isMapboxAvailable, getMapboxToken, getMapboxError, createMapboxApiUrl } from "../../lib/mapbox-config";
 import { useErrorHandler, fetchWithErrorHandling, ErrorType } from "../../lib/error-handling";
+import { ResourceManager, createManagedTimeout } from "../../lib/resource-manager";
 
 interface SearchResult {
   id: string;
