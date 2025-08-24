@@ -106,7 +106,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
       routeSet: "",
       stops: currentStops,
       scheduling: {
-        type: isTemporary ? "imediata" : "permanente",
+        type: "imediata", // Por padrão sempre imediata
         date: "",
       },
     };
@@ -124,7 +124,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         stops: stopsToUse,
         scheduling: {
           ...prev.scheduling,
-          type: isTemporary ? "imediata" : "permanente",
+          type: "imediata", // Por padrão sempre imediata
         },
       }));
     }
@@ -1209,9 +1209,19 @@ function SchedulingPage({
     if (type === "permanente") {
       newData.date = "";
       setErrors({});
+    } else if (type === "imediata" && !newData.date) {
+      // Se mudou para imediata e não tem data, define hoje como padrão
+      newData.date = today;
     }
     setData(newData);
     saveData(newData);
+  };
+
+  const setTodayDate = () => {
+    const newData = { ...data, date: today };
+    setData(newData);
+    saveData(newData);
+    setErrors({});
   };
 
   // Data mínima é hoje
@@ -1263,9 +1273,20 @@ function SchedulingPage({
 
         {data.type === "imediata" && (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Data de Execução <span className="text-red-500">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-foreground">
+                Data de Execução <span className="text-red-500">*</span>
+              </label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={setTodayDate}
+                className="h-7 px-3 text-xs"
+              >
+                Hoje
+              </Button>
+            </div>
             <input
               type="date"
               name="date"
