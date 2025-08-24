@@ -81,93 +81,131 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
 
 // === Seções Principais ===
 
-const StatsSection = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+const StatsSection = memo(() => {
+  const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [animatedStats, setAnimatedStats] = useState({
+    routes: 0,
+    users: 0,
+    uptime: 0,
+    savings: 0
+  });
+
+  const finalStats = useMemo(() => ({
+    routes: 1000000,
+    users: 50000,
+    uptime: 99.9,
+    savings: 30
+  }), []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 },
-    );
+    if (!isVisible) return;
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const duration = 2000;
+    const steps = 60;
+    const stepDuration = duration / steps;
 
-    return () => observer.disconnect();
-  }, []);
+    let currentStep = 0;
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      const easeOut = 1 - Math.pow(1 - progress, 3);
 
-  const stats = [
+      setAnimatedStats({
+        routes: Math.floor(finalStats.routes * easeOut),
+        users: Math.floor(finalStats.users * easeOut),
+        uptime: Math.min(finalStats.uptime, (finalStats.uptime * easeOut)),
+        savings: Math.floor(finalStats.savings * easeOut)
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setAnimatedStats(finalStats);
+      }
+    }, stepDuration);
+
+    return () => clearInterval(timer);
+  }, [isVisible, finalStats]);
+
+  const stats = useMemo(() => [
     {
-      number: "1M+",
+      number: animatedStats.routes >= 1000000 ? "1M+" : `${Math.floor(animatedStats.routes / 1000)}K+`,
       label: "Rotas Otimizadas",
       icon: Route,
       color: "from-blue-500 to-blue-600",
+      gradient: "bg-gradient-to-r from-blue-500/10 to-blue-600/10",
+      shadow: "shadow-blue-500/20"
     },
     {
-      number: "50K+",
+      number: animatedStats.users >= 50000 ? "50K+" : `${Math.floor(animatedStats.users / 1000)}K+`,
       label: "Usuários Ativos",
       icon: Users,
       color: "from-blue-600 to-blue-700",
+      gradient: "bg-gradient-to-r from-blue-600/10 to-blue-700/10",
+      shadow: "shadow-blue-600/20"
     },
     {
-      number: "99.9%",
+      number: `${animatedStats.uptime.toFixed(1)}%`,
       label: "Uptime Garantido",
       icon: Shield,
       color: "from-blue-400 to-blue-500",
+      gradient: "bg-gradient-to-r from-blue-400/10 to-blue-500/10",
+      shadow: "shadow-blue-400/20"
     },
     {
-      number: "30%",
+      number: `${animatedStats.savings}%`,
       label: "Economia de Tempo",
       icon: Clock,
       color: "from-blue-700 to-blue-800",
+      gradient: "bg-gradient-to-r from-blue-700/10 to-blue-800/10",
+      shadow: "shadow-blue-700/20"
     },
-  ];
+  ], [animatedStats]);
 
   return (
     <section
       ref={sectionRef}
       className="py-16 md:py-20 bg-gradient-to-br from-muted/30 to-primary/5 border-y border-border relative overflow-hidden"
     >
-      {/* Efeitos de fundo suavizados */}
-      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
+      {/* Efeitos de fundo melhorados */}
+      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-blue-600 bg-clip-text text-transparent">
             Números que impressionam
           </h2>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto">
-            Milhares de pessoas já confiam no Viwe para otimizar suas jornadas
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Milhares de pessoas já confiam no Viwe para otimizar suas jornadas diárias
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className={`text-center transition-all duration-700 delay-${index * 100} ${
+              className={`group text-center transition-all duration-1000 ease-out transform ${
                 isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 translate-y-8 scale-95"
               }`}
+              style={{ transitionDelay: `${index * 150}ms` }}
             >
-              <div
-                className={`inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r ${stat.color} rounded-xl mb-3 md:mb-4 shadow-md group-hover:scale-105 transition-transform duration-300`}
-              >
-                <stat.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
+              <div className="relative mb-6">
+                <div
+                  className={`inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-r ${stat.color} rounded-3xl ${stat.shadow} shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden`}
+                >
+                  <stat.icon className="h-9 w-9 md:h-11 md:w-11 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-sm"></div>
+                </div>
+                <div className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}></div>
               </div>
-              <div className="text-2xl md:text-3xl font-bold text-foreground mb-1 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
                 {stat.number}
               </div>
-              <div className="text-muted-foreground font-medium text-sm md:text-base">
+              <div className="text-muted-foreground font-bold text-base md:text-lg group-hover:text-foreground transition-colors duration-300 leading-tight">
                 {stat.label}
               </div>
             </div>
@@ -176,7 +214,7 @@ const StatsSection = () => {
       </div>
     </section>
   );
-};
+});
 
 const TestimonialsSection = () => {
   const testimonials = [
