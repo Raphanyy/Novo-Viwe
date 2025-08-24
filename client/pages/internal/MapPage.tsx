@@ -111,6 +111,13 @@ const MapPage: React.FC = () => {
     addStop,
   } = useTraceRoute();
 
+  // Optimized throttled center pin tracking using performance utils
+  const throttledUpdateCenterPin = useCoordinateThrottle(
+    updateCenterPin,
+    100, // 100ms throttle
+    0.0001, // 0.0001 degree tolerance
+  );
+
   // Pontos de interesse com coordenadas reais de São Paulo
   const pointsOfInterest = [
     {
