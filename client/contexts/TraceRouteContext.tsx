@@ -106,6 +106,7 @@ interface TraceRouteProviderProps {
 export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   children,
 }) => {
+  const { handleError, handleAsyncError } = useErrorHandler();
   const [state, setState] = useState<TraceRouteState>({
     isTracing: false,
     isInPreparation: false,
