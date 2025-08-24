@@ -53,25 +53,11 @@ const useIntersectionObserver = (options = {}) => {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [options]);
 
   return [ref, isIntersecting];
 };
 
-const useParallax = (speed = 0.5) => {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setOffset(window.pageYOffset * speed);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [speed]);
-
-  return offset;
-};
 
 // === Logo Real da Viwe ===
 const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
@@ -89,7 +75,8 @@ const ViweLogo = memo(({ className = "h-16 w-16" }: { className?: string }) => (
 // === Seções Principais ===
 
 const StatsSection = memo(() => {
-  const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const observerOptions = useMemo(() => ({ threshold: 0.2 }), []);
+  const [sectionRef, isVisible] = useIntersectionObserver(observerOptions);
   const [animatedStats, setAnimatedStats] = useState({
     routes: 0,
     users: 0,
