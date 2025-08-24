@@ -224,33 +224,40 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Statistics */}
+        {/* Painel de Consumo */}
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-3">
-            Estatísticas
+            Painel de Consumo
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
+          <div className="space-y-4">
+            {consumptionData.map((item) => {
+              const Icon = item.icon;
               return (
                 <div
-                  key={stat.label}
-                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  key={item.label}
+                  className="bg-card rounded-2xl p-5 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                  <div className="flex items-center justify-between mb-2 relative z-10">
-                    <Icon className={`h-5 w-5 ${stat.color}`} />
-                    <span className="text-xs text-green-600 font-medium">
-                      {stat.change}
-                    </span>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`h-5 w-5 ${item.color}`} />
+                        <h4 className="font-semibold text-foreground">
+                          {item.label}
+                        </h4>
+                      </div>
+                      <span className="text-sm font-medium text-foreground">
+                        {item.current}/{item.limit}
+                      </span>
+                    </div>
+                    <div className="space-y-2">
+                      <Progress value={item.percentage} className="h-2" />
+                      <p className="text-xs text-muted-foreground">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-foreground relative z-10">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-muted-foreground relative z-10">
-                    {stat.label}
-                  </p>
                 </div>
               );
             })}
