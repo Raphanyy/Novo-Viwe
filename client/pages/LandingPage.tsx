@@ -403,14 +403,10 @@ const HomePage = ({
             </div>
             
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
-              Sua jornada, <br /> 
-              <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                planejada de forma inteligente.
-              </span>
+              Somos a maior plataforma<br />de rotas inteligentes no mundo
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Viwe é o planejador de rotas mais avançado do mercado. Otimize seus
-              trajetos com IA e chegue ao seu destino com máxima eficiência.
+              Viwe é o planejador de rotas mais avançado do mercado. Otimize trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
