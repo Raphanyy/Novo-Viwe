@@ -264,7 +264,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
         // Se estiver no modo de traçamento e tiver paradas suficientes, finalizar planejamento
         if (traceContext.state.isTracing && formData.stops.length >= 1) {
-          console.log("Configurações salvas, finalizando planejamento automaticamente...");
+          console.log(
+            "Configurações salvas, finalizando planejamento automaticamente...",
+          );
           // Fechar modal primeiro
           setIsSuccess(true);
           setIsLoading(false);
@@ -273,7 +275,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             setIsSuccess(false);
             onClose();
             // Finalizar planejamento automaticamente após salvar
-            console.log("Chamando showTraceConfirmation() para finalizar planejamento");
+            console.log(
+              "Chamando showTraceConfirmation() para finalizar planejamento",
+            );
             traceContext.showTraceConfirmation();
           }, 1500);
 
@@ -376,10 +380,12 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         <div className="pt-4 border-t border-border">
           <Button
             onClick={handleFinalSubmit}
-            disabled={isLoading ||
+            disabled={
+              isLoading ||
               (isInMapPage && traceContext.state.isTracing
                 ? formData.stops.length < 1
-                : !isFormValid())}
+                : !isFormValid())
+            }
             className="w-full"
           >
             {isLoading ? (
@@ -392,7 +398,9 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                {isInMapPage && traceContext.state.isTracing && formData.stops.length >= 1
+                {isInMapPage &&
+                traceContext.state.isTracing &&
+                formData.stops.length >= 1
                   ? "Finalizar Planejamento"
                   : isInMapPage
                     ? "Salvar Configurações"

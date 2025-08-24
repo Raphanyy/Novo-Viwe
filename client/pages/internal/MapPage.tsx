@@ -103,7 +103,9 @@ const MapPage: React.FC = () => {
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
-  const [currentUserLocation, setCurrentUserLocation] = useState<[number, number] | null>(null);
+  const [currentUserLocation, setCurrentUserLocation] = useState<
+    [number, number] | null
+  >(null);
 
   const {
     state: traceState,
@@ -344,7 +346,10 @@ const MapPage: React.FC = () => {
 
                 // Armazenar localização atual do usuário
                 setCurrentUserLocation([longitude, latitude]);
-                console.log("Localização atual armazenada (auto-detect):", [longitude, latitude]);
+                console.log("Localização atual armazenada (auto-detect):", [
+                  longitude,
+                  latitude,
+                ]);
 
                 if (map.current) {
                   // Smooth fly to user's actual location
@@ -567,22 +572,29 @@ const MapPage: React.FC = () => {
         // Se não temos localização atual, tentar obter
         if (!startingPoint) {
           try {
-            const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-              if (!navigator.geolocation) {
-                reject(new Error('Geolocalização não suportada'));
-                return;
-              }
-              navigator.geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 60000, // 1 minuto de cache
-              });
-            });
-            startingPoint = [position.coords.longitude, position.coords.latitude];
+            const position = await new Promise<GeolocationPosition>(
+              (resolve, reject) => {
+                if (!navigator.geolocation) {
+                  reject(new Error("Geolocalização não suportada"));
+                  return;
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  enableHighAccuracy: true,
+                  timeout: 5000,
+                  maximumAge: 60000, // 1 minuto de cache
+                });
+              },
+            );
+            startingPoint = [
+              position.coords.longitude,
+              position.coords.latitude,
+            ];
             setCurrentUserLocation(startingPoint);
             console.log("Localização atual obtida:", startingPoint);
           } catch (error) {
-            console.warn("Não foi possível obter localização atual, usando centro do mapa");
+            console.warn(
+              "Não foi possível obter localização atual, usando centro do mapa",
+            );
             // Fallback para centro atual do mapa
             const center = map.current?.getCenter();
             if (center) {
@@ -595,14 +607,23 @@ const MapPage: React.FC = () => {
         }
 
         // Criar array de coordenadas: localização atual + paradas
-        const allCoordinates = [startingPoint, ...stops.map(stop => stop.coordinates)];
+        const allCoordinates = [
+          startingPoint,
+          ...stops.map((stop) => stop.coordinates),
+        ];
 
         // Convert coordinates to string for Mapbox Directions API
         const coordinates = allCoordinates
           .map((coord) => `${coord[0]},${coord[1]}`)
           .join(";");
 
-        console.log("Traçando rota de", startingPoint, "para", stops.length, "paradas");
+        console.log(
+          "Traçando rota de",
+          startingPoint,
+          "para",
+          stops.length,
+          "paradas",
+        );
 
         // Call Mapbox Directions API using centralized config
         const apiUrl = createMapboxApiUrl(
@@ -785,7 +806,10 @@ const MapPage: React.FC = () => {
 
         // Armazenar localização atual do usuário
         setCurrentUserLocation([longitude, latitude]);
-        console.log("Localização atual armazenada (find my location):", [longitude, latitude]);
+        console.log("Localização atual armazenada (find my location):", [
+          longitude,
+          latitude,
+        ]);
 
         if (map.current) {
           // Voa para a localização atual do usuário
@@ -1124,7 +1148,9 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     const handleTraceRoute = async (event: any) => {
       const { stops } = event.detail;
-      console.log("Evento traceRoute recebido, traçando rota automaticamente...");
+      console.log(
+        "Evento traceRoute recebido, traçando rota automaticamente...",
+      );
       await traceRouteOnMap(stops);
     };
 
@@ -1461,7 +1487,10 @@ const MapPage: React.FC = () => {
 
         {/* Route Tracer Feedback */}
         <ViweRouteTracer
-          isVisible={isTracingRoute || (traceState.isRouteTraced && !traceState.isInActiveNavigation)}
+          isVisible={
+            isTracingRoute ||
+            (traceState.isRouteTraced && !traceState.isInActiveNavigation)
+          }
           stopsCount={traceState.stops.length}
           isTracing={isTracingRoute}
         />

@@ -266,7 +266,9 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         stops: newStops,
         estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
         // Mostrar confirmação automaticamente quando tiver 2+ paradas
-        showConfirmDialog: shouldShowConfirmation ? true : prev.showConfirmDialog,
+        showConfirmDialog: shouldShowConfirmation
+          ? true
+          : prev.showConfirmDialog,
       };
     });
   };
@@ -334,9 +336,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
 
     // Dispatcha evento para que o mapa trace a rota automaticamente
-    window.dispatchEvent(new CustomEvent('traceRoute', {
-      detail: { stops: state.stops }
-    }));
+    window.dispatchEvent(
+      new CustomEvent("traceRoute", {
+        detail: { stops: state.stops },
+      }),
+    );
 
     console.log("Tracing confirmed! Drawing route...");
   };
@@ -493,9 +497,9 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
         // Quando todas as paradas são concluídas, abrir modal de resumo final após um pequeno delay
         setTimeout(() => {
-          setState(current => ({
+          setState((current) => ({
             ...current,
-            showFinalSummaryModal: true
+            showFinalSummaryModal: true,
           }));
         }, 500);
 
