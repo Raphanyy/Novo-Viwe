@@ -174,56 +174,32 @@ const DashboardPage: React.FC = () => {
             Estatísticas
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-
-              if (action.action) {
-                // Para ações que usam modal (Nova Rota)
-                return (
-                  <button
-                    key={action.name}
-                    onClick={action.action}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-l-4 border-l-primary border-border relative overflow-hidden"
-                  >
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                    <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
-                      {action.name}
-                    </h4>
-                    <p className="text-xs text-muted-foreground relative z-10">
-                      {action.description}
-                    </p>
-                  </button>
-                );
-              } else {
-                // Para ações que usam Link (outras ações)
-                return (
-                  <Link
-                    key={action.name}
-                    to={action.path}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-l-4 border-l-primary border-border relative overflow-hidden"
-                  >
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                    <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
-                      {action.name}
-                    </h4>
-                    <p className="text-xs text-muted-foreground relative z-10">
-                      {action.description}
-                    </p>
-                  </Link>
-                );
-              }
+            {statistics.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={stat.name}
+                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                >
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="flex items-center justify-between mb-2 relative z-10">
+                    <Icon className={`h-5 w-5 ${stat.color}`} />
+                    <span className="text-xs text-green-600 font-medium">
+                      {stat.change}
+                    </span>
+                  </div>
+                  <p className="text-2xl font-bold text-foreground relative z-10">
+                    {stat.value}
+                  </p>
+                  <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
+                    {stat.name}
+                  </h4>
+                  <p className="text-xs text-muted-foreground relative z-10">
+                    {stat.description}
+                  </p>
+                </div>
+              );
             })}
           </div>
         </div>
