@@ -122,7 +122,7 @@ const AppRoutes = () => {
         <Route path="opcoes" element={<ProfilePage />} />
         <Route path="atividade" element={<ActivityPage />} />
         <Route path="notificacoes" element={<NotificationsPage />} />
-        <Route path="ajustes" element={<ProfilePage />} />
+        <Route path="ajustes" element={<AjustesPage />} />
       </Route>
 
       {/* Catch all - redirect to home */}
