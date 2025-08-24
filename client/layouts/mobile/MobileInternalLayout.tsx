@@ -152,7 +152,7 @@ const MobileInternalLayout: React.FC = () => {
     },
   ];
 
-  // 2a. PLANEJAMENTO INICIAL - Adicionando primeiras paradas
+  // 2. PLANEJAMENTO - Adicionando e configurando paradas
   const planningNavigationItems = [
     {
       name: "Adicionar",
@@ -168,30 +168,6 @@ const MobileInternalLayout: React.FC = () => {
       name: "Configurar",
       icon: Cog,
       action: "configure",
-    },
-    {
-      name: "Cancelar",
-      icon: X,
-      action: "cancel",
-    },
-  ];
-
-  // 2b. PLANEJAMENTO PRONTO - Com 2+ paradas, pronto para traçar
-  const planningReadyNavigationItems = [
-    {
-      name: "Adicionar",
-      icon: Plus,
-      action: "add",
-    },
-    {
-      name: "Limpar",
-      icon: Trash2,
-      action: "clear",
-    },
-    {
-      name: "Finalizar",
-      icon: Navigation,
-      action: "finalize_planning",
     },
     {
       name: "Cancelar",
@@ -291,10 +267,6 @@ const MobileInternalLayout: React.FC = () => {
         // Abre configurações avançadas da rota
         openConfiguration();
         break;
-      case "finalize_planning":
-        // PLANEJAMENTO: Finaliza planejamento e abre confirmação para traçar rota
-        showTraceConfirmation();
-        break;
       case "cancel":
         // PLANEJAMENTO: Cancela o planejamento e volta à exploração
         cancelTrace();
@@ -348,11 +320,7 @@ const MobileInternalLayout: React.FC = () => {
         return routeTracedNavigationItems;
       } else if (traceState.isTracing) {
         // 2. PLANEJAMENTO - Criando rota, adicionando paradas
-        if (traceState.stops.length >= 2) {
-          return planningReadyNavigationItems;
-        } else {
-          return planningNavigationItems;
-        }
+        return planningNavigationItems;
       } else {
         // 1. EXPLORAÇÃO - Estado inicial, explorando mapa
         return explorationNavigationItems;
@@ -573,7 +541,13 @@ const MobileInternalLayout: React.FC = () => {
       <FinalSummaryModal
         isOpen={traceState.showFinalSummaryModal}
         onClose={closeFinalSummaryModal}
-        onSaveAndComplete={saveAndCompleteRoute}
+        onSaveAndComplete={() => {
+          try {
+            saveAndCompleteRoute();
+          } catch (error) {
+            console.error("Erro ao salvar rota:", error);
+          }
+        }}
       />
     </div>
   );

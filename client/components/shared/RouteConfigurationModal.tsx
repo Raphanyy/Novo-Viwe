@@ -241,7 +241,13 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
   // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
-    if (!isFormValid()) {
+    // Na página do mapa, validar apenas se tem paradas para finalizar o planejamento
+    if (isInMapPage && traceContext.state.isTracing) {
+      if (formData.stops.length < 1) {
+        alert("Adicione pelo menos 1 parada para finalizar o planejamento.");
+        return;
+      }
+    } else if (!isFormValid()) {
       alert(
         "Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.",
       );
@@ -252,13 +258,30 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
     try {
       if (isInMapPage) {
-        // Na página do mapa: manter funções existentes
+        // Na página do mapa: salvar configurações e finalizar planejamento
         await new Promise((resolve) => setTimeout(resolve, 1500));
         console.log("Dados da rota salvos (página mapa):", formData);
 
-        // Sincronizar as paradas com o contexto se necessário
-        if (traceContext.state.isTracing && formData.stops.length > 0) {
-          // Lógica específica para o mapa pode ser adicionada aqui
+        // Se estiver no modo de traçamento e tiver paradas suficientes, finalizar planejamento
+        if (traceContext.state.isTracing && formData.stops.length >= 1) {
+          console.log(
+            "Configurações salvas, finalizando planejamento automaticamente...",
+          );
+          // Fechar modal primeiro
+          setIsSuccess(true);
+          setIsLoading(false);
+
+          setTimeout(() => {
+            setIsSuccess(false);
+            onClose();
+            // Finalizar planejamento automaticamente após salvar
+            console.log(
+              "Chamando showTraceConfirmation() para finalizar planejamento",
+            );
+            traceContext.showTraceConfirmation();
+          }, 1500);
+
+          return; // Sair early para não executar o resto da função
         }
       } else {
         // Fora da página do mapa: não fazer nada por enquanto
@@ -357,7 +380,12 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
         <div className="pt-4 border-t border-border">
           <Button
             onClick={handleFinalSubmit}
-            disabled={isLoading || !isFormValid()}
+            disabled={
+              isLoading ||
+              (isInMapPage && traceContext.state.isTracing
+                ? formData.stops.length < 1
+                : !isFormValid())
+            }
             className="w-full"
           >
             {isLoading ? (
@@ -370,7 +398,13 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                {isInMapPage ? "Salvar Configurações" : "Preparar Rota"}
+                {isInMapPage &&
+                traceContext.state.isTracing &&
+                formData.stops.length >= 1
+                  ? "Finalizar Planejamento"
+                  : isInMapPage
+                    ? "Salvar Configurações"
+                    : "Preparar Rota"}
               </>
             )}
           </Button>

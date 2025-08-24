@@ -256,11 +256,21 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       order: state.stops.length + 1,
     };
 
-    setState((prev) => ({
-      ...prev,
-      stops: [...prev.stops, newStop],
-      estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
-    }));
+    setState((prev) => {
+      const newStops = [...prev.stops, newStop];
+      // Automaticamente mostrar confirmação se tiver 2+ paradas
+      const shouldShowConfirmation = newStops.length >= 2 && prev.isTracing;
+
+      return {
+        ...prev,
+        stops: newStops,
+        estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
+        // Mostrar confirmação automaticamente quando tiver 2+ paradas
+        showConfirmDialog: shouldShowConfirmation
+          ? true
+          : prev.showConfirmDialog,
+      };
+    });
   };
 
   const removeLastStop = () => {
@@ -322,8 +332,16 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       isRouteTraced: true,
       navigationMode: "traced",
       showTraceConfirmed: true, // Ativa o modo "Navegar/Desistir"
-      isTracing: false, // Sai do modo de traçamento
+      isTracing: false, // Sai do modo de tra��amento
     }));
+
+    // Dispatcha evento para que o mapa trace a rota automaticamente
+    window.dispatchEvent(
+      new CustomEvent("traceRoute", {
+        detail: { stops: state.stops },
+      }),
+    );
+
     console.log("Tracing confirmed! Drawing route...");
   };
 
@@ -477,7 +495,14 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
       if (isRouteCompleted) {
         console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
-        // Quando todas as paradas são concluídas, abrir modal de resumo final
+        // Quando todas as paradas são concluídas, abrir modal de resumo final após um pequeno delay
+        setTimeout(() => {
+          setState((current) => ({
+            ...current,
+            showFinalSummaryModal: true,
+          }));
+        }, 500);
+
         return {
           ...prev,
           stops: updatedStops,
@@ -488,7 +513,6 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
           },
           isInActiveNavigation: false,
           allStopsCompleted: true,
-          showFinalSummaryModal: true, // Abrir automaticamente o modal de resumo final
         };
       }
 

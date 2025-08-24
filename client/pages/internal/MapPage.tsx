@@ -35,6 +35,7 @@ import ModalHeader from "../../components/shared/ModalHeader";
 import NavigationDetailsModal from "../../components/shared/NavigationDetailsModal";
 import NavigationAdjustmentsModal from "../../components/shared/NavigationAdjustmentsModal";
 import FinalSummaryModal from "../../components/shared/FinalSummaryModal";
+import ViweRouteTracer from "../../components/shared/ViweRouteTracer";
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
@@ -102,6 +103,9 @@ const MapPage: React.FC = () => {
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
+  const [currentUserLocation, setCurrentUserLocation] = useState<
+    [number, number] | null
+  >(null);
 
   const {
     state: traceState,
@@ -340,6 +344,13 @@ const MapPage: React.FC = () => {
               (position) => {
                 const { latitude, longitude } = position.coords;
 
+                // Armazenar localização atual do usuário
+                setCurrentUserLocation([longitude, latitude]);
+                console.log("Localização atual armazenada (auto-detect):", [
+                  longitude,
+                  latitude,
+                ]);
+
                 if (map.current) {
                   // Smooth fly to user's actual location
                   map.current.flyTo({
@@ -549,15 +560,70 @@ const MapPage: React.FC = () => {
   // Function to trace route between stops (optimized with better error handling)
   const traceRouteOnMap = useCallback(
     async (stops: Array<{ coordinates: [number, number] }>) => {
-      if (!map.current || stops.length < 2) return;
+      if (!map.current || stops.length < 1) return;
 
       setIsTracingRoute(true);
+      console.log("Iniciando traçamento da rota com", stops.length, "paradas");
 
       const result = await handleAsyncError(async () => {
-        // Convert stops to coordinates string for Mapbox Directions API
-        const coordinates = stops
-          .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
+        // Obter localização atual do usuário como ponto de partida
+        let startingPoint: [number, number] | null = currentUserLocation;
+
+        // Se não temos localização atual, tentar obter
+        if (!startingPoint) {
+          try {
+            const position = await new Promise<GeolocationPosition>(
+              (resolve, reject) => {
+                if (!navigator.geolocation) {
+                  reject(new Error("Geolocalização não suportada"));
+                  return;
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  enableHighAccuracy: true,
+                  timeout: 5000,
+                  maximumAge: 60000, // 1 minuto de cache
+                });
+              },
+            );
+            startingPoint = [
+              position.coords.longitude,
+              position.coords.latitude,
+            ];
+            setCurrentUserLocation(startingPoint);
+            console.log("Localização atual obtida:", startingPoint);
+          } catch (error) {
+            console.warn(
+              "Não foi possível obter localização atual, usando centro do mapa",
+            );
+            // Fallback para centro atual do mapa
+            const center = map.current?.getCenter();
+            if (center) {
+              startingPoint = [center.lng, center.lat];
+            } else {
+              // Fallback final para São Paulo
+              startingPoint = [-46.6333, -23.5505];
+            }
+          }
+        }
+
+        // Criar array de coordenadas: localização atual + paradas
+        const allCoordinates = [
+          startingPoint,
+          ...stops.map((stop) => stop.coordinates),
+        ];
+
+        // Convert coordinates to string for Mapbox Directions API
+        const coordinates = allCoordinates
+          .map((coord) => `${coord[0]},${coord[1]}`)
           .join(";");
+
+        console.log(
+          "Traçando rota de",
+          startingPoint,
+          "para",
+          stops.length,
+          "paradas",
+        );
 
         // Call Mapbox Directions API using centralized config
         const apiUrl = createMapboxApiUrl(
@@ -737,6 +803,13 @@ const MapPage: React.FC = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+
+        // Armazenar localização atual do usuário
+        setCurrentUserLocation([longitude, latitude]);
+        console.log("Localização atual armazenada (find my location):", [
+          longitude,
+          latitude,
+        ]);
 
         if (map.current) {
           // Voa para a localização atual do usuário
@@ -1075,6 +1148,9 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     const handleTraceRoute = async (event: any) => {
       const { stops } = event.detail;
+      console.log(
+        "Evento traceRoute recebido, traçando rota automaticamente...",
+      );
       await traceRouteOnMap(stops);
     };
 
@@ -1084,6 +1160,7 @@ const MapPage: React.FC = () => {
         map.current.removeLayer("route");
         map.current.removeSource("route");
       }
+      console.log("Rota limpa do mapa");
     };
 
     window.addEventListener("traceRoute", handleTraceRoute);
@@ -1094,6 +1171,19 @@ const MapPage: React.FC = () => {
       window.removeEventListener("clearRoute", handleClearRoute);
     };
   }, [traceRouteOnMap]);
+
+  // Auto-trace route when it becomes traced in context
+  useEffect(() => {
+    if (traceState.isRouteTraced && traceState.stops.length >= 1) {
+      // Garantir que a rota seja traçada no mapa quando confirmada
+      // Agora traça desde a localização atual até as paradas
+      const timeoutId = setTimeout(() => {
+        traceRouteOnMap(traceState.stops);
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [traceState.isRouteTraced, traceState.stops, traceRouteOnMap]);
 
   // Cleanup all resources on unmount
   useEffect(() => {
@@ -1323,7 +1413,7 @@ const MapPage: React.FC = () => {
                   "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
               </p>
               <div className="text-xs text-muted-foreground/70">
-                Esta é uma versão de demonstração da plataforma Viwe.
+                Esta �� uma versão de demonstração da plataforma Viwe.
               </div>
             </div>
           </div>
@@ -1394,6 +1484,16 @@ const MapPage: React.FC = () => {
         >
           <Target className="h-5 w-5 text-gray-600" />
         </button>
+
+        {/* Route Tracer Feedback */}
+        <ViweRouteTracer
+          isVisible={
+            isTracingRoute ||
+            (traceState.isRouteTraced && !traceState.isInActiveNavigation)
+          }
+          stopsCount={traceState.stops.length}
+          isTracing={isTracingRoute}
+        />
 
         {/* REMOVIDO: Todos os controles de rota agora são controlados pelo navbar */}
 
