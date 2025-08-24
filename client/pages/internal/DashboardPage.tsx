@@ -84,34 +84,42 @@ const DashboardPage: React.FC = () => {
     },
   ];
 
-  const stats = [
+  const consumptionData = [
     {
-      label: "Rotas este mês",
-      value: "47",
-      change: "+12%",
+      label: "Rotas Permanentes",
+      current: 47,
+      limit: 100,
+      percentage: 47,
       icon: Route,
       color: "text-blue-600",
+      description: "47 de 100 rotas utilizadas",
     },
     {
-      label: "Tempo economizado",
-      value: "3.2h",
-      change: "+18%",
-      icon: Clock,
-      color: "text-green-600",
-    },
-    {
-      label: "Distância total",
-      value: "342km",
-      change: "+8%",
-      icon: Car,
-      color: "text-purple-600",
-    },
-    {
-      label: "Efici��ncia",
-      value: "89%",
-      change: "+5%",
-      icon: TrendingUp,
+      label: "Rotas Imediatas",
+      current: 23,
+      limit: 50,
+      percentage: 46,
+      icon: Zap,
       color: "text-yellow-600",
+      description: "23 de 50 rotas utilizadas",
+    },
+    {
+      label: "Conjuntos criados",
+      current: 8,
+      limit: 20,
+      percentage: 40,
+      icon: FolderOpen,
+      color: "text-purple-600",
+      description: "8 de 20 conjuntos criados",
+    },
+    {
+      label: "Clientes Adicionados",
+      current: 156,
+      limit: 500,
+      percentage: 31,
+      icon: Users,
+      color: "text-green-600",
+      description: "156 de 500 clientes",
     },
   ];
 
