@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/logo-animation.css";
 
 const MobileLoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -45,14 +46,15 @@ const MobileLoginPage: React.FC = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
         {/* Logo oficial centralizada com animação */}
         <div className="flex items-center justify-center">
-          <div
-            className="relative overflow-hidden w-48 h-48 sm:w-56 sm:h-56"
-            style={{
-              maskImage: 'linear-gradient(90deg, transparent 0%, black 0%)',
-              WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, black 0%)',
-              animation: 'logoReveal 2.5s ease-out forwards',
-            }}
-          >
+          <div className="relative w-48 h-48 sm:w-56 sm:h-56 overflow-hidden">
+            {/* Overlay que se move da esquerda para direita */}
+            <div
+              className="absolute inset-0 bg-background z-10"
+              style={{
+                transform: 'translateX(-100%)',
+                animation: 'slideRight 2s ease-out forwards',
+              }}
+            />
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2F83e633ef02914957b822f0c6a448850f?format=webp&width=800"
               alt="Viwe Logo"
@@ -66,6 +68,17 @@ const MobileLoginPage: React.FC = () => {
             />
           </div>
         </div>
+
+        <style>{`
+          @keyframes slideRight {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(100%);
+            }
+          }
+        `}</style>
       </div>
 
       {/* Botões na parte inferior */}
