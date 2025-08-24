@@ -23,6 +23,7 @@ import RoutesPage from "./pages/internal/RoutesPage";
 import ProfilePage from "./pages/internal/ProfilePage";
 import ActivityPage from "./pages/internal/ActivityPage";
 import NotificationsPage from "./pages/internal/NotificationsPage";
+import AjustesPage from "./pages/internal/AjustesPage";
 
 // Adaptive Layouts
 import AdaptiveInternalLayout from "./components/AdaptiveInternalLayout";
