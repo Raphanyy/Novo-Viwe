@@ -1411,6 +1411,13 @@ const MapPage: React.FC = () => {
           <Target className="h-5 w-5 text-gray-600" />
         </button>
 
+        {/* Route Tracer Feedback */}
+        <ViweRouteTracer
+          isVisible={isTracingRoute || (traceState.isRouteTraced && !traceState.isInActiveNavigation)}
+          stopsCount={traceState.stops.length}
+          isTracing={isTracingRoute}
+        />
+
         {/* REMOVIDO: Todos os controles de rota agora são controlados pelo navbar */}
 
         {/* Navigation Modals */}
