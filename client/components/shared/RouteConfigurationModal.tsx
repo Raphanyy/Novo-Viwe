@@ -294,7 +294,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+    <div className="fixed inset-0 z-[60] bg-background flex flex-col">
       {/* Header */}
       <ModalHeader
         title={getHeaderTitle()}
