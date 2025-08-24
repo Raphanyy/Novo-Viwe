@@ -482,6 +482,9 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       const nextStopIndex = currentStopIndex + 1;
       const isRouteCompleted = nextStopIndex >= prev.stops.length;
 
+      // Contar paradas restantes
+      const remainingStops = updatedStops.filter((stop) => !stop.isCompleted);
+
       // Calculate remaining distance from completed stops
       const completedStopsCount = updatedStops.filter(
         (stop) => stop.isCompleted,
@@ -494,6 +497,23 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
       console.log(
         `Parada ${currentStopIndex + 1} concluída! Próxima: ${nextStopIndex + 1}/${totalStops}`,
       );
+
+      // Auto-otimizar quando há 3+ paradas restantes
+      if (!isRouteCompleted && remainingStops.length >= 3) {
+        console.log(`${remainingStops.length} paradas restantes - iniciando otimização automática...`);
+        setTimeout(() => {
+          optimizeRoute();
+        }, 1000); // Delay para permitir que o estado seja atualizado
+      } else if (!isRouteCompleted && remainingStops.length > 0) {
+        // Com poucas paradas restantes, apenas re-traçar a rota para o próximo destino
+        setTimeout(() => {
+          window.dispatchEvent(
+            new CustomEvent("traceRoute", {
+              detail: { stops: remainingStops },
+            })
+          );
+        }, 500);
+      }
 
       if (isRouteCompleted) {
         console.log("Todas as paradas foram concluídas! Abrindo resumo final.");
@@ -532,8 +552,18 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
   const optimizeRoute = async () => {
     try {
+      // Durante navegação ativa, otimizar apenas paradas restantes
+      const stopsToOptimize = state.isInActiveNavigation
+        ? state.stops.filter((stop) => !stop.isCompleted)
+        : state.stops;
+
+      if (stopsToOptimize.length < 2) {
+        console.log("Não há paradas suficientes para otimizar (mínimo 2)");
+        return;
+      }
+
       // Utiliza a API de Optimization do Mapbox com configuração centralizada
-      const coordinates = state.stops.map((stop) => stop.coordinates);
+      const coordinates = stopsToOptimize.map((stop) => stop.coordinates);
       const coordinatesString = coordinates
         .map((coord) => `${coord[0]},${coord[1]}`)
         .join(";");
@@ -548,6 +578,8 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         console.error("Erro ao otimizar rota: Token do Mapbox não disponível");
         return;
       }
+
+      console.log(`Otimizando ${stopsToOptimize.length} paradas...`);
 
       const result = await handleAsyncError(async () => {
         const response = await fetchWithErrorHandling(
@@ -565,26 +597,67 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
       if (result.success && result.data?.trips?.length > 0) {
         const optimizedWaypoints = result.data.waypoints;
+        const trip = result.data.trips[0];
 
-        // Reordena as paradas baseado na otimização
         setState((prev) => {
-          const reorderedStops = optimizedWaypoints.map(
-            (waypoint: any, index: number) => {
-              const originalStop = prev.stops[waypoint.waypoint_index];
-              return {
-                ...originalStop,
-                order: index + 1,
-              };
-            },
-          );
+          let reorderedStops: RouteStop[];
+
+          if (prev.isInActiveNavigation) {
+            // Durante navegação, manter paradas concluídas no início e reordenar apenas as restantes
+            const completedStops = prev.stops.filter((stop) => stop.isCompleted);
+            const optimizedRemainingStops = optimizedWaypoints.map(
+              (waypoint: any, index: number) => {
+                const originalStop = stopsToOptimize[waypoint.waypoint_index];
+                return {
+                  ...originalStop,
+                  order: completedStops.length + index + 1,
+                };
+              },
+            );
+            reorderedStops = [...completedStops, ...optimizedRemainingStops];
+          } else {
+            // Fora de navegação, reordenar todas as paradas
+            reorderedStops = optimizedWaypoints.map(
+              (waypoint: any, index: number) => {
+                const originalStop = stopsToOptimize[waypoint.waypoint_index];
+                return {
+                  ...originalStop,
+                  order: index + 1,
+                };
+              },
+            );
+          }
+
+          // Atualizar dados de navegação com métricas reais do Mapbox
+          const updatedNavigationData = {
+            ...prev.navigationData,
+            totalDistance: trip.distance || prev.navigationData.totalDistance,
+            estimatedFuelConsumption: trip.distance
+              ? (trip.distance / 1000) * 0.08 // 8L/100km estimativa
+              : prev.navigationData.estimatedFuelConsumption,
+          };
 
           return {
             ...prev,
             stops: reorderedStops,
+            navigationData: updatedNavigationData,
           };
         });
 
-        console.log("Rota otimizada com sucesso!");
+        // Automaticamente re-traçar a rota no mapa após otimização
+        setTimeout(() => {
+          const updatedStops = state.isInActiveNavigation
+            ? state.stops.filter((stop) => !stop.isCompleted)
+            : state.stops;
+
+          window.dispatchEvent(
+            new CustomEvent("traceRoute", {
+              detail: { stops: updatedStops },
+            })
+          );
+        }, 100);
+
+        console.log(`Rota otimizada com sucesso! Distância: ${trip.distance}m, Duração: ${trip.duration}s`);
       } else if (result.error) {
         if (
           result.error.shouldNotifyUser &&
