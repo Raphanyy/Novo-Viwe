@@ -238,6 +238,9 @@ const MapPage: React.FC = () => {
       map.current.removeSource("route");
     }
 
+    // Limpar referência da geometria da rota
+    lastRouteGeometryRef.current = null;
+
     // Clear stop markers
     stopMarkers.current.forEach((marker) => marker.remove());
     stopMarkers.current = [];
