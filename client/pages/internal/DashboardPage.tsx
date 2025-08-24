@@ -139,7 +139,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative z-10">
             <div>
               <p className="text-gray-300 text-sm mb-1">Próxima viagem</p>
               <p className="font-semibold">Casa → Trabalho em 8h</p>
