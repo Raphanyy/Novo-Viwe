@@ -101,6 +101,30 @@ class MapboxConfigManager {
   }
 
   /**
+   * Fornece razão específica para token inválido
+   */
+  private getTokenValidationReason(token: string): string {
+    if (token.length < 10) {
+      return "token muito curto";
+    }
+
+    if (!token.startsWith('pk.')) {
+      return "deve começar com 'pk.'";
+    }
+
+    if (token.length < 50) {
+      return "token muito curto (deve ter pelo menos 50 caracteres)";
+    }
+
+    const invalidChars = token.match(/[^a-zA-Z0-9._-]/g);
+    if (invalidChars) {
+      return `contém caracteres inválidos: ${invalidChars.join(', ')}`;
+    }
+
+    return "formato não reconhecido";
+  }
+
+  /**
    * Obtém a configuração atual do Mapbox
    */
   public getConfig(): MapboxConfig {
