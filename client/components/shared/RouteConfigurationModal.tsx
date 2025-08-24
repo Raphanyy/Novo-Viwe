@@ -381,7 +381,11 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                {isInMapPage ? "Salvar Configurações" : "Preparar Rota"}
+                {isInMapPage && traceContext.state.isTracing && formData.stops.length >= 2
+                  ? "Finalizar Planejamento"
+                  : isInMapPage
+                    ? "Salvar Configurações"
+                    : "Preparar Rota"}
               </>
             )}
           </Button>
