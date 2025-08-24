@@ -690,7 +690,6 @@ const LandingPage = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       if (
         heroRef.current &&
