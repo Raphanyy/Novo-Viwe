@@ -253,8 +253,8 @@ const MobileInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "trace_execute":
-        // PLANEJAMENTO: Confirma e traça a rota com as paradas selecionadas
-        showTraceConfirmation();
+        // PLANEJAMENTO: Abre configuração da rota com as paradas selecionadas
+        openConfiguration();
         break;
       case "cancel":
         // PLANEJAMENTO: Cancela o planejamento e volta à exploração
