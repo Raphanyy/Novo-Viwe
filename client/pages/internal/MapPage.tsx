@@ -121,7 +121,6 @@ const MapPage: React.FC = () => {
     setMapCleanupCallback,
     addStop,
     clearAllStops,
-    showTraceConfirmation,
     startActiveNavigation,
     giveUpNavigation,
     completeCurrentStop,
