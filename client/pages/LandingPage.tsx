@@ -485,8 +485,8 @@ const HomePage = ({
             <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-3 py-1 flex items-center gap-2">
               <div className="flex -space-x-1">
                 <div className="w-4 h-4 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full border border-background"></div>
-                <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full border border-background"></div>
+                <div className="w-4 h-4 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full border border-background"></div>
               </div>
               <span className="text-muted-foreground text-xs">
                 Mais de <strong className="text-foreground">50K</strong>{" "}
