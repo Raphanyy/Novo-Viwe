@@ -642,9 +642,25 @@ const MapPage: React.FC = () => {
     setSelectedPOI(poi);
   }, []);
 
-  // Optimized POI markers update
+  // Store previous filtered POIs to optimize marker updates
+  const prevFilteredPOIsRef = useRef<any[]>([]);
+
+  // Optimized POI markers update - only update when POIs actually change
   useEffect(() => {
     if (!map.current) return;
+
+    const prevPOIs = prevFilteredPOIsRef.current;
+
+    // Compare POI IDs to see what changed
+    const prevIds = new Set(prevPOIs.map(poi => poi.id));
+    const currentIds = new Set(filteredPOIs.map(poi => poi.id));
+
+    // Only recreate markers if POIs actually changed
+    const hasChanges = prevPOIs.length !== filteredPOIs.length ||
+      !filteredPOIs.every(poi => prevIds.has(poi.id)) ||
+      !prevPOIs.every(poi => currentIds.has(poi.id));
+
+    if (!hasChanges) return;
 
     // Clear existing markers
     markers.current.forEach((marker) => marker.remove());
@@ -665,7 +681,10 @@ const MapPage: React.FC = () => {
 
       markers.current.push(marker);
     });
-  }, [filteredPOIs]);
+
+    // Update reference for next comparison
+    prevFilteredPOIsRef.current = [...filteredPOIs];
+  }, [filteredPOIs, handlePOIClick]);
 
   const handleZoomIn = useCallback(() => {
     if (map.current) {
