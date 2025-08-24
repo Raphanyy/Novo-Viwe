@@ -809,6 +809,14 @@ function StopsPage({
     saveData(reorderedStops);
   };
 
+  const handleUpdateStop = (stopId: string, updates: Partial<RouteStop>) => {
+    const newStops = stops.map((stop) =>
+      stop.id === stopId ? { ...stop, ...updates } : stop,
+    );
+    setStops(newStops);
+    saveData(newStops);
+  };
+
   // Handle address selection from search results
   function handleAddressFromSearch(result: SearchResult) {
     const newStop: RouteStop = {
