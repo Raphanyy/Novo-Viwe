@@ -1176,6 +1176,8 @@ const MapPage: React.FC = () => {
         map.current.removeLayer("route");
         map.current.removeSource("route");
       }
+      // Limpar referência da geometria da rota
+      lastRouteGeometryRef.current = null;
       console.log("Rota limpa do mapa");
     };
 
