@@ -171,7 +171,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             className="flex-1 bg-primary text-primary-foreground font-medium py-3 px-4 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <ViweLoader size="xs" />
             ) : (
               <Save className="h-4 w-4" />
             )}
