@@ -428,8 +428,8 @@ const HomePage = ({
 
   return (
     <React.Fragment>
-      {/* Secção Hero com proporções adequadas */}
-      <section className="relative overflow-hidden py-20 md:py-32 text-center bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Secção Hero otimizada para desktop */}
+      <section className="relative overflow-hidden py-12 md:py-16 lg:py-20 text-center bg-gradient-to-br from-background via-background to-primary/5 min-h-screen flex items-center">
         <div
           className="absolute inset-0 z-0 pointer-events-none opacity-30"
           ref={heroRef}
@@ -440,30 +440,30 @@ const HomePage = ({
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-6 relative z-10 w-full">
           <div
             className={`transition-all duration-1000 ease-out ${isHeroTextVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            {/* Logo grande alinhada com o texto */}
-            <div className="mb-4 md:mb-6 flex justify-center">
+            {/* Logo mantendo o tamanho mas com espaçamento otimizado */}
+            <div className="mb-3 md:mb-4 lg:mb-6 flex justify-center">
               <div className="group relative">
-                <ViweLogo className="h-32 w-32 md:h-48 md:w-48 lg:h-64 lg:w-64 xl:h-80 xl:w-80 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
+                <ViweLogo className="h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 xl:h-56 xl:w-56 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300" />
                 {/* Efeito de brilho suave */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-4 lg:mb-6">
               Somos a maior plataforma
               <br />
               de rotas inteligentes no mundo
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6 lg:mb-8">
               Viwe é o planejador de rotas mais avançado do mercado. Otimize
               trajetos com IA, organize conjuntos, economize tempo e muito mais.
             </p>
           </div>
-          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6 lg:mb-8">
             <Link
               to="/login"
               className="group bg-gradient-to-r from-primary to-blue-600 text-primary-foreground px-8 py-4 rounded-full font-semibold hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 shadow-lg transform hover:-translate-y-1"
@@ -481,7 +481,7 @@ const HomePage = ({
           </div>
 
           {/* Badge de confiança simplificado */}
-          <div className="mt-8 flex justify-center">
+          <div className="flex justify-center">
             <div className="bg-card/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
               <div className="flex -space-x-1">
                 <div className="w-6 h-6 bg-gradient-to-r from-primary to-blue-600 rounded-full border border-background"></div>
