@@ -142,7 +142,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
                 Pronto para sua próxima aventura?
               </h2>
-              <p className="mt-4 text-lg max-w-xl mx-auto text-muted-foreground">
+              <p className="mt-4 text-lg max-w-xl ml-0 text-muted-foreground">
                 Crie sua conta agora e comece a planejar seus trajetos com a Viwe.
               </p>
               <div className="mt-8 flex justify-center space-x-4">
