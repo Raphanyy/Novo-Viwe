@@ -552,6 +552,7 @@ const MapPage: React.FC = () => {
       if (!map.current || stops.length < 2) return;
 
       setIsTracingRoute(true);
+      console.log("Iniciando traçamento da rota com", stops.length, "paradas");
 
       const result = await handleAsyncError(async () => {
         // Convert stops to coordinates string for Mapbox Directions API
