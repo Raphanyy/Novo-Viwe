@@ -116,7 +116,7 @@ const DashboardPage: React.FC = () => {
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
+        <div className="bg-black rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center">
               {user?.avatar ? (
