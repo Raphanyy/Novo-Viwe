@@ -73,7 +73,7 @@ const MobileLoginPage: React.FC = () => {
           {/* Botão Cadastro */}
           <button
             onClick={handleSignup}
-            className="w-full bg-white/95 backdrop-blur-sm text-gray-700 py-4 px-6 rounded-2xl font-medium hover:bg-white transition-all duration-300 border border-gray-200/50 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full bg-black text-white py-4 px-6 rounded-2xl font-medium hover:bg-gray-900 transition-all duration-300 border-2 border-white shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
           >
             Cadastro
           </button>
