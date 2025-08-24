@@ -403,8 +403,8 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.isTracing, throttledUpdateCenterPin]);
 
-  // Memoize filtered stops to prevent unnecessary recalculations
-  const visibleStops = useMemo(() => {
+  // Otimizar visibleStops usando memoização estável
+  const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
       if (traceState.isInActiveNavigation && stop.isCompleted) {
