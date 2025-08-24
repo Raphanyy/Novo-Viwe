@@ -480,7 +480,7 @@ const HomePage = ({
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
-            <button className="group flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full border border-border font-semibold hover:bg-white/90 transition-all duration-300">
+            <button className="group flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-full border border-white font-semibold hover:bg-black/90 transition-all duration-300">
               <Play className="h-4 w-4" />
               Ver demonstração
             </button>
