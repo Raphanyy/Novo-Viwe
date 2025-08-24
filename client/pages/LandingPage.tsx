@@ -462,7 +462,7 @@ const HomePage = ({
             <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-foreground leading-[1.05] tracking-tight mb-2 lg:mb-3">
               Somos a maior plataforma
               <br />
-              de rotas inteligentes no mundo
+              de rotas inteligentes do mundo
             </h1>
             <p className="text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground max-w-2xl mx-auto leading-snug mb-3 lg:mb-4">
               Viwe é o planejador de rotas mais avançado do mercado. Otimize
