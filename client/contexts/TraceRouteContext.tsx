@@ -258,17 +258,11 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
     setState((prev) => {
       const newStops = [...prev.stops, newStop];
-      // Automaticamente mostrar confirmação se tiver 2+ paradas
-      const shouldShowConfirmation = newStops.length >= 2 && prev.isTracing;
 
       return {
         ...prev,
         stops: newStops,
         estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
-        // Mostrar confirmação automaticamente quando tiver 2+ paradas
-        showConfirmDialog: shouldShowConfirmation
-          ? true
-          : prev.showConfirmDialog,
       };
     });
   };
