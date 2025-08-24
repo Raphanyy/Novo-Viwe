@@ -251,7 +251,7 @@ const TestimonialsSection = () => {
       {/* Background Pattern - Decorative Squares for Testimonials */}
       <div className="absolute inset-0 opacity-6">
         <div className="absolute top-12 left-12 w-20 h-20 border-2 border-primary/40 rounded-xl transform rotate-12"></div>
-        <div className="absolute top-24 right-16 w-32 h-32 border-2 border-blue-500/30 rounded-xl transform -rotate-6"></div>
+        <div className="absolute top-24 right-16 w-32 h-32 border-2 border-primary/30 rounded-xl transform -rotate-6"></div>
         <div className="absolute bottom-16 left-20 w-24 h-24 border-2 border-muted-foreground/20 rounded-xl transform rotate-45"></div>
         <div className="absolute bottom-12 right-12 w-28 h-28 border-2 border-primary/25 rounded-xl transform -rotate-12"></div>
       </div>
@@ -295,7 +295,7 @@ const TestimonialsSection = () => {
                 "{testimonial.text}"
               </blockquote>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm mr-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-primary to-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm mr-3">
                   {testimonial.avatar}
                 </div>
                 <div>
@@ -325,7 +325,7 @@ const HowItWorksSection = () => {
       title: "Defina seu destino",
       description: "Digite onde você quer ir ou selecione no mapa interativo",
       icon: Target,
-      color: "from-blue-500 to-blue-600",
+      color: "from-primary to-primary",
     },
     {
       step: "02",
@@ -333,7 +333,7 @@ const HowItWorksSection = () => {
       description:
         "Nossa IA calcula a melhor rota considerando trânsito e preferências",
       icon: Zap,
-      color: "from-blue-600 to-blue-700",
+      color: "from-primary to-primary",
     },
     {
       step: "03",
@@ -341,7 +341,7 @@ const HowItWorksSection = () => {
       description:
         "Siga as instruções em tempo real e chegue mais rápido ao destino",
       icon: CheckCircle,
-      color: "from-blue-700 to-blue-800",
+      color: "from-primary to-primary",
     },
   ];
 
