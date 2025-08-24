@@ -300,8 +300,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               <AccordionContent>
                 <div className="space-y-3">
                   {completedStops.length === 0 ? (
-                    <div className="text-center py-8">
-                      <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                    <div className="text-center py-4">
                       <h4 className="font-medium text-foreground mb-2">
                         Nenhuma parada concluída
                       </h4>
@@ -408,8 +407,7 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
                       )}
                     </>
                   ) : (
-                    <div className="text-center py-8">
-                      <Fuel className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                    <div className="text-center py-4">
                       <h4 className="font-medium text-foreground mb-2">
                         Dados de combustível não disponíveis
                       </h4>
