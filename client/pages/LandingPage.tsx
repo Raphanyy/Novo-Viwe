@@ -92,7 +92,7 @@ const StatsSection = () => {
     >
       {/* Efeitos de fundo suavizados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
