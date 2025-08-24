@@ -224,18 +224,20 @@ const DashboardPage: React.FC = () => {
               return (
                 <div
                   key={stat.label}
-                  className="bg-card rounded-2xl p-4 border border-border"
+                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-2">
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="flex items-center justify-between mb-2 relative z-10">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
                       {stat.change}
                     </span>
                   </div>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground relative z-10">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground relative z-10">{stat.label}</p>
                 </div>
               );
             })}
