@@ -135,6 +135,7 @@ const MapPage: React.FC = () => {
     closeFinalSummaryModal,
     saveAndCompleteRoute,
     updateNavigationData,
+    suggestSmartOptimization,
   } = useTraceRoute();
 
   // Optimized throttled center pin tracking using performance utils
