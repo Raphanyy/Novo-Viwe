@@ -31,6 +31,12 @@ import {
 } from "lucide-react";
 import { Progress } from "../../components/ui/progress";
 import AdaptiveModal from "../../components/shared/AdaptiveModal";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../../components/ui/accordion";
 
 type RouteStatus = "completed" | "paused" | "configured" | "forgotten";
 
