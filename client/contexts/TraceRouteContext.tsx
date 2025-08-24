@@ -748,7 +748,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
   };
 
-  const value: TraceRouteContextType = {
+  const value: TraceRouteContextType = useMemo(() => ({
     state,
     startTracing,
     stopTracing,
@@ -783,7 +783,41 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     saveAndCompleteRoute,
     setMapCleanupCallback: (callback: () => void) =>
       setMapCleanupCallback(() => callback),
-  };
+  }), [
+    state,
+    startTracing,
+    stopTracing,
+    addStop,
+    removeLastStop,
+    clearAllStops,
+    openConfiguration,
+    closeConfiguration,
+    setInPreparation,
+    hideTraceConfirmation,
+    confirmTrace,
+    cancelTrace,
+    updateCenterPin,
+    startNavigation,
+    stopNavigation,
+    setRouteTraced,
+    giveUpNavigation,
+    startActiveNavigation,
+    stopActiveNavigation,
+    completeCurrentStop,
+    optimizeRoute,
+    openDetailsModal,
+    closeDetailsModal,
+    openAdjustmentsModal,
+    closeAdjustmentsModal,
+    pauseNavigation,
+    resumeNavigation,
+    removeStop,
+    endRoute,
+    openFinalSummaryModal,
+    closeFinalSummaryModal,
+    saveAndCompleteRoute,
+    mapCleanupCallback,
+  ]);
 
   return (
     <TraceRouteContext.Provider value={value}>
