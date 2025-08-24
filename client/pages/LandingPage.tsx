@@ -747,15 +747,15 @@ const LandingPage = () => {
             {/* Garantias */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-white/80 text-sm">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Teste grátis por 30 dias</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Sem cartão de crédito</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-400" />
+                <CheckCircle className="h-4 w-4 text-white" />
                 <span>Suporte 24/7</span>
               </div>
             </div>
