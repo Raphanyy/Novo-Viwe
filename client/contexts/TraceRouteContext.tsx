@@ -268,7 +268,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
       };
     });
-  }, [handleAsyncError, handleError, state.stops.length]);
+  }, [handleAsyncError, handleError]);
 
   const removeLastStop = () => {
     setState((prev) => ({
@@ -748,7 +748,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
   };
 
-  const value: TraceRouteContextType = useMemo(() => ({
+  const value: TraceRouteContextType = {
     state,
     startTracing,
     stopTracing,
@@ -783,41 +783,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     saveAndCompleteRoute,
     setMapCleanupCallback: (callback: () => void) =>
       setMapCleanupCallback(() => callback),
-  }), [
-    state,
-    startTracing,
-    stopTracing,
-    addStop,
-    removeLastStop,
-    clearAllStops,
-    openConfiguration,
-    closeConfiguration,
-    setInPreparation,
-    hideTraceConfirmation,
-    confirmTrace,
-    cancelTrace,
-    updateCenterPin,
-    startNavigation,
-    stopNavigation,
-    setRouteTraced,
-    giveUpNavigation,
-    startActiveNavigation,
-    stopActiveNavigation,
-    completeCurrentStop,
-    optimizeRoute,
-    openDetailsModal,
-    closeDetailsModal,
-    openAdjustmentsModal,
-    closeAdjustmentsModal,
-    pauseNavigation,
-    resumeNavigation,
-    removeStop,
-    endRoute,
-    openFinalSummaryModal,
-    closeFinalSummaryModal,
-    saveAndCompleteRoute,
-    mapCleanupCallback,
-  ]);
+  };
 
   return (
     <TraceRouteContext.Provider value={value}>
