@@ -65,6 +65,11 @@ interface StatCard {
   icon: React.ElementType;
   color: string;
   description: string;
+  details: {
+    subtitle: string;
+    items: { label: string; value: string }[];
+    trend: string;
+  };
 }
 
 const ActivityPage: React.FC = () => {
