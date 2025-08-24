@@ -103,6 +103,7 @@ const MapPage: React.FC = () => {
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
   const lastCoordinatesRef = useRef<[number, number] | null>(null);
   const lastUpdateTimeRef = useRef<number>(0);
+  const lastRouteGeometryRef = useRef<string | null>(null);
   const [currentUserLocation, setCurrentUserLocation] = useState<
     [number, number] | null
   >(null);
@@ -804,7 +805,7 @@ const MapPage: React.FC = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        // Armazenar localização atual do usuário
+        // Armazenar localizaç��o atual do usuário
         setCurrentUserLocation([longitude, latitude]);
         console.log("Localização atual armazenada (find my location):", [
           longitude,
