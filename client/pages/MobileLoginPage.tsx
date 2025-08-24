@@ -34,25 +34,17 @@ const MobileLoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Área central com logo */}
-      <div className="flex-1 flex items-center justify-center px-6">
-        {/* Logo */}
-        <div className="flex items-center justify-center">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2Feab00c94f63d45fc8e3a12589b9a235f?format=webp&width=1200&quality=100"
-            alt="Viwe Logo"
-            className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none pointer-events-none antialiased"
-            style={{
-              imageRendering: 'auto',
-              filter: 'none',
-              backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale',
-            }}
-            draggable={false}
-          />
-        </div>
+      {/* Área central com textos */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
+        {/* Título principal */}
+        <h1 className="text-5xl font-light text-foreground text-center tracking-[0.5em] mb-4">
+          V I W E
+        </h1>
+
+        {/* Subtítulo */}
+        <p className="text-xl text-muted-foreground text-center">
+          Crie Rotas Inteligentes
+        </p>
       </div>
 
       {/* Botões na parte inferior */}
@@ -61,7 +53,7 @@ const MobileLoginPage: React.FC = () => {
           {/* Botão Entrar */}
           <button
             onClick={handleEmailLogin}
-            className="w-full bg-gray-800 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-gray-700 transition-colors duration-200"
+            className="w-full bg-blue-600 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-blue-700 transition-colors duration-200"
           >
             Entrar
           </button>
