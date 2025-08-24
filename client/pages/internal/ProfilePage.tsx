@@ -4,20 +4,15 @@ import {
   ArrowLeft,
   User,
   Shield,
-  Bell,
-  Palette,
-  Globe,
   HelpCircle,
   ChevronRight,
   Edit3,
   Settings,
   CreditCard,
   Lock,
-  Eye,
   Database,
-  Volume2,
   LogOut,
-  Mail,
+  Heart,
 } from "lucide-react";
 
 // Import modular components
@@ -28,8 +23,7 @@ import SettingsSection from "../../components/profile/SettingsSection";
 // Import secondary pages
 import PersonalInfoPage from "../../components/profile/pages/PersonalInfoPage";
 import PasswordPage from "../../components/profile/pages/PasswordPage";
-import NotificationSettingsPage from "../../components/profile/pages/NotificationSettingsPage";
-import ThemeSettingsPage from "../../components/profile/pages/ThemeSettingsPage";
+import PlanBillingPage from "../../components/profile/pages/PlanBillingPage";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -86,6 +80,7 @@ const ProfilePage: React.FC = () => {
           subtitle: "Gerencie sua assinatura e pagamentos",
           icon: CreditCard,
           hasSettings: true,
+          component: PlanBillingPage,
         },
         {
           id: "data-export",
@@ -127,81 +122,6 @@ const ProfilePage: React.FC = () => {
           title: "Sessões ativas",
           subtitle: "Veja onde você está conectado",
           icon: Settings,
-        },
-      ],
-    },
-    {
-      id: "privacy",
-      title: "Privacidade e segurança",
-      subtitle: "Controle de privacidade.",
-      icon: Eye,
-      items: [
-        {
-          id: "data-sharing",
-          title: "Compartilhamento de dados",
-          subtitle: "Configure o que compartilhar",
-          icon: Globe,
-          hasSettings: true,
-        },
-        {
-          id: "location",
-          title: "Localização",
-          subtitle: "Gerencie suas configurações de localização",
-          icon: Eye,
-          hasSettings: true,
-        },
-      ],
-    },
-    {
-      id: "notifications",
-      title: "Notificações",
-      subtitle: "Alertas e avisos.",
-      icon: Bell,
-      items: [
-        {
-          id: "push-notifications",
-          title: "Notificações push",
-          subtitle: "Configure notificações do dispositivo",
-          icon: Bell,
-          hasSettings: true,
-          component: NotificationSettingsPage,
-        },
-        {
-          id: "email-notifications",
-          title: "Notificações por email",
-          subtitle: "Configure notificações por email",
-          icon: Mail,
-          hasSettings: true,
-        },
-      ],
-    },
-    {
-      id: "appearance",
-      title: "Acessibilidade, exibição e idiomas",
-      subtitle: "Tema e idioma.",
-      icon: Palette,
-      items: [
-        {
-          id: "theme",
-          title: "Tema",
-          subtitle: "Escolha como o app será exibido",
-          icon: Palette,
-          hasSettings: true,
-          component: ThemeSettingsPage,
-        },
-        {
-          id: "language",
-          title: "Idioma",
-          subtitle: "Selecione seu idioma preferido",
-          icon: Globe,
-          hasSettings: true,
-        },
-        {
-          id: "voice",
-          title: "Navegação por voz",
-          subtitle: "Configure orientações por voz",
-          icon: Volume2,
-          hasSettings: true,
         },
       ],
     },
@@ -289,6 +209,23 @@ const ProfilePage: React.FC = () => {
           />
         ))}
       </div>
+
+      {/* Avaliação da Experiência */}
+      <button className="w-full bg-card rounded-xl p-4 border border-border text-left transition-colors hover:bg-accent/50">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-500/10">
+            <Heart className="h-5 w-5 text-blue-500 fill-blue-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-foreground">
+              Avalie sua experiência
+            </h4>
+          </div>
+          <div className="flex items-center space-x-2">
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </div>
+        </div>
+      </button>
     </div>
   );
 

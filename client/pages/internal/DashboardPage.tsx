@@ -104,7 +104,7 @@ const DashboardPage: React.FC = () => {
       color: "text-purple-600",
     },
     {
-      label: "Eficiência",
+      label: "Efici��ncia",
       value: "89%",
       change: "+5%",
       icon: TrendingUp,
@@ -116,8 +116,10 @@ const DashboardPage: React.FC = () => {
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
-          <div className="flex items-center space-x-3 mb-4">
+        <div className="bg-black rounded-2xl p-6 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+          <div className="flex items-center space-x-3 mb-4 relative z-10">
             <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center">
               {user?.avatar ? (
                 <img
@@ -132,14 +134,14 @@ const DashboardPage: React.FC = () => {
               )}
             </div>
             <div>
-              <p className="text-blue-100 text-sm">Bem-vindo de volta!</p>
+              <p className="text-gray-300 text-sm">Bem-vindo de volta!</p>
               <h2 className="text-xl font-bold">{user?.name}</h2>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-blue-100 text-sm mb-1">Próxima viagem</p>
+              <p className="text-gray-300 text-sm mb-1">Próxima viagem</p>
               <p className="font-semibold">Casa → Trabalho em 8h</p>
             </div>
             <button
@@ -166,17 +168,19 @@ const DashboardPage: React.FC = () => {
                   <button
                     key={action.name}
                     onClick={action.action}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-border"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group text-left w-full border border-l-4 border-l-primary border-border relative overflow-hidden"
                   >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
                     <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
+                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
                       {action.name}
                     </h4>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground relative z-10">
                       {action.description}
                     </p>
                   </button>
@@ -187,17 +191,19 @@ const DashboardPage: React.FC = () => {
                   <Link
                     key={action.name}
                     to={action.path}
-                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-border"
+                    className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 group border border-l-4 border-l-primary border-border relative overflow-hidden"
                   >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
                     <div
-                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
+                      className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 relative z-10`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="font-semibold text-foreground text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
                       {action.name}
                     </h4>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground relative z-10">
                       {action.description}
                     </p>
                   </Link>
@@ -218,18 +224,22 @@ const DashboardPage: React.FC = () => {
               return (
                 <div
                   key={stat.label}
-                  className="bg-card rounded-2xl p-4 border border-border"
+                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-2">
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                  <div className="flex items-center justify-between mb-2 relative z-10">
                     <Icon className={`h-5 w-5 ${stat.color}`} />
                     <span className="text-xs text-green-600 font-medium">
                       {stat.change}
                     </span>
                   </div>
-                  <p className="text-2xl font-bold text-foreground">
+                  <p className="text-2xl font-bold text-foreground relative z-10">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground relative z-10">
+                    {stat.label}
+                  </p>
                 </div>
               );
             })}
@@ -254,17 +264,16 @@ const DashboardPage: React.FC = () => {
             {recentRoutes.map((route) => (
               <div
                 key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-border"
+                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-l-4 border-l-primary border-border relative overflow-hidden"
               >
-                <div className="flex items-center justify-between">
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                <div className="flex items-center justify-between relative z-10">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
                       <h4 className="font-semibold text-foreground">
                         {route.name}
                       </h4>
-                      <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
-                        -{route.savings}
-                      </span>
                     </div>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <span className="flex items-center space-x-1">
@@ -289,8 +298,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Tips & Insights */}
-        <div className="bg-gradient-to-r from-muted to-secondary rounded-2xl p-6 border border-border">
-          <div className="flex items-start space-x-3">
+        <div className="bg-black rounded-2xl p-6 border border-l-4 border-l-primary border-border relative overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+          <div className="flex items-start space-x-3 relative z-10">
             <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <Zap className="h-5 w-5 text-primary" />
             </div>
@@ -314,8 +325,10 @@ const DashboardPage: React.FC = () => {
 
         {/* Weather & Traffic (Simplified) */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-card rounded-2xl p-4 border border-border">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+            <div className="flex items-center space-x-2 mb-2 relative z-10">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <span className="text-lg">☀️</span>
               </div>
@@ -324,11 +337,15 @@ const DashboardPage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">Bom para viajar</p>
               </div>
             </div>
-            <p className="text-lg font-bold text-foreground">24°C</p>
+            <p className="text-lg font-bold text-foreground relative z-10">
+              24°C
+            </p>
           </div>
 
-          <div className="bg-card rounded-2xl p-4 border border-border">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden">
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+            <div className="flex items-center space-x-2 mb-2 relative z-10">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <Car className="h-4 w-4 text-green-600" />
               </div>
@@ -339,7 +356,9 @@ const DashboardPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <p className="text-lg font-bold text-green-600">Fluindo</p>
+            <p className="text-lg font-bold text-green-600 relative z-10">
+              Fluindo
+            </p>
           </div>
         </div>
 

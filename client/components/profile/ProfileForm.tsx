@@ -120,7 +120,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             htmlFor="company"
             className="block text-sm font-medium text-foreground mb-2"
           >
-            Nome da Empresa
+            Nome da Empresa (Opcional)
           </label>
           <input
             id="company"
