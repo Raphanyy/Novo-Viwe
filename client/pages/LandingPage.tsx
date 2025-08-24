@@ -661,54 +661,65 @@ const HomePage = ({
 
             <div
               ref={(el) => (cardRefs.current[1] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:border-blue-500/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 1)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 1)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl text-blue-500 mb-4 group-hover:scale-105 transition-transform duration-300">
-                <TrafficCone className="h-6 w-6" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-2xl text-blue-500 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                  <TrafficCone className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-500 transition-colors duration-300">
+                  Previsão de Trânsito
+                </h3>
+                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
+                  Dados em tempo real com precisão de 99%. Evite congestionamentos e chegue sempre no horário.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-500 transition-colors">
-                Previsão de Trânsito
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Dados em tempo real evitam trânsito. Precisão de 99% garantida.
-              </p>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/30 to-blue-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[2] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-600/50 hover:shadow-xl group"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-600/20 transition-all duration-500 hover:border-blue-600/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 2)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 2)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-xl text-blue-600 mb-4 group-hover:scale-105 transition-transform duration-300">
-                <MapPin className="h-6 w-6" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-600/20 to-blue-600/10 rounded-2xl text-blue-600 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-600/20">
+                  <MapPin className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                  Pontos de Interesse
+                </h3>
+                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
+                  Descubra restaurantes, postos e atrações estrategicamente posicionados no seu trajeto.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-600 transition-colors">
-                Pontos de Interesse
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Encontre restaurantes, postos e atrações no seu trajeto
-                facilmente.
-              </p>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/30 to-blue-700/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
               ref={(el) => (cardRefs.current[3] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-blue-700/50 hover:shadow-xl group"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-blue-700/20 transition-all duration-500 hover:border-blue-700/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 3)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 3)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-xl text-blue-700 mb-4 group-hover:scale-105 transition-transform duration-300">
-                <Share2 className="h-6 w-6" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="p-4 inline-block bg-gradient-to-br from-blue-700/20 to-blue-700/10 rounded-2xl text-blue-700 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-700/20">
+                  <Share2 className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-blue-700 transition-colors duration-300">
+                  Compartilhar Itinerário
+                </h3>
+                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
+                  Sincronize e compartilhe rotas em tempo real com família, equipes e colaboradores.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-blue-700 transition-colors">
-                Compartilhar Itinerário
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Compartilhe rotas em tempo real com família e equipes.
-              </p>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-700/30 to-purple-600/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
           </div>
         </div>
