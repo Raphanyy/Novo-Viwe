@@ -1071,6 +1071,30 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Event listeners para integração com navbar
+  useEffect(() => {
+    const handleTraceRoute = async (event: any) => {
+      const { stops } = event.detail;
+      await traceRouteOnMap(stops);
+    };
+
+    const handleClearRoute = () => {
+      // Clear route from map
+      if (map.current && map.current.getSource("route")) {
+        map.current.removeLayer("route");
+        map.current.removeSource("route");
+      }
+    };
+
+    window.addEventListener('traceRoute', handleTraceRoute);
+    window.addEventListener('clearRoute', handleClearRoute);
+
+    return () => {
+      window.removeEventListener('traceRoute', handleTraceRoute);
+      window.removeEventListener('clearRoute', handleClearRoute);
+    };
+  }, [traceRouteOnMap]);
+
   // Cleanup all resources on unmount
   useEffect(() => {
     return () => {
