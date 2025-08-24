@@ -257,6 +257,7 @@ const RoutesPage: React.FC = () => {
               {activeTab === "favorites" &&
                 "Marque rotas como favoritas para acesso rápido"}
               {activeTab === "planned" && "Agende suas viagens futuras"}
+              {activeTab === "history" && "Rotas concluídas aparecerão aqui"}
             </p>
             <button
               onClick={openRouteModal}
@@ -268,91 +269,102 @@ const RoutesPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {currentRoutes.map((route) => (
-              <div
-                key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="font-semibold text-foreground">
-                        {route.name}
-                      </h3>
-                      {route.isFavorite && (
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                      )}
+            {activeTab === "history" ? (
+              completedRoutes.map((route) => (
+                <HistoryRouteCard
+                  key={route.routeId}
+                  route={route}
+                  formatDate={formatDate}
+                  formatDuration={formatDuration}
+                />
+              ))
+            ) : (
+              currentRoutes.map((route) => (
+                <div
+                  key={route.id}
+                  className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h3 className="font-semibold text-foreground">
+                          {route.name}
+                        </h3>
+                        {route.isFavorite && (
+                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        )}
+                      </div>
+
+                      <div className="space-y-1 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span>{route.from}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span>{route.to}</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>{route.from}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span>{route.to}</span>
-                      </div>
-                    </div>
+                    <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
+                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                    </button>
                   </div>
 
-                  <button className="p-1 hover:bg-muted rounded-lg transition-colors duration-200">
-                    <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-4 text-sm">
-                    <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {route.duration}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-4 text-sm">
+                      <div className="flex items-center space-x-1">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          {route.duration}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          {route.distance}
+                        </span>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
+                      >
+                        {route.traffic === "light" && "Livre"}
+                        {route.traffic === "normal" && "Normal"}
+                        {route.traffic === "heavy" && "Intenso"}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {route.distance}
+
+                    {route.savings && (
+                      <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
+                        -{route.savings}
                       </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      {activeTab === "planned"
+                        ? `Agendada para ${(route as any).scheduledFor}`
+                        : `Última vez: ${(route as any).lastUsed}`}
+                    </span>
+
+                    <div className="flex items-center space-x-2">
+                      <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                        <Share2 className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                      <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
+                        <Edit3 className="h-4 w-4 text-muted-foreground" />
+                      </button>
+                      <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
+                        <Navigation className="h-4 w-4" />
+                        <span className="text-sm font-medium">Navegar</span>
+                      </button>
                     </div>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}
-                    >
-                      {route.traffic === "light" && "Livre"}
-                      {route.traffic === "normal" && "Normal"}
-                      {route.traffic === "heavy" && "Intenso"}
-                    </span>
-                  </div>
-
-                  {route.savings && (
-                    <span className="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">
-                      -{route.savings}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
-                    {activeTab === "planned"
-                      ? `Agendada para ${(route as any).scheduledFor}`
-                      : `Última vez: ${(route as any).lastUsed}`}
-                  </span>
-
-                  <div className="flex items-center space-x-2">
-                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                      <Share2 className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button className="p-2 hover:bg-muted rounded-lg transition-colors duration-200">
-                      <Edit3 className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <button className="bg-blue-600 text-white px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-1">
-                      <Navigation className="h-4 w-4" />
-                      <span className="text-sm font-medium">Navegar</span>
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
       </div>
