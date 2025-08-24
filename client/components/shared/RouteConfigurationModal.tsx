@@ -80,27 +80,31 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
   const [selectedSection, setSelectedSection] = useState<keyof FormData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const initializedRef = useRef(false);
 
-  // Estado do formulário com tipos apropriados
-  const [formData, setFormData] = useState<FormData>({
-    info: { 
-      routeName: "", 
-      responsible: "", 
-      priority: "media" 
-    },
-    clients: [],
-    routeSet: "",
-    stops: [],
-    scheduling: { 
-      type: isTemporary ? "imediata" : "permanente", 
-      date: "" 
-    },
+  // Estado do formulário com tipos apropriados - initialize with current data
+  const [formData, setFormData] = useState<FormData>(() => {
+    const currentStops = prefilledStops.length > 0 ? prefilledStops : [];
+    return {
+      info: {
+        routeName: "",
+        responsible: "",
+        priority: "media"
+      },
+      clients: [],
+      routeSet: "",
+      stops: currentStops,
+      scheduling: {
+        type: isTemporary ? "imediata" : "permanente",
+        date: ""
+      },
+    };
   });
 
-  // Sincronizar com as paradas do contexto quando o modal abrir
+  // Sincronizar com as paradas do contexto quando o modal abrir (apenas uma vez)
   useEffect(() => {
-    if (isOpen) {
-      // Only update when modal opens, avoid infinite loops
+    if (isOpen && !initializedRef.current) {
+      initializedRef.current = true;
       const currentStops = prefilledStops.length > 0 ? prefilledStops : traceContext.state.stops;
       setFormData(prev => ({
         ...prev,
@@ -110,9 +114,11 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
           type: isTemporary ? "imediata" : "permanente"
         }
       }));
+    } else if (!isOpen) {
+      // Reset initialization flag when modal closes
+      initializedRef.current = false;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]); // Only depend on isOpen to avoid infinite loops
+  }, [isOpen, isTemporary, prefilledStops, traceContext.state.stops]);
 
   // Configuração das seções principais
   const configurationSections: ConfigurationSection[] = [
