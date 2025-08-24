@@ -193,7 +193,7 @@ const TestimonialsSection = () => {
                   />
                 ))}
               </div>
-              <blockquote className="text-card-foreground mb-6 leading-relaxed">
+              <blockquote className="text-card-foreground mb-6 leading-relaxed line-clamp-2">
                 "{testimonial.text}"
               </blockquote>
               <div className="flex items-center">
