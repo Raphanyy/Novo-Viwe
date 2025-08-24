@@ -209,15 +209,19 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* Avaliação da Experiência */}
-      <div className="bg-card rounded-xl p-4 border border-border flex items-center space-x-3 cursor-pointer hover:bg-accent transition-colors">
-        <div className="flex-shrink-0">
-          <Heart className="h-6 w-6 text-blue-500 fill-blue-500" />
+      <button className="w-full bg-card rounded-xl p-4 border border-border text-left transition-colors hover:bg-accent/50">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-500/10">
+            <Heart className="h-5 w-5 text-blue-500 fill-blue-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-foreground">Avalie sua experiência</h4>
+          </div>
+          <div className="flex items-center space-x-2">
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </div>
         </div>
-        <div className="flex-1">
-          <h3 className="text-sm font-medium text-foreground">Avalie sua experiência</h3>
-        </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      </div>
+      </button>
     </div>
   );
 
