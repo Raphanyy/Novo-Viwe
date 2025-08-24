@@ -376,7 +376,7 @@ const HomePage = ({
 }) => {
   // Estado para a animação do texto do herói
   const [isHeroTextVisible, setIsHeroTextVisible] = useState(false);
-  // Observer para a seção de funcionalidades
+  // Observer para a se��ão de funcionalidades
   const featuresRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
@@ -729,14 +729,14 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
                 to="/login"
-                className="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
+                className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg"
               >
                 <span className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5" />
                   Começar gratuitamente
                 </span>
               </Link>
-              <button className="border-2 border-white/40 text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all duration-300">
+              <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300">
                 <span className="flex items-center justify-center gap-2">
                   <MessageCircle className="h-5 w-5" />
                   Falar com vendas
