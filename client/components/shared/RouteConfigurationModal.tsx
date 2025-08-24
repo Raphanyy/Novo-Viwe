@@ -280,12 +280,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
               "Configurações salvas, traçando rota automaticamente...",
             );
             traceContext.confirmTrace();
-            // Disparar evento para traçar rota no mapa
-            window.dispatchEvent(
-              new CustomEvent("traceRoute", {
-                detail: { stops: formData.stops },
-              }),
-            );
+            // confirmTrace() já dispara o evento "traceRoute" - não precisamos duplicar
           }, 1500);
 
           return; // Sair early para não executar o resto da função
