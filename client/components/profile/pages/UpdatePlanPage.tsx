@@ -127,12 +127,6 @@ const UpdatePlanPage: React.FC<UpdatePlanPageProps> = ({ onBack }) => {
 
   return (
     <div className="p-4 min-h-full bg-background">
-      {/* Título e subtítulo da página */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground mb-2">Nossos Planos</h1>
-        <p className="text-muted-foreground">Escolha o plano que melhor se adapta a você.</p>
-      </div>
-
       {/* Seção de planos usando o componente AccordionPricingCard */}
       <div className="space-y-4">
         {plansData.map((plan, index) => (
