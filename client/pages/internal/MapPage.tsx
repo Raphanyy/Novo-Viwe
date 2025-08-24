@@ -445,7 +445,7 @@ const MapPage: React.FC = () => {
         lastCoordinatesRef.current = null;
       };
     }
-  }, [traceState.isTracing, throttledUpdateCenterPin]);
+  }, [traceState.isTracing]);
 
   // Otimizar visibleStops usando memoização estável
   const visibleStops = useStableMemo(() => {
