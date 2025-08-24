@@ -171,7 +171,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
     },
     {
       id: "scheduling",
-      title: "Programação",
+      title: "Programa��ão",
       subtitle: "Tipo e data.",
       icon: Calendar,
       component: SchedulingPage,
@@ -241,7 +241,13 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
   // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
-    if (!isFormValid()) {
+    // Na página do mapa, validar apenas se tem paradas para finalizar o planejamento
+    if (isInMapPage && traceContext.state.isTracing) {
+      if (formData.stops.length < 2) {
+        alert("Adicione pelo menos 2 paradas para finalizar o planejamento.");
+        return;
+      }
+    } else if (!isFormValid()) {
       alert(
         "Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.",
       );
