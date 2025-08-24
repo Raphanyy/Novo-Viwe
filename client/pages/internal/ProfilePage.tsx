@@ -4,20 +4,14 @@ import {
   ArrowLeft,
   User,
   Shield,
-  Bell,
-  Palette,
-  Globe,
   HelpCircle,
   ChevronRight,
   Edit3,
   Settings,
   CreditCard,
   Lock,
-  Eye,
   Database,
-  Volume2,
   LogOut,
-  Mail,
 } from "lucide-react";
 
 // Import modular components
@@ -28,8 +22,6 @@ import SettingsSection from "../../components/profile/SettingsSection";
 // Import secondary pages
 import PersonalInfoPage from "../../components/profile/pages/PersonalInfoPage";
 import PasswordPage from "../../components/profile/pages/PasswordPage";
-import NotificationSettingsPage from "../../components/profile/pages/NotificationSettingsPage";
-import ThemeSettingsPage from "../../components/profile/pages/ThemeSettingsPage";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
