@@ -237,29 +237,27 @@ export class ResourceManager {
 }
 
 /**
- * Hook para usar ResourceManager em componentes React
- * Nota: Deve ser importado React no arquivo que usa este hook
+ * Fábrica para criar hook useResourceManager em componentes React
+ * Use esta função em componentes onde você tem acesso ao React
  */
-export function useResourceManager(): ResourceManager {
-  // Este hook deve ser usado apenas em componentes React
-  // O React deve ser importado no arquivo que chama este hook
-  const React = globalThis.React || require('react');
+export function createResourceManagerHook(React: any) {
+  return function useResourceManager(): ResourceManager {
+    const managerRef = React.useRef<ResourceManager>();
 
-  const managerRef = React.useRef<ResourceManager>();
+    if (!managerRef.current) {
+      managerRef.current = new ResourceManager();
+    }
 
-  if (!managerRef.current) {
-    managerRef.current = new ResourceManager();
-  }
+    React.useEffect(() => {
+      const manager = managerRef.current!;
 
-  React.useEffect(() => {
-    const manager = managerRef.current!;
+      return () => {
+        manager.destroy();
+      };
+    }, []);
 
-    return () => {
-      manager.destroy();
-    };
-  }, []);
-
-  return managerRef.current;
+    return managerRef.current;
+  };
 }
 
 /**
