@@ -197,7 +197,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     }));
   };
 
-  const addStop = async (
+  const addStop = useCallback(async (
     coordinates: [number, number],
     name?: string,
     address?: string,
@@ -268,7 +268,7 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
         estimatedCredits: Math.min(prev.estimatedCredits + 2, 20), // Increase credits with more stops
       };
     });
-  };
+  }, [handleAsyncError, handleError, state.stops.length]);
 
   const removeLastStop = () => {
     setState((prev) => ({
