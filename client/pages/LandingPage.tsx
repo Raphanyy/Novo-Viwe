@@ -637,22 +637,26 @@ const HomePage = ({
               Tecnologia avançada que faz a diferença na sua jornada
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div
               ref={(el) => (cardRefs.current[0] = el)}
-              className="bg-card p-6 rounded-2xl border border-border shadow-lg transition-all duration-300 hover:border-primary/50 hover:shadow-xl group"
+              className="group bg-gradient-to-br from-card to-card/80 p-8 rounded-3xl border border-border/50 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:border-primary/50 relative overflow-hidden backdrop-blur-sm"
               onMouseMove={(e) => handleCardMouseMove(e, 0)}
               onMouseLeave={(e) => handleCardMouseLeave(e, 0)}
             >
-              <div className="p-3 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl text-primary mb-4 group-hover:scale-105 transition-transform duration-300">
-                <Route className="h-6 w-6" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="p-4 inline-block bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-primary/20">
+                  <Route className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-4 group-hover:text-primary transition-colors duration-300">
+                  Otimização de Rotas
+                </h3>
+                <p className="text-muted-foreground leading-relaxed group-hover:text-card-foreground transition-colors duration-300">
+                  IA avançada encontra as rotas mais eficientes. Economize tempo, combustível e reduza stress.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-3 group-hover:text-primary transition-colors">
-                Otimização de Rotas
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                IA encontra rotas eficientes. Economize tempo e combustível.
-              </p>
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-3xl blur opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
             </div>
 
             <div
