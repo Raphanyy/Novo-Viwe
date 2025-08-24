@@ -183,11 +183,8 @@ const StatsSection = memo(() => {
         <div className="absolute bottom-20 right-10 w-28 h-28 border-2 border-primary/60 rounded-xl transform -rotate-12"></div>
       </div>
       {/* Efeitos de fundo melhorados */}
-      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "1s" }}
-      ></div>
+      <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -646,7 +643,7 @@ const HomePage = ({
         </div>
       </section>
 
-      {/* Secção de Funcionalidades principais com proporções corrigidas */}
+      {/* Secção de Funcionalidades principais com proporç��es corrigidas */}
       <section
         ref={featuresRef}
         className={`bg-secondary/30 py-16 md:py-20 transition-opacity duration-1000 relative overflow-hidden ${isFeaturesVisible ? "opacity-100" : "opacity-0"}`}
@@ -812,14 +809,8 @@ const LandingPage = () => {
     plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    const animate = () => {
-      requestAnimationFrame(animate);
-      plane.rotation.x += 0.0003;
-      plane.rotation.y += 0.0005;
-      plane.rotation.z += 0.0005;
-      renderer.render(scene, camera);
-    };
-    animate();
+    // Static render - no animation loop
+    renderer.render(scene, camera);
 
     const handleResize = () => {
       if (!heroRef.current) return;
