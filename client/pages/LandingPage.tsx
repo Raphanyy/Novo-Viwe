@@ -714,7 +714,7 @@ const LandingPage = () => {
       <HomePage heroRef={heroRef} />
 
       {/* CTA Section balanceada */}
-      <section className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 py-20 text-center relative overflow-hidden">
+      <section className="bg-gradient-to-r from-primary via-blue-600 to-blue-700 py-20 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
 
         <div className="container mx-auto px-6 relative z-10">
