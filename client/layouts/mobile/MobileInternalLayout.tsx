@@ -281,28 +281,11 @@ const MobileInternalLayout: React.FC = () => {
             traceState.centerPin.coordinates,
             `Parada ${traceState.stops.length + 1}`,
           );
-
-          // Auto-traça rota se tiver 2+ paradas
-          if (traceState.stops.length >= 1) {
-            // Notificar MapPage para traçar rota automaticamente
-            window.dispatchEvent(new CustomEvent('traceRoute', {
-              detail: {
-                stops: [...traceState.stops, {
-                  coordinates: traceState.centerPin.coordinates,
-                  id: 'temp',
-                  name: `Parada ${traceState.stops.length + 1}`,
-                  order: traceState.stops.length + 1
-                }]
-              }
-            }));
-          }
         }
         break;
       case "clear":
-        // PLANEJAMENTO: Remove todas as paradas e limpa mapa
+        // PLANEJAMENTO: Remove todas as paradas
         clearAllStops();
-        // Notificar MapPage para limpar rota do mapa
-        window.dispatchEvent(new CustomEvent('clearRoute'));
         break;
       case "configure":
         // Abre configurações avançadas da rota
