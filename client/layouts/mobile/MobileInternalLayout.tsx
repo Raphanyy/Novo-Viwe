@@ -216,9 +216,10 @@ const MobileInternalLayout: React.FC = () => {
   const handleMapNavigation = async (action: string) => {
     switch (action) {
       case "back":
-        // Volta ao navbar principal - não faz nada, apenas deixa a página do mapa
+        // Volta ao navbar principal - sai da página do mapa
         break;
       case "trace":
+        // Inicia o planejamento da rota
         startTracing();
         break;
       case "control":
@@ -226,10 +227,11 @@ const MobileInternalLayout: React.FC = () => {
         openConfiguration();
         break;
       case "summary":
-        // Abre modal de detalhes se estiver navegando, senão abre configuração
+        // Abre histórico de rotas ou detalhes conforme contexto
         if (traceState.isInActiveNavigation || traceState.allStopsCompleted) {
           openDetailsModal();
         } else {
+          // Aqui pode abrir histórico de rotas anteriores
           openConfiguration();
         }
         break;
