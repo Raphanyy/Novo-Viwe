@@ -113,70 +113,69 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
       fullPage={true}
       size="xl"
     >
-      <div className="p-4 sm:p-6">
-        <div className="space-y-6">
-          {/* Aviso se não há dados suficientes */}
-          {!hasValidData && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="flex items-center space-x-2">
-                <div className="bg-yellow-600 p-1 rounded-full">
-                  <Trophy className="h-4 w-4 text-white" />
+      <div className="p-6 space-y-6">
+        {/* Aviso se não há dados suficientes */}
+        {!hasValidData && (
+          <div className="bg-muted/50 border border-border rounded-lg p-4">
+            <div className="flex items-center space-x-3">
+              <div className="bg-primary p-2 rounded-full">
+                <Trophy className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="font-medium text-foreground">
+                  Rota Finalizada
                 </div>
-                <div>
-                  <div className="font-medium text-yellow-800">
-                    Rota Finalizada
-                  </div>
-                  <div className="text-sm text-yellow-700">
-                    {state.stops.length === 0
-                      ? "Nenhuma parada foi configurada nesta rota."
-                      : "A rota foi encerrada, mas pode não ter dados completos de navegação."}
-                  </div>
+                <div className="text-sm text-muted-foreground">
+                  {state.stops.length === 0
+                    ? "Nenhuma parada foi configurada nesta rota."
+                    : "A rota foi encerrada, mas pode não ter dados completos de navegação."}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Estatísticas Principais */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-              <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-green-600">
-                {routeStats.completedStops}
-              </div>
-              <div className="text-sm text-gray-600">Paradas Concluídas</div>
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
-              <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-blue-600">
-                {routeStats.totalTime > 0
-                  ? formatTime(routeStats.totalTime)
-                  : "N/A"}
-              </div>
-              <div className="text-sm text-gray-600">Tempo Total</div>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-lg text-center border border-purple-200">
-              <Route className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-purple-600">
-                {routeStats.totalDistance > 0
-                  ? formatDistance(routeStats.totalDistance)
-                  : "N/A"}
-              </div>
-              <div className="text-sm text-gray-600">Distância</div>
-            </div>
-
-            <div className="bg-orange-50 p-4 rounded-lg text-center border border-orange-200">
-              <Fuel className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-orange-600">
-                {routeStats.fuelUsed > 0
-                  ? routeStats.fuelUsed.toFixed(1)
-                  : "N/A"}
-                L
-              </div>
-              <div className="text-sm text-gray-600">Combustível</div>
             </div>
           </div>
+        )}
+
+        {/* Estatísticas Principais */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-green-600">
+              {routeStats.completedStops}
+            </div>
+            <div className="text-sm text-muted-foreground">Paradas Concluídas</div>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <Clock className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-blue-600">
+              {routeStats.totalTime > 0
+                ? formatTime(routeStats.totalTime)
+                : "N/A"}
+            </div>
+            <div className="text-sm text-muted-foreground">Tempo Total</div>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <Route className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-purple-600">
+              {routeStats.totalDistance > 0
+                ? formatDistance(routeStats.totalDistance)
+                : "N/A"}
+            </div>
+            <div className="text-sm text-muted-foreground">Distância</div>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <Fuel className="h-8 w-8 text-orange-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-orange-600">
+              {routeStats.fuelUsed > 0
+                ? routeStats.fuelUsed.toFixed(1)
+                : "N/A"}
+              L
+            </div>
+            <div className="text-sm text-muted-foreground">Combustível</div>
+          </div>
+        </div>
 
           {/* Badges de Conquistas */}
           {hasValidData && (
@@ -404,25 +403,24 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
             </AccordionItem>
           </Accordion>
 
-          {/* Botões de Ação */}
-          <div className="flex space-x-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="flex-1"
-            >
-              Apenas Fechar
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSaveAndComplete}
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Salvar e Encerrar
-            </Button>
-          </div>
+        {/* Botões de Ação */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleClose}
+            className="flex-1"
+          >
+            Apenas Fechar
+          </Button>
+          <Button
+            type="button"
+            onClick={handleSaveAndComplete}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            Salvar e Encerrar
+          </Button>
         </div>
       </div>
     </AdaptiveModal>
