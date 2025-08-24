@@ -43,6 +43,14 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
   const [searchQuery, setSearchQuery] = useState("");
   const resourceManagerRef = useRef(new ResourceManager());
 
+  // Cleanup ResourceManager on unmount
+  useEffect(() => {
+    const manager = resourceManagerRef.current;
+    return () => {
+      manager.destroy();
+    };
+  }, []);
+
   // Helper function to enhance query context
   const enhanceQuery = useCallback((originalQuery: string): string => {
     const lowerQuery = originalQuery.toLowerCase();
