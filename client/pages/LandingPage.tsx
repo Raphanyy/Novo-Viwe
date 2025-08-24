@@ -134,7 +134,7 @@ const StatsSection = memo(() => {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [isVisible, finalStats]);
+  }, [isVisible]);
 
   const stats = useMemo(
     () => [
