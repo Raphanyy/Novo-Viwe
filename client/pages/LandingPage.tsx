@@ -161,18 +161,18 @@ const StatsSection = memo(() => {
       {/* Background Pattern - Decorative Squares for Stats */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-24 h-24 border-2 border-primary rounded-xl transform rotate-12"></div>
-        <div className="absolute top-20 right-20 w-32 h-32 border-2 border-blue-500 rounded-xl transform -rotate-6"></div>
-        <div className="absolute bottom-10 left-1/4 w-20 h-20 border-2 border-blue-600 rounded-xl transform rotate-45"></div>
+        <div className="absolute top-20 right-20 w-32 h-32 border-2 border-primary rounded-xl transform -rotate-6"></div>
+        <div className="absolute bottom-10 left-1/4 w-20 h-20 border-2 border-primary rounded-xl transform rotate-45"></div>
         <div className="absolute bottom-20 right-10 w-28 h-28 border-2 border-primary/60 rounded-xl transform -rotate-12"></div>
       </div>
       {/* Efeitos de fundo melhorados */}
       <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl opacity-50"></div>
+      <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-primary/5 rounded-full blur-3xl opacity-50"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-blue-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 bg-gradient-to-r from-foreground via-primary to-primary bg-clip-text text-transparent">
             Números que impressionam
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -204,7 +204,7 @@ const StatsSection = memo(() => {
                   className={`absolute inset-0 ${stat.gradient} rounded-3xl blur-2xl scale-150 opacity-0 group-hover:opacity-70 transition-all duration-700`}
                 ></div>
               </div>
-              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
+              <div className="text-4xl md:text-5xl font-black text-foreground mb-3 bg-gradient-to-r from-primary via-primary to-primary bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 leading-none">
                 {stat.number}
               </div>
               <div className="text-muted-foreground font-bold text-base md:text-lg group-hover:text-foreground transition-colors duration-300 leading-tight">
