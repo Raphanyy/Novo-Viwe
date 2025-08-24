@@ -91,6 +91,8 @@ const MapPage: React.FC = () => {
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
   const stopMarkers = useRef<mapboxgl.Marker[]>([]);
+  const lastCoordinatesRef = useRef<[number, number] | null>(null);
+  const lastUpdateTimeRef = useRef<number>(0);
 
   const {
     state: traceState,
