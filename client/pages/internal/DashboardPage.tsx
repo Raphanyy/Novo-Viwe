@@ -302,7 +302,7 @@ const DashboardPage: React.FC = () => {
         <div className="bg-black rounded-2xl p-6 border border-l-4 border-l-primary border-border relative overflow-hidden">
           {/* Gradient overlay */}
           <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-          <div className="flex items-start space-x-3">
+          <div className="flex items-start space-x-3 relative z-10">
             <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <Zap className="h-5 w-5 text-primary" />
             </div>
