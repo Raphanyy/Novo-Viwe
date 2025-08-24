@@ -1,5 +1,6 @@
 import React, { Suspense, useMemo } from "react";
 import { usePlatform } from "../contexts/PlatformContext";
+import { ViweLoaderCenter } from "../components/shared/ViweLoader";
 
 /**
  * Hook para carregar componentes específicos por plataforma dinamicamente
