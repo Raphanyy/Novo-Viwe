@@ -226,17 +226,17 @@ const FinalSummaryModal: React.FC<FinalSummaryModalProps> = ({
               <AccordionContent>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="text-sm text-gray-600">Eficiência</div>
-                      <div className="text-lg font-semibold text-gray-900">
+                    <div className="bg-muted/30 p-3 rounded-lg">
+                      <div className="text-sm text-muted-foreground">Eficiência</div>
+                      <div className="text-lg font-semibold text-foreground">
                         {routeStats.efficiency.toFixed(1)}%
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="text-sm text-gray-600">
+                    <div className="bg-muted/30 p-3 rounded-lg">
+                      <div className="text-sm text-muted-foreground">
                         Créditos Usados
                       </div>
-                      <div className="text-lg font-semibold text-gray-900">
+                      <div className="text-lg font-semibold text-foreground">
                         {routeStats.creditsUsed}
                       </div>
                     </div>
