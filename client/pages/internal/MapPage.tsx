@@ -1076,6 +1076,7 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     const handleTraceRoute = async (event: any) => {
       const { stops } = event.detail;
+      console.log("Evento traceRoute recebido, traçando rota automaticamente...");
       await traceRouteOnMap(stops);
     };
 
@@ -1085,6 +1086,7 @@ const MapPage: React.FC = () => {
         map.current.removeLayer("route");
         map.current.removeSource("route");
       }
+      console.log("Rota limpa do mapa");
     };
 
     window.addEventListener("traceRoute", handleTraceRoute);
@@ -1095,6 +1097,18 @@ const MapPage: React.FC = () => {
       window.removeEventListener("clearRoute", handleClearRoute);
     };
   }, [traceRouteOnMap]);
+
+  // Auto-trace route when it becomes traced in context
+  useEffect(() => {
+    if (traceState.isRouteTraced && traceState.stops.length >= 2) {
+      // Garantir que a rota seja traçada no mapa quando confirmada
+      const timeoutId = setTimeout(() => {
+        traceRouteOnMap(traceState.stops);
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [traceState.isRouteTraced, traceState.stops, traceRouteOnMap]);
 
   // Cleanup all resources on unmount
   useEffect(() => {
