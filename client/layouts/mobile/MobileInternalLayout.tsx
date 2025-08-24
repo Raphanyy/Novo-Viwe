@@ -236,7 +236,7 @@ const MobileInternalLayout: React.FC = () => {
         }
         break;
       case "add":
-        // Adiciona uma parada no centro do mapa
+        // PLANEJAMENTO: Adiciona uma nova parada na posição atual do mapa
         if (traceState.centerPin) {
           await addStop(
             traceState.centerPin.coordinates,
@@ -245,21 +245,27 @@ const MobileInternalLayout: React.FC = () => {
         }
         break;
       case "clear":
+        // PLANEJAMENTO: Remove a última parada adicionada
         removeLastStop();
         break;
       case "configure":
+        // Abre configurações avançadas da rota
         openConfiguration();
         break;
       case "trace_execute":
+        // PLANEJAMENTO: Confirma e traça a rota com as paradas selecionadas
         showTraceConfirmation();
         break;
       case "cancel":
+        // PLANEJAMENTO: Cancela o planejamento e volta à exploração
         cancelTrace();
         break;
       case "give_up":
+        // Desiste da navegação atual
         giveUpNavigation();
         break;
       case "start_navigation":
+        // Inicia navegação ativa da rota
         startActiveNavigation();
         break;
       case "complete_stop":
