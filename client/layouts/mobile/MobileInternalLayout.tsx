@@ -480,7 +480,11 @@ const MobileInternalLayout: React.FC = () => {
       {/* Main Content - Optimized for mobile */}
       <main
         className={`flex-1 overflow-hidden bg-background ${
-          isMapPage ? "pb-[85px]" : "pb-[73px]"
+          traceState.showConfirmDialog
+            ? "pb-0"
+            : isMapPage
+              ? "pb-[85px]"
+              : "pb-[73px]"
         } ${shouldShowHeader ? "pt-[73px]" : "pt-0"}`}
       >
         <div className="h-full overflow-y-auto">
