@@ -250,9 +250,7 @@ export const useAddressSearch = (options: UseAddressSearchOptions = {}): UseAddr
       }, debounceMs);
 
       // Register timeout for cleanup
-      resourceManagerRef.current.addResource("searchTimeout", {
-        cleanup: () => clearTimeout(timeoutId),
-      });
+      resourceManagerRef.current.addTimeout("searchTimeout", timeoutId);
     },
     [searchBusinesses, debounceMs],
   );
