@@ -719,7 +719,7 @@ const LandingPage = () => {
               Pronto para revolucionar suas jornadas?
             </h2>
             <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90 mb-8 leading-relaxed">
-              Junte-se a mais de 50.000 usuários que otimizaram suas rotas com o Viwe.
+              Mais de 50.000 usuários já otimizaram suas rotas com o Viwe.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
               <Link
