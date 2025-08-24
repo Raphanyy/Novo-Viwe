@@ -483,59 +483,57 @@ const ActivityPage: React.FC = () => {
                   </div>
 
                   {expandedTrip === route.id && (
-                    <div className="border-t border-border p-4 bg-background/50 relative z-10">
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="border-t border-border p-3 bg-background/50 relative z-10">
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3 text-xs">
                           <div>
-                            <p className="text-muted-foreground mb-1">Origem</p>
+                            <p className="text-muted-foreground">Origem</p>
                             <p className="text-foreground font-medium">{route.startAddress}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground mb-1">Destino</p>
+                            <p className="text-muted-foreground">Destino</p>
                             <p className="text-foreground font-medium">{route.endAddress}</p>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="text-center p-3 bg-green-50 rounded-lg">
-                            <Clock className="h-5 w-5 text-green-600 mx-auto mb-1" />
-                            <p className="text-xs text-muted-foreground">Tempo Economizado</p>
-                            <p className="text-green-600 font-bold">{route.savings.time}</p>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="text-center p-2 bg-green-50 rounded-lg">
+                            <Clock className="h-4 w-4 text-green-600 mx-auto mb-1" />
+                            <p className="text-xs text-muted-foreground">Tempo</p>
+                            <p className="text-green-600 font-bold text-sm">{route.savings.time}</p>
                           </div>
-                          <div className="text-center p-3 bg-blue-50 rounded-lg">
-                            <Fuel className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-                            <p className="text-xs text-muted-foreground">Combustível Poupado</p>
-                            <p className="text-blue-600 font-bold">{route.savings.fuel}</p>
+                          <div className="text-center p-2 bg-blue-50 rounded-lg">
+                            <Fuel className="h-4 w-4 text-blue-600 mx-auto mb-1" />
+                            <p className="text-xs text-muted-foreground">Combustível</p>
+                            <p className="text-blue-600 font-bold text-sm">{route.savings.fuel}</p>
                           </div>
-                          <div className="text-center p-3 bg-purple-50 rounded-lg">
-                            <DollarSign className="h-5 w-5 text-purple-600 mx-auto mb-1" />
+                          <div className="text-center p-2 bg-purple-50 rounded-lg">
+                            <DollarSign className="h-4 w-4 text-purple-600 mx-auto mb-1" />
                             <p className="text-xs text-muted-foreground">Economia</p>
-                            <p className="text-purple-600 font-bold">{route.savings.money}</p>
+                            <p className="text-purple-600 font-bold text-sm">{route.savings.money}</p>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-border">
-                          <div className="flex items-center space-x-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}>
-                              {route.traffic === "light" && "Trânsito Livre"}
-                              {route.traffic === "normal" && "Trânsito Normal"}
-                              {route.traffic === "heavy" && "Trânsito Intenso"}
+                        <div className="flex items-center justify-between pt-2 border-t border-border">
+                          <div className="flex items-center space-x-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTrafficColor(route.traffic)}`}>
+                              {route.traffic === "light" && "Livre"}
+                              {route.traffic === "normal" && "Normal"}
+                              {route.traffic === "heavy" && "Intenso"}
                             </span>
-                            <span className="text-sm text-muted-foreground">
-                              Custo: {route.cost}
-                            </span>
+                            <span className="text-xs text-muted-foreground">{route.cost}</span>
                           </div>
 
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => setSelectedRoute(route)}
-                              className="flex items-center space-x-1 text-primary text-sm hover:text-primary/80 transition-colors duration-200"
+                              className="flex items-center space-x-1 text-primary text-xs hover:text-primary/80 transition-colors duration-200"
                             >
-                              <Eye className="h-4 w-4" />
-                              <span>Detalhes</span>
+                              <Eye className="h-3 w-3" />
+                              <span>Ver</span>
                             </button>
-                            <button className="flex items-center space-x-1 text-blue-600 text-sm hover:text-blue-700 transition-colors duration-200">
-                              <Share2 className="h-4 w-4" />
+                            <button className="flex items-center space-x-1 text-blue-600 text-xs hover:text-blue-700 transition-colors duration-200">
+                              <Share2 className="h-3 w-3" />
                               <span>Compartilhar</span>
                             </button>
                           </div>
