@@ -33,27 +33,52 @@ const MobileLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Área central com textos */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
-        {/* Título principal */}
-        <h1 className="text-5xl font-light text-foreground text-center tracking-[0.5em] mb-4">
-          V I W E
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex flex-col relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 -right-32 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 w-40 h-40 bg-blue-400/3 rounded-full blur-2xl"></div>
+      </div>
 
-        {/* Subtítulo */}
-        <p className="text-xl text-muted-foreground text-center">
-          Crie Rotas Inteligentes
-        </p>
+      {/* Área central com textos */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
+        {/* Título principal */}
+        <div className="text-center mb-8">
+          <h1
+            className="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-center tracking-[0.3em] mb-6 select-none"
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 0 40px rgba(59, 130, 246, 0.3)',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              letterSpacing: '0.3em'
+            }}
+          >
+            V I W E
+          </h1>
+
+          {/* Linha decorativa */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent w-32"></div>
+            <div className="mx-4 w-2 h-2 bg-blue-500/40 rounded-full"></div>
+            <div className="h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent w-32"></div>
+          </div>
+
+          {/* Subtítulo */}
+          <p className="text-xl sm:text-2xl text-muted-foreground text-center font-medium tracking-wide">
+            Crie Rotas Inteligentes
+          </p>
+        </div>
       </div>
 
       {/* Botões na parte inferior */}
-      <div className="px-6 pb-12">
+      <div className="px-6 pb-12 relative z-10">
         <div className="w-full max-w-sm mx-auto space-y-4">
           {/* Botão Entrar */}
           <button
             onClick={handleEmailLogin}
-            className="w-full bg-blue-600 text-white py-4 px-6 rounded-2xl font-semibold hover:bg-blue-700 transition-colors duration-200"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-blue-500/25"
           >
             Entrar
           </button>
@@ -61,7 +86,7 @@ const MobileLoginPage: React.FC = () => {
           {/* Botão Cadastro */}
           <button
             onClick={handleSignup}
-            className="w-full bg-white text-black py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
+            className="w-full bg-white/95 backdrop-blur-sm text-gray-700 py-4 px-6 rounded-2xl font-medium hover:bg-white transition-all duration-300 border border-gray-200/50 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
           >
             Cadastro
           </button>
