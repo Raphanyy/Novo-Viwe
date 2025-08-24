@@ -578,7 +578,13 @@ const MobileInternalLayout: React.FC = () => {
       <FinalSummaryModal
         isOpen={traceState.showFinalSummaryModal}
         onClose={closeFinalSummaryModal}
-        onSaveAndComplete={saveAndCompleteRoute}
+        onSaveAndComplete={() => {
+          try {
+            saveAndCompleteRoute();
+          } catch (error) {
+            console.error("Erro ao salvar rota:", error);
+          }
+        }}
       />
     </div>
   );
