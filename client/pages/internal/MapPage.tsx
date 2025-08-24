@@ -551,16 +551,54 @@ const MapPage: React.FC = () => {
   // Function to trace route between stops (optimized with better error handling)
   const traceRouteOnMap = useCallback(
     async (stops: Array<{ coordinates: [number, number] }>) => {
-      if (!map.current || stops.length < 2) return;
+      if (!map.current || stops.length < 1) return;
 
       setIsTracingRoute(true);
       console.log("Iniciando traçamento da rota com", stops.length, "paradas");
 
       const result = await handleAsyncError(async () => {
-        // Convert stops to coordinates string for Mapbox Directions API
-        const coordinates = stops
-          .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
+        // Obter localização atual do usuário como ponto de partida
+        let startingPoint: [number, number] | null = currentUserLocation;
+
+        // Se não temos localização atual, tentar obter
+        if (!startingPoint) {
+          try {
+            const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+              if (!navigator.geolocation) {
+                reject(new Error('Geolocalização não suportada'));
+                return;
+              }
+              navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 60000, // 1 minuto de cache
+              });
+            });
+            startingPoint = [position.coords.longitude, position.coords.latitude];
+            setCurrentUserLocation(startingPoint);
+            console.log("Localização atual obtida:", startingPoint);
+          } catch (error) {
+            console.warn("Não foi possível obter localização atual, usando centro do mapa");
+            // Fallback para centro atual do mapa
+            const center = map.current?.getCenter();
+            if (center) {
+              startingPoint = [center.lng, center.lat];
+            } else {
+              // Fallback final para São Paulo
+              startingPoint = [-46.6333, -23.5505];
+            }
+          }
+        }
+
+        // Criar array de coordenadas: localização atual + paradas
+        const allCoordinates = [startingPoint, ...stops.map(stop => stop.coordinates)];
+
+        // Convert coordinates to string for Mapbox Directions API
+        const coordinates = allCoordinates
+          .map((coord) => `${coord[0]},${coord[1]}`)
           .join(";");
+
+        console.log("Traçando rota de", startingPoint, "para", stops.length, "paradas");
 
         // Call Mapbox Directions API using centralized config
         const apiUrl = createMapboxApiUrl(
