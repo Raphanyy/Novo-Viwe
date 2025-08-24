@@ -783,6 +783,10 @@ const MapPage: React.FC = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
+        // Armazenar localização atual do usuário
+        setCurrentUserLocation([longitude, latitude]);
+        console.log("Localização atual armazenada (find my location):", [longitude, latitude]);
+
         if (map.current) {
           // Voa para a localização atual do usuário
           map.current.flyTo({
