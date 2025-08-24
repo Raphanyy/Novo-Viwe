@@ -43,20 +43,61 @@ const MobileLoginPage: React.FC = () => {
 
       {/* Área central com textos */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
-        {/* Logo oficial centralizada */}
+        {/* Logo oficial centralizada com animação */}
         <div className="flex items-center justify-center">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2F83e633ef02914957b822f0c6a448850f?format=webp&width=800"
-            alt="Viwe Logo"
-            className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none pointer-events-none"
-            style={{
-              filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.2))',
-              backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
-            }}
-            draggable={false}
-          />
+          <div className="relative overflow-hidden">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fd5c53ac52fed4b2bb10c3c1f5dacdb73%2F83e633ef02914957b822f0c6a448850f?format=webp&width=800"
+              alt="Viwe Logo"
+              className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none pointer-events-none"
+              style={{
+                filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.2))',
+                backfaceVisibility: 'hidden',
+                transform: 'translateZ(0)',
+                clipPath: 'inset(0 0 0 0)',
+                animation: 'logoReveal 2s ease-out forwards',
+              }}
+              draggable={false}
+            />
+            {/* Overlay de carregamento */}
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-background via-background to-transparent"
+              style={{
+                animation: 'loadingWipe 2s ease-out forwards',
+              }}
+            />
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes logoReveal {
+            0% {
+              clip-path: inset(0 100% 0 0);
+              opacity: 0;
+            }
+            20% {
+              opacity: 1;
+            }
+            100% {
+              clip-path: inset(0 0 0 0);
+              opacity: 1;
+            }
+          }
+
+          @keyframes loadingWipe {
+            0% {
+              transform: translateX(0%);
+              opacity: 1;
+            }
+            80% {
+              opacity: 1;
+            }
+            100% {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+          }
+        `}</style>
       </div>
 
       {/* Botões na parte inferior */}
