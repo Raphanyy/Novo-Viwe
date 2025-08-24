@@ -11,11 +11,7 @@ const PlanBillingPage: React.FC<PlanBillingPageProps> = ({ onBack }) => {
   const [currentView, setCurrentView] = useState<'main' | 'update-plan'>('main');
 
   if (currentView === 'update-plan') {
-    return (
-      <div className="h-full bg-background">
-        <UpdatePlanPage onBack={() => setCurrentView('main')} />
-      </div>
-    );
+    return <UpdatePlanPage onBack={() => setCurrentView('main')} />;
   }
 
   return (
