@@ -11,6 +11,7 @@ import {
   Save,
   CheckCircle,
 } from "lucide-react";
+import { ViweLoaderInline } from "./ViweLoader";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
