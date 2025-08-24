@@ -530,10 +530,7 @@ const ActivityPage: React.FC = () => {
 
                           <div className="flex items-center space-x-2">
                             <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedRoute(route);
-                              }}
+                              onClick={() => setSelectedRoute(route)}
                               className="flex items-center space-x-1 text-primary text-sm hover:text-primary/80 transition-colors duration-200"
                             >
                               <Eye className="h-4 w-4" />
