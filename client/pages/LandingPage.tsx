@@ -277,8 +277,15 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-secondary/50">
-      <div className="container mx-auto px-6">
+    <section className="py-16 md:py-20 bg-secondary/50 relative overflow-hidden">
+      {/* Background Pattern - Decorative Squares for Testimonials */}
+      <div className="absolute inset-0 opacity-6">
+        <div className="absolute top-12 left-12 w-20 h-20 border-2 border-primary/40 rounded-xl transform rotate-12"></div>
+        <div className="absolute top-24 right-16 w-32 h-32 border-2 border-blue-500/30 rounded-xl transform -rotate-6"></div>
+        <div className="absolute bottom-16 left-20 w-24 h-24 border-2 border-muted-foreground/20 rounded-xl transform rotate-45"></div>
+        <div className="absolute bottom-12 right-12 w-28 h-28 border-2 border-primary/25 rounded-xl transform -rotate-12"></div>
+      </div>
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full mb-3">
             <Heart className="h-4 w-4 text-primary" />
