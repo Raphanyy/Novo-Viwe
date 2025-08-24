@@ -31,16 +31,28 @@ import { useTraceRoute } from "../../contexts/TraceRouteContext";
 import ViweLoader from "../../components/shared/ViweLoader";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-// Configure Mapbox token from environment variable
-const mapboxToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-
-if (!mapboxToken) {
-  console.error("Mapbox token not available. Map cannot be initialized.");
-  console.warn("Please set VITE_MAPBOX_ACCESS_TOKEN in your .env file");
-} else {
-  mapboxgl.accessToken = mapboxToken;
-}
+import {
+  mapboxConfig,
+  isMapboxAvailable,
+  getMapboxToken,
+  getMapboxError,
+  createMapboxApiUrl,
+} from "../../lib/mapbox-config";
+import {
+  useErrorHandler,
+  fetchWithErrorHandling,
+  ErrorType,
+} from "../../lib/error-handling";
+import {
+  ResourceManager,
+  createManagedTimeout,
+} from "../../lib/resource-manager";
+import {
+  useCoordinateThrottle,
+  useStableMemo,
+  useSearchFilter,
+  useStableCallback,
+} from "../../lib/performance-utils";
 
 interface SearchResult {
   id: string;
@@ -63,6 +75,13 @@ const MapPage: React.FC = () => {
   const [selectedPOI, setSelectedPOI] = useState<any>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { handleError, handleAsyncError } = useErrorHandler();
+  const resourceManager = useRef<ResourceManager>();
+
+  // Inicializar ResourceManager
+  if (!resourceManager.current) {
+    resourceManager.current = new ResourceManager();
+  }
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
   const [mapMode, setMapMode] = useState<"normal" | "satellite" | "traffic">(
     "normal",
@@ -154,11 +173,25 @@ const MapPage: React.FC = () => {
     );
   }, []);
 
-  const filteredPOIs = useMemo(() => {
-    return pointsOfInterest.filter(
-      (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
-    );
-  }, [activeFilters]);
+  // Otimizar filteredPOIs usando memoização estável
+  const filteredPOIs = useStableMemo(
+    () => {
+      return pointsOfInterest.filter(
+        (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
+      );
+    },
+    [activeFilters],
+    (prev, current) => {
+      // Comparação customizada para arrays de filtros
+      const [prevFilters] = prev;
+      const [currentFilters] = current;
+
+      if (prevFilters.length !== currentFilters.length) return false;
+      return prevFilters.every(
+        (filter: string, index: number) => filter === currentFilters[index],
+      );
+    },
+  );
 
   // Function to clear all markers and routes from map (optimized)
   const clearAllMarkersAndRoutes = useCallback(() => {
@@ -180,11 +213,13 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Check if Mapbox token is available
-    if (!mapboxToken) {
-      console.error("Mapbox token not available. Map cannot be initialized.");
+    // Check if Mapbox is available and configured
+    if (!isMapboxAvailable()) {
+      const errorMessage = getMapboxError();
+      console.error("Mapbox not available:", errorMessage);
       setMapError(
-        "Token do Mapbox não configurado. Entre em contato com o suporte.",
+        errorMessage ||
+          "Token do Mapbox não configurado. Entre em contato com o suporte.",
       );
       return;
     }
@@ -246,113 +281,83 @@ const MapPage: React.FC = () => {
 
       // Register cleanup callback after map is initialized
       // Use setTimeout to avoid immediate execution during render
-      const timeoutId = setTimeout(() => {
-        setMapCleanupCallback(clearAllMarkersAndRoutes);
-      }, 0);
+      createManagedTimeout(
+        resourceManager.current!,
+        "setCleanupCallback",
+        () => {
+          setMapCleanupCallback(clearAllMarkersAndRoutes);
+        },
+        0,
+      );
 
       // Auto-activate find my location when entering the map page
-      const autoLocationTimeout = setTimeout(() => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
+      createManagedTimeout(
+        resourceManager.current!,
+        "autoLocation",
+        () => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
 
-              if (map.current) {
-                // Smooth fly to user's actual location
-                map.current.flyTo({
-                  center: [longitude, latitude],
-                  zoom: 15,
-                  duration: 3000,
-                });
+                if (map.current) {
+                  // Smooth fly to user's actual location
+                  map.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: 15,
+                    duration: 3000,
+                  });
 
-                // Update the current location marker
-                const currentLocationEl = document.createElement("div");
-                currentLocationEl.className =
-                  "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
-                currentLocationEl.innerHTML =
-                  '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
+                  // Update the current location marker
+                  const currentLocationEl = document.createElement("div");
+                  currentLocationEl.className =
+                    "w-5 h-5 bg-blue-600 rounded-full shadow-lg border-3 border-white relative";
+                  currentLocationEl.innerHTML =
+                    '<div class="w-full h-full rounded-full bg-blue-400 animate-pulse"></div><div class="absolute inset-0 rounded-full border-2 border-blue-300 animate-ping"></div>';
 
-                // Remove default marker and add user's actual location
-                const existingMarkers =
-                  document.querySelectorAll(".mapboxgl-marker");
-                existingMarkers.forEach((marker) => {
-                  const markerEl = marker.querySelector(
-                    ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
-                  );
-                  if (markerEl) {
-                    marker.remove();
-                  }
-                });
+                  // Remove default marker and add user's actual location
+                  const existingMarkers =
+                    document.querySelectorAll(".mapboxgl-marker");
+                  existingMarkers.forEach((marker) => {
+                    const markerEl = marker.querySelector(
+                      ".w-4.h-4.bg-blue-600, .w-5.h-5.bg-blue-600",
+                    );
+                    if (markerEl) {
+                      marker.remove();
+                    }
+                  });
 
-                new mapboxgl.Marker(currentLocationEl)
-                  .setLngLat([longitude, latitude])
-                  .addTo(map.current);
-              }
-            },
-            (error) => {
-              // Silently handle geolocation errors on auto-detect
-              console.debug(
-                "Auto-location failed (user can still use manual button):",
-                error.message,
-              );
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 300000, // 5 minutes cache
-            },
-          );
-        }
-      }, 1500); // Wait 1.5s for map to fully initialize
+                  new mapboxgl.Marker(currentLocationEl)
+                    .setLngLat([longitude, latitude])
+                    .addTo(map.current);
+                }
+              },
+              (error) => {
+                // Silently handle geolocation errors on auto-detect
+                console.debug(
+                  "Auto-location failed (user can still use manual button):",
+                  error.message,
+                );
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000, // 5 minutes cache
+              },
+            );
+          }
+        },
+        1500,
+      ); // Wait 1.5s for map to fully initialize
+
+      // Adicionar o mapa ao ResourceManager para cleanup automático
+      if (map.current) {
+        resourceManager.current!.addMapboxMap("mainMap", map.current);
+      }
 
       return () => {
-        clearTimeout(timeoutId);
-        clearTimeout(autoLocationTimeout);
-        if (map.current) {
-          try {
-            // Stop any ongoing operations before removing the map
-            map.current.stop();
-
-            // Clear specific event listeners to avoid issues
-            try {
-              // Remove map without clearing events to avoid errors
-              // The map will be garbage collected with all its listeners
-            } catch (e) {
-              // Ignore errors during cleanup
-            }
-
-            // Remove the map safely with a small delay to allow cleanup
-            setTimeout(() => {
-              try {
-                if (map.current) {
-                  map.current.remove();
-                  map.current = null;
-                }
-              } catch (cleanupError) {
-                // Silently handle cleanup errors (often AbortErrors from pending tile requests)
-                if (
-                  !(cleanupError instanceof Error) ||
-                  (!cleanupError.message.includes("aborted") &&
-                    !cleanupError.message.includes("AbortError"))
-                ) {
-                  console.warn("Map cleanup warning:", cleanupError);
-                }
-              }
-            }, 100);
-          } catch (error) {
-            // Suppress AbortError and other cleanup errors
-            if (
-              error instanceof Error &&
-              (error.message.includes("aborted") ||
-                error.message.includes("AbortError"))
-            ) {
-              // Silently ignore AbortErrors during cleanup
-            } else {
-              console.warn("Map cleanup warning:", error);
-            }
-          }
-          map.current = null;
-        }
+        // ResourceManager cuida do cleanup de timeouts e outros recursos
+        resourceManager.current!.destroy();
       };
     } catch (error) {
       if (
@@ -392,34 +397,11 @@ const MapPage: React.FC = () => {
     }
   }, []); // Remove setMapCleanupCallback from dependencies
 
-  // Throttled and optimized center pin tracking
-  const lastUpdateTimeRef = useRef<number>(0);
-  const lastCoordinatesRef = useRef<[number, number] | null>(null);
-
-  // Throttled update function with coordinate comparison
-  const throttledUpdateCenterPin = useCallback(
-    (coordinates: [number, number]) => {
-      const now = Date.now();
-      const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
-
-      // Only update if enough time has passed (throttle to 100ms)
-      if (timeSinceLastUpdate < 100) return;
-
-      // Only update if coordinates changed significantly (0.0001 degree threshold)
-      const lastCoords = lastCoordinatesRef.current;
-      if (lastCoords) {
-        const deltaLng = Math.abs(coordinates[0] - lastCoords[0]);
-        const deltaLat = Math.abs(coordinates[1] - lastCoords[1]);
-
-        // Skip update if movement is too small
-        if (deltaLng < 0.0001 && deltaLat < 0.0001) return;
-      }
-
-      lastUpdateTimeRef.current = now;
-      lastCoordinatesRef.current = coordinates;
-      updateCenterPin(coordinates);
-    },
-    [updateCenterPin],
+  // Optimized throttled center pin tracking using performance utils
+  const throttledUpdateCenterPin = useCoordinateThrottle(
+    updateCenterPin,
+    100, // 100ms throttle
+    0.0001, // 0.0001 degree tolerance
   );
 
   // Optimized center pin tracking when tracing starts/stops
@@ -441,15 +423,26 @@ const MapPage: React.FC = () => {
         }
       };
 
-      map.current.on("move", updateCenterCoords);
-      map.current.on("zoom", updateCenterCoords);
+      // Adicionar listeners usando ResourceManager
+      resourceManager.current!.addEventListener(
+        "mapMove",
+        map.current,
+        "move",
+        updateCenterCoords,
+      );
+      resourceManager.current!.addEventListener(
+        "mapZoom",
+        map.current,
+        "zoom",
+        updateCenterCoords,
+      );
 
-      // Cleanup function to remove listeners when tracing stops
+      // Cleanup function
       return () => {
-        if (map.current) {
-          map.current.off("move", updateCenterCoords);
-          map.current.off("zoom", updateCenterCoords);
-        }
+        // ResourceManager remove os listeners automaticamente
+        resourceManager.current!.removeResource("mapMove");
+        resourceManager.current!.removeResource("mapZoom");
+
         // Reset refs on cleanup
         lastUpdateTimeRef.current = 0;
         lastCoordinatesRef.current = null;
@@ -457,8 +450,8 @@ const MapPage: React.FC = () => {
     }
   }, [traceState.isTracing, throttledUpdateCenterPin]);
 
-  // Memoize filtered stops to prevent unnecessary recalculations
-  const visibleStops = useMemo(() => {
+  // Otimizar visibleStops usando memoização estável
+  const visibleStops = useStableMemo(() => {
     return traceState.stops.filter((stop) => {
       // During active navigation, only show incomplete stops
       if (traceState.isInActiveNavigation && stop.isCompleted) {
@@ -535,27 +528,33 @@ const MapPage: React.FC = () => {
 
       setIsTracingRoute(true);
 
-      try {
+      const result = await handleAsyncError(async () => {
         // Convert stops to coordinates string for Mapbox Directions API
         const coordinates = stops
           .map((stop) => `${stop.coordinates[0]},${stop.coordinates[1]}`)
           .join(";");
 
-        // Add timeout to prevent hanging requests
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-        // Call Mapbox Directions API
-        const response = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?steps=true&geometries=geojson&access_token=${mapboxToken}`,
-          { signal: controller.signal },
+        // Call Mapbox Directions API using centralized config
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`,
+          { steps: "true", geometries: "geojson" },
         );
 
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!apiUrl) {
+          throw new Error("Mapbox token não disponível para traçar rota");
         }
+
+        // Use robust fetch with error handling
+        const response = await fetchWithErrorHandling(
+          apiUrl,
+          {},
+          {
+            timeout: 15000,
+            context: "TraceRoute",
+            retries: 2,
+            retryDelay: 1000,
+          },
+        );
 
         const data = await response.json();
 
@@ -563,47 +562,49 @@ const MapPage: React.FC = () => {
           const route = data.routes[0];
 
           // Remove existing route if any
-          if (map.current.getSource("route")) {
+          if (map.current && map.current.getSource("route")) {
             map.current.removeLayer("route");
             map.current.removeSource("route");
           }
 
           // Add route to map
-          map.current.addSource("route", {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              properties: {},
-              geometry: route.geometry,
-            },
-          });
+          if (map.current) {
+            map.current.addSource("route", {
+              type: "geojson",
+              data: {
+                type: "Feature",
+                properties: {},
+                geometry: route.geometry,
+              },
+            });
 
-          map.current.addLayer({
-            id: "route",
-            type: "line",
-            source: "route",
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
-            paint: {
-              "line-color": "#3b82f6",
-              "line-width": 5,
-              "line-opacity": 0.8,
-            },
-          });
+            map.current.addLayer({
+              id: "route",
+              type: "line",
+              source: "route",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#3b82f6",
+                "line-width": 5,
+                "line-opacity": 0.8,
+              },
+            });
 
-          // Fit map to show entire route
-          const coordinates = route.geometry.coordinates;
-          const bounds = new mapboxgl.LngLatBounds();
-          coordinates.forEach((coord: [number, number]) => {
-            bounds.extend(coord);
-          });
+            // Fit map to show entire route
+            const coordinates = route.geometry.coordinates;
+            const bounds = new mapboxgl.LngLatBounds();
+            coordinates.forEach((coord: [number, number]) => {
+              bounds.extend(coord);
+            });
 
-          map.current.fitBounds(bounds, {
-            padding: 50,
-            duration: 1000,
-          });
+            map.current.fitBounds(bounds, {
+              padding: 50,
+              duration: 1000,
+            });
+          }
 
           console.log("Rota traçada com sucesso:", {
             distance: route.distance,
@@ -614,17 +615,21 @@ const MapPage: React.FC = () => {
           // Marcar rota como traçada no contexto
           setRouteTraced(true);
         }
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          console.warn("Requisição de rota cancelada por timeout");
-        } else {
-          console.error("Erro ao traçar rota:", error);
+      }, "TraceRoute");
+
+      if (!result.success && result.error) {
+        // Só exibir erro para o usuário se necessário
+        if (
+          result.error.shouldNotifyUser &&
+          result.error.type !== ErrorType.ABORT
+        ) {
+          console.error("Erro ao traçar rota:", result.error.userMessage);
         }
-      } finally {
-        setIsTracingRoute(false);
       }
+
+      setIsTracingRoute(false);
     },
-    [setRouteTraced],
+    [setRouteTraced, handleAsyncError],
   );
 
   // Memoized POI click handler to prevent recreation
@@ -747,244 +752,205 @@ const MapPage: React.FC = () => {
   }, []);
 
   // Enhanced search with business name recognition and robust error handling
-  const searchBusinesses = useCallback(async (query: string) => {
-    if (!query.trim() || query.length < 3) {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      // Enhanced context recognition for nationwide search including cities, states, and establishments
-      let businessQuery = query;
-      const lowerQuery = query.toLowerCase();
-
-      // Specific establishment recognition
-      if (
-        lowerQuery.includes("ilha plaza") ||
-        lowerQuery.includes("ilha shopping")
-      ) {
-        businessQuery = "Ilha Plaza Shopping São Paulo";
-      } else if (
-        lowerQuery.includes("quiosque zero oito") ||
-        lowerQuery.includes("quiosque 08")
-      ) {
-        businessQuery = `Quiosque 08 loja comércio São Paulo`;
-      } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
-        businessQuery = "Escola Municipal Alvaro Moreira São Paulo";
-      }
-      // Brazilian cities and states recognition
-      else if (lowerQuery.includes("são paulo") || lowerQuery.includes("sp")) {
-        businessQuery = query.includes("SP") ? query : `${query} São Paulo`;
-      } else if (
-        lowerQuery.includes("rio de janeiro") ||
-        lowerQuery.includes("rj")
-      ) {
-        businessQuery = query.includes("RJ")
-          ? query
-          : `${query} Rio de Janeiro`;
-      } else if (
-        lowerQuery.includes("belo horizonte") ||
-        lowerQuery.includes("mg")
-      ) {
-        businessQuery = query.includes("MG") ? query : `${query} Minas Gerais`;
-      } else if (lowerQuery.includes("brasília") || lowerQuery.includes("df")) {
-        businessQuery = query.includes("DF") ? query : `${query} Brasília DF`;
-      } else if (lowerQuery.includes("salvador") || lowerQuery.includes("ba")) {
-        businessQuery = query.includes("BA")
-          ? query
-          : `${query} Salvador Bahia`;
-      }
-      // Neighborhood and district recognition
-      else if (
-        lowerQuery.includes("bairro") ||
-        lowerQuery.includes("vila") ||
-        lowerQuery.includes("jardim")
-      ) {
-        businessQuery = `${query} bairro`;
-      }
-      // Business type recognition
-      else if (
-        lowerQuery.includes("shopping") &&
-        !lowerQuery.includes("center")
-      ) {
-        businessQuery = `${query} shopping center`;
-      } else if (
-        lowerQuery.includes("escola") &&
-        !lowerQuery.includes("municipal")
-      ) {
-        businessQuery = `${query} escola`;
-      } else if (lowerQuery.includes("quiosque")) {
-        businessQuery = `${query} comercio loja estabelecimento`;
-      }
-
-      let allFeatures: any[] = [];
-
-      // Strategy 1: Direct POI search with error handling and timeout
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-        if (!mapboxToken) {
-          console.warn("Mapbox token not available for search");
-          return;
-        }
-
-        const poiResponse = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            query,
-          )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=10&types=poi`,
-          {
-            signal: controller.signal,
-            headers: { Accept: "application/json" },
-          },
-        );
-
-        clearTimeout(timeoutId);
-
-        if (poiResponse.ok) {
-          const poiData = await poiResponse.json();
-          if (poiData.features) {
-            allFeatures = [...poiData.features];
-          }
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          console.warn("POI search timed out");
-        } else {
-          console.warn(
-            "POI search failed, continuing with other strategies:",
-            error,
-          );
-        }
-      }
-
-      // Strategy 2: Enhanced business search (only if we need more results)
-      if (allFeatures.length < 3 && businessQuery !== query) {
-        try {
-          const controller2 = new AbortController();
-          const timeoutId2 = setTimeout(() => controller2.abort(), 8000);
-
-          const enhancedResponse = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-              businessQuery,
-            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=poi,place,region,district,postcode,locality,neighborhood`,
-            {
-              signal: controller2.signal,
-              headers: { Accept: "application/json" },
-            },
-          );
-
-          clearTimeout(timeoutId2);
-
-          if (enhancedResponse.ok) {
-            const enhancedData = await enhancedResponse.json();
-            if (enhancedData.features) {
-              enhancedData.features.forEach((feature: any) => {
-                if (
-                  !allFeatures.find(
-                    (f) =>
-                      f.text === feature.text ||
-                      (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-                        Math.abs(f.center[1] - feature.center[1]) < 0.001),
-                  )
-                ) {
-                  allFeatures.push(feature);
-                }
-              });
-            }
-          }
-        } catch (error) {
-          if (error instanceof Error && error.name === "AbortError") {
-            console.warn("Enhanced search timed out");
-          } else {
-            console.warn("Enhanced search failed:", error);
-          }
-        }
-      }
-
-      // Strategy 3: General search as fallback (only if we still need results)
-      if (allFeatures.length < 2) {
-        try {
-          const controller3 = new AbortController();
-          const timeoutId3 = setTimeout(() => controller3.abort(), 8000);
-
-          const generalResponse = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-              query,
-            )}.json?access_token=${mapboxToken}&country=BR&language=pt&limit=8&types=place,address,region,district,postcode,locality,neighborhood`,
-            {
-              signal: controller3.signal,
-              headers: { Accept: "application/json" },
-            },
-          );
-
-          clearTimeout(timeoutId3);
-
-          if (generalResponse.ok) {
-            const generalData = await generalResponse.json();
-            if (generalData.features) {
-              const remainingSlots = 5 - allFeatures.length;
-              generalData.features
-                .slice(0, remainingSlots)
-                .forEach((feature: any) => {
-                  if (
-                    !allFeatures.find(
-                      (f) =>
-                        f.text === feature.text ||
-                        (Math.abs(f.center[0] - feature.center[0]) < 0.001 &&
-                          Math.abs(f.center[1] - feature.center[1]) < 0.001),
-                    )
-                  ) {
-                    allFeatures.push(feature);
-                  }
-                });
-            }
-          }
-        } catch (error) {
-          if (error instanceof Error && error.name === "AbortError") {
-            console.warn("General search timed out");
-          } else {
-            console.warn("General search failed:", error);
-          }
-        }
-      }
-
-      if (allFeatures.length > 0) {
-        const results: SearchResult[] = allFeatures
-          .slice(0, 5)
-          .map((feature: any) => ({
-            id: feature.id,
-            place_name: feature.place_name,
-            text: feature.text,
-            center: feature.center,
-            place_type: feature.place_type,
-            properties: feature.properties || {},
-          }));
-
-        setSearchResults(results);
-        setShowSearchResults(true);
-      } else {
+  const searchBusinesses = useCallback(
+    async (query: string) => {
+      if (!query.trim() || query.length < 3) {
         setSearchResults([]);
         setShowSearchResults(false);
+        return;
       }
-    } catch (error) {
-      console.error("Erro geral na busca:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, []);
+
+      setIsSearching(true);
+
+      // Helper function to enhance query context
+      const enhanceQuery = (originalQuery: string): string => {
+        const lowerQuery = originalQuery.toLowerCase();
+
+        // Specific establishment recognition
+        if (
+          lowerQuery.includes("ilha plaza") ||
+          lowerQuery.includes("ilha shopping")
+        ) {
+          return "Ilha Plaza Shopping São Paulo";
+        } else if (
+          lowerQuery.includes("quiosque zero oito") ||
+          lowerQuery.includes("quiosque 08")
+        ) {
+          return `Quiosque 08 loja comércio São Paulo`;
+        } else if (lowerQuery.includes("escola municipal alvaro moreira")) {
+          return "Escola Municipal Alvaro Moreira São Paulo";
+        }
+        // Brazilian cities and states recognition
+        else if (
+          lowerQuery.includes("são paulo") ||
+          lowerQuery.includes("sp")
+        ) {
+          return originalQuery.includes("SP")
+            ? originalQuery
+            : `${originalQuery} São Paulo`;
+        } else if (
+          lowerQuery.includes("rio de janeiro") ||
+          lowerQuery.includes("rj")
+        ) {
+          return originalQuery.includes("RJ")
+            ? originalQuery
+            : `${originalQuery} Rio de Janeiro`;
+        } else if (
+          lowerQuery.includes("belo horizonte") ||
+          lowerQuery.includes("mg")
+        ) {
+          return originalQuery.includes("MG")
+            ? originalQuery
+            : `${originalQuery} Minas Gerais`;
+        } else if (
+          lowerQuery.includes("brasília") ||
+          lowerQuery.includes("df")
+        ) {
+          return originalQuery.includes("DF")
+            ? originalQuery
+            : `${originalQuery} Brasília DF`;
+        } else if (
+          lowerQuery.includes("salvador") ||
+          lowerQuery.includes("ba")
+        ) {
+          return originalQuery.includes("BA")
+            ? originalQuery
+            : `${originalQuery} Salvador Bahia`;
+        }
+        // Business type recognition
+        else if (
+          lowerQuery.includes("shopping") &&
+          !lowerQuery.includes("center")
+        ) {
+          return `${originalQuery} shopping center`;
+        } else if (
+          lowerQuery.includes("escola") &&
+          !lowerQuery.includes("municipal")
+        ) {
+          return `${originalQuery} escola`;
+        } else if (lowerQuery.includes("quiosque")) {
+          return `${originalQuery} comercio loja estabelecimento`;
+        }
+
+        return originalQuery;
+      };
+
+      // Helper function to perform search
+      const performSearch = async (
+        searchQuery: string,
+        types: string,
+      ): Promise<any[]> => {
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json`,
+          { country: "BR", language: "pt", limit: "8", types },
+        );
+
+        if (!apiUrl) {
+          return [];
+        }
+
+        const result = await handleAsyncError(async () => {
+          const response = await fetchWithErrorHandling(
+            apiUrl,
+            {},
+            {
+              timeout: 8000,
+              context: "Search",
+              retries: 1,
+              retryDelay: 500,
+            },
+          );
+          return response.json();
+        }, "GeocodeSearch");
+
+        if (result.success && result.data?.features) {
+          return result.data.features;
+        }
+
+        return [];
+      };
+
+      // Helper function to deduplicate features
+      const deduplicateFeatures = (features: any[]): any[] => {
+        const seen = new Set();
+        return features.filter((feature) => {
+          const key = `${feature.text}-${feature.center[0].toFixed(3)}-${feature.center[1].toFixed(3)}`;
+          if (seen.has(key)) {
+            return false;
+          }
+          seen.add(key);
+          return true;
+        });
+      };
+
+      try {
+        let allFeatures: any[] = [];
+        const businessQuery = enhanceQuery(query);
+
+        // Strategy 1: Direct POI search
+        const poiFeatures = await performSearch(query, "poi");
+        allFeatures.push(...poiFeatures);
+
+        // Strategy 2: Enhanced business search (if needed and query was enhanced)
+        if (allFeatures.length < 3 && businessQuery !== query) {
+          const enhancedFeatures = await performSearch(
+            businessQuery,
+            "poi,place,region,district,postcode,locality,neighborhood",
+          );
+          allFeatures.push(...enhancedFeatures);
+        }
+
+        // Strategy 3: General search as fallback (if still need results)
+        if (allFeatures.length < 2) {
+          const generalFeatures = await performSearch(
+            query,
+            "place,address,region,district,postcode,locality,neighborhood",
+          );
+          allFeatures.push(...generalFeatures);
+        }
+
+        // Deduplicate and limit results
+        const uniqueFeatures = deduplicateFeatures(allFeatures).slice(0, 5);
+
+        if (uniqueFeatures.length > 0) {
+          const results: SearchResult[] = uniqueFeatures.map(
+            (feature: any) => ({
+              id: feature.id,
+              place_name: feature.place_name,
+              text: feature.text,
+              center: feature.center,
+              place_type: feature.place_type,
+              properties: feature.properties || {},
+            }),
+          );
+
+          setSearchResults(results);
+          setShowSearchResults(true);
+        } else {
+          setSearchResults([]);
+          setShowSearchResults(false);
+        }
+      } catch (error) {
+        const errorInfo = handleError(error, "SearchBusinesses");
+        if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
+          console.warn("Erro na busca:", errorInfo.userMessage);
+        }
+        setSearchResults([]);
+        setShowSearchResults(false);
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [handleError, handleAsyncError],
+  );
 
   // Optimized debounced search with stable reference
   const handleSearchChange = useCallback(
     (query: string) => {
       setSearchQuery(query);
 
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      // Remove previous search timeout if exists
+      resourceManager.current!.removeResource("searchTimeout");
 
       // Only search if query has meaningful content
       if (query.trim().length < 2) {
@@ -993,9 +959,15 @@ const MapPage: React.FC = () => {
         return;
       }
 
-      searchTimeoutRef.current = setTimeout(() => {
-        searchBusinesses(query);
-      }, 300);
+      // Create managed timeout for search debouncing
+      createManagedTimeout(
+        resourceManager.current!,
+        "searchTimeout",
+        () => {
+          searchBusinesses(query);
+        },
+        300,
+      );
     },
     [searchBusinesses],
   );
@@ -1054,80 +1026,10 @@ const MapPage: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Clear search timeout on unmount and add comprehensive error filtering
+  // Cleanup all resources on unmount
   useEffect(() => {
-    // Store original console.error to restore later
-    const originalConsoleError = console.error;
-
-    // Override console.error temporarily to filter Mapbox AbortErrors
-    console.error = (...args: any[]) => {
-      const message = args.join(" ");
-      if (
-        message.includes("AbortError") &&
-        (message.includes("signal is aborted") || message.includes("mapbox"))
-      ) {
-        // Silently ignore Mapbox AbortErrors
-        return;
-      }
-      // Call original console.error for other errors
-      originalConsoleError.apply(console, args);
-    };
-
-    // Add global error handler for network issues and filter out expected AbortErrors
-    const handleGlobalError = (event: ErrorEvent) => {
-      // Filter out AbortErrors from Mapbox (they're expected during normal tile loading)
-      if (
-        event.message.includes("AbortError") ||
-        event.message.includes("aborted without reason") ||
-        event.message.includes("signal is aborted") ||
-        event.message.includes("operation was aborted") ||
-        event.message.includes("cancelled")
-      ) {
-        event.preventDefault(); // Prevent the error from being logged to console
-        return;
-      }
-
-      if (
-        event.message.includes("Failed to fetch") ||
-        event.message.includes("NetworkError")
-      ) {
-        console.warn(
-          "Network error detected, search may be affected:",
-          event.message,
-        );
-      }
-    };
-
-    // Handle unhandled promise rejections (including AbortErrors from async operations)
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      if (
-        event.reason &&
-        (event.reason.name === "AbortError" ||
-          (event.reason.message &&
-            (event.reason.message.includes("aborted") ||
-              event.reason.message.includes("cancelled") ||
-              event.reason.message.includes("signal is aborted"))))
-      ) {
-        event.preventDefault(); // Prevent the error from being logged
-        return;
-      }
-    };
-
-    window.addEventListener("error", handleGlobalError);
-    window.addEventListener("unhandledrejection", handleUnhandledRejection);
-
     return () => {
-      // Restore original console.error
-      console.error = originalConsoleError;
-
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-      window.removeEventListener("error", handleGlobalError);
-      window.removeEventListener(
-        "unhandledrejection",
-        handleUnhandledRejection,
-      );
+      resourceManager.current!.destroy();
     };
   }, []);
 
@@ -1338,7 +1240,7 @@ const MapPage: React.FC = () => {
       {/* Map Container */}
       <div className="flex-1 relative">
         {/* Mapbox Token Missing Fallback */}
-        {!mapboxToken && (
+        {!isMapboxAvailable() && (
           <div className="absolute inset-0 z-40 bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
             <div className="text-center p-8 max-w-md">
               <div className="mb-6">
@@ -1348,8 +1250,8 @@ const MapPage: React.FC = () => {
                 Mapa Indisponível
               </h3>
               <p className="text-muted-foreground mb-4 text-sm">
-                Token do Mapbox não configurado. Configure
-                VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa.
+                {getMapboxError() ||
+                  "Token do Mapbox não configurado. Configure VITE_MAPBOX_ACCESS_TOKEN para ativar o mapa."}
               </p>
               <div className="text-xs text-muted-foreground/70">
                 Esta é uma versão de demonstração da plataforma Viwe.

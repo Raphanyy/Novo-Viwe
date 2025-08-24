@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import {
+  useErrorHandler,
+  fetchWithErrorHandling,
+  ErrorType,
+} from "../lib/error-handling";
 
 export interface RouteStop {
   id: string;
@@ -105,6 +110,7 @@ interface TraceRouteProviderProps {
 export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
   children,
 }) => {
+  const { handleError, handleAsyncError } = useErrorHandler();
   const [state, setState] = useState<TraceRouteState>({
     isTracing: false,
     isInPreparation: false,
@@ -199,18 +205,44 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
     let finalAddress = address;
     if (!finalAddress) {
       try {
-        // Use Mapbox Geocoding API to get address from coordinates
-        const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json?access_token=pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA&limit=1&language=pt`,
+        // Use Mapbox Geocoding API to get address from coordinates with centralized config
+        const { createMapboxApiUrl } = await import("../lib/mapbox-config");
+        const apiUrl = createMapboxApiUrl(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates[0]},${coordinates[1]}.json`,
+          { limit: "1", language: "pt" },
         );
-        const data = await response.json();
-        if (data.features && data.features.length > 0) {
-          finalAddress = data.features[0].place_name;
-        } else {
+
+        if (!apiUrl) {
           finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
+        } else {
+          const result = await handleAsyncError(async () => {
+            const response = await fetchWithErrorHandling(
+              apiUrl,
+              {},
+              {
+                timeout: 8000,
+                context: "AddressLookup",
+                retries: 1,
+                retryDelay: 500,
+              },
+            );
+            return response.json();
+          }, "AddressLookup");
+
+          if (result.success && result.data?.features?.length > 0) {
+            finalAddress = result.data.features[0].place_name;
+          } else {
+            finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
+          }
         }
       } catch (error) {
-        console.error("Error fetching address:", error);
+        const errorInfo = handleError(error, "AddStopAddress");
+        if (errorInfo.type !== ErrorType.ABORT) {
+          console.debug(
+            "Error fetching address, using coordinates:",
+            errorInfo.message,
+          );
+        }
         finalAddress = `Lat: ${coordinates[1].toFixed(4)}, Lng: ${coordinates[0].toFixed(4)}`;
       }
     }
@@ -464,49 +496,72 @@ export const TraceRouteProvider: React.FC<TraceRouteProviderProps> = ({
 
   const optimizeRoute = async () => {
     try {
-      // Utiliza a API de Optimization do Mapbox
+      // Utiliza a API de Optimization do Mapbox com configuração centralizada
       const coordinates = state.stops.map((stop) => stop.coordinates);
       const coordinatesString = coordinates
         .map((coord) => `${coord[0]},${coord[1]}`)
         .join(";");
 
-      const accessToken =
-        "pk.eyJ1IjoicmFwaGFueSIsImEiOiJjbWVuOTBpcDMwdnBxMmlweGp0cmc4a2s0In0.KwsjXFJmloQvThFvFGjOdA";
-
-      const response = await fetch(
-        `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinatesString}?access_token=${accessToken}&source=first&destination=last&roundtrip=false`,
+      const { createMapboxApiUrl } = await import("../lib/mapbox-config");
+      const apiUrl = createMapboxApiUrl(
+        `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinatesString}`,
+        { source: "first", destination: "last", roundtrip: "false" },
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.trips && data.trips.length > 0) {
-          const optimizedWaypoints = data.waypoints;
+      if (!apiUrl) {
+        console.error("Erro ao otimizar rota: Token do Mapbox não disponível");
+        return;
+      }
 
-          // Reordena as paradas baseado na otimização
-          setState((prev) => {
-            const reorderedStops = optimizedWaypoints.map(
-              (waypoint: any, index: number) => {
-                const originalStop = prev.stops[waypoint.waypoint_index];
-                return {
-                  ...originalStop,
-                  order: index + 1,
-                };
-              },
-            );
+      const result = await handleAsyncError(async () => {
+        const response = await fetchWithErrorHandling(
+          apiUrl,
+          {},
+          {
+            timeout: 15000,
+            context: "OptimizeRoute",
+            retries: 1,
+            retryDelay: 1000,
+          },
+        );
+        return response.json();
+      }, "OptimizeRoute");
 
-            return {
-              ...prev,
-              stops: reorderedStops,
-            };
-          });
+      if (result.success && result.data?.trips?.length > 0) {
+        const optimizedWaypoints = result.data.waypoints;
 
-          console.log("Rota otimizada com sucesso!");
+        // Reordena as paradas baseado na otimização
+        setState((prev) => {
+          const reorderedStops = optimizedWaypoints.map(
+            (waypoint: any, index: number) => {
+              const originalStop = prev.stops[waypoint.waypoint_index];
+              return {
+                ...originalStop,
+                order: index + 1,
+              };
+            },
+          );
+
+          return {
+            ...prev,
+            stops: reorderedStops,
+          };
+        });
+
+        console.log("Rota otimizada com sucesso!");
+      } else if (result.error) {
+        if (
+          result.error.shouldNotifyUser &&
+          result.error.type !== ErrorType.ABORT
+        ) {
+          console.warn("Erro ao otimizar rota:", result.error.userMessage);
         }
-      } else {
-        console.error("Erro ao otimizar rota:", response.statusText);
       }
     } catch (error) {
-      console.error("Erro ao chamar API de otimização:", error);
+      const errorInfo = handleError(error, "OptimizeRoute");
+      if (errorInfo.shouldNotifyUser && errorInfo.type !== ErrorType.ABORT) {
+        console.warn("Erro ao otimizar rota:", errorInfo.userMessage);
+      }
     }
   };
 

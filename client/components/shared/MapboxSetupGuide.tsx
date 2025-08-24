@@ -14,8 +14,8 @@ const MapboxSetupGuide: React.FC = () => {
       </div>
 
       <p className="text-muted-foreground mb-6 text-sm">
-        Para ativar a funcionalidade completa do mapa, você precisa configurar
-        um token do Mapbox. Siga os passos abaixo:
+        A aplicação já vem com um token Mapbox pré-configurado. Se você quiser
+        usar seu próprio token, siga os passos abaixo:
       </p>
 
       <div className="space-y-4">
@@ -72,14 +72,19 @@ const MapboxSetupGuide: React.FC = () => {
           </div>
           <div>
             <h4 className="font-medium text-foreground mb-1">
-              Configurar variável de ambiente
+              Configurar variável de ambiente (opcional)
             </h4>
             <p className="text-sm text-muted-foreground mb-2">
-              Adicione seu token ao arquivo .env na raiz do projeto:
+              Para usar seu próprio token, adicione-o ao arquivo .env na raiz do
+              projeto:
             </p>
             <div className="bg-muted p-3 rounded-lg text-sm font-mono text-foreground">
               VITE_MAPBOX_ACCESS_TOKEN="seu_token_aqui"
             </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              <strong>Token padrão:</strong> A aplicação já possui um token
+              pré-configurado e funcionará sem configuração adicional.
+            </p>
           </div>
         </div>
 
