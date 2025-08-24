@@ -1452,25 +1452,46 @@ const MapPage: React.FC = () => {
           </div>
         )}
 
-        {/* POI Details Modal */}
+        {/* POI Details Modal - Enhanced */}
         {selectedPOI && (
           <div className="fixed inset-x-4 bottom-4 z-40 animate-in slide-in-from-bottom duration-300">
-            <div className="bg-card border border-border rounded-xl shadow-xl p-4">
-              <div className="flex items-start justify-between mb-3">
+            <div className="bg-card border border-border rounded-xl shadow-xl p-4 max-h-[70vh] overflow-y-auto">
+              <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {selectedPOI.name}
-                  </h3>
-                  <div className="space-y-1 mt-1">
-                    {selectedPOI.fullAddress && (
-                      <p className="text-sm text-muted-foreground">
-                        {selectedPOI.fullAddress}
-                      </p>
-                    )}
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm text-muted-foreground">
-                        {selectedPOI.distance}
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {selectedPOI.name}
+                    </h3>
+                    {selectedPOI.type && (
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${selectedPOI.color ? selectedPOI.color.replace('bg-', 'bg-') + '/20 text-' + selectedPOI.color.replace('bg-', '') : 'bg-gray-100 text-gray-700'}`}>
+                        {selectedPOI.type === 'restaurant' ? 'Restaurante' :
+                         selectedPOI.type === 'gas' ? 'Posto' :
+                         selectedPOI.type === 'hospital' ? 'Hospital' :
+                         selectedPOI.type === 'shopping' ? 'Shopping' :
+                         selectedPOI.type === 'park' ? 'Parque' :
+                         selectedPOI.type.charAt(0).toUpperCase() + selectedPOI.type.slice(1)}
                       </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    {selectedPOI.fullAddress && (
+                      <div className="flex items-start space-x-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-muted-foreground">
+                          {selectedPOI.fullAddress}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-1">
+                        <Navigation className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {selectedPOI.distance}
+                        </span>
+                      </div>
+
                       {selectedPOI.rating && (
                         <div className="flex items-center space-x-1">
                           <span className="text-yellow-500">★</span>
@@ -1480,25 +1501,103 @@ const MapPage: React.FC = () => {
                         </div>
                       )}
                     </div>
+
+                    {/* Coordinates for reference */}
+                    <div className="text-xs text-muted-foreground/70">
+                      Coordenadas: {selectedPOI.coordinates[1].toFixed(4)}, {selectedPOI.coordinates[0].toFixed(4)}
+                    </div>
                   </div>
                 </div>
+
                 <button
                   onClick={() => setSelectedPOI(null)}
-                  className="p-1 hover:bg-accent rounded-lg transition-colors duration-200"
+                  className="p-2 hover:bg-accent rounded-lg transition-colors duration-200 flex-shrink-0"
                 >
                   <X className="h-5 w-5 text-muted-foreground" />
                 </button>
               </div>
 
-              <div className="flex space-x-3">
-                <button className="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-xl font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center space-x-2">
-                  <MoveRight className="h-4 w-4" />
-                  <span>Ir para lá</span>
-                </button>
-                <button className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2">
-                  <BookmarkPlus className="h-4 w-4" />
-                  <span>Mais tarde</span>
-                </button>
+              <div className="space-y-3">
+                {/* Main Actions */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      if (map.current) {
+                        map.current.flyTo({
+                          center: selectedPOI.coordinates,
+                          zoom: 18,
+                          duration: 2000,
+                        });
+                        setSelectedPOI(null);
+                      }
+                    }}
+                    className="flex-1 bg-primary text-primary-foreground py-3 px-4 rounded-xl font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <MoveRight className="h-4 w-4" />
+                    <span>Ir para lá</span>
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      try {
+                        await addStop(selectedPOI.coordinates, selectedPOI.name, selectedPOI.fullAddress || selectedPOI.name);
+                        setSelectedPOI(null);
+                        // Show success feedback
+                        console.log(`Parada "${selectedPOI.name}" adicionada à rota!`);
+                      } catch (error) {
+                        console.error('Erro ao adicionar parada:', error);
+                      }
+                    }}
+                    className="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Adicionar Parada</span>
+                  </button>
+                </div>
+
+                {/* Secondary Actions */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      // Save to localStorage for "later" functionality
+                      const savedPOIs = JSON.parse(localStorage.getItem('savedPOIs') || '[]');
+                      const poiToSave = {
+                        ...selectedPOI,
+                        savedAt: new Date().toISOString()
+                      };
+                      savedPOIs.push(poiToSave);
+                      localStorage.setItem('savedPOIs', JSON.stringify(savedPOIs));
+                      setSelectedPOI(null);
+                      console.log('Local salvo para mais tarde!');
+                    }}
+                    className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <BookmarkPlus className="h-4 w-4" />
+                    <span>Salvar</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      // Share functionality
+                      if (navigator.share) {
+                        navigator.share({
+                          title: selectedPOI.name,
+                          text: `Confira este local: ${selectedPOI.name}`,
+                          url: `https://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`
+                        });
+                      } else {
+                        // Fallback to clipboard
+                        const shareText = `${selectedPOI.name} - ${selectedPOI.fullAddress || 'Ver no mapa'}\nhttps://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`;
+                        navigator.clipboard.writeText(shareText);
+                        console.log('Link copiado para a área de transferência!');
+                      }
+                    }}
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    <span>Compartilhar</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
