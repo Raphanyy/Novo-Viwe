@@ -101,7 +101,7 @@ const RoutesPage: React.FC = () => {
         distance: "8.2 km",
         traffic: "light",
         savings: "5 min",
-        lastUsed: "1 dia atrás",
+        lastUsed: "1 dia atr��s",
         isFavorite: false,
       },
       {
@@ -186,6 +186,7 @@ const RoutesPage: React.FC = () => {
     { id: "recent", name: "Recentes", count: routes.recent.length },
     { id: "favorites", name: "Favoritas", count: routes.favorites.length },
     { id: "planned", name: "Agendadas", count: routes.planned.length },
+    { id: "history", name: "Histórico", count: completedRoutes.length },
   ];
 
   const currentRoutes = routes[activeTab] || [];
