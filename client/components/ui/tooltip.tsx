@@ -4,7 +4,9 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
 
 // Defensive wrapper for TooltipProvider to handle React context issues
-const TooltipProvider: React.FC<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>> = (props) => {
+const TooltipProvider: React.FC<
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
+> = (props) => {
   try {
     return <TooltipPrimitive.Provider {...props} />;
   } catch (error) {

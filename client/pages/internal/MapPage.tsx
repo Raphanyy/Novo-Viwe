@@ -1347,7 +1347,9 @@ const MapPage: React.FC = () => {
                 cancelTrace();
                 clearAllMarkersAndRoutes();
               }}
-              rightContent={<AlertTriangle className="h-5 w-5 text-orange-600" />}
+              rightContent={
+                <AlertTriangle className="h-5 w-5 text-orange-600" />
+              }
             />
 
             {/* Content */}
@@ -1372,24 +1374,36 @@ const MapPage: React.FC = () => {
                   <div className="space-y-4">
                     <div className="bg-muted/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-foreground">Paradas configuradas</span>
-                        <span className="text-lg font-bold text-primary">{traceState.stops.length}</span>
+                        <span className="text-sm font-medium text-foreground">
+                          Paradas configuradas
+                        </span>
+                        <span className="text-lg font-bold text-primary">
+                          {traceState.stops.length}
+                        </span>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Esta ação irá traçar a rota completa no mapa conectando todas as paradas.
+                        Esta ação irá traçar a rota completa no mapa conectando
+                        todas as paradas.
                       </p>
                     </div>
 
                     {traceState.stops.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-foreground">Paradas da rota:</h4>
+                        <h4 className="text-sm font-medium text-foreground">
+                          Paradas da rota:
+                        </h4>
                         <div className="max-h-32 overflow-y-auto space-y-1">
                           {traceState.stops.slice(0, 3).map((stop, index) => (
-                            <div key={stop.id} className="flex items-center space-x-2 text-xs">
+                            <div
+                              key={stop.id}
+                              className="flex items-center space-x-2 text-xs"
+                            >
                               <div className="w-4 h-4 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[10px] font-medium">
                                 {index + 1}
                               </div>
-                              <span className="text-muted-foreground truncate">{stop.name}</span>
+                              <span className="text-muted-foreground truncate">
+                                {stop.name}
+                              </span>
                             </div>
                           ))}
                           {traceState.stops.length > 3 && (
@@ -1404,10 +1418,13 @@ const MapPage: React.FC = () => {
                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                       <div className="flex items-center space-x-2">
                         <AlertTriangle className="h-4 w-4 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-800">Importante</span>
+                        <span className="text-sm font-medium text-orange-800">
+                          Importante
+                        </span>
                       </div>
                       <p className="text-xs text-orange-700 mt-1">
-                        O traçado da rota irá otimizar o caminho entre as paradas para economizar tempo e combustível.
+                        O traçado da rota irá otimizar o caminho entre as
+                        paradas para economizar tempo e combustível.
                       </p>
                     </div>
                   </div>
@@ -1466,13 +1483,21 @@ const MapPage: React.FC = () => {
                       {selectedPOI.name}
                     </h3>
                     {selectedPOI.type && (
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${selectedPOI.color ? selectedPOI.color.replace('bg-', 'bg-') + '/20 text-' + selectedPOI.color.replace('bg-', '') : 'bg-gray-100 text-gray-700'}`}>
-                        {selectedPOI.type === 'restaurant' ? 'Restaurante' :
-                         selectedPOI.type === 'gas' ? 'Posto' :
-                         selectedPOI.type === 'hospital' ? 'Hospital' :
-                         selectedPOI.type === 'shopping' ? 'Shopping' :
-                         selectedPOI.type === 'park' ? 'Parque' :
-                         selectedPOI.type.charAt(0).toUpperCase() + selectedPOI.type.slice(1)}
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${selectedPOI.color ? selectedPOI.color.replace("bg-", "bg-") + "/20 text-" + selectedPOI.color.replace("bg-", "") : "bg-gray-100 text-gray-700"}`}
+                      >
+                        {selectedPOI.type === "restaurant"
+                          ? "Restaurante"
+                          : selectedPOI.type === "gas"
+                            ? "Posto"
+                            : selectedPOI.type === "hospital"
+                              ? "Hospital"
+                              : selectedPOI.type === "shopping"
+                                ? "Shopping"
+                                : selectedPOI.type === "park"
+                                  ? "Parque"
+                                  : selectedPOI.type.charAt(0).toUpperCase() +
+                                    selectedPOI.type.slice(1)}
                       </span>
                     )}
                   </div>
@@ -1507,7 +1532,8 @@ const MapPage: React.FC = () => {
 
                     {/* Coordinates for reference */}
                     <div className="text-xs text-muted-foreground/70">
-                      Coordenadas: {selectedPOI.coordinates[1].toFixed(4)}, {selectedPOI.coordinates[0].toFixed(4)}
+                      Coordenadas: {selectedPOI.coordinates[1].toFixed(4)},{" "}
+                      {selectedPOI.coordinates[0].toFixed(4)}
                     </div>
                   </div>
                 </div>
@@ -1543,12 +1569,18 @@ const MapPage: React.FC = () => {
                   <button
                     onClick={async () => {
                       try {
-                        await addStop(selectedPOI.coordinates, selectedPOI.name, selectedPOI.fullAddress || selectedPOI.name);
+                        await addStop(
+                          selectedPOI.coordinates,
+                          selectedPOI.name,
+                          selectedPOI.fullAddress || selectedPOI.name,
+                        );
                         setSelectedPOI(null);
                         // Show success feedback
-                        console.log(`Parada "${selectedPOI.name}" adicionada à rota!`);
+                        console.log(
+                          `Parada "${selectedPOI.name}" adicionada à rota!`,
+                        );
                       } catch (error) {
-                        console.error('Erro ao adicionar parada:', error);
+                        console.error("Erro ao adicionar parada:", error);
                       }
                     }}
                     className="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2"
@@ -1563,15 +1595,20 @@ const MapPage: React.FC = () => {
                   <button
                     onClick={() => {
                       // Save to localStorage for "later" functionality
-                      const savedPOIs = JSON.parse(localStorage.getItem('savedPOIs') || '[]');
+                      const savedPOIs = JSON.parse(
+                        localStorage.getItem("savedPOIs") || "[]",
+                      );
                       const poiToSave = {
                         ...selectedPOI,
-                        savedAt: new Date().toISOString()
+                        savedAt: new Date().toISOString(),
                       };
                       savedPOIs.push(poiToSave);
-                      localStorage.setItem('savedPOIs', JSON.stringify(savedPOIs));
+                      localStorage.setItem(
+                        "savedPOIs",
+                        JSON.stringify(savedPOIs),
+                      );
                       setSelectedPOI(null);
-                      console.log('Local salvo para mais tarde!');
+                      console.log("Local salvo para mais tarde!");
                     }}
                     className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-xl font-medium hover:bg-secondary/80 transition-colors duration-200 flex items-center justify-center space-x-2"
                   >
@@ -1586,13 +1623,15 @@ const MapPage: React.FC = () => {
                         navigator.share({
                           title: selectedPOI.name,
                           text: `Confira este local: ${selectedPOI.name}`,
-                          url: `https://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`
+                          url: `https://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`,
                         });
                       } else {
                         // Fallback to clipboard
-                        const shareText = `${selectedPOI.name} - ${selectedPOI.fullAddress || 'Ver no mapa'}\nhttps://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`;
+                        const shareText = `${selectedPOI.name} - ${selectedPOI.fullAddress || "Ver no mapa"}\nhttps://www.google.com/maps?q=${selectedPOI.coordinates[1]},${selectedPOI.coordinates[0]}`;
                         navigator.clipboard.writeText(shareText);
-                        console.log('Link copiado para a área de transferência!');
+                        console.log(
+                          "Link copiado para a área de transferência!",
+                        );
                       }
                     }}
                     className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
