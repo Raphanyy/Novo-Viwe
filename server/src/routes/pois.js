@@ -390,8 +390,8 @@ router.patch("/:id", async (req, res) => {
 
     // Campos permitidos para atualização
     const allowedFields = [
-      'name', 'category', 'description', 'latitude', 'longitude',
-      'address', 'phone', 'website', 'business_hours', 'metadata'
+      'name', 'type', 'description', 'latitude', 'longitude',
+      'address', 'phone', 'website', 'hours', 'metadata'
     ];
 
     const updateFields = [];
