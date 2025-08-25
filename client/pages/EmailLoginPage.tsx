@@ -145,10 +145,10 @@ const EmailLoginPage: React.FC = () => {
             </div>
           </form>
 
-          {/* Demo Info */}
+          {/* Auth Info */}
           <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-border">
             <p className="text-center text-xs text-muted-foreground">
-              💡 Para demonstração, use qualquer email e senha
+              🔐 Sistema de autenticação real com Supabase
             </p>
           </div>
         </div>
