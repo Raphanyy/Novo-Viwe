@@ -26,6 +26,20 @@ import { Progress } from "../../components/ui/progress";
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const { loading, error, execute } = useLoading();
+
+  // Carregar dados do dashboard
+  const loadDashboardData = async () => {
+    const result = await execute(() => dashboardService.getDashboardData());
+    if (result) {
+      setDashboardData(result);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
   // Dados mockados para demonstração
   const recentRoutes = [
@@ -78,7 +92,7 @@ const DashboardPage: React.FC = () => {
       change: "+8%",
       icon: Car,
       color: "text-purple-600",
-      description: "Percorridos este mês",
+      description: "Percorridos este m��s",
     },
     {
       name: "Eficiência",
