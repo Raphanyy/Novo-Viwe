@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import {
+  dashboardService,
+  DashboardData,
+  useLoading,
+} from "../../services/api";
 import {
   MapPin,
   Route,
@@ -25,6 +30,22 @@ import { Progress } from "../../components/ui/progress";
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
+  const { loading, error, execute } = useLoading();
+
+  // Carregar dados do dashboard
+  const loadDashboardData = async () => {
+    const result = await execute(() => dashboardService.getDashboardData());
+    if (result) {
+      setDashboardData(result);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
   // Dados mockados para demonstração
   const recentRoutes = [
@@ -77,7 +98,7 @@ const DashboardPage: React.FC = () => {
       change: "+8%",
       icon: Car,
       color: "text-purple-600",
-      description: "Percorridos este mês",
+      description: "Percorridos este m��s",
     },
     {
       name: "Eficiência",
@@ -127,6 +148,35 @@ const DashboardPage: React.FC = () => {
       description: "156 de 500 clientes",
     },
   ];
+
+  // Loading state
+  if (loading && !dashboardData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-lg text-foreground">Carregando dashboard...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && !dashboardData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="text-destructive mb-4 text-center">
+          <p className="text-xl font-semibold">Erro ao carregar dashboard</p>
+          <p className="text-sm text-muted-foreground mt-2">{error}</p>
+        </div>
+        <button
+          onClick={loadDashboardData}
+          disabled={loading}
+          className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors disabled:opacity-50"
+        >
+          {loading ? "Carregando..." : "Tentar novamente"}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full overflow-auto bg-background">

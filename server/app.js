@@ -1,5 +1,7 @@
 const http = require("http");
 const url = require("url");
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 // Importar utils do Neon
@@ -9,9 +11,48 @@ const {
   query,
 } = require("./src/utils/neon-database");
 
-const PORT = 3002;
+const PORT = 8080;
 
 console.log("🚀 Iniciando servidor Viwe...");
+
+// Função para servir arquivos estáticos
+const serveStatic = (req, res, filePath) => {
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.end("Not found");
+      return;
+    }
+
+    const ext = path.extname(filePath);
+    let contentType = "text/html";
+
+    switch (ext) {
+      case ".js":
+        contentType = "application/javascript";
+        break;
+      case ".css":
+        contentType = "text/css";
+        break;
+      case ".json":
+        contentType = "application/json";
+        break;
+      case ".png":
+        contentType = "image/png";
+        break;
+      case ".jpg":
+        contentType = "image/jpg";
+        break;
+      case ".svg":
+        contentType = "image/svg+xml";
+        break;
+    }
+
+    res.setHeader("Content-Type", contentType);
+    res.writeHead(200);
+    res.end(data);
+  });
+};
 
 const server = http.createServer(async (req, res) => {
   // CORS headers
@@ -30,13 +71,34 @@ const server = http.createServer(async (req, res) => {
   }
 
   const parsedUrl = url.parse(req.url, true);
-  const path = parsedUrl.pathname;
+  const pathname = parsedUrl.pathname;
 
   res.setHeader("Content-Type", "application/json");
 
   try {
+    // Servir aplicação React na rota raiz
+    if (pathname === "/" && req.method === "GET") {
+      const indexPath = path.join(__dirname, "../dist/client/index.html");
+      serveStatic(req, res, indexPath);
+      return;
+    }
+
+    // Servir arquivos estáticos
+    if (
+      pathname.startsWith("/assets/") ||
+      pathname.endsWith(".js") ||
+      pathname.endsWith(".css") ||
+      pathname.endsWith(".svg") ||
+      pathname.endsWith(".png") ||
+      pathname.endsWith(".ico")
+    ) {
+      const staticPath = path.join(__dirname, "../dist/client", pathname);
+      serveStatic(req, res, staticPath);
+      return;
+    }
+
     // Health check completo
-    if (path === "/health") {
+    if (pathname === "/health") {
       const dbHealth = await healthCheck();
       res.writeHead(200);
       res.end(
@@ -57,8 +119,8 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // Teste de conexão Neon
-    if (path === "/api/test-neon") {
+    // Teste de conex��o Neon
+    if (pathname === "/api/test-neon") {
       const connectionOk = await testConnection();
       res.writeHead(connectionOk ? 200 : 500);
       res.end(
@@ -76,7 +138,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Debug: List all users (temporary endpoint)
-    if (path === "/api/debug/users") {
+    if (pathname === "/api/debug/users") {
       try {
         const usersResult = await query(
           `SELECT id, name, email, created_at, last_login_at, plan_type, is_email_verified
@@ -102,7 +164,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Ping simples
-    if (path === "/api/ping") {
+    if (pathname === "/api/ping") {
       res.writeHead(200);
       res.end(
         JSON.stringify({
@@ -115,7 +177,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Status do sistema
-    if (path === "/api/status") {
+    if (pathname === "/api/status") {
       const dbHealth = await healthCheck();
       res.writeHead(200);
       res.end(
@@ -132,7 +194,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Real authentication with database lookup
-    if (path === "/api/auth/login" && req.method === "POST") {
+    if (pathname === "/api/auth/login" && req.method === "POST") {
       let body = "";
       req.on("data", (chunk) => {
         body += chunk.toString();
@@ -225,7 +287,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Update user profile
-    if (path === "/api/user" && req.method === "PATCH") {
+    if (pathname === "/api/user" && req.method === "PATCH") {
       let body = "";
       req.on("data", (chunk) => {
         body += chunk.toString();
@@ -281,7 +343,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Get current user data
-    if (path === "/api/auth/me" && req.method === "GET") {
+    if (pathname === "/api/auth/me" && req.method === "GET") {
       // Simple token validation - in real app would verify JWT
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -329,7 +391,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // API Info
-    if (path === "/api") {
+    if (pathname === "/api") {
       res.writeHead(200);
       res.end(
         JSON.stringify({
@@ -364,7 +426,7 @@ const server = http.createServer(async (req, res) => {
     res.end(
       JSON.stringify({
         error: "Endpoint não encontrado",
-        path: path,
+        path: pathname,
         method: req.method,
         available_endpoints: [
           "/health",

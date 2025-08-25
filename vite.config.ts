@@ -11,15 +11,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 8080,
-    proxy: {
-      // Proxy todas as chamadas da API para o backend Express
-      "/api": {
-        target: "http://localhost:3002",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+    port: 3000, // Vite em porta diferente para desenvolvimento
   },
   build: {
     outDir: "dist/client",
