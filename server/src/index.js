@@ -10,6 +10,7 @@ const { healthCheck } = require('./utils/database');
 // Importar rotas
 const authRoutes = require('./routes/auth');
 const routeRoutes = require('./routes/routes');
+const mapboxRoutes = require('./routes/mapbox');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -69,7 +70,12 @@ app.get('/health', async (req, res) => {
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
       version: '1.0.0',
-      database: dbHealth
+      database: dbHealth,
+      services: {
+        database: dbHealth.status === 'healthy',
+        jwt: !!process.env.JWT_SECRET,
+        mapbox: !!process.env.VITE_MAPBOX_ACCESS_TOKEN
+      }
     });
   } catch (error) {
     res.status(503).json({
@@ -103,11 +109,28 @@ app.get('/api', (req, res) => {
         delete: 'DELETE /api/routes/:id',
         stats: 'GET /api/routes/stats'
       },
+      mapbox: {
+        geocoding: 'GET /api/mapbox/geocoding',
+        reverse: 'GET /api/mapbox/reverse',
+        directions: 'POST /api/mapbox/directions',
+        optimization: 'POST /api/mapbox/optimization',
+        matrix: 'POST /api/mapbox/matrix',
+        isochrone: 'GET /api/mapbox/isochrone',
+        health: 'GET /api/mapbox/health'
+      },
       navigation: '/api/navigation/* (TODO)',
-      users: '/api/users/* (TODO)',
-      mapbox: '/api/mapbox/* (TODO)'
+      users: '/api/users/* (TODO)'
     },
-    documentation: 'Ver arquivo README.md'
+    documentation: 'Ver documentação completa em /Implementação BackEnd/',
+    features: {
+      authentication: 'JWT com refresh tokens',
+      authorization: 'Role-based access control',
+      database: 'PostgreSQL com 19 tabelas',
+      geocoding: 'Mapbox Geocoding API',
+      routing: 'Mapbox Directions & Optimization',
+      rateLimit: 'Proteção contra spam',
+      security: 'Helmet, CORS, sanitização'
+    }
   });
 });
 
@@ -115,20 +138,28 @@ app.get('/api', (req, res) => {
 app.get('/api/test', (req, res) => {
   res.json({ 
     message: 'Servidor funcionando!', 
-    database: process.env.DATABASE_URL ? 'configurado' : 'não configurado',
-    jwt: process.env.JWT_SECRET ? 'configurado' : 'não configurado',
-    mapbox: process.env.VITE_MAPBOX_ACCESS_TOKEN ? 'configurado' : 'não configurado'
+    timestamp: new Date().toISOString(),
+    services: {
+      database: process.env.DATABASE_URL ? '✅ configurado' : '❌ não configurado',
+      jwt: process.env.JWT_SECRET ? '✅ configurado' : '❌ não configurado',
+      mapbox: process.env.VITE_MAPBOX_ACCESS_TOKEN ? '✅ configurado' : '❌ não configurado'
+    },
+    environment: {
+      node_env: process.env.NODE_ENV || 'development',
+      port: PORT,
+      frontend_url: process.env.FRONTEND_URL || 'http://localhost:8080'
+    }
   });
 });
 
 // ROTAS
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/routes', routeRoutes);
+app.use('/api/mapbox', mapboxRoutes);
 
 // TODO: Adicionar outras rotas quando criadas
 // app.use('/api/navigation', navigationRoutes);
 // app.use('/api/users', userRoutes);
-// app.use('/api/mapbox', mapboxRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -157,6 +188,11 @@ app.use((err, req, res, next) => {
     return res.status(503).json({ error: 'Falha na conexão com banco de dados' });
   }
   
+  // Rate limit errors
+  if (err.status === 429) {
+    return res.status(429).json({ error: 'Muitas requisições, tente novamente mais tarde' });
+  }
+  
   // Default error
   res.status(500).json({ 
     error: 'Erro interno do servidor',
@@ -174,7 +210,8 @@ app.use('*', (req, res) => {
       health: 'GET /health',
       api_info: 'GET /api',
       auth: 'GET /api/auth/*',
-      routes: 'GET /api/routes'
+      routes: 'GET /api/routes',
+      mapbox: 'GET /api/mapbox/*'
     }
   });
 });
@@ -196,6 +233,7 @@ app.listen(PORT, () => {
   console.log(`📚 API info: http://localhost:${PORT}/api`);
   console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/*`);
   console.log(`🗺️ Routes: http://localhost:${PORT}/api/routes`);
+  console.log(`🌐 Mapbox: http://localhost:${PORT}/api/mapbox/*`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
   
   // Log de configurações (sem mostrar secrets)
@@ -210,6 +248,13 @@ app.listen(PORT, () => {
       .then(health => {
         console.log(`💾 Database: ${health.status}`);
         console.log(`📊 Tabelas: ${health.tables?.total || 'N/A'}`);
+        
+        // Teste rápido do Mapbox se configurado
+        if (process.env.VITE_MAPBOX_ACCESS_TOKEN) {
+          console.log('🗺️ Mapbox: Token configurado - serviços disponíveis');
+        } else {
+          console.log('🗺️ Mapbox: Token não configurado - algumas funcionalidades limitadas');
+        }
       })
       .catch(err => {
         console.error('❌ Erro na conexão inicial com banco:', err.message);
