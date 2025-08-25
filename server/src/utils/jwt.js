@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "15m";
+const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || "30d";
 
 if (!JWT_SECRET) {
-  console.error('❌ JWT_SECRET não configurado!');
+  console.error("❌ JWT_SECRET não configurado!");
   process.exit(1);
 }
 
@@ -16,7 +16,7 @@ if (!JWT_SECRET) {
  */
 const generateAccessToken = (user) => {
   if (!user.id || !user.email || !user.name) {
-    throw new Error('Dados do usuário incompletos para gerar token');
+    throw new Error("Dados do usuário incompletos para gerar token");
   }
 
   const payload = {
@@ -24,13 +24,13 @@ const generateAccessToken = (user) => {
     email: user.email,
     name: user.name,
     iat: Math.floor(Date.now() / 1000), // issued at
-    type: 'access'
+    type: "access",
   };
 
-  return jwt.sign(payload, JWT_SECRET, { 
+  return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-    issuer: 'viwe-api',
-    audience: 'viwe-app'
+    issuer: "viwe-api",
+    audience: "viwe-app",
   });
 };
 
@@ -41,19 +41,19 @@ const generateAccessToken = (user) => {
  */
 const generateRefreshToken = (userId) => {
   if (!userId) {
-    throw new Error('User ID é obrigatório para gerar refresh token');
+    throw new Error("User ID é obrigatório para gerar refresh token");
   }
 
   const payload = {
     sub: userId,
     iat: Math.floor(Date.now() / 1000),
-    type: 'refresh'
+    type: "refresh",
   };
 
-  return jwt.sign(payload, JWT_SECRET, { 
+  return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
-    issuer: 'viwe-api',
-    audience: 'viwe-app'
+    issuer: "viwe-api",
+    audience: "viwe-app",
   });
 };
 
@@ -64,25 +64,25 @@ const generateRefreshToken = (userId) => {
  */
 const verifyAccessToken = (token) => {
   if (!token) {
-    throw new Error('Token não fornecido');
+    throw new Error("Token não fornecido");
   }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET, {
-      issuer: 'viwe-api',
-      audience: 'viwe-app'
+      issuer: "viwe-api",
+      audience: "viwe-app",
     });
 
-    if (decoded.type !== 'access') {
-      throw new Error('Tipo de token inválido');
+    if (decoded.type !== "access") {
+      throw new Error("Tipo de token inválido");
     }
 
     return decoded;
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      throw new Error('Token expirado');
-    } else if (error.name === 'JsonWebTokenError') {
-      throw new Error('Token inválido');
+    if (error.name === "TokenExpiredError") {
+      throw new Error("Token expirado");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new Error("Token inválido");
     }
     throw error;
   }
@@ -95,25 +95,25 @@ const verifyAccessToken = (token) => {
  */
 const verifyRefreshToken = (token) => {
   if (!token) {
-    throw new Error('Refresh token não fornecido');
+    throw new Error("Refresh token não fornecido");
   }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET, {
-      issuer: 'viwe-api',
-      audience: 'viwe-app'
+      issuer: "viwe-api",
+      audience: "viwe-app",
     });
 
-    if (decoded.type !== 'refresh') {
-      throw new Error('Tipo de token inválido');
+    if (decoded.type !== "refresh") {
+      throw new Error("Tipo de token inválido");
     }
 
     return decoded;
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      throw new Error('Refresh token expirado');
-    } else if (error.name === 'JsonWebTokenError') {
-      throw new Error('Refresh token inválido');
+    if (error.name === "TokenExpiredError") {
+      throw new Error("Refresh token expirado");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new Error("Refresh token inválido");
     }
     throw error;
   }
@@ -130,8 +130,8 @@ const extractTokenFromHeader = (authHeader) => {
   }
 
   // Formato esperado: "Bearer token"
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+  const parts = authHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
     return null;
   }
 
@@ -146,11 +146,11 @@ const extractTokenFromHeader = (authHeader) => {
 const generateTokenPair = (user) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user.id);
-  
+
   // Calcular tempo de expiração
   const accessTokenExp = new Date();
   accessTokenExp.setMinutes(accessTokenExp.getMinutes() + 15); // 15 minutos
-  
+
   const refreshTokenExp = new Date();
   refreshTokenExp.setDate(refreshTokenExp.getDate() + 30); // 30 dias
 
@@ -159,7 +159,7 @@ const generateTokenPair = (user) => {
     refreshToken,
     accessTokenExpiresAt: accessTokenExp.toISOString(),
     refreshTokenExpiresAt: refreshTokenExp.toISOString(),
-    tokenType: 'Bearer'
+    tokenType: "Bearer",
   };
 };
 
@@ -172,7 +172,7 @@ const decodeToken = (token) => {
   try {
     return jwt.decode(token, { complete: true });
   } catch (error) {
-    console.error('Erro ao decodificar token:', error);
+    console.error("Erro ao decodificar token:", error);
     return null;
   }
 };
@@ -192,8 +192,8 @@ const isTokenExpiringSoon = (token, thresholdMinutes = 5) => {
 
     const now = Math.floor(Date.now() / 1000);
     const threshold = thresholdMinutes * 60; // converter para segundos
-    
-    return (decoded.exp - now) <= threshold;
+
+    return decoded.exp - now <= threshold;
   } catch (error) {
     return false;
   }
@@ -207,5 +207,5 @@ module.exports = {
   extractTokenFromHeader,
   generateTokenPair,
   decodeToken,
-  isTokenExpiringSoon
+  isTokenExpiringSoon,
 };

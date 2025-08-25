@@ -1,21 +1,24 @@
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 // Configuração do pool de conexões PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
   max: 20, // máximo de 20 conexões
   idleTimeoutMillis: 30000, // 30 segundos
   connectionTimeoutMillis: 10000, // 10 segundos
 });
 
 // Event listeners para debugging
-pool.on('connect', (client) => {
-  console.log('📊 Nova conexão com banco estabelecida');
+pool.on("connect", (client) => {
+  console.log("📊 Nova conexão com banco estabelecida");
 });
 
-pool.on('error', (err, client) => {
-  console.error('❌ Erro inesperado no pool de conexões:', err);
+pool.on("error", (err, client) => {
+  console.error("❌ Erro inesperado no pool de conexões:", err);
   process.exit(-1);
 });
 
@@ -27,27 +30,27 @@ pool.on('error', (err, client) => {
  */
 const query = async (text, params = []) => {
   const start = Date.now();
-  
+
   try {
     const res = await pool.query(text, params);
     const duration = Date.now() - start;
-    
+
     // Log em desenvolvimento
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 Query executada:', {
-        text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+    if (process.env.NODE_ENV === "development") {
+      console.log("🔍 Query executada:", {
+        text: text.substring(0, 100) + (text.length > 100 ? "..." : ""),
         duration: `${duration}ms`,
-        rows: res.rowCount
+        rows: res.rowCount,
       });
     }
-    
+
     return res;
   } catch (error) {
     const duration = Date.now() - start;
-    console.error('❌ Erro na query:', {
-      text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+    console.error("❌ Erro na query:", {
+      text: text.substring(0, 100) + (text.length > 100 ? "..." : ""),
       duration: `${duration}ms`,
-      error: error.message
+      error: error.message,
     });
     throw error;
   }
@@ -62,7 +65,7 @@ const getClient = async () => {
     const client = await pool.connect();
     return client;
   } catch (error) {
-    console.error('❌ Erro ao obter cliente do pool:', error);
+    console.error("❌ Erro ao obter cliente do pool:", error);
     throw error;
   }
 };
@@ -74,14 +77,14 @@ const getClient = async () => {
  */
 const transaction = async (callback) => {
   const client = await getClient();
-  
+
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
     const result = await callback(client);
-    await client.query('COMMIT');
+    await client.query("COMMIT");
     return result;
   } catch (error) {
-    await client.query('ROLLBACK');
+    await client.query("ROLLBACK");
     throw error;
   } finally {
     client.release();
@@ -94,13 +97,13 @@ const transaction = async (callback) => {
  */
 const testConnection = async () => {
   try {
-    const result = await query('SELECT NOW() as timestamp, version()');
-    console.log('✅ Conexão com banco testada com sucesso');
-    console.log(`   PostgreSQL: ${result.rows[0].version.split(' ')[1]}`);
+    const result = await query("SELECT NOW() as timestamp, version()");
+    console.log("✅ Conexão com banco testada com sucesso");
+    console.log(`   PostgreSQL: ${result.rows[0].version.split(" ")[1]}`);
     console.log(`   Timestamp: ${result.rows[0].timestamp}`);
     return true;
   } catch (error) {
-    console.error('❌ Falha no teste de conexão:', error.message);
+    console.error("❌ Falha no teste de conexão:", error.message);
     return false;
   }
 };
@@ -117,28 +120,41 @@ const checkTables = async () => {
       WHERE table_schema = 'public' 
       ORDER BY table_name
     `);
-    
-    const tables = result.rows.map(row => row.table_name);
+
+    const tables = result.rows.map((row) => row.table_name);
     const expectedTables = [
-      'users', 'user_preferences', 'auth_sessions',
-      'routes', 'route_stops', 'route_sets',
-      'navigation_sessions', 'route_metrics', 'user_stats',
-      'clients', 'client_stops',
-      'notifications', 'plans', 'subscriptions', 'payment_history',
-      'search_results', 'pois', 'system_config', 'audit_logs'
+      "users",
+      "user_preferences",
+      "auth_sessions",
+      "routes",
+      "route_stops",
+      "route_sets",
+      "navigation_sessions",
+      "route_metrics",
+      "user_stats",
+      "clients",
+      "client_stops",
+      "notifications",
+      "plans",
+      "subscriptions",
+      "payment_history",
+      "search_results",
+      "pois",
+      "system_config",
+      "audit_logs",
     ];
-    
-    const missing = expectedTables.filter(table => !tables.includes(table));
-    
+
+    const missing = expectedTables.filter((table) => !tables.includes(table));
+
     return {
       total: tables.length,
       expected: expectedTables.length,
       missing,
       tables,
-      isComplete: missing.length === 0
+      isComplete: missing.length === 0,
     };
   } catch (error) {
-    console.error('❌ Erro ao verificar tabelas:', error.message);
+    console.error("❌ Erro ao verificar tabelas:", error.message);
     return { error: error.message };
   }
 };
@@ -149,43 +165,45 @@ const checkTables = async () => {
  */
 const healthCheck = async () => {
   const start = Date.now();
-  
+
   try {
     // Testar conexão básica
     await testConnection();
-    
+
     // Verificar tabelas
     const tableStatus = await checkTables();
-    
+
     // Testar performance
-    const performanceTest = await query('SELECT COUNT(*) FROM information_schema.tables');
+    const performanceTest = await query(
+      "SELECT COUNT(*) FROM information_schema.tables",
+    );
     const duration = Date.now() - start;
-    
+
     return {
-      status: 'healthy',
+      status: "healthy",
       duration: `${duration}ms`,
-      connection: 'ok',
+      connection: "ok",
       tables: tableStatus,
-      performance: duration < 1000 ? 'good' : 'slow'
+      performance: duration < 1000 ? "good" : "slow",
     };
   } catch (error) {
     return {
-      status: 'unhealthy',
+      status: "unhealthy",
       error: error.message,
-      duration: `${Date.now() - start}ms`
+      duration: `${Date.now() - start}ms`,
     };
   }
 };
 
 // Graceful shutdown
 const gracefulShutdown = async () => {
-  console.log('🔄 Encerrando pool de conexões...');
+  console.log("🔄 Encerrando pool de conexões...");
   await pool.end();
-  console.log('✅ Pool de conexões encerrado');
+  console.log("✅ Pool de conexões encerrado");
 };
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);
 
 module.exports = {
   query,
@@ -194,5 +212,5 @@ module.exports = {
   testConnection,
   checkTables,
   healthCheck,
-  pool
+  pool,
 };

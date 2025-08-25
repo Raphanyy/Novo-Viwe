@@ -14,12 +14,12 @@ export default defineConfig({
     port: 8080,
     proxy: {
       // Proxy todas as chamadas da API para o backend Express
-      '/api': {
-        target: 'http://localhost:3001',
+      "/api": {
+        target: "http://localhost:3001",
         changeOrigin: true,
-        secure: false
-      }
-    }
+        secure: false,
+      },
+    },
   },
   build: {
     outDir: "dist/client",

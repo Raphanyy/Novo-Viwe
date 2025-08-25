@@ -1,9 +1,12 @@
-const https = require('https');
+const https = require("https");
 
-const MAPBOX_ACCESS_TOKEN = process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN;
+const MAPBOX_ACCESS_TOKEN =
+  process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN;
 
 if (!MAPBOX_ACCESS_TOKEN) {
-  console.warn('⚠️ Token do Mapbox não configurado - funcionalidades de geocoding limitadas');
+  console.warn(
+    "⚠️ Token do Mapbox não configurado - funcionalidades de geocoding limitadas",
+  );
 }
 
 /**
@@ -13,29 +16,35 @@ if (!MAPBOX_ACCESS_TOKEN) {
  */
 const makeMapboxRequest = (url) => {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
+    https
+      .get(url, (res) => {
+        let data = "";
 
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
 
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
+        res.on("end", () => {
+          try {
+            const parsed = JSON.parse(data);
 
-          if (res.statusCode === 200) {
-            resolve(parsed);
-          } else {
-            reject(new Error(`Mapbox API Error: ${parsed.message || 'Unknown error'}`));
+            if (res.statusCode === 200) {
+              resolve(parsed);
+            } else {
+              reject(
+                new Error(
+                  `Mapbox API Error: ${parsed.message || "Unknown error"}`,
+                ),
+              );
+            }
+          } catch (err) {
+            reject(new Error(`Error parsing Mapbox response: ${err.message}`));
           }
-        } catch (err) {
-          reject(new Error(`Error parsing Mapbox response: ${err.message}`));
-        }
+        });
+      })
+      .on("error", (err) => {
+        reject(new Error(`HTTP Request Error: ${err.message}`));
       });
-    }).on('error', (err) => {
-      reject(new Error(`HTTP Request Error: ${err.message}`));
-    });
   });
 };
 
@@ -47,40 +56,40 @@ const makeMapboxRequest = (url) => {
  */
 const geocoding = async (query, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
-  if (!query || typeof query !== 'string') {
-    throw new Error('Query é obrigatória e deve ser string');
+  if (!query || typeof query !== "string") {
+    throw new Error("Query é obrigatória e deve ser string");
   }
 
   const {
     limit = 8,
-    country = 'BR',
-    language = 'pt',
+    country = "BR",
+    language = "pt",
     types = null, // place, region, postcode, district, locality, neighborhood, address, poi
-    proximity = null // [lng, lat]
+    proximity = null, // [lng, lat]
   } = options;
 
   // Construir URL
-  const baseUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
+  const baseUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places";
   const encodedQuery = encodeURIComponent(query.trim());
-  
+
   let url = `${baseUrl}/${encodedQuery}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
   url += `&country=${country}&language=${language}&limit=${limit}`;
-  
+
   if (types) {
     url += `&types=${types}`;
   }
-  
+
   if (proximity && Array.isArray(proximity) && proximity.length === 2) {
     url += `&proximity=${proximity[0]},${proximity[1]}`;
   }
 
   try {
     const response = await makeMapboxRequest(url);
-    
-    return response.features.map(feature => ({
+
+    return response.features.map((feature) => ({
       id: feature.id,
       placeName: feature.place_name,
       text: feature.text,
@@ -89,10 +98,10 @@ const geocoding = async (query, options = {}) => {
       relevance: feature.relevance,
       properties: feature.properties,
       context: feature.context,
-      bbox: feature.bbox
+      bbox: feature.bbox,
     }));
   } catch (error) {
-    console.error('Erro no geocoding:', error.message);
+    console.error("Erro no geocoding:", error.message);
     throw error;
   }
 };
@@ -106,28 +115,24 @@ const geocoding = async (query, options = {}) => {
  */
 const reverseGeocoding = async (lng, lat, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
-  if (typeof lng !== 'number' || typeof lat !== 'number') {
-    throw new Error('Coordenadas devem ser números válidos');
+  if (typeof lng !== "number" || typeof lat !== "number") {
+    throw new Error("Coordenadas devem ser números válidos");
   }
 
   if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
-    throw new Error('Coordenadas inválidas');
+    throw new Error("Coordenadas inválidas");
   }
 
-  const {
-    country = 'BR',
-    language = 'pt',
-    types = 'address,poi'
-  } = options;
+  const { country = "BR", language = "pt", types = "address,poi" } = options;
 
   const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_ACCESS_TOKEN}&country=${country}&language=${language}&types=${types}&limit=1`;
 
   try {
     const response = await makeMapboxRequest(url);
-    
+
     if (response.features && response.features.length > 0) {
       const feature = response.features[0];
       return {
@@ -136,13 +141,13 @@ const reverseGeocoding = async (lng, lat, options = {}) => {
         center: feature.center,
         placeType: feature.place_type,
         properties: feature.properties,
-        context: feature.context
+        context: feature.context,
       };
     }
-    
+
     return null;
   } catch (error) {
-    console.error('Erro no reverse geocoding:', error.message);
+    console.error("Erro no reverse geocoding:", error.message);
     throw error;
   }
 };
@@ -155,17 +160,17 @@ const reverseGeocoding = async (lng, lat, options = {}) => {
  */
 const directions = async (coordinates, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
   if (!Array.isArray(coordinates) || coordinates.length < 2) {
-    throw new Error('Pelo menos 2 coordenadas são necessárias');
+    throw new Error("Pelo menos 2 coordenadas são necessárias");
   }
 
   // Validar coordenadas
   for (let i = 0; i < coordinates.length; i++) {
     const [lng, lat] = coordinates[i];
-    if (typeof lng !== 'number' || typeof lat !== 'number') {
+    if (typeof lng !== "number" || typeof lat !== "number") {
       throw new Error(`Coordenada ${i} inválida: deve ser [lng, lat]`);
     }
     if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
@@ -174,39 +179,39 @@ const directions = async (coordinates, options = {}) => {
   }
 
   const {
-    profile = 'driving', // driving, walking, cycling, driving-traffic
-    overview = 'full', // full, simplified, false
+    profile = "driving", // driving, walking, cycling, driving-traffic
+    overview = "full", // full, simplified, false
     steps = true,
-    geometries = 'geojson',
-    language = 'pt'
+    geometries = "geojson",
+    language = "pt",
   } = options;
 
   // Construir coordenadas string
   const coordinatesString = coordinates
-    .map(coord => `${coord[0]},${coord[1]}`)
-    .join(';');
+    .map((coord) => `${coord[0]},${coord[1]}`)
+    .join(";");
 
   const url = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coordinatesString}?access_token=${MAPBOX_ACCESS_TOKEN}&overview=${overview}&steps=${steps}&geometries=${geometries}&language=${language}`;
 
   try {
     const response = await makeMapboxRequest(url);
-    
+
     if (response.routes && response.routes.length > 0) {
       const route = response.routes[0];
-      
+
       return {
         distance: route.distance, // metros
         duration: route.duration, // segundos
         geometry: route.geometry,
         legs: route.legs,
-        steps: route.legs.flatMap(leg => leg.steps || []),
-        waypoints: response.waypoints
+        steps: route.legs.flatMap((leg) => leg.steps || []),
+        waypoints: response.waypoints,
       };
     }
-    
-    throw new Error('Nenhuma rota encontrada');
+
+    throw new Error("Nenhuma rota encontrada");
   } catch (error) {
-    console.error('Erro no directions:', error.message);
+    console.error("Erro no directions:", error.message);
     throw error;
   }
 };
@@ -219,62 +224,62 @@ const directions = async (coordinates, options = {}) => {
  */
 const optimization = async (coordinates, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
   if (!Array.isArray(coordinates) || coordinates.length < 3) {
-    throw new Error('Pelo menos 3 coordenadas são necessárias para otimização');
+    throw new Error("Pelo menos 3 coordenadas são necessárias para otimização");
   }
 
   if (coordinates.length > 25) {
-    throw new Error('Máximo de 25 coordenadas permitidas');
+    throw new Error("Máximo de 25 coordenadas permitidas");
   }
 
   // Validar coordenadas
   for (let i = 0; i < coordinates.length; i++) {
     const [lng, lat] = coordinates[i];
-    if (typeof lng !== 'number' || typeof lat !== 'number') {
+    if (typeof lng !== "number" || typeof lat !== "number") {
       throw new Error(`Coordenada ${i} inválida: deve ser [lng, lat]`);
     }
   }
 
   const {
-    profile = 'driving', // driving, walking, cycling
+    profile = "driving", // driving, walking, cycling
     roundtrip = false, // retornar ao ponto inicial
-    source = 'first', // first, last, any
-    destination = 'last', // first, last, any
-    overview = 'full',
+    source = "first", // first, last, any
+    destination = "last", // first, last, any
+    overview = "full",
     steps = true,
-    geometries = 'geojson'
+    geometries = "geojson",
   } = options;
 
   // Construir coordenadas string
   const coordinatesString = coordinates
-    .map(coord => `${coord[0]},${coord[1]}`)
-    .join(';');
+    .map((coord) => `${coord[0]},${coord[1]}`)
+    .join(";");
 
   const url = `https://api.mapbox.com/optimized-trips/v1/mapbox/${profile}/${coordinatesString}?access_token=${MAPBOX_ACCESS_TOKEN}&roundtrip=${roundtrip}&source=${source}&destination=${destination}&overview=${overview}&steps=${steps}&geometries=${geometries}`;
 
   try {
     const response = await makeMapboxRequest(url);
-    
+
     if (response.trips && response.trips.length > 0) {
       const trip = response.trips[0];
-      
+
       return {
         distance: trip.distance, // metros
         duration: trip.duration, // segundos
         geometry: trip.geometry,
         legs: trip.legs,
         waypoints: response.waypoints,
-        waypointsOrder: response.waypoints.map(wp => wp.waypoint_index),
-        steps: trip.legs.flatMap(leg => leg.steps || [])
+        waypointsOrder: response.waypoints.map((wp) => wp.waypoint_index),
+        steps: trip.legs.flatMap((leg) => leg.steps || []),
       };
     }
-    
-    throw new Error('Nenhuma otimização encontrada');
+
+    throw new Error("Nenhuma otimização encontrada");
   } catch (error) {
-    console.error('Erro na otimização:', error.message);
+    console.error("Erro na otimização:", error.message);
     throw error;
   }
 };
@@ -287,49 +292,49 @@ const optimization = async (coordinates, options = {}) => {
  */
 const matrix = async (coordinates, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
   if (!Array.isArray(coordinates) || coordinates.length < 2) {
-    throw new Error('Pelo menos 2 coordenadas são necessárias');
+    throw new Error("Pelo menos 2 coordenadas são necessárias");
   }
 
   if (coordinates.length > 25) {
-    throw new Error('Máximo de 25 coordenadas permitidas');
+    throw new Error("Máximo de 25 coordenadas permitidas");
   }
 
   const {
-    profile = 'driving',
+    profile = "driving",
     sources = null, // índices das coordenadas de origem
-    destinations = null // índices das coordenadas de destino
+    destinations = null, // índices das coordenadas de destino
   } = options;
 
   // Construir coordenadas string
   const coordinatesString = coordinates
-    .map(coord => `${coord[0]},${coord[1]}`)
-    .join(';');
+    .map((coord) => `${coord[0]},${coord[1]}`)
+    .join(";");
 
   let url = `https://api.mapbox.com/directions-matrix/v1/mapbox/${profile}/${coordinatesString}?access_token=${MAPBOX_ACCESS_TOKEN}`;
-  
+
   if (sources) {
-    url += `&sources=${sources.join(';')}`;
+    url += `&sources=${sources.join(";")}`;
   }
-  
+
   if (destinations) {
-    url += `&destinations=${destinations.join(';')}`;
+    url += `&destinations=${destinations.join(";")}`;
   }
 
   try {
     const response = await makeMapboxRequest(url);
-    
+
     return {
       durations: response.durations, // matriz de tempos em segundos
       distances: response.distances, // matriz de distâncias em metros
       sources: response.sources,
-      destinations: response.destinations
+      destinations: response.destinations,
     };
   } catch (error) {
-    console.error('Erro na matrix:', error.message);
+    console.error("Erro na matrix:", error.message);
     throw error;
   }
 };
@@ -343,23 +348,19 @@ const matrix = async (coordinates, options = {}) => {
  */
 const isochrone = async (coordinate, contours_minutes, options = {}) => {
   if (!MAPBOX_ACCESS_TOKEN) {
-    throw new Error('Token do Mapbox não configurado');
+    throw new Error("Token do Mapbox não configurado");
   }
 
   if (!Array.isArray(coordinate) || coordinate.length !== 2) {
-    throw new Error('Coordenada deve ser [lng, lat]');
+    throw new Error("Coordenada deve ser [lng, lat]");
   }
 
   const [lng, lat] = coordinate;
-  if (typeof lng !== 'number' || typeof lat !== 'number') {
-    throw new Error('Coordenadas devem ser números válidos');
+  if (typeof lng !== "number" || typeof lat !== "number") {
+    throw new Error("Coordenadas devem ser números válidos");
   }
 
-  const {
-    profile = 'driving',
-    polygons = true,
-    denoise = 1
-  } = options;
+  const { profile = "driving", polygons = true, denoise = 1 } = options;
 
   const url = `https://api.mapbox.com/isochrone/v1/mapbox/${profile}/${lng},${lat}?access_token=${MAPBOX_ACCESS_TOKEN}&contours_minutes=${contours_minutes}&polygons=${polygons}&denoise=${denoise}`;
 
@@ -367,7 +368,7 @@ const isochrone = async (coordinate, contours_minutes, options = {}) => {
     const response = await makeMapboxRequest(url);
     return response;
   } catch (error) {
-    console.error('Erro no isochrone:', error.message);
+    console.error("Erro no isochrone:", error.message);
     throw error;
   }
 };
@@ -378,5 +379,5 @@ module.exports = {
   directions,
   optimization,
   matrix,
-  isochrone
+  isochrone,
 };

@@ -1,51 +1,51 @@
-const { verifyAccessToken, extractTokenFromHeader } = require('../utils/jwt');
+const { verifyAccessToken, extractTokenFromHeader } = require("../utils/jwt");
 
 /**
  * Middleware para extrair e validar JWT token
  */
 const authenticateToken = (req, res, next) => {
   try {
-    const authHeader = req.headers['authorization'];
+    const authHeader = req.headers["authorization"];
     const token = extractTokenFromHeader(authHeader);
 
     if (!token) {
-      return res.status(401).json({ 
-        error: 'Token de acesso obrigatório',
-        code: 'TOKEN_REQUIRED'
+      return res.status(401).json({
+        error: "Token de acesso obrigatório",
+        code: "TOKEN_REQUIRED",
       });
     }
 
     // Verificar e decodificar token
     const payload = verifyAccessToken(token);
-    
+
     // Adicionar dados do usuário na requisição
     req.user = {
       id: payload.sub,
       email: payload.email,
-      name: payload.name
+      name: payload.name,
     };
 
     next();
   } catch (error) {
-    console.error('Erro na autenticação:', error.message);
-    
-    if (error.message === 'Token expirado') {
-      return res.status(401).json({ 
-        error: 'Token expirado',
-        code: 'TOKEN_EXPIRED'
+    console.error("Erro na autenticação:", error.message);
+
+    if (error.message === "Token expirado") {
+      return res.status(401).json({
+        error: "Token expirado",
+        code: "TOKEN_EXPIRED",
       });
     }
-    
-    if (error.message === 'Token inválido') {
-      return res.status(401).json({ 
-        error: 'Token inválido',
-        code: 'TOKEN_INVALID'
+
+    if (error.message === "Token inválido") {
+      return res.status(401).json({
+        error: "Token inválido",
+        code: "TOKEN_INVALID",
       });
     }
-    
-    return res.status(401).json({ 
-      error: 'Falha na autenticação',
-      code: 'AUTH_FAILED'
+
+    return res.status(401).json({
+      error: "Falha na autenticação",
+      code: "AUTH_FAILED",
     });
   }
 };
@@ -55,9 +55,9 @@ const authenticateToken = (req, res, next) => {
  */
 const requireAuth = (req, res, next) => {
   if (!req.user) {
-    return res.status(401).json({ 
-      error: 'Autenticação obrigatória',
-      code: 'AUTH_REQUIRED'
+    return res.status(401).json({
+      error: "Autenticação obrigatória",
+      code: "AUTH_REQUIRED",
     });
   }
   next();
@@ -88,7 +88,7 @@ const requirePlan = (planType) => {
  */
 const optionalAuth = (req, res, next) => {
   try {
-    const authHeader = req.headers['authorization'];
+    const authHeader = req.headers["authorization"];
     const token = extractTokenFromHeader(authHeader);
 
     if (token) {
@@ -96,10 +96,10 @@ const optionalAuth = (req, res, next) => {
       req.user = {
         id: payload.sub,
         email: payload.email,
-        name: payload.name
+        name: payload.name,
       };
     }
-    
+
     next();
   } catch (error) {
     // Em caso de erro, continuar sem usuário
@@ -113,5 +113,5 @@ module.exports = {
   requireAuth,
   requireEmailVerified,
   requirePlan,
-  optionalAuth
+  optionalAuth,
 };

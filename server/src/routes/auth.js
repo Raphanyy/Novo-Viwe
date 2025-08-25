@@ -1,8 +1,8 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const { query, transaction } = require('../utils/database');
-const { generateTokenPair, verifyRefreshToken } = require('../utils/jwt');
-const { authenticateToken } = require('../middleware/auth');
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const { query, transaction } = require("../utils/database");
+const { generateTokenPair, verifyRefreshToken } = require("../utils/jwt");
+const { authenticateToken } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -10,32 +10,31 @@ const router = express.Router();
  * POST /api/auth/register
  * Registrar novo usuário
  */
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     // Validações básicas
     if (!name || !email || !password) {
-      return res.status(400).json({ 
-        error: 'Nome, email e senha são obrigatórios' 
+      return res.status(400).json({
+        error: "Nome, email e senha são obrigatórios",
       });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({ 
-        error: 'Senha deve ter pelo menos 8 caracteres' 
+      return res.status(400).json({
+        error: "Senha deve ter pelo menos 8 caracteres",
       });
     }
 
     // Verificar se email já existe
-    const existingUser = await query(
-      'SELECT id FROM users WHERE email = $1',
-      [email.toLowerCase()]
-    );
+    const existingUser = await query("SELECT id FROM users WHERE email = $1", [
+      email.toLowerCase(),
+    ]);
 
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ 
-        error: 'Email já está em uso' 
+      return res.status(409).json({
+        error: "Email já está em uso",
       });
     }
 
@@ -50,16 +49,15 @@ router.post('/register', async (req, res) => {
         `INSERT INTO users (name, email, password_hash)
          VALUES ($1, $2, $3)
          RETURNING id, name, email, created_at`,
-        [name.trim(), email.toLowerCase(), passwordHash]
+        [name.trim(), email.toLowerCase(), passwordHash],
       );
 
       const user = userResult.rows[0];
 
       // Criar preferências padrão
-      await client.query(
-        'INSERT INTO user_preferences (user_id) VALUES ($1)',
-        [user.id]
-      );
+      await client.query("INSERT INTO user_preferences (user_id) VALUES ($1)", [
+        user.id,
+      ]);
 
       return user;
     });
@@ -72,34 +70,33 @@ router.post('/register', async (req, res) => {
       `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at)
        VALUES ($1, $2, $3, NOW() + INTERVAL '30 days')`,
       [
-        result.id, 
-        tokens.refreshToken, 
-        await bcrypt.hash(tokens.refreshToken, 10)
-      ]
+        result.id,
+        tokens.refreshToken,
+        await bcrypt.hash(tokens.refreshToken, 10),
+      ],
     );
 
     // Log de auditoria
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'user_register', 'User', $1, $2)`,
-      [result.id, JSON.stringify({ email, name })]
+      [result.id, JSON.stringify({ email, name })],
     );
 
     res.status(201).json({
-      message: 'Usuário registrado com sucesso',
+      message: "Usuário registrado com sucesso",
       user: {
         id: result.id,
         name: result.name,
         email: result.email,
-        createdAt: result.created_at
+        createdAt: result.created_at,
       },
-      tokens
+      tokens,
     });
-
   } catch (error) {
-    console.error('Erro no registro:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    console.error("Erro no registro:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
     });
   }
 });
@@ -108,13 +105,13 @@ router.post('/register', async (req, res) => {
  * POST /api/auth/login
  * Fazer login
  */
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ 
-        error: 'Email e senha são obrigatórios' 
+      return res.status(400).json({
+        error: "Email e senha são obrigatórios",
       });
     }
 
@@ -123,36 +120,35 @@ router.post('/login', async (req, res) => {
       `SELECT id, name, email, password_hash, is_active, is_email_verified 
        FROM users 
        WHERE email = $1 AND deleted_at IS NULL`,
-      [email.toLowerCase()]
+      [email.toLowerCase()],
     );
 
     if (userResult.rows.length === 0) {
-      return res.status(401).json({ 
-        error: 'Email ou senha inválidos' 
+      return res.status(401).json({
+        error: "Email ou senha inválidos",
       });
     }
 
     const user = userResult.rows[0];
 
     if (!user.is_active) {
-      return res.status(401).json({ 
-        error: 'Conta desativada' 
+      return res.status(401).json({
+        error: "Conta desativada",
       });
     }
 
     // Verificar senha
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
-      return res.status(401).json({ 
-        error: 'Email ou senha inválidos' 
+      return res.status(401).json({
+        error: "Email ou senha inválidos",
       });
     }
 
     // Atualizar último login
-    await query(
-      'UPDATE users SET last_login_at = NOW() WHERE id = $1',
-      [user.id]
-    );
+    await query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [
+      user.id,
+    ]);
 
     // Gerar tokens
     const tokens = generateTokenPair(user);
@@ -168,32 +164,31 @@ router.post('/login', async (req, res) => {
         tokens.refreshToken,
         await bcrypt.hash(tokens.refreshToken, 10),
         req.ip,
-        req.get('User-Agent') || 'unknown'
-      ]
+        req.get("User-Agent") || "unknown",
+      ],
     );
 
     // Log de auditoria
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, ip_address)
        VALUES ($1, 'user_login', 'User', $1, $2)`,
-      [user.id, req.ip]
+      [user.id, req.ip],
     );
 
     res.json({
-      message: 'Login realizado com sucesso',
+      message: "Login realizado com sucesso",
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        isEmailVerified: user.is_email_verified
+        isEmailVerified: user.is_email_verified,
       },
-      tokens
+      tokens,
     });
-
   } catch (error) {
-    console.error('Erro no login:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    console.error("Erro no login:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
     });
   }
 });
@@ -202,13 +197,13 @@ router.post('/login', async (req, res) => {
  * POST /api/auth/refresh
  * Renovar access token usando refresh token
  */
-router.post('/refresh', async (req, res) => {
+router.post("/refresh", async (req, res) => {
   try {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({ 
-        error: 'Refresh token é obrigatório' 
+      return res.status(400).json({
+        error: "Refresh token é obrigatório",
       });
     }
 
@@ -217,8 +212,8 @@ router.post('/refresh', async (req, res) => {
     try {
       decoded = verifyRefreshToken(refreshToken);
     } catch (error) {
-      return res.status(401).json({ 
-        error: 'Refresh token inválido ou expirado' 
+      return res.status(401).json({
+        error: "Refresh token inválido ou expirado",
       });
     }
 
@@ -228,20 +223,20 @@ router.post('/refresh', async (req, res) => {
        FROM auth_sessions s
        JOIN users u ON s.user_id = u.id
        WHERE s.refresh_token = $1 AND s.is_active = true AND s.expires_at > NOW()`,
-      [refreshToken]
+      [refreshToken],
     );
 
     if (sessionResult.rows.length === 0) {
-      return res.status(401).json({ 
-        error: 'Sessão inválida ou expirada' 
+      return res.status(401).json({
+        error: "Sessão inválida ou expirada",
       });
     }
 
     const session = sessionResult.rows[0];
 
     if (!session.is_active) {
-      return res.status(401).json({ 
-        error: 'Conta desativada' 
+      return res.status(401).json({
+        error: "Conta desativada",
       });
     }
 
@@ -249,28 +244,26 @@ router.post('/refresh', async (req, res) => {
     const tokens = generateTokenPair({
       id: session.id,
       name: session.name,
-      email: session.email
+      email: session.email,
     });
 
     // Atualizar última utilização da sessão
-    await query(
-      'UPDATE auth_sessions SET last_used_at = NOW() WHERE id = $1',
-      [session.id]
-    );
+    await query("UPDATE auth_sessions SET last_used_at = NOW() WHERE id = $1", [
+      session.id,
+    ]);
 
     res.json({
-      message: 'Token renovado com sucesso',
+      message: "Token renovado com sucesso",
       tokens: {
         accessToken: tokens.accessToken,
         accessTokenExpiresAt: tokens.accessTokenExpiresAt,
-        tokenType: tokens.tokenType
-      }
+        tokenType: tokens.tokenType,
+      },
     });
-
   } catch (error) {
-    console.error('Erro no refresh:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    console.error("Erro no refresh:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
     });
   }
 });
@@ -279,16 +272,16 @@ router.post('/refresh', async (req, res) => {
  * POST /api/auth/logout
  * Fazer logout (invalidar refresh token)
  */
-router.post('/logout', authenticateToken, async (req, res) => {
+router.post("/logout", authenticateToken, async (req, res) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (token) {
       // Invalidar todas as sessões do usuário
       await query(
-        'UPDATE auth_sessions SET is_active = FALSE WHERE user_id = $1',
-        [req.user.id]
+        "UPDATE auth_sessions SET is_active = FALSE WHERE user_id = $1",
+        [req.user.id],
       );
     }
 
@@ -296,14 +289,14 @@ router.post('/logout', authenticateToken, async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'user_logout', 'User', $1)`,
-      [req.user.id]
+      [req.user.id],
     );
 
-    res.json({ message: 'Logout realizado com sucesso' });
+    res.json({ message: "Logout realizado com sucesso" });
   } catch (error) {
-    console.error('Erro no logout:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    console.error("Erro no logout:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
     });
   }
 });
@@ -312,7 +305,7 @@ router.post('/logout', authenticateToken, async (req, res) => {
  * GET /api/auth/me
  * Obter dados do usuário atual
  */
-router.get('/me', authenticateToken, async (req, res) => {
+router.get("/me", authenticateToken, async (req, res) => {
   try {
     const userResult = await query(
       `SELECT 
@@ -323,11 +316,11 @@ router.get('/me', authenticateToken, async (req, res) => {
        FROM users u
        LEFT JOIN user_preferences up ON u.id = up.user_id
        WHERE u.id = $1 AND u.deleted_at IS NULL`,
-      [req.user.id]
+      [req.user.id],
     );
 
     if (userResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
     const user = userResult.rows[0];
@@ -351,14 +344,14 @@ router.get('/me', authenticateToken, async (req, res) => {
           theme: user.theme,
           language: user.language,
           pushNotifications: user.push_notifications,
-          emailNotifications: user.email_notifications
-        }
-      }
+          emailNotifications: user.email_notifications,
+        },
+      },
     });
   } catch (error) {
-    console.error('Erro ao obter usuário:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor' 
+    console.error("Erro ao obter usuário:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
     });
   }
 });
@@ -367,11 +360,11 @@ router.get('/me', authenticateToken, async (req, res) => {
  * GET /api/auth/test
  * Testar autenticação
  */
-router.get('/test', authenticateToken, (req, res) => {
+router.get("/test", authenticateToken, (req, res) => {
   res.json({
-    message: 'Autenticação funcionando!',
+    message: "Autenticação funcionando!",
     user: req.user,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

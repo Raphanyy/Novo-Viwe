@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 // Interfaces
 interface User {
@@ -7,7 +13,7 @@ interface User {
   email: string;
   avatarUrl?: string;
   isEmailVerified: boolean;
-  planType: 'basic' | 'premium' | 'interactive';
+  planType: "basic" | "premium" | "interactive";
 }
 
 interface LoginCredentials {
@@ -26,15 +32,19 @@ interface AuthTokens {
   refreshToken: string;
   accessTokenExpiresAt: string;
   refreshTokenExpiresAt: string;
-  tokenType: 'Bearer';
+  tokenType: "Bearer";
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
-  register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    credentials: LoginCredentials,
+  ) => Promise<{ success: boolean; error?: string }>;
+  register: (
+    data: RegisterData,
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
 }
@@ -44,16 +54,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Storage keys
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'viwe_access_token',
-  REFRESH_TOKEN: 'viwe_refresh_token',
-  USER: 'viwe_user'
+  ACCESS_TOKEN: "viwe_access_token",
+  REFRESH_TOKEN: "viwe_refresh_token",
+  USER: "viwe_user",
 };
 
 // API base URL
-const API_BASE = '/api';
+const API_BASE = "/api";
 
 // Provider
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -87,13 +99,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fazer requisição autenticada
   const apiRequest = async (
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<Response> => {
     const token = getAccessToken();
-    
+
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers
+      "Content-Type": "application/json",
+      ...options.headers,
     };
 
     if (token) {
@@ -102,7 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const response = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
-      headers
+      headers,
     });
 
     // Se token expirou, tentar renovar
@@ -112,10 +124,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Tentar novamente com token renovado
         const newToken = getAccessToken();
         headers.Authorization = `Bearer ${newToken}`;
-        
+
         return fetch(`${API_BASE}${endpoint}`, {
           ...options,
-          headers
+          headers,
         });
       } else {
         // Token refresh falhou, fazer logout
@@ -133,11 +145,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (!refreshToken) return false;
 
       const response = await fetch(`${API_BASE}/auth/refresh`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ refreshToken })
+        body: JSON.stringify({ refreshToken }),
       });
 
       if (response.ok) {
@@ -148,22 +160,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       return false;
     } catch (error) {
-      console.error('Erro ao renovar token:', error);
+      console.error("Erro ao renovar token:", error);
       return false;
     }
   };
 
   // Login
-  const login = async (credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    credentials: LoginCredentials,
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
 
       const response = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
       const data = await response.json();
@@ -171,34 +185,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.ok) {
         // Salvar tokens
         saveTokens(data.tokens);
-        
+
         // Salvar usuário
         setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
 
         return { success: true };
       } else {
-        return { success: false, error: data.error || 'Erro no login' };
+        return { success: false, error: data.error || "Erro no login" };
       }
     } catch (error) {
-      console.error('Erro no login:', error);
-      return { success: false, error: 'Erro de conexão' };
+      console.error("Erro no login:", error);
+      return { success: false, error: "Erro de conexão" };
     } finally {
       setIsLoading(false);
     }
   };
 
   // Registro
-  const register = async (data: RegisterData): Promise<{ success: boolean; error?: string }> => {
+  const register = async (
+    data: RegisterData,
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
 
       const response = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const responseData = await response.json();
@@ -206,18 +222,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.ok) {
         // Salvar tokens
         saveTokens(responseData.tokens);
-        
+
         // Salvar usuário
         setUser(responseData.user);
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(responseData.user));
+        localStorage.setItem(
+          STORAGE_KEYS.USER,
+          JSON.stringify(responseData.user),
+        );
 
         return { success: true };
       } else {
-        return { success: false, error: responseData.error || 'Erro no registro' };
+        return {
+          success: false,
+          error: responseData.error || "Erro no registro",
+        };
       }
     } catch (error) {
-      console.error('Erro no registro:', error);
-      return { success: false, error: 'Erro de conexão' };
+      console.error("Erro no registro:", error);
+      return { success: false, error: "Erro de conexão" };
     } finally {
       setIsLoading(false);
     }
@@ -227,9 +249,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = async (): Promise<void> => {
     try {
       // Tentar fazer logout no servidor
-      await apiRequest('/auth/logout', { method: 'POST' });
+      await apiRequest("/auth/logout", { method: "POST" });
     } catch (error) {
-      console.error('Erro no logout do servidor:', error);
+      console.error("Erro no logout do servidor:", error);
     } finally {
       clearAuth();
     }
@@ -249,8 +271,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return;
       }
 
-      const response = await apiRequest('/auth/me');
-      
+      const response = await apiRequest("/auth/me");
+
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
@@ -259,7 +281,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         clearAuth();
       }
     } catch (error) {
-      console.error('Erro ao verificar usuário:', error);
+      console.error("Erro ao verificar usuário:", error);
       clearAuth();
     } finally {
       setIsLoading(false);
@@ -275,7 +297,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const userData = JSON.parse(storedUser);
         setUser(userData);
-        
+
         // Verificar se token ainda é válido
         checkCurrentUser();
       } catch (error) {
@@ -291,9 +313,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const interval = setInterval(() => {
-      refreshTokenInternal();
-    }, 10 * 60 * 1000); // 10 minutos
+    const interval = setInterval(
+      () => {
+        refreshTokenInternal();
+      },
+      10 * 60 * 1000,
+    ); // 10 minutos
 
     return () => clearInterval(interval);
   }, [isAuthenticated]);
@@ -305,21 +330,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     login,
     register,
     logout,
-    refreshToken
+    refreshToken,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Hook personalizado
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
   return context;
 };
@@ -328,12 +349,15 @@ export const useAuth = (): AuthContextType => {
 export const useApiRequest = () => {
   const { logout } = useAuth();
 
-  return async (endpoint: string, options: RequestInit = {}): Promise<Response> => {
+  return async (
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<Response> => {
     const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-    
+
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers
+      "Content-Type": "application/json",
+      ...options.headers,
     };
 
     if (token) {
@@ -342,7 +366,7 @@ export const useApiRequest = () => {
 
     const response = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
-      headers
+      headers,
     });
 
     // Se não autorizado, fazer logout
