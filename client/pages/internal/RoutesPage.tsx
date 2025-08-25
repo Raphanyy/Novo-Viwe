@@ -38,73 +38,24 @@ const RoutesPage: React.FC = () => {
   const { loading, error, execute } = useLoading();
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
 
-  // Dados mockados das rotas
-  const routes: RouteData[] = [
-    {
-      id: 1,
-      name: "Rota Casa → Trabalho",
-      stopCount: 5,
-      createdAt: "2024-01-15",
-      status: "active",
-      description: "Rota diária otimizada para o trabalho",
-      estimatedDuration: "25 min",
-      totalDistance: "12.5 km",
-      isFavorite: true,
-      linkedSet: "Rotas Diárias",
-      lastModified: "2024-01-20T08:30:00",
-    },
-    {
-      id: 2,
-      name: "Entrega Express - Centro",
-      stopCount: 8,
-      createdAt: "2024-01-18",
-      status: "active",
-      description: "Rota de entregas no centro da cidade",
-      estimatedDuration: "45 min",
-      totalDistance: "18.2 km",
-      isFavorite: false,
-      lastModified: "2024-01-19T14:15:00",
-    },
-    {
-      id: 3,
-      name: "Reunião Cliente - Zona Sul",
-      stopCount: 3,
-      createdAt: "2024-01-20",
-      scheduledDate: "2024-01-25T14:30:00",
-      status: "scheduled",
-      description: "Visitas a clientes na zona sul",
-      estimatedDuration: "1h 20min",
-      totalDistance: "25.8 km",
-      isFavorite: false,
-      lastModified: "2024-01-20T10:45:00",
-    },
-    {
-      id: 4,
-      name: "Rota Fim de Semana",
-      stopCount: 4,
-      createdAt: "2024-01-19",
-      scheduledDate: "2024-01-27T09:00:00",
-      status: "scheduled",
-      description: "Passeios e compras de fim de semana",
-      estimatedDuration: "2h 15min",
-      totalDistance: "35.4 km",
-      isFavorite: true,
-      linkedSet: "Rotas de Lazer",
-      lastModified: "2024-01-19T16:22:00",
-    },
-    {
-      id: 5,
-      name: "Rascunho - Viagem Litoral",
-      stopCount: 6,
-      createdAt: "2024-01-21",
-      status: "draft",
-      description: "Planejamento de viagem para o litoral",
-      estimatedDuration: "3h 45min",
-      totalDistance: "85.7 km",
-      isFavorite: false,
-      lastModified: "2024-01-21T11:30:00",
-    },
-  ];
+  // Carregar rotas da API
+  const loadRoutes = async () => {
+    const result = await execute(() => routesService.getRoutes());
+    if (result) {
+      setRoutes(result);
+    }
+  };
+
+  // Carregamento inicial
+  useEffect(() => {
+    loadRoutes();
+  }, []);
+
+  // Função para recarregar após criar/editar rota
+  const handleRouteChange = () => {
+    loadRoutes();
+    closeRouteModal();
+  };
 
   const statusConfig = {
     active: { label: "Ativa", color: "text-green-600" },
