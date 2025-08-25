@@ -85,6 +85,9 @@ const LoginPage: React.FC = () => {
               </p>
             </div>
 
+            {/* Verificação de configuração Supabase */}
+            <SupabaseConfigCheck />
+
             {/* Formulário */}
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Campo Email */}
