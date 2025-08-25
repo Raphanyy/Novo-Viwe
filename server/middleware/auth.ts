@@ -19,6 +19,13 @@ declare global {
 // Middleware para extrair token do usuário e verificar autenticação
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // Verificar se o Supabase está configurado
+    if (!supabasePublic) {
+      req.user = undefined;
+      req.supabase = undefined;
+      return next();
+    }
+
     // Extrair token do header Authorization
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
