@@ -129,7 +129,7 @@ router.get("/:id", async (req, res) => {
     const clientResult = await query(
       `SELECT * FROM clients 
        WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
-      [id, userId]
+      [id, userId],
     );
 
     if (clientResult.rows.length === 0) {
@@ -151,7 +151,7 @@ router.get("/:id", async (req, res) => {
        WHERE rs.client_id = $1 AND r.deleted_at IS NULL
        ORDER BY r.created_at DESC, rs.stop_order ASC
        LIMIT 50`,
-      [id]
+      [id],
     );
 
     // Buscar estatísticas do cliente
@@ -165,7 +165,7 @@ router.get("/:id", async (req, res) => {
        FROM routes r
        JOIN route_stops rs ON r.id = rs.route_id
        WHERE rs.client_id = $1 AND r.deleted_at IS NULL`,
-      [id]
+      [id],
     );
 
     const stats = statsResult.rows[0];
@@ -245,7 +245,7 @@ router.post("/", async (req, res) => {
     // Verificar se já existe cliente com mesmo nome/telefone
     const existingClient = await query(
       "SELECT id FROM clients WHERE user_id = $1 AND (name = $2 OR phone = $3) AND deleted_at IS NULL",
-      [userId, name.trim(), phone.trim()]
+      [userId, name.trim(), phone.trim()],
     );
 
     if (existingClient.rows.length > 0) {
@@ -274,14 +274,14 @@ router.post("/", async (req, res) => {
         longitude || null,
         notes?.trim() || null,
         tags || null,
-      ]
+      ],
     );
 
     // Log de auditoria
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'create_client', 'Client', $2, $3)`,
-      [userId, result.rows[0].id, JSON.stringify({ name, phone, company })]
+      [userId, result.rows[0].id, JSON.stringify({ name, phone, company })],
     );
 
     res.status(201).json({
@@ -321,7 +321,7 @@ router.patch("/:id", async (req, res) => {
     // Verificar se cliente existe e pertence ao usuário
     const existingClient = await query(
       "SELECT * FROM clients WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
-      [id, userId]
+      [id, userId],
     );
 
     if (existingClient.rows.length === 0) {
@@ -457,7 +457,7 @@ router.patch("/:id", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'update_client', 'Client', $2, $3)`,
-      [userId, id, JSON.stringify(req.body)]
+      [userId, id, JSON.stringify(req.body)],
     );
 
     res.json({
@@ -482,7 +482,7 @@ router.delete("/:id", async (req, res) => {
     // Verificar se cliente existe e pertence ao usuário
     const existingClient = await query(
       "SELECT * FROM clients WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
-      [id, userId]
+      [id, userId],
     );
 
     if (existingClient.rows.length === 0) {
@@ -495,7 +495,7 @@ router.delete("/:id", async (req, res) => {
        FROM routes r
        JOIN route_stops rs ON r.id = rs.route_id
        WHERE rs.client_id = $1 AND r.status IN ('active', 'scheduled') AND r.deleted_at IS NULL`,
-      [id]
+      [id],
     );
 
     if (activeRoutes.rows.length > 0) {
@@ -509,20 +509,20 @@ router.delete("/:id", async (req, res) => {
       // Soft delete do cliente
       const deletedClient = await client.query(
         "UPDATE clients SET deleted_at = NOW() WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
 
       // Remover cliente das paradas de rotas futuras (manter histórico)
       await client.query(
         "UPDATE route_stops SET client_id = NULL WHERE client_id = $1",
-        [id]
+        [id],
       );
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
          VALUES ($1, 'delete_client', 'Client', $2)`,
-        [userId, id]
+        [userId, id],
       );
 
       return deletedClient.rows[0];
@@ -557,7 +557,7 @@ router.post("/:id/activate", async (req, res) => {
        SET is_active = $1, updated_at = NOW()
        WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL
        RETURNING *`,
-      [isActive, id, userId]
+      [isActive, id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -573,7 +573,7 @@ router.post("/:id/activate", async (req, res) => {
         isActive ? "activate_client" : "deactivate_client",
         id,
         JSON.stringify({ isActive }),
-      ]
+      ],
     );
 
     res.json({
@@ -605,7 +605,7 @@ router.get("/stats", async (req, res) => {
       FROM clients 
       WHERE user_id = $1 AND deleted_at IS NULL
     `,
-      [userId]
+      [userId],
     );
 
     // Top clientes por número de rotas
@@ -624,7 +624,7 @@ router.get("/stats", async (req, res) => {
       ORDER BY routes_count DESC, stops_count DESC
       LIMIT 10
     `,
-      [userId]
+      [userId],
     );
 
     // Clientes criados recentemente
@@ -636,7 +636,7 @@ router.get("/stats", async (req, res) => {
       ORDER BY created_at DESC
       LIMIT 5
     `,
-      [userId]
+      [userId],
     );
 
     res.json({
@@ -663,7 +663,7 @@ router.get("/:id/nearby", async (req, res) => {
     // Buscar cliente base
     const baseClientResult = await query(
       "SELECT latitude, longitude FROM clients WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
-      [id, userId]
+      [id, userId],
     );
 
     if (baseClientResult.rows.length === 0) {
@@ -697,7 +697,7 @@ router.get("/:id/nearby", async (req, res) => {
       ORDER BY distance ASC
       LIMIT 20
     `,
-      [latitude, longitude, userId, id, parseFloat(radius)]
+      [latitude, longitude, userId, id, parseFloat(radius)],
     );
 
     res.json({

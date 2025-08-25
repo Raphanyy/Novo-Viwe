@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
        FROM users u
        LEFT JOIN user_preferences up ON u.id = up.user_id
        WHERE u.id = $1 AND u.deleted_at IS NULL`,
-      [userId]
+      [userId],
     );
 
     if (userResult.rows.length === 0) {
@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
        FROM routes r
        LEFT JOIN route_metrics rm ON r.id = rm.route_id
        WHERE r.user_id = $1 AND r.deleted_at IS NULL`,
-      [userId]
+      [userId],
     );
 
     const stats = statsResult.rows[0];
@@ -68,10 +68,10 @@ router.get("/", async (req, res) => {
         isEmailVerified: user.is_email_verified,
         createdAt: user.created_at,
         lastLoginAt: user.last_login_at,
-        
+
         preferences: {
-          theme: user.theme || 'auto',
-          language: user.language || 'pt-BR',
+          theme: user.theme || "auto",
+          language: user.language || "pt-BR",
           pushNotifications: user.push_notifications !== false,
           emailNotifications: user.email_notifications !== false,
           trafficAlerts: user.traffic_alerts !== false,
@@ -83,8 +83,8 @@ router.get("/", async (req, res) => {
           doNotDisturbStart: user.do_not_disturb_start,
           doNotDisturbEnd: user.do_not_disturb_end,
           fontSize: user.font_size || 16,
-          density: user.density || 'normal',
-          defaultMapMode: user.default_map_mode || 'normal',
+          density: user.density || "normal",
+          defaultMapMode: user.default_map_mode || "normal",
           showTrafficAlways: user.show_traffic_always === true,
           offlineMapsEnabled: user.offline_maps_enabled === true,
         },
@@ -110,14 +110,7 @@ router.get("/", async (req, res) => {
 router.patch("/", async (req, res) => {
   try {
     const userId = req.user.id;
-    const {
-      name,
-      phone,
-      company,
-      country,
-      city,
-      avatarUrl,
-    } = req.body;
+    const { name, phone, company, country, city, avatarUrl } = req.body;
 
     // Preparar campos para atualização
     const updates = [];
@@ -194,7 +187,7 @@ router.patch("/", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'update_user', 'User', $1, $2)`,
-      [userId, JSON.stringify(req.body)]
+      [userId, JSON.stringify(req.body)],
     );
 
     res.json({
@@ -240,7 +233,7 @@ router.patch("/preferences", async (req, res) => {
     let paramIndex = 1;
 
     if (theme !== undefined) {
-      const validThemes = ['auto', 'light', 'dark'];
+      const validThemes = ["auto", "light", "dark"];
       if (!validThemes.includes(theme)) {
         return res.status(400).json({
           error: "Tema deve ser 'auto', 'light' ou 'dark'",
@@ -329,7 +322,7 @@ router.patch("/preferences", async (req, res) => {
     }
 
     if (density !== undefined) {
-      const validDensities = ['compact', 'normal', 'comfortable'];
+      const validDensities = ["compact", "normal", "comfortable"];
       if (!validDensities.includes(density)) {
         return res.status(400).json({
           error: "Densidade deve ser 'compact', 'normal' ou 'comfortable'",
@@ -341,7 +334,7 @@ router.patch("/preferences", async (req, res) => {
     }
 
     if (defaultMapMode !== undefined) {
-      const validModes = ['normal', 'satellite', 'traffic'];
+      const validModes = ["normal", "satellite", "traffic"];
       if (!validModes.includes(defaultMapMode)) {
         return res.status(400).json({
           error: "Modo do mapa deve ser 'normal', 'satellite' ou 'traffic'",
@@ -376,20 +369,20 @@ router.patch("/preferences", async (req, res) => {
     // Verificar se preferências existem
     const existingPrefs = await query(
       "SELECT id FROM user_preferences WHERE user_id = $1",
-      [userId]
+      [userId],
     );
 
     let result;
 
     if (existingPrefs.rows.length === 0) {
       // Criar preferências se não existirem
-      const createFields = ['user_id'];
+      const createFields = ["user_id"];
       const createValues = [userId];
       let createParamIndex = 2;
 
       updates.forEach((update, index) => {
         if (update !== `updated_at = NOW()`) {
-          const field = update.split(' = ')[0];
+          const field = update.split(" = ")[0];
           createFields.push(field);
           createValues.push(values[index]);
         }
@@ -420,7 +413,7 @@ router.patch("/preferences", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'update_preferences', 'UserPreferences', $1, $2)`,
-      [userId, JSON.stringify(req.body)]
+      [userId, JSON.stringify(req.body)],
     );
 
     res.json({
@@ -442,7 +435,7 @@ router.post("/avatar", async (req, res) => {
     const userId = req.user.id;
     const { avatarUrl } = req.body;
 
-    if (!avatarUrl || typeof avatarUrl !== 'string') {
+    if (!avatarUrl || typeof avatarUrl !== "string") {
       return res.status(400).json({
         error: "URL do avatar é obrigatória",
       });
@@ -462,7 +455,7 @@ router.post("/avatar", async (req, res) => {
        SET avatar_url = $1, updated_at = NOW()
        WHERE id = $2 AND deleted_at IS NULL
        RETURNING id, name, email, avatar_url`,
-      [avatarUrl, userId]
+      [avatarUrl, userId],
     );
 
     if (result.rows.length === 0) {
@@ -473,7 +466,7 @@ router.post("/avatar", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'update_avatar', 'User', $1, $2)`,
-      [userId, JSON.stringify({ avatarUrl })]
+      [userId, JSON.stringify({ avatarUrl })],
     );
 
     res.json({
@@ -515,14 +508,15 @@ router.post("/change-password", async (req, res) => {
 
     if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
       return res.status(400).json({
-        error: "Nova senha deve conter ao menos: 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial",
+        error:
+          "Nova senha deve conter ao menos: 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial",
       });
     }
 
     // Buscar usuário e verificar senha atual
     const userResult = await query(
       "SELECT id, password_hash FROM users WHERE id = $1 AND deleted_at IS NULL",
-      [userId]
+      [userId],
     );
 
     if (userResult.rows.length === 0) {
@@ -532,7 +526,10 @@ router.post("/change-password", async (req, res) => {
     const user = userResult.rows[0];
 
     // Verificar senha atual
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password_hash);
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password_hash,
+    );
     if (!isValidPassword) {
       return res.status(401).json({
         error: "Senha atual incorreta",
@@ -547,20 +544,20 @@ router.post("/change-password", async (req, res) => {
       // Atualizar senha
       await client.query(
         "UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2",
-        [newPasswordHash, userId]
+        [newPasswordHash, userId],
       );
 
       // Invalidar todas as sessões ativas (exceto a atual seria ideal, mas por segurança invalidamos todas)
       await client.query(
         "UPDATE auth_sessions SET is_active = FALSE WHERE user_id = $1",
-        [userId]
+        [userId],
       );
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
          VALUES ($1, 'change_password', 'User', $1)`,
-        [userId]
+        [userId],
       );
 
       return true;
@@ -594,7 +591,7 @@ router.delete("/", async (req, res) => {
     // Verificar senha
     const userResult = await query(
       "SELECT id, password_hash FROM users WHERE id = $1 AND deleted_at IS NULL",
-      [userId]
+      [userId],
     );
 
     if (userResult.rows.length === 0) {
@@ -614,26 +611,29 @@ router.delete("/", async (req, res) => {
       // Soft delete do usuário
       await client.query(
         "UPDATE users SET deleted_at = NOW(), is_active = FALSE WHERE id = $1",
-        [userId]
+        [userId],
       );
 
       // Invalidar todas as sessões
       await client.query(
         "UPDATE auth_sessions SET is_active = FALSE WHERE user_id = $1",
-        [userId]
+        [userId],
       );
 
       // Soft delete das rotas
       await client.query(
         "UPDATE routes SET deleted_at = NOW() WHERE user_id = $1",
-        [userId]
+        [userId],
       );
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
          VALUES ($1, 'delete_user', 'User', $1, $2)`,
-        [userId, JSON.stringify({ reason: reason || 'User requested deletion' })]
+        [
+          userId,
+          JSON.stringify({ reason: reason || "User requested deletion" }),
+        ],
       );
 
       return true;
@@ -664,10 +664,10 @@ router.get("/sessions", async (req, res) => {
        FROM auth_sessions 
        WHERE user_id = $1 AND expires_at > NOW()
        ORDER BY last_used_at DESC`,
-      [userId]
+      [userId],
     );
 
-    const sessions = sessionsResult.rows.map(session => ({
+    const sessions = sessionsResult.rows.map((session) => ({
       id: session.id,
       deviceInfo: session.device_info,
       userAgent: session.user_agent,
@@ -682,7 +682,7 @@ router.get("/sessions", async (req, res) => {
     res.json({
       sessions,
       total: sessions.length,
-      active: sessions.filter(s => s.isActive).length,
+      active: sessions.filter((s) => s.isActive).length,
     });
   } catch (error) {
     console.error("Erro ao buscar sessões:", error);
@@ -704,7 +704,7 @@ router.delete("/sessions/:sessionId", async (req, res) => {
        SET is_active = FALSE 
        WHERE id = $1 AND user_id = $2
        RETURNING id`,
-      [sessionId, userId]
+      [sessionId, userId],
     );
 
     if (result.rows.length === 0) {
@@ -717,7 +717,7 @@ router.delete("/sessions/:sessionId", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'revoke_session', 'AuthSession', $2)`,
-      [userId, sessionId]
+      [userId, sessionId],
     );
 
     res.json({

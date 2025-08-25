@@ -29,10 +29,10 @@ router.get("/plans", async (req, res) => {
     const plansResult = await query(
       `SELECT * FROM plans 
        WHERE is_active = true 
-       ORDER BY price_cents ASC`
+       ORDER BY price_cents ASC`,
     );
 
-    const plans = plansResult.rows.map(plan => ({
+    const plans = plansResult.rows.map((plan) => ({
       id: plan.id,
       name: plan.name,
       description: plan.description,
@@ -86,13 +86,13 @@ router.get("/subscription", async (req, res) => {
        WHERE s.user_id = $1 AND s.status IN ('active', 'trialing')
        ORDER BY s.created_at DESC
        LIMIT 1`,
-      [userId]
+      [userId],
     );
 
     if (subscriptionResult.rows.length === 0) {
       // Usuário no plano básico (gratuito)
       const basicPlanResult = await query(
-        "SELECT * FROM plans WHERE name = 'Básico' AND is_active = true"
+        "SELECT * FROM plans WHERE name = 'Básico' AND is_active = true",
       );
 
       if (basicPlanResult.rows.length > 0) {
@@ -139,7 +139,10 @@ router.get("/subscription", async (req, res) => {
         amount: {
           cents: subscription.amount_cents,
           currency: subscription.currency,
-          formatted: formatPrice(subscription.amount_cents, subscription.currency),
+          formatted: formatPrice(
+            subscription.amount_cents,
+            subscription.currency,
+          ),
         },
         billingPeriod: subscription.billing_period,
         routesUsed: subscription.routes_used,
@@ -161,8 +164,8 @@ router.get("/subscription", async (req, res) => {
           hasAdvancedAnalytics: subscription.has_advanced_analytics,
         },
       },
-      isActive: subscription.status === 'active',
-      isTrial: subscription.status === 'trialing',
+      isActive: subscription.status === "active",
+      isTrial: subscription.status === "trialing",
     });
   } catch (error) {
     console.error("Erro ao buscar assinatura:", error);
@@ -188,7 +191,7 @@ router.post("/subscribe", async (req, res) => {
     // Buscar plano
     const planResult = await query(
       "SELECT * FROM plans WHERE id = $1 AND is_active = true",
-      [planId]
+      [planId],
     );
 
     if (planResult.rows.length === 0) {
@@ -202,7 +205,7 @@ router.post("/subscribe", async (req, res) => {
     // Verificar se usuário já tem assinatura ativa
     const existingSubscription = await query(
       "SELECT id FROM subscriptions WHERE user_id = $1 AND status IN ('active', 'trialing')",
-      [userId]
+      [userId],
     );
 
     if (existingSubscription.rows.length > 0) {
@@ -240,7 +243,7 @@ router.post("/subscribe", async (req, res) => {
           plan.currency,
           plan.billing_period,
           plan.max_routes,
-        ]
+        ],
       );
 
       const subscription = subscriptionResult.rows[0];
@@ -248,11 +251,7 @@ router.post("/subscribe", async (req, res) => {
       // Atualizar plano do usuário
       await client.query(
         "UPDATE users SET plan_type = $1, plan_expires_at = $2 WHERE id = $3",
-        [
-          plan.name.toLowerCase(),
-          subscription.end_date,
-          userId,
-        ]
+        [plan.name.toLowerCase(), subscription.end_date, userId],
       );
 
       // Criar registro de pagamento (simulado)
@@ -272,7 +271,7 @@ router.post("/subscribe", async (req, res) => {
           "stripe",
           `sim_${Date.now()}`, // Transaction ID simulado
           `Assinatura do plano ${plan.name}`,
-        ]
+        ],
       );
 
       // Log de auditoria
@@ -283,7 +282,7 @@ router.post("/subscribe", async (req, res) => {
           userId,
           subscription.id,
           JSON.stringify({ planId, planName: plan.name }),
-        ]
+        ],
       );
 
       return subscription;
@@ -320,7 +319,7 @@ router.post("/cancel", async (req, res) => {
       // Buscar assinatura ativa
       const subscriptionResult = await client.query(
         "SELECT * FROM subscriptions WHERE user_id = $1 AND status = 'active'",
-        [userId]
+        [userId],
       );
 
       if (subscriptionResult.rows.length === 0) {
@@ -335,7 +334,7 @@ router.post("/cancel", async (req, res) => {
          SET status = 'cancelled', cancelled_at = NOW()
          WHERE id = $1
          RETURNING *`,
-        [subscription.id]
+        [subscription.id],
       );
 
       // Log de auditoria
@@ -346,7 +345,7 @@ router.post("/cancel", async (req, res) => {
           userId,
           subscription.id,
           JSON.stringify({ reason: reason || "User requested cancellation" }),
-        ]
+        ],
       );
 
       return cancelledSubscription.rows[0];
@@ -389,10 +388,10 @@ router.get("/history", async (req, res) => {
        WHERE ph.user_id = $1
        ORDER BY ph.created_at DESC
        LIMIT $2 OFFSET $3`,
-      [userId, parseInt(limit), parseInt(offset)]
+      [userId, parseInt(limit), parseInt(offset)],
     );
 
-    const payments = historyResult.rows.map(payment => ({
+    const payments = historyResult.rows.map((payment) => ({
       id: payment.id,
       amount: {
         cents: payment.amount_cents,
@@ -414,7 +413,7 @@ router.get("/history", async (req, res) => {
     // Contar total
     const countResult = await query(
       "SELECT COUNT(*) as total FROM payment_history WHERE user_id = $1",
-      [userId]
+      [userId],
     );
 
     res.json({
@@ -450,7 +449,7 @@ router.get("/usage", async (req, res) => {
        WHERE s.user_id = $1 AND s.status IN ('active', 'trialing')
        ORDER BY s.created_at DESC
        LIMIT 1`,
-      [userId]
+      [userId],
     );
 
     // Contar rotas criadas no período atual
@@ -459,7 +458,7 @@ router.get("/usage", async (req, res) => {
        FROM routes
        WHERE user_id = $1 AND deleted_at IS NULL
          AND created_at >= DATE_TRUNC('month', NOW())`,
-      [userId]
+      [userId],
     );
 
     const routesCount = parseInt(routesResult.rows[0].routes_count);
@@ -486,7 +485,8 @@ router.get("/usage", async (req, res) => {
     }
 
     const subscription = subscriptionResult.rows[0];
-    const limit = subscription.max_routes === -1 ? null : subscription.max_routes;
+    const limit =
+      subscription.max_routes === -1 ? null : subscription.max_routes;
 
     res.json({
       usage: {
@@ -520,37 +520,41 @@ router.get("/usage", async (req, res) => {
  * POST /api/billing/webhooks/stripe
  * Webhook do Stripe (placeholder)
  */
-router.post("/webhooks/stripe", express.raw({ type: "application/json" }), async (req, res) => {
-  try {
-    // const sig = req.headers['stripe-signature'];
-    // const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+router.post(
+  "/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    try {
+      // const sig = req.headers['stripe-signature'];
+      // const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
 
-    // Por enquanto, apenas log
-    console.log("Webhook Stripe recebido (simulado):", {
-      timestamp: new Date().toISOString(),
-      bodySize: req.body.length,
-    });
+      // Por enquanto, apenas log
+      console.log("Webhook Stripe recebido (simulado):", {
+        timestamp: new Date().toISOString(),
+        bodySize: req.body.length,
+      });
 
-    res.json({ received: true });
-  } catch (error) {
-    console.error("Erro no webhook Stripe:", error);
-    res.status(400).json({ error: "Webhook error" });
-  }
-});
+      res.json({ received: true });
+    } catch (error) {
+      console.error("Erro no webhook Stripe:", error);
+      res.status(400).json({ error: "Webhook error" });
+    }
+  },
+);
 
 /**
  * Função auxiliar para formatar preço
  */
 function formatPrice(cents, currency = "BRL") {
   const amount = cents / 100;
-  
+
   if (currency === "BRL") {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
     }).format(amount);
   }
-  
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,

@@ -91,7 +91,7 @@ router.get("/", async (req, res) => {
        FROM notifications 
        WHERE user_id = $1 AND read = false AND archived = false
          AND (expires_at IS NULL OR expires_at > NOW())`,
-      [userId]
+      [userId],
     );
 
     res.json({
@@ -126,7 +126,7 @@ router.post("/:id/read", async (req, res) => {
        SET read = true, read_at = NOW()
        WHERE id = $1 AND user_id = $2 AND read = false
        RETURNING *`,
-      [id, userId]
+      [id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -158,14 +158,14 @@ router.post("/mark-all-read", async (req, res) => {
        SET read = true, read_at = NOW()
        WHERE user_id = $1 AND read = false AND archived = false
        RETURNING count(*)`,
-      [userId]
+      [userId],
     );
 
     // Log de auditoria
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'mark_all_notifications_read', 'Notification', NULL)`,
-      [userId]
+      [userId],
     );
 
     res.json({
@@ -192,7 +192,7 @@ router.post("/:id/archive", async (req, res) => {
        SET archived = true
        WHERE id = $1 AND user_id = $2 AND archived = false
        RETURNING *`,
-      [id, userId]
+      [id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -222,7 +222,7 @@ router.delete("/:id", async (req, res) => {
 
     const result = await query(
       "DELETE FROM notifications WHERE id = $1 AND user_id = $2 RETURNING *",
-      [id, userId]
+      [id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -235,7 +235,7 @@ router.delete("/:id", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'delete_notification', 'Notification', $2)`,
-      [userId, id]
+      [userId, id],
     );
 
     res.json({
@@ -277,7 +277,14 @@ router.post("/create", async (req, res) => {
       });
     }
 
-    const validTypes = ["info", "warning", "success", "error", "route", "system"];
+    const validTypes = [
+      "info",
+      "warning",
+      "success",
+      "error",
+      "route",
+      "system",
+    ];
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         error: "Tipo de notificação inválido",
@@ -313,7 +320,7 @@ router.post("/create", async (req, res) => {
         color || null,
         priority,
         expiresAt || null,
-      ]
+      ],
     );
 
     res.status(201).json({
@@ -346,7 +353,7 @@ router.get("/stats", async (req, res) => {
       FROM notifications 
       WHERE user_id = $1 AND (expires_at IS NULL OR expires_at > NOW())
     `,
-      [userId]
+      [userId],
     );
 
     // Notificações recentes
@@ -359,7 +366,7 @@ router.get("/stats", async (req, res) => {
       ORDER BY created_at DESC
       LIMIT 5
     `,
-      [userId]
+      [userId],
     );
 
     res.json({
@@ -394,7 +401,7 @@ const createRouteStartedNotification = async (userId, routeId, routeName) => {
         "navigation",
         "#22c55e",
         "normal",
-      ]
+      ],
     );
   } catch (error) {
     console.error("Erro ao criar notificação de rota iniciada:", error);
@@ -404,14 +411,21 @@ const createRouteStartedNotification = async (userId, routeId, routeName) => {
 /**
  * Criar notificação de rota completada
  */
-const createRouteCompletedNotification = async (userId, routeId, routeName, metrics) => {
+const createRouteCompletedNotification = async (
+  userId,
+  routeId,
+  routeName,
+  metrics,
+) => {
   try {
-    const details = metrics ? `
+    const details = metrics
+      ? `
       Estatísticas:
       • Tempo total: ${Math.round(metrics.totalTime / 60)} minutos
       • Distância: ${(metrics.totalDistance / 1000).toFixed(1)} km
       • Paradas completadas: ${metrics.completedStops}/${metrics.totalStops}
-    ` : null;
+    `
+      : null;
 
     await query(
       `INSERT INTO notifications (
@@ -430,7 +444,7 @@ const createRouteCompletedNotification = async (userId, routeId, routeName, metr
         "normal",
         true,
         "Ver Detalhes",
-      ]
+      ],
     );
   } catch (error) {
     console.error("Erro ao criar notificação de rota completada:", error);
@@ -440,21 +454,18 @@ const createRouteCompletedNotification = async (userId, routeId, routeName, metr
 /**
  * Criar notificação de sistema
  */
-const createSystemNotification = async (userId, title, message, priority = "normal") => {
+const createSystemNotification = async (
+  userId,
+  title,
+  message,
+  priority = "normal",
+) => {
   try {
     await query(
       `INSERT INTO notifications (
         user_id, type, title, message, icon, color, priority
       ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [
-        userId,
-        "system",
-        title,
-        message,
-        "info",
-        "#3b82f6",
-        priority,
-      ]
+      [userId, "system", title, message, "info", "#3b82f6", priority],
     );
   } catch (error) {
     console.error("Erro ao criar notificação de sistema:", error);

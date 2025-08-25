@@ -25,7 +25,7 @@ router.post("/start", async (req, res) => {
     // Verificar se rota existe e pertence ao usuário
     const routeResult = await query(
       "SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
-      [routeId, userId]
+      [routeId, userId],
     );
 
     if (routeResult.rows.length === 0) {
@@ -39,7 +39,7 @@ router.post("/start", async (req, res) => {
     // Verificar se não há navegação ativa para esta rota
     const activeNavigation = await query(
       "SELECT id FROM navigation_sessions WHERE route_id = $1 AND status = $2",
-      [routeId, "active"]
+      [routeId, "active"],
     );
 
     if (activeNavigation.rows.length > 0) {
@@ -51,7 +51,7 @@ router.post("/start", async (req, res) => {
     // Buscar paradas da rota
     const stopsResult = await query(
       "SELECT * FROM route_stops WHERE route_id = $1 ORDER BY stop_order",
-      [routeId]
+      [routeId],
     );
 
     const stops = stopsResult.rows;
@@ -84,7 +84,7 @@ router.post("/start", async (req, res) => {
           "active",
           totalDistance,
           totalDistance / 10000, // Estimativa: 1L por 10km
-        ]
+        ],
       );
 
       const session = navigationResult.rows[0];
@@ -92,14 +92,18 @@ router.post("/start", async (req, res) => {
       // Atualizar status da rota
       await client.query(
         "UPDATE routes SET status = $1, started_at = NOW() WHERE id = $2",
-        ["active", routeId]
+        ["active", routeId],
       );
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
          VALUES ($1, 'start_navigation', 'NavigationSession', $2, $3)`,
-        [userId, session.id, JSON.stringify({ routeId, stopsCount: stops.length })]
+        [
+          userId,
+          session.id,
+          JSON.stringify({ routeId, stopsCount: stops.length }),
+        ],
       );
 
       return session;
@@ -145,7 +149,7 @@ router.patch("/:id", async (req, res) => {
     // Verificar se sessão existe e pertence ao usuário
     const sessionResult = await query(
       "SELECT * FROM navigation_sessions WHERE id = $1 AND user_id = $2",
-      [id, userId]
+      [id, userId],
     );
 
     if (sessionResult.rows.length === 0) {
@@ -240,7 +244,7 @@ router.post("/:id/pause", async (req, res) => {
        SET status = 'paused', updated_at = NOW()
        WHERE id = $1 AND user_id = $2 AND status = 'active'
        RETURNING *`,
-      [id, userId]
+      [id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -253,7 +257,7 @@ router.post("/:id/pause", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'pause_navigation', 'NavigationSession', $2)`,
-      [userId, id]
+      [userId, id],
     );
 
     res.json({
@@ -280,7 +284,7 @@ router.post("/:id/resume", async (req, res) => {
        SET status = 'active', updated_at = NOW()
        WHERE id = $1 AND user_id = $2 AND status = 'paused'
        RETURNING *`,
-      [id, userId]
+      [id, userId],
     );
 
     if (result.rows.length === 0) {
@@ -293,7 +297,7 @@ router.post("/:id/resume", async (req, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
        VALUES ($1, 'resume_navigation', 'NavigationSession', $2)`,
-      [userId, id]
+      [userId, id],
     );
 
     res.json({
@@ -328,7 +332,7 @@ router.post("/:id/complete-stop", async (req, res) => {
        FROM navigation_sessions ns
        JOIN routes r ON ns.route_id = r.id
        WHERE ns.id = $1 AND ns.user_id = $2 AND ns.status = 'active'`,
-      [id, userId]
+      [id, userId],
     );
 
     if (sessionResult.rows.length === 0) {
@@ -342,7 +346,7 @@ router.post("/:id/complete-stop", async (req, res) => {
     // Verificar se parada pertence à rota
     const stopResult = await query(
       "SELECT * FROM route_stops WHERE id = $1 AND route_id = $2",
-      [stopId, session.route_id]
+      [stopId, session.route_id],
     );
 
     if (stopResult.rows.length === 0) {
@@ -366,13 +370,13 @@ router.post("/:id/complete-stop", async (req, res) => {
          SET is_completed = true, completed_at = NOW(), time_spent_at_stop = $1, notes = $2
          WHERE id = $3
          RETURNING *`,
-        [timeSpent || 0, notes || null, stopId]
+        [timeSpent || 0, notes || null, stopId],
       );
 
       // Verificar se todas as paradas foram completadas
       const remainingStops = await client.query(
         "SELECT COUNT(*) FROM route_stops WHERE route_id = $1 AND is_completed = false",
-        [session.route_id]
+        [session.route_id],
       );
 
       const isRouteComplete = parseInt(remainingStops.rows[0].count) === 0;
@@ -383,12 +387,12 @@ router.post("/:id/complete-stop", async (req, res) => {
           `UPDATE navigation_sessions 
            SET status = 'completed', end_time = NOW()
            WHERE id = $1`,
-          [id]
+          [id],
         );
 
         await client.query(
           "UPDATE routes SET status = 'completed', completed_at = NOW() WHERE id = $1",
-          [session.route_id]
+          [session.route_id],
         );
 
         // Criar métricas da rota
@@ -405,7 +409,7 @@ router.post("/:id/complete-stop", async (req, res) => {
             stop.stop_order, // Assumindo que stop_order é sequencial
             stop.stop_order,
             session.actual_fuel_consumption || 0,
-          ]
+          ],
         );
       }
 
@@ -413,7 +417,7 @@ router.post("/:id/complete-stop", async (req, res) => {
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
          VALUES ($1, 'complete_stop', 'RouteStop', $2, $3)`,
-        [userId, stopId, JSON.stringify({ timeSpent, notes, isRouteComplete })]
+        [userId, stopId, JSON.stringify({ timeSpent, notes, isRouteComplete })],
       );
 
       return {
@@ -426,8 +430,8 @@ router.post("/:id/complete-stop", async (req, res) => {
       message: "Parada completada com sucesso",
       stop: result.stop,
       isRouteComplete: result.isRouteComplete,
-      ...(result.isRouteComplete && { 
-        message: "Rota completada com sucesso! Navegação finalizada." 
+      ...(result.isRouteComplete && {
+        message: "Rota completada com sucesso! Navegação finalizada.",
       }),
     });
   } catch (error) {
@@ -453,7 +457,7 @@ router.post("/:id/stop", async (req, res) => {
          FROM navigation_sessions ns
          JOIN routes r ON ns.route_id = r.id
          WHERE ns.id = $1 AND ns.user_id = $2 AND ns.status IN ('active', 'paused')`,
-        [id, userId]
+        [id, userId],
       );
 
       if (sessionResult.rows.length === 0) {
@@ -468,13 +472,13 @@ router.post("/:id/stop", async (req, res) => {
          SET status = 'completed', end_time = NOW()
          WHERE id = $1
          RETURNING *`,
-        [id]
+        [id],
       );
 
       // Atualizar rota
       await client.query(
         "UPDATE routes SET status = 'completed', completed_at = NOW() WHERE id = $1",
-        [session.route_id]
+        [session.route_id],
       );
 
       // Criar métricas básicas
@@ -490,14 +494,14 @@ router.post("/:id/stop", async (req, res) => {
           session.total_distance - session.remaining_distance,
           0, // TODO: calcular total de paradas
           0, // TODO: calcular paradas completadas
-        ]
+        ],
       );
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
          VALUES ($1, 'stop_navigation', 'NavigationSession', $2, $3)`,
-        [userId, id, JSON.stringify({ reason })]
+        [userId, id, JSON.stringify({ reason })],
       );
 
       return updatedSession.rows[0];
@@ -532,7 +536,7 @@ router.delete("/:id", async (req, res) => {
          SET status = 'cancelled', end_time = NOW()
          WHERE id = $1 AND user_id = $2 AND status IN ('active', 'paused')
          RETURNING *`,
-        [id, userId]
+        [id, userId],
       );
 
       if (sessionResult.rows.length === 0) {
@@ -542,16 +546,15 @@ router.delete("/:id", async (req, res) => {
       const session = sessionResult.rows[0];
 
       // Atualizar rota para draft
-      await client.query(
-        "UPDATE routes SET status = 'draft' WHERE id = $1",
-        [session.route_id]
-      );
+      await client.query("UPDATE routes SET status = 'draft' WHERE id = $1", [
+        session.route_id,
+      ]);
 
       // Log de auditoria
       await client.query(
         `INSERT INTO audit_logs (user_id, action, entity_type, entity_id)
          VALUES ($1, 'cancel_navigation', 'NavigationSession', $2)`,
-        [userId, id]
+        [userId, id],
       );
 
       return session;
@@ -590,7 +593,7 @@ router.get("/:id", async (req, res) => {
        FROM navigation_sessions ns
        JOIN routes r ON ns.route_id = r.id
        WHERE ns.id = $1 AND ns.user_id = $2`,
-      [id, userId]
+      [id, userId],
     );
 
     if (sessionResult.rows.length === 0) {
@@ -604,18 +607,24 @@ router.get("/:id", async (req, res) => {
     // Buscar paradas da rota
     const stopsResult = await query(
       "SELECT * FROM route_stops WHERE route_id = $1 ORDER BY stop_order",
-      [session.route_id]
+      [session.route_id],
     );
 
     res.json({
       navigationSession: session,
       stops: stopsResult.rows,
       summary: {
-        completedStops: stopsResult.rows.filter(stop => stop.is_completed).length,
+        completedStops: stopsResult.rows.filter((stop) => stop.is_completed)
+          .length,
         totalStops: stopsResult.rows.length,
-        progress: session.total_distance > 0 
-          ? Math.round(((session.total_distance - session.remaining_distance) / session.total_distance) * 100)
-          : 0,
+        progress:
+          session.total_distance > 0
+            ? Math.round(
+                ((session.total_distance - session.remaining_distance) /
+                  session.total_distance) *
+                  100,
+              )
+            : 0,
       },
     });
   } catch (error) {
