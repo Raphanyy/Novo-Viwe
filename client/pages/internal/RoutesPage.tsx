@@ -25,21 +25,6 @@ import RouteConfigurationModal from "../../components/shared/RouteConfigurationM
 import { useRouteModal } from "../../hooks/use-route-modal";
 import { routesService, RouteData, useLoading } from "../../services/api";
 
-interface RouteData {
-  id: number;
-  name: string;
-  stopCount: number;
-  createdAt: string;
-  scheduledDate?: string;
-  status: "active" | "scheduled" | "draft";
-  description?: string;
-  estimatedDuration: string;
-  totalDistance: string;
-  isFavorite: boolean;
-  linkedSet?: string;
-  lastModified: string;
-}
-
 type ViewMode = "list" | "details" | "settings";
 
 const RoutesPage: React.FC = () => {
@@ -49,6 +34,8 @@ const RoutesPage: React.FC = () => {
   >("all");
   const [selectedRoute, setSelectedRoute] = useState<RouteData | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [routes, setRoutes] = useState<RouteData[]>([]);
+  const { loading, error, execute } = useLoading();
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
 
   // Dados mockados das rotas
