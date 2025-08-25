@@ -1,6 +1,6 @@
-import express from 'express';
-import { query, getClient } from '../utils/database';
-import { authenticateToken, AuthRequest } from '../middleware/auth';
+import express from "express";
+import { query, getClient } from "../utils/database";
+import { authenticateToken, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.use(authenticateToken);
  * GET /api/routes
  * Lista rotas do usuário com filtros e paginação
  */
-router.get('/', async (req: AuthRequest, res) => {
+router.get("/", async (req: AuthRequest, res) => {
   try {
     const { status, limit = 20, offset = 0, search } = req.query;
     const userId = req.user!.id;
@@ -32,7 +32,7 @@ router.get('/', async (req: AuthRequest, res) => {
     let paramIndex = 2;
 
     // Filtro por status
-    if (status && status !== 'all') {
+    if (status && status !== "all") {
       queryText += ` AND r.status = $${paramIndex}`;
       params.push(status);
       paramIndex++;
@@ -66,8 +66,8 @@ router.get('/', async (req: AuthRequest, res) => {
 
     // Buscar contagem total para paginação
     const countQuery = await query(
-      'SELECT COUNT(*) as total FROM routes WHERE user_id = $1 AND deleted_at IS NULL',
-      [userId]
+      "SELECT COUNT(*) as total FROM routes WHERE user_id = $1 AND deleted_at IS NULL",
+      [userId],
     );
 
     res.json({
@@ -76,15 +76,16 @@ router.get('/', async (req: AuthRequest, res) => {
         limit: parseInt(limit as string),
         offset: parseInt(offset as string),
         total: parseInt(countQuery.rows[0].total),
-        hasMore: parseInt(offset as string) + parseInt(limit as string) < parseInt(countQuery.rows[0].total)
+        hasMore:
+          parseInt(offset as string) + parseInt(limit as string) <
+          parseInt(countQuery.rows[0].total),
       },
     });
-
   } catch (error) {
-    console.error('Erro ao buscar rotas:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      code: 'INTERNAL_ERROR' 
+    console.error("Erro ao buscar rotas:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
+      code: "INTERNAL_ERROR",
     });
   }
 });
@@ -93,45 +94,45 @@ router.get('/', async (req: AuthRequest, res) => {
  * POST /api/routes
  * Cria uma nova rota
  */
-router.post('/', async (req: AuthRequest, res) => {
+router.post("/", async (req: AuthRequest, res) => {
   const client = await getClient();
-  
+
   try {
-    await client.query('BEGIN');
-    
+    await client.query("BEGIN");
+
     const userId = req.user!.id;
     const {
       name,
       description,
       responsible,
-      priority = 'media',
+      priority = "media",
       stops,
       clients,
       routeSet,
-      scheduling
+      scheduling,
     } = req.body;
 
     // Validações
     if (!name || !responsible) {
-      return res.status(400).json({ 
-        error: 'Nome e responsável são obrigatórios',
-        code: 'MISSING_FIELDS' 
+      return res.status(400).json({
+        error: "Nome e responsável são obrigatórios",
+        code: "MISSING_FIELDS",
       });
     }
 
     if (!stops || stops.length === 0) {
-      return res.status(400).json({ 
-        error: 'Pelo menos uma parada é obrigatória',
-        code: 'MISSING_STOPS' 
+      return res.status(400).json({
+        error: "Pelo menos uma parada é obrigatória",
+        code: "MISSING_STOPS",
       });
     }
 
     // Validar coordenadas das paradas
     for (const stop of stops) {
       if (!stop.coordinates || stop.coordinates.length !== 2) {
-        return res.status(400).json({ 
-          error: 'Coordenadas inválidas para parada: ' + stop.name,
-          code: 'INVALID_COORDINATES' 
+        return res.status(400).json({
+          error: "Coordenadas inválidas para parada: " + stop.name,
+          code: "INVALID_COORDINATES",
         });
       }
     }
@@ -142,13 +143,13 @@ router.post('/', async (req: AuthRequest, res) => {
     const estimatedCredits = Math.min(stops.length * 2, 20);
 
     // Determinar status inicial
-    let status = 'draft';
+    let status = "draft";
     let scheduledDate = null;
-    
-    if (scheduling?.type === 'imediata') {
-      status = 'scheduled';
-    } else if (scheduling?.type === 'agendada' && scheduling?.date) {
-      status = 'scheduled';
+
+    if (scheduling?.type === "imediata") {
+      status = "scheduled";
+    } else if (scheduling?.type === "agendada" && scheduling?.date) {
+      status = "scheduled";
       scheduledDate = scheduling.date;
     }
 
@@ -161,10 +162,18 @@ router.post('/', async (req: AuthRequest, res) => {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`,
       [
-        userId, name, description, responsible, priority,
-        estimatedDuration, estimatedDistance, estimatedCredits,
-        scheduling?.type || 'imediata', scheduledDate, status
-      ]
+        userId,
+        name,
+        description,
+        responsible,
+        priority,
+        estimatedDuration,
+        estimatedDistance,
+        estimatedCredits,
+        scheduling?.type || "imediata",
+        scheduledDate,
+        status,
+      ],
     );
 
     const route = routeResult.rows[0];
@@ -183,10 +192,10 @@ router.post('/', async (req: AuthRequest, res) => {
           stop.name,
           stop.coordinates[1], // latitude
           stop.coordinates[0], // longitude
-          stop.address || '',
+          stop.address || "",
           i + 1,
-          stop.notes || ''
-        ]
+          stop.notes || "",
+        ],
       );
       createdStops.push(stopResult.rows[0]);
     }
@@ -197,7 +206,7 @@ router.post('/', async (req: AuthRequest, res) => {
         await client.query(
           `INSERT INTO client_stops (route_id, client_name, stop_id)
            VALUES ($1, $2, $3)`,
-          [route.id, clientData.name, clientData.stopId]
+          [route.id, clientData.name, clientData.stopId],
         );
       }
     }
@@ -206,29 +215,35 @@ router.post('/', async (req: AuthRequest, res) => {
     await client.query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values, ip_address)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [userId, 'create_route', 'Route', route.id, JSON.stringify({ 
-        name, 
-        stops: stops.length,
-        status 
-      }), req.ip]
+      [
+        userId,
+        "create_route",
+        "Route",
+        route.id,
+        JSON.stringify({
+          name,
+          stops: stops.length,
+          status,
+        }),
+        req.ip,
+      ],
     );
 
-    await client.query('COMMIT');
+    await client.query("COMMIT");
 
-    res.status(201).json({ 
+    res.status(201).json({
       route: {
         ...route,
-        stops: createdStops
+        stops: createdStops,
       },
-      message: 'Rota criada com sucesso'
+      message: "Rota criada com sucesso",
     });
-
   } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Erro ao criar rota:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      code: 'INTERNAL_ERROR' 
+    await client.query("ROLLBACK");
+    console.error("Erro ao criar rota:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
+      code: "INTERNAL_ERROR",
     });
   } finally {
     client.release();
@@ -239,21 +254,21 @@ router.post('/', async (req: AuthRequest, res) => {
  * GET /api/routes/:id
  * Busca uma rota específica com suas paradas
  */
-router.get('/:id', async (req: AuthRequest, res) => {
+router.get("/:id", async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
 
     // Buscar rota
     const routeResult = await query(
-      'SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
-      [id, userId]
+      "SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
+      [id, userId],
     );
 
     if (routeResult.rows.length === 0) {
-      return res.status(404).json({ 
-        error: 'Rota não encontrada',
-        code: 'ROUTE_NOT_FOUND' 
+      return res.status(404).json({
+        error: "Rota não encontrada",
+        code: "ROUTE_NOT_FOUND",
       });
     }
 
@@ -261,22 +276,21 @@ router.get('/:id', async (req: AuthRequest, res) => {
 
     // Buscar paradas
     const stopsResult = await query(
-      'SELECT * FROM route_stops WHERE route_id = $1 ORDER BY stop_order',
-      [id]
+      "SELECT * FROM route_stops WHERE route_id = $1 ORDER BY stop_order",
+      [id],
     );
 
     res.json({
       route: {
         ...route,
-        stops: stopsResult.rows
-      }
+        stops: stopsResult.rows,
+      },
     });
-
   } catch (error) {
-    console.error('Erro ao buscar rota:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      code: 'INTERNAL_ERROR' 
+    console.error("Erro ao buscar rota:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
+      code: "INTERNAL_ERROR",
     });
   }
 });
@@ -285,7 +299,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
  * PATCH /api/routes/:id
  * Atualiza uma rota
  */
-router.patch('/:id', async (req: AuthRequest, res) => {
+router.patch("/:id", async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
@@ -293,29 +307,36 @@ router.patch('/:id', async (req: AuthRequest, res) => {
 
     // Verificar se rota existe e pertence ao usuário
     const routeResult = await query(
-      'SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
-      [id, userId]
+      "SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
+      [id, userId],
     );
 
     if (routeResult.rows.length === 0) {
-      return res.status(404).json({ 
-        error: 'Rota não encontrada',
-        code: 'ROUTE_NOT_FOUND' 
+      return res.status(404).json({
+        error: "Rota não encontrada",
+        code: "ROUTE_NOT_FOUND",
       });
     }
 
     const currentRoute = routeResult.rows[0];
 
     // Verificar se rota pode ser editada
-    if (currentRoute.status === 'active') {
-      return res.status(400).json({ 
-        error: 'Não é possível editar rota ativa',
-        code: 'ROUTE_ACTIVE' 
+    if (currentRoute.status === "active") {
+      return res.status(400).json({
+        error: "Não é possível editar rota ativa",
+        code: "ROUTE_ACTIVE",
       });
     }
 
     // Construir query de update dinamicamente
-    const allowedFields = ['name', 'description', 'responsible', 'priority', 'scheduled_date', 'status'];
+    const allowedFields = [
+      "name",
+      "description",
+      "responsible",
+      "priority",
+      "scheduled_date",
+      "status",
+    ];
     const updates = [];
     const values = [];
     let paramIndex = 1;
@@ -329,9 +350,9 @@ router.patch('/:id', async (req: AuthRequest, res) => {
     }
 
     if (updates.length === 0) {
-      return res.status(400).json({ 
-        error: 'Nenhum campo válido para atualizar',
-        code: 'NO_VALID_FIELDS' 
+      return res.status(400).json({
+        error: "Nenhum campo válido para atualizar",
+        code: "NO_VALID_FIELDS",
       });
     }
 
@@ -340,7 +361,7 @@ router.patch('/:id', async (req: AuthRequest, res) => {
 
     const queryText = `
       UPDATE routes 
-      SET ${updates.join(', ')} 
+      SET ${updates.join(", ")} 
       WHERE id = $${paramIndex} AND user_id = $${paramIndex + 1}
       RETURNING *
     `;
@@ -351,19 +372,26 @@ router.patch('/:id', async (req: AuthRequest, res) => {
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, old_values, new_values, ip_address)
        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [userId, 'update_route', 'Route', id, JSON.stringify(currentRoute), JSON.stringify(updateData), req.ip]
+      [
+        userId,
+        "update_route",
+        "Route",
+        id,
+        JSON.stringify(currentRoute),
+        JSON.stringify(updateData),
+        req.ip,
+      ],
     );
 
-    res.json({ 
+    res.json({
       route: result.rows[0],
-      message: 'Rota atualizada com sucesso'
+      message: "Rota atualizada com sucesso",
     });
-
   } catch (error) {
-    console.error('Erro ao atualizar rota:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      code: 'INTERNAL_ERROR' 
+    console.error("Erro ao atualizar rota:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
+      code: "INTERNAL_ERROR",
     });
   }
 });
@@ -372,54 +400,50 @@ router.patch('/:id', async (req: AuthRequest, res) => {
  * DELETE /api/routes/:id
  * Remove uma rota (soft delete)
  */
-router.delete('/:id', async (req: AuthRequest, res) => {
+router.delete("/:id", async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const userId = req.user!.id;
 
     // Verificar se rota existe e pertence ao usuário
     const routeResult = await query(
-      'SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
-      [id, userId]
+      "SELECT * FROM routes WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
+      [id, userId],
     );
 
     if (routeResult.rows.length === 0) {
-      return res.status(404).json({ 
-        error: 'Rota não encontrada',
-        code: 'ROUTE_NOT_FOUND' 
+      return res.status(404).json({
+        error: "Rota não encontrada",
+        code: "ROUTE_NOT_FOUND",
       });
     }
 
     const route = routeResult.rows[0];
 
     // Verificar se rota pode ser removida
-    if (route.status === 'active') {
-      return res.status(400).json({ 
-        error: 'Não é possível remover rota ativa',
-        code: 'ROUTE_ACTIVE' 
+    if (route.status === "active") {
+      return res.status(400).json({
+        error: "Não é possível remover rota ativa",
+        code: "ROUTE_ACTIVE",
       });
     }
 
     // Soft delete
-    await query(
-      'UPDATE routes SET deleted_at = NOW() WHERE id = $1',
-      [id]
-    );
+    await query("UPDATE routes SET deleted_at = NOW() WHERE id = $1", [id]);
 
     // Log de auditoria
     await query(
       `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, old_values, ip_address)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [userId, 'delete_route', 'Route', id, JSON.stringify(route), req.ip]
+      [userId, "delete_route", "Route", id, JSON.stringify(route), req.ip],
     );
 
-    res.json({ message: 'Rota removida com sucesso' });
-
+    res.json({ message: "Rota removida com sucesso" });
   } catch (error) {
-    console.error('Erro ao remover rota:', error);
-    res.status(500).json({ 
-      error: 'Erro interno do servidor',
-      code: 'INTERNAL_ERROR' 
+    console.error("Erro ao remover rota:", error);
+    res.status(500).json({
+      error: "Erro interno do servidor",
+      code: "INTERNAL_ERROR",
     });
   }
 });
