@@ -7,9 +7,9 @@
  * Use o secret gerado na variável JWT_SECRET do .env
  */
 
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
 
 console.log("🔐 Gerando JWT Secret...");
 
