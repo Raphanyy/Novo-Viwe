@@ -174,6 +174,15 @@ app.get("/api", (req, res) => {
         create: "POST /api/notifications/create",
         stats: "GET /api/notifications/stats",
       },
+      billing: {
+        plans: "GET /api/billing/plans",
+        subscription: "GET /api/billing/subscription",
+        subscribe: "POST /api/billing/subscribe",
+        cancel: "POST /api/billing/cancel",
+        history: "GET /api/billing/history",
+        usage: "GET /api/billing/usage",
+        webhook: "POST /api/billing/webhooks/stripe",
+      },
     },
     documentation: "Ver documentação completa em /Implementação BackEnd/",
     features: {
