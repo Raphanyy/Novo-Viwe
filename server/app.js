@@ -71,7 +71,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   const parsedUrl = url.parse(req.url, true);
-  const path = parsedUrl.pathname;
+  const pathname = parsedUrl.pathname;
 
   res.setHeader("Content-Type", "application/json");
 
