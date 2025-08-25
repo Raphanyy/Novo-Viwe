@@ -43,7 +43,7 @@ router.post("/register", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Criar usuário em transação
-    const result = await transaction(async (client) => {
+    const result = await manualTransaction(async (client) => {
       // Inserir usuário
       const userResult = await client.query(
         `INSERT INTO users (name, email, password_hash)
