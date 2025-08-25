@@ -1,5 +1,5 @@
 const express = require("express");
-const { query, transaction } = require("../utils/database");
+const { query } = require("../utils/neon-database");
 const { authenticateToken } = require("../middleware/auth");
 
 const router = express.Router();
