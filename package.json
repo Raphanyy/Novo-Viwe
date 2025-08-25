@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"node server/src/index.js\"",
+    "dev:frontend": "vite",
+    "dev:backend": "node server/src/index.js",
     "start": "vite",
     "replit": "pnpm install && pnpm dev",
     "build": "npm run build:client && npm run build:server",
