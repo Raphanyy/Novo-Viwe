@@ -16,6 +16,8 @@ const userRoutes = require("./routes/users");
 const clientRoutes = require("./routes/clients");
 const { router: notificationRoutes } = require("./routes/notifications");
 const billingRoutes = require("./routes/billing");
+const dashboardRoutes = require("./routes/dashboard");
+const poisRoutes = require("./routes/pois");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
