@@ -14,6 +14,7 @@ const mapboxRoutes = require("./routes/mapbox");
 const navigationRoutes = require("./routes/navigation");
 const userRoutes = require("./routes/users");
 const clientRoutes = require("./routes/clients");
+const { router: notificationRoutes } = require("./routes/notifications");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -295,7 +296,7 @@ app.listen(PORT, () => {
   console.log(`📚 API info: http://localhost:${PORT}/api`);
   console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/*`);
   console.log(`🗺️ Routes: http://localhost:${PORT}/api/routes`);
-  console.log(`🌐 Mapbox: http://localhost:${PORT}/api/mapbox/*`);
+  console.log(`��� Mapbox: http://localhost:${PORT}/api/mapbox/*`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🔧 Trust Proxy: ${app.get("trust proxy")}`);
 
