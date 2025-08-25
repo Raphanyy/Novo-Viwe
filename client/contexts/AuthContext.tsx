@@ -268,6 +268,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return refreshTokenInternal();
   };
 
+  // Atualizar dados do usuário
+  const updateUser = (updates: Partial<User>) => {
+    if (!user) return;
+
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+    console.log("👤 Usuário atualizado:", updatedUser);
+  };
+
   // Verificar usuário atual
   const checkCurrentUser = async () => {
     try {
@@ -344,6 +354,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     register,
     logout,
     refreshToken,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
