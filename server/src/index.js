@@ -182,10 +182,13 @@ app.get("/api/test", (req, res) => {
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/mapbox", mapboxRoutes);
+app.use("/api/navigation", navigationRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/clients", clientRoutes);
 
 // TODO: Adicionar outras rotas quando criadas
-// app.use('/api/navigation', navigationRoutes);
-// app.use('/api/users', userRoutes);
+// app.use('/api/notifications', notificationRoutes);
+// app.use('/api/billing', billingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
