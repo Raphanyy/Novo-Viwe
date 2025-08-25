@@ -4,7 +4,7 @@ const { authenticateToken } = require("../middleware/auth");
 
 const router = express.Router();
 
-// Aplicar autenticação em todas as rotas
+// Aplicar autentica��ão em todas as rotas
 router.use(authenticateToken);
 
 /**
@@ -543,7 +543,7 @@ router.get("/nearby/:lat/:lng", async (req, res) => {
     let paramIndex = 4;
 
     if (category) {
-      nearbyQuery += ` AND p.category = $${paramIndex}`;
+      nearbyQuery += ` AND p.type = $${paramIndex}`;
       params.push(category);
       paramIndex++;
     }
