@@ -253,26 +253,48 @@ export const authService = {
   },
 };
 
-// Hook para loading states
+// Hook para loading states com retry
 export const useLoading = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [retryCount, setRetryCount] = React.useState(0);
 
   const execute = async <T>(apiCall: () => Promise<T>): Promise<T | null> => {
     try {
       setLoading(true);
       setError(null);
       const result = await apiCall();
+      setRetryCount(0); // Reset retry count on success
       return result;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro desconhecido");
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+      setError(errorMessage);
+
+      // Log error for debugging
+      console.error("API Error:", {
+        error: errorMessage,
+        retryCount,
+        timestamp: new Date().toISOString(),
+      });
+
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  return { loading, error, execute };
+  const retry = (apiCall: () => Promise<any>) => {
+    setRetryCount((prev) => prev + 1);
+    return execute(apiCall);
+  };
+
+  const reset = () => {
+    setLoading(false);
+    setError(null);
+    setRetryCount(0);
+  };
+
+  return { loading, error, execute, retry, reset, retryCount };
 };
 
 export default {
