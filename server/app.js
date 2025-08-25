@@ -186,6 +186,52 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // Get current user data
+    if (path === "/api/auth/me" && req.method === "GET") {
+      // Simple token validation - in real app would verify JWT
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: "Token não fornecido" }));
+        return;
+      }
+
+      try {
+        // For demo, we'll use the email from a stored session or get first user
+        const userResult = await query(
+          `SELECT id, name, email, is_email_verified, plan_type, created_at, last_login_at
+           FROM users
+           WHERE deleted_at IS NULL
+           ORDER BY last_login_at DESC NULLS LAST
+           LIMIT 1`
+        );
+
+        if (userResult.rows.length > 0) {
+          const user = userResult.rows[0];
+          res.writeHead(200);
+          res.end(JSON.stringify({
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              isEmailVerified: user.is_email_verified,
+              planType: user.plan_type || "basic",
+              createdAt: user.created_at,
+              lastLoginAt: user.last_login_at
+            }
+          }));
+        } else {
+          res.writeHead(404);
+          res.end(JSON.stringify({ error: "Usuário não encontrado" }));
+        }
+      } catch (error) {
+        console.error("Erro ao buscar usuário:", error);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: "Erro interno do servidor" }));
+      }
+      return;
+    }
+
     // API Info
     if (path === "/api") {
       res.writeHead(200);
