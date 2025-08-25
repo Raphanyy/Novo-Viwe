@@ -1,118 +1,355 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+// Interfaces
 interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
+  avatarUrl?: string;
+  isEmailVerified: boolean;
+  planType: 'basic' | 'premium' | 'interactive';
+}
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpiresAt: string;
+  refreshTokenExpiresAt: string;
+  tokenType: 'Bearer';
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
-  updateAvatar: (avatarUrl: string) => void;
   isLoading: boolean;
+  login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
+  register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  refreshToken: () => Promise<boolean>;
 }
 
+// Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+// Storage keys
+const STORAGE_KEYS = {
+  ACCESS_TOKEN: 'viwe_access_token',
+  REFRESH_TOKEN: 'viwe_refresh_token',
+  USER: 'viwe_user'
 };
 
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
+// API base URL
+const API_BASE = '/api';
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+// Provider
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate checking for existing auth on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const storedUser = localStorage.getItem("viwe_user");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        console.error("Error checking auth:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  // Verificar se usuário está autenticado
+  const isAuthenticated = !!user;
+
+  // Salvar tokens no localStorage
+  const saveTokens = (tokens: AuthTokens) => {
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+  };
+
+  // Obter access token
+  const getAccessToken = (): string | null => {
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+  };
+
+  // Obter refresh token
+  const getRefreshToken = (): string | null => {
+    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+  };
+
+  // Limpar dados de autenticação
+  const clearAuth = () => {
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    setUser(null);
+  };
+
+  // Fazer requisição autenticada
+  const apiRequest = async (
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<Response> => {
+    const token = getAccessToken();
+    
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...options.headers
     };
 
-    checkAuth();
-  }, []);
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers
+    });
+
+    // Se token expirou, tentar renovar
+    if (response.status === 401 && token) {
+      const refreshed = await refreshTokenInternal();
+      if (refreshed) {
+        // Tentar novamente com token renovado
+        const newToken = getAccessToken();
+        headers.Authorization = `Bearer ${newToken}`;
+        
+        return fetch(`${API_BASE}${endpoint}`, {
+          ...options,
+          headers
+        });
+      } else {
+        // Token refresh falhou, fazer logout
+        clearAuth();
+      }
+    }
+
+    return response;
+  };
+
+  // Renovar token internamente
+  const refreshTokenInternal = async (): Promise<boolean> => {
     try {
-      setIsLoading(true);
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) return false;
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ refreshToken })
+      });
 
-      // For demo purposes, accept any email/password
-      if (email && password) {
-        const newUser: User = {
-          id: "1",
-          name: email.split("@")[0],
-          email: email,
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        };
-
-        setUser(newUser);
-        localStorage.setItem("viwe_user", JSON.stringify(newUser));
+      if (response.ok) {
+        const data = await response.json();
+        saveTokens(data.tokens);
         return true;
       }
 
       return false;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Erro ao renovar token:', error);
       return false;
+    }
+  };
+
+  // Login
+  const login = async (credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Salvar tokens
+        saveTokens(data.tokens);
+        
+        // Salvar usuário
+        setUser(data.user);
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+
+        return { success: true };
+      } else {
+        return { success: false, error: data.error || 'Erro no login' };
+      }
+    } catch (error) {
+      console.error('Erro no login:', error);
+      return { success: false, error: 'Erro de conexão' };
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("viwe_user");
-  };
+  // Registro
+  const register = async (data: RegisterData): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setIsLoading(true);
 
-  const updateUser = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      localStorage.setItem("viwe_user", JSON.stringify(updatedUser));
+      const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        // Salvar tokens
+        saveTokens(responseData.tokens);
+        
+        // Salvar usuário
+        setUser(responseData.user);
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(responseData.user));
+
+        return { success: true };
+      } else {
+        return { success: false, error: responseData.error || 'Erro no registro' };
+      }
+    } catch (error) {
+      console.error('Erro no registro:', error);
+      return { success: false, error: 'Erro de conexão' };
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const updateAvatar = (avatarUrl: string) => {
-    if (user) {
-      const updatedUser = { ...user, avatar: avatarUrl };
-      setUser(updatedUser);
-      localStorage.setItem("viwe_user", JSON.stringify(updatedUser));
+  // Logout
+  const logout = async (): Promise<void> => {
+    try {
+      // Tentar fazer logout no servidor
+      await apiRequest('/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Erro no logout do servidor:', error);
+    } finally {
+      clearAuth();
     }
   };
 
-  const value: AuthContextType = {
+  // Renovar token (função pública)
+  const refreshToken = async (): Promise<boolean> => {
+    return refreshTokenInternal();
+  };
+
+  // Verificar usuário atual
+  const checkCurrentUser = async () => {
+    try {
+      const token = getAccessToken();
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await apiRequest('/auth/me');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+      } else {
+        clearAuth();
+      }
+    } catch (error) {
+      console.error('Erro ao verificar usuário:', error);
+      clearAuth();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Effect para verificar usuário na inicialização
+  useEffect(() => {
+    const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+    const token = getAccessToken();
+
+    if (storedUser && token) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        
+        // Verificar se token ainda é válido
+        checkCurrentUser();
+      } catch (error) {
+        clearAuth();
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Effect para auto-refresh do token
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const interval = setInterval(() => {
+      refreshTokenInternal();
+    }, 10 * 60 * 1000); // 10 minutos
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+  const value = {
     user,
-    isAuthenticated: !!user,
-    login,
-    logout,
-    updateUser,
-    updateAvatar,
+    isAuthenticated,
     isLoading,
+    login,
+    register,
+    logout,
+    refreshToken
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Hook personalizado
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+  }
+  return context;
+};
+
+// Hook para requisições autenticadas
+export const useApiRequest = () => {
+  const { logout } = useAuth();
+
+  return async (endpoint: string, options: RequestInit = {}): Promise<Response> => {
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...options.headers
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers
+    });
+
+    // Se não autorizado, fazer logout
+    if (response.status === 401) {
+      logout();
+    }
+
+    return response;
+  };
 };
