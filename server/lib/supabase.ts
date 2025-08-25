@@ -11,21 +11,25 @@ if (process.env.NODE_ENV !== 'development' && (!supabaseUrl || !supabaseServiceR
 }
 
 // Cliente administrativo - para uso apenas no backend
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+export const supabaseAdmin = supabaseUrl && supabaseServiceRoleKey
+  ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : null;
 
 // Cliente público - para operações que respeitam RLS
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-if (!supabaseAnonKey) {
-  throw new Error('Variável de ambiente SUPABASE_ANON_KEY é obrigatória');
+if (process.env.NODE_ENV !== 'development' && !supabaseAnonKey) {
+  console.warn('Variável de ambiente SUPABASE_ANON_KEY não configurada');
 }
 
-export const supabasePublic = createClient(supabaseUrl, supabaseAnonKey);
+export const supabasePublic = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // Função helper para criar cliente com token do usuário
 export function createUserClient(accessToken: string) {
