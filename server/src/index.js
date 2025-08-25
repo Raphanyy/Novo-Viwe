@@ -11,6 +11,11 @@ const { healthCheck } = require("./utils/database");
 const authRoutes = require("./routes/auth");
 const routeRoutes = require("./routes/routes");
 const mapboxRoutes = require("./routes/mapbox");
+const navigationRoutes = require("./routes/navigation");
+const userRoutes = require("./routes/users");
+const clientRoutes = require("./routes/clients");
+const { router: notificationRoutes } = require("./routes/notifications");
+const billingRoutes = require("./routes/billing");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -130,8 +135,54 @@ app.get("/api", (req, res) => {
         isochrone: "GET /api/mapbox/isochrone",
         health: "GET /api/mapbox/health",
       },
-      navigation: "/api/navigation/* (TODO)",
-      users: "/api/users/* (TODO)",
+      navigation: {
+        start: "POST /api/navigation/start",
+        update: "PATCH /api/navigation/:id",
+        pause: "POST /api/navigation/:id/pause",
+        resume: "POST /api/navigation/:id/resume",
+        completeStop: "POST /api/navigation/:id/complete-stop",
+        stop: "POST /api/navigation/:id/stop",
+        get: "GET /api/navigation/:id",
+        cancel: "DELETE /api/navigation/:id",
+      },
+      users: {
+        profile: "GET /api/user",
+        updateProfile: "PATCH /api/user",
+        updatePreferences: "PATCH /api/user/preferences",
+        uploadAvatar: "POST /api/user/avatar",
+        changePassword: "POST /api/user/change-password",
+        deleteAccount: "DELETE /api/user",
+        sessions: "GET /api/user/sessions",
+        revokeSession: "DELETE /api/user/sessions/:id",
+      },
+      clients: {
+        list: "GET /api/clients",
+        create: "POST /api/clients",
+        get: "GET /api/clients/:id",
+        update: "PATCH /api/clients/:id",
+        delete: "DELETE /api/clients/:id",
+        activate: "POST /api/clients/:id/activate",
+        stats: "GET /api/clients/stats",
+        nearby: "GET /api/clients/:id/nearby",
+      },
+      notifications: {
+        list: "GET /api/notifications",
+        markRead: "POST /api/notifications/:id/read",
+        markAllRead: "POST /api/notifications/mark-all-read",
+        archive: "POST /api/notifications/:id/archive",
+        delete: "DELETE /api/notifications/:id",
+        create: "POST /api/notifications/create",
+        stats: "GET /api/notifications/stats",
+      },
+      billing: {
+        plans: "GET /api/billing/plans",
+        subscription: "GET /api/billing/subscription",
+        subscribe: "POST /api/billing/subscribe",
+        cancel: "POST /api/billing/cancel",
+        history: "GET /api/billing/history",
+        usage: "GET /api/billing/usage",
+        webhook: "POST /api/billing/webhooks/stripe",
+      },
     },
     documentation: "Ver documentação completa em /Implementação BackEnd/",
     features: {
@@ -179,10 +230,11 @@ app.get("/api/test", (req, res) => {
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/mapbox", mapboxRoutes);
-
-// TODO: Adicionar outras rotas quando criadas
-// app.use('/api/navigation', navigationRoutes);
-// app.use('/api/users', userRoutes);
+app.use("/api/navigation", navigationRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/clients", clientRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/billing", billingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
