@@ -3,6 +3,7 @@
 ## Visão Geral
 
 Endpoints para gerenciamento completo de rotas, incluindo:
+
 - CRUD de rotas
 - Gerenciamento de paradas
 - Sistema de navegação
@@ -16,15 +17,18 @@ Todos os endpoints requerem autenticação: `Authorization: Bearer <token>`
 ## GET /api/routes
 
 ### Descrição
+
 Lista rotas do usuário autenticado com filtros e paginação.
 
 ### Request
+
 ```http
 GET /api/routes?status=active&limit=20&offset=0&search=trabalho
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ### Query Parameters
+
 - `status` (opcional): `all`, `active`, `scheduled`, `draft`, `completed`, `paused`
 - `limit` (opcional): número de itens (padrão: 20, máximo: 100)
 - `offset` (opcional): paginação (padrão: 0)
@@ -32,6 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 - `routeSetId` (opcional): filtrar por conjunto de rotas
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "routes": [
@@ -65,9 +70,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## POST /api/routes
 
 ### Descrição
+
 Cria uma nova rota com paradas.
 
 ### Request
+
 ```http
 POST /api/routes
 Authorization: Bearer token
@@ -92,7 +99,7 @@ Content-Type: application/json
       "clientId": "client-uuid-here"
     },
     {
-      "name": "Cliente B", 
+      "name": "Cliente B",
       "coordinates": [-46.6400, -23.5600],
       "address": "Av. Paulista, 456 - São Paulo, SP"
     }
@@ -107,6 +114,7 @@ Content-Type: application/json
 ```
 
 ### Validações
+
 - `name`: obrigatório, 3-255 caracteres
 - `responsible`: obrigatório, 2-255 caracteres
 - `priority`: enum (`baixa`, `media`, `alta`)
@@ -115,12 +123,13 @@ Content-Type: application/json
 - `scheduling.type`: enum (`permanente`, `imediata`)
 
 ### Response - Sucesso (201)
+
 ```json
 {
   "route": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Rota de Entregas Zona Sul",
-    "description": "Entregas da manhã na zona sul", 
+    "description": "Entregas da manhã na zona sul",
     "status": "draft",
     "priority": "media",
     "responsible": "Carlos Santos",
@@ -145,6 +154,7 @@ Content-Type: application/json
 ```
 
 ### Processamento Automático
+
 1. Calcular estimativas de duração e distância
 2. Criar paradas na ordem fornecida
 3. Associar clientes existentes ou criar novos
@@ -156,15 +166,18 @@ Content-Type: application/json
 ## GET /api/routes/:id
 
 ### Descrição
+
 Retorna detalhes completos de uma rota específica.
 
 ### Request
+
 ```http
 GET /api/routes/550e8400-e29b-41d4-a716-446655440000
 Authorization: Bearer token
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "route": {
@@ -172,7 +185,7 @@ Authorization: Bearer token
     "name": "Rota Centro - Trabalho",
     "description": "Rota diária para o trabalho",
     "status": "active",
-    "priority": "alta", 
+    "priority": "alta",
     "responsible": "João Silva",
     "estimatedDuration": 3600,
     "estimatedDistance": 15000,
@@ -198,10 +211,10 @@ Authorization: Bearer token
       "timeSpentAtStop": 300
     },
     {
-      "id": "stop-uuid-2", 
+      "id": "stop-uuid-2",
       "name": "Trabalho",
-      "latitude": -23.5600,
-      "longitude": -46.6400,
+      "latitude": -23.56,
+      "longitude": -46.64,
       "address": "Av. B, 456",
       "stopOrder": 2,
       "isCompleted": false
@@ -210,7 +223,7 @@ Authorization: Bearer token
   "metrics": {
     "efficiency": 85,
     "fuelSaved": 2.5,
-    "moneySaved": 15.50,
+    "moneySaved": 15.5,
     "timeImprovement": 360
   },
   "navigation": {
@@ -227,9 +240,11 @@ Authorization: Bearer token
 ## PATCH /api/routes/:id
 
 ### Descrição
+
 Atualiza dados de uma rota existente.
 
 ### Request
+
 ```http
 PATCH /api/routes/550e8400-e29b-41d4-a716-446655440000
 Authorization: Bearer token
@@ -245,6 +260,7 @@ Content-Type: application/json
 ```
 
 ### Campos Atualizáveis
+
 - `name`
 - `description`
 - `priority`
@@ -253,6 +269,7 @@ Content-Type: application/json
 - `responsible`
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "route": {
@@ -264,6 +281,7 @@ Content-Type: application/json
 ```
 
 ### Validações de Status
+
 - `draft` → `active`, `scheduled`
 - `scheduled` → `active`, `cancelled`
 - `active` → `paused`, `completed`, `cancelled`
@@ -276,20 +294,24 @@ Content-Type: application/json
 ## DELETE /api/routes/:id
 
 ### Descrição
+
 Remove uma rota (soft delete).
 
 ### Request
+
 ```http
 DELETE /api/routes/550e8400-e29b-41d4-a716-446655440000
 Authorization: Bearer token
 ```
 
 ### Validações
+
 - Rota deve pertencer ao usuário
 - Não pode deletar rota em navegação ativa
 - Rota com status `completed` requer confirmação
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "message": "Rota removida com sucesso"
@@ -301,9 +323,11 @@ Authorization: Bearer token
 ## POST /api/routes/:id/duplicate
 
 ### Descrição
+
 Duplica uma rota existente com todas as paradas.
 
 ### Request
+
 ```http
 POST /api/routes/550e8400-e29b-41d4-a716-446655440000/duplicate
 Authorization: Bearer token
@@ -316,6 +340,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (201)
+
 ```json
 {
   "route": {
@@ -331,9 +356,11 @@ Content-Type: application/json
 ## POST /api/routes/:id/optimize
 
 ### Descrição
+
 Otimiza ordem das paradas usando Mapbox Optimization API.
 
 ### Request
+
 ```http
 POST /api/routes/550e8400-e29b-41d4-a716-446655440000/optimize
 Authorization: Bearer token
@@ -346,6 +373,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "optimization": {
@@ -366,7 +394,7 @@ Content-Type: application/json
       "name": "Parada otimizada 1"
     },
     {
-      "id": "stop-uuid-1", 
+      "id": "stop-uuid-1",
       "stopOrder": 2,
       "name": "Parada otimizada 2"
     }
@@ -375,6 +403,7 @@ Content-Type: application/json
 ```
 
 ### Validações
+
 - Rota não pode estar em navegação ativa
 - Mínimo 3 paradas para otimização
 - Rate limit: 10 otimizações por hora
@@ -384,15 +413,18 @@ Content-Type: application/json
 ## GET /api/routes/:id/metrics
 
 ### Descrição
+
 Retorna métricas detalhadas de uma rota completada.
 
 ### Request
+
 ```http
 GET /api/routes/550e8400-e29b-41d4-a716-446655440000/metrics
 Authorization: Bearer token
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "route": {
@@ -418,7 +450,7 @@ Authorization: Bearer token
   "savings": {
     "fuelUsed": 1.2,
     "fuelSaved": 2.5,
-    "moneySaved": 15.50,
+    "moneySaved": 15.5,
     "co2Saved": 5.8
   },
   "traffic": {
@@ -433,15 +465,18 @@ Authorization: Bearer token
 ## GET /api/routes/:id/stops
 
 ### Descrição
+
 Lista paradas de uma rota específica.
 
 ### Request
+
 ```http
 GET /api/routes/550e8400-e29b-41d4-a716-446655440000/stops
 Authorization: Bearer token
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "stops": [
@@ -471,9 +506,11 @@ Authorization: Bearer token
 ## POST /api/routes/:id/stops
 
 ### Descrição
+
 Adiciona nova parada a uma rota existente.
 
 ### Request
+
 ```http
 POST /api/routes/550e8400-e29b-41d4-a716-446655440000/stops
 Authorization: Bearer token
@@ -489,6 +526,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (201)
+
 ```json
 {
   "stop": {
@@ -508,9 +546,11 @@ Content-Type: application/json
 ## PATCH /api/routes/:id/stops/:stopId
 
 ### Descrição
+
 Atualiza dados de uma parada específica.
 
 ### Request
+
 ```http
 PATCH /api/routes/route-id/stops/stop-id
 Authorization: Bearer token
@@ -528,15 +568,18 @@ Content-Type: application/json
 ## DELETE /api/routes/:id/stops/:stopId
 
 ### Descrição
+
 Remove uma parada da rota.
 
 ### Request
+
 ```http
 DELETE /api/routes/route-id/stops/stop-id
 Authorization: Bearer token
 ```
 
 ### Validações
+
 - Rota não pode estar em navegação ativa
 - Deve manter pelo menos 1 parada
 - Reordena paradas automaticamente
@@ -546,45 +589,64 @@ Authorization: Bearer token
 ## Middleware e Validações
 
 ### Middleware de Autorização
+
 ```typescript
-const routeOwnership = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const routeOwnership = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const routeId = req.params.id;
   const userId = req.user!.id;
-  
-  const route = await query('SELECT user_id FROM routes WHERE id = $1', [routeId]);
-  
+
+  const route = await query("SELECT user_id FROM routes WHERE id = $1", [
+    routeId,
+  ]);
+
   if (route.rows.length === 0) {
-    return res.status(404).json({ error: 'Rota não encontrada' });
+    return res.status(404).json({ error: "Rota não encontrada" });
   }
-  
+
   if (route.rows[0].user_id !== userId) {
-    return res.status(403).json({ error: 'Acesso negado' });
+    return res.status(403).json({ error: "Acesso negado" });
   }
-  
+
   next();
 };
 ```
 
 ### Validação de Plano
+
 ```typescript
-const validatePlanLimits = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const validatePlanLimits = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const userId = req.user!.id;
-  
+
   // Verificar limites do plano do usuário
-  const user = await query('SELECT plan_type FROM users WHERE id = $1', [userId]);
-  const plan = await query('SELECT * FROM plans WHERE name = $1', [user.rows[0].plan_type]);
-  
+  const user = await query("SELECT plan_type FROM users WHERE id = $1", [
+    userId,
+  ]);
+  const plan = await query("SELECT * FROM plans WHERE name = $1", [
+    user.rows[0].plan_type,
+  ]);
+
   if (plan.rows[0].max_routes !== -1) {
-    const routeCount = await query('SELECT COUNT(*) FROM routes WHERE user_id = $1', [userId]);
-    
+    const routeCount = await query(
+      "SELECT COUNT(*) FROM routes WHERE user_id = $1",
+      [userId],
+    );
+
     if (routeCount.rows[0].count >= plan.rows[0].max_routes) {
-      return res.status(403).json({ 
-        error: 'Limite de rotas atingido para seu plano',
-        limit: plan.rows[0].max_routes
+      return res.status(403).json({
+        error: "Limite de rotas atingido para seu plano",
+        limit: plan.rows[0].max_routes,
       });
     }
   }
-  
+
   next();
 };
 ```
@@ -594,6 +656,7 @@ const validatePlanLimits = async (req: AuthRequest, res: Response, next: NextFun
 ## Rate Limiting
 
 ### Configuração por Endpoint
+
 ```typescript
 // Rotas básicas
 const routesLimiter = rateLimit({
@@ -607,7 +670,7 @@ const optimizationLimiter = rateLimit({
   max: 10, // 10 otimizações por hora
 });
 
-router.use('/optimize', optimizationLimiter);
+router.use("/optimize", optimizationLimiter);
 ```
 
 ---
@@ -615,24 +678,25 @@ router.use('/optimize', optimizationLimiter);
 ## Cálculo de Estimativas
 
 ### Distância e Duração
+
 ```typescript
 const calculateEstimates = (stops: RouteStop[]) => {
   let totalDistance = 0;
   let totalDuration = 0;
-  
+
   // Cálculo simples entre paradas
   for (let i = 0; i < stops.length - 1; i++) {
     const distance = haversineDistance(
       stops[i].coordinates,
-      stops[i + 1].coordinates
+      stops[i + 1].coordinates,
     );
     totalDistance += distance;
   }
-  
+
   // Estimativas baseadas em médias
-  totalDuration = totalDistance / 15 * 60; // 15 km/h médio em cidade
+  totalDuration = (totalDistance / 15) * 60; // 15 km/h médio em cidade
   const estimatedCredits = Math.min(stops.length * 2, 20);
-  
+
   return { totalDistance, totalDuration, estimatedCredits };
 };
 ```

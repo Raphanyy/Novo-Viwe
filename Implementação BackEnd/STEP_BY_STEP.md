@@ -13,6 +13,7 @@ Este documento detalha **EXATAMENTE** cada passo necessário para implementar o 
 #### ⏰ Tempo Estimado: 2-3 horas
 
 #### 🔴 Passo 1.1: Conectar Neon Database (OBRIGATÓRIO)
+
 ```bash
 # 1. Acessar Neon
 # Clique: [Connect to Neon](#open-mcp-popover)
@@ -29,6 +30,7 @@ psql "postgresql://user:password@host:5432/database" -c "SELECT version();"
 ```
 
 #### 🔴 Passo 1.2: Executar Schema SQL
+
 ```bash
 # 1. Navegar para pasta
 cd "Implementação BackEnd"
@@ -41,7 +43,7 @@ psql "postgresql://user:password@host:5432/database" -c "\dt"
 
 # Deve mostrar 20 tabelas:
 # - users
-# - user_preferences  
+# - user_preferences
 # - auth_sessions
 # - routes
 # - route_stops
@@ -62,6 +64,7 @@ psql "postgresql://user:password@host:5432/database" -c "\dt"
 ```
 
 #### ✅ Passo 1.3: Verificar Índices e Triggers
+
 ```bash
 # 1. Verificar índices criados
 psql "postgresql://user:password@host:5432/database" -c "\di"
@@ -78,6 +81,7 @@ psql "postgresql://user:password@host:5432/database" -c "SELECT * FROM plans;"
 #### ⏰ Tempo Estimado: 1-2 horas
 
 #### 🔴 Passo 2.1: Configurar .env
+
 ```bash
 # 1. Copiar template
 cp configs/environment.env.example .env
@@ -99,6 +103,7 @@ nano .env
 ```
 
 #### ✅ Passo 2.2: Validar Configuração
+
 ```bash
 # 1. Testar database connection
 node scripts/verify-setup.js database
@@ -115,6 +120,7 @@ node scripts/verify-setup.js mapbox
 #### ⏰ Tempo Estimado: 2-3 horas
 
 #### 🔴 Passo 3.1: Instalar Dependências
+
 ```bash
 # 1. Navegar para pasta do servidor
 cd server/
@@ -158,6 +164,7 @@ EOF
 ```
 
 #### 🔴 Passo 3.2: Estrutura Básica do Servidor
+
 ```bash
 # 1. Criar estrutura de pastas
 mkdir -p src/{routes,middleware,utils,services,types}
@@ -206,6 +213,7 @@ npm pkg set scripts.start="node dist/index.js"
 ```
 
 #### ✅ Passo 3.3: Testar Servidor
+
 ```bash
 # 1. Iniciar servidor
 npm run dev
@@ -226,6 +234,7 @@ curl http://localhost:3001/api/test
 #### ⏰ Tempo Estimado: 4-6 horas
 
 #### 🔴 Passo 4.1: Implementar JWT Utils
+
 ```bash
 # 1. Criar utils/jwt.ts
 cat > src/utils/jwt.ts << 'EOF'
@@ -317,6 +326,7 @@ EOF
 ```
 
 #### 🔴 Passo 4.2: Database Connection
+
 ```bash
 # 1. Instalar pg (PostgreSQL client)
 npm install pg @types/pg
@@ -352,6 +362,7 @@ EOF
 #### ⏰ Tempo Estimado: 6-8 horas
 
 #### 🔴 Passo 6.1: POST /api/auth/register
+
 ```bash
 # 1. Instalar bcrypt
 npm install bcryptjs @types/bcryptjs
@@ -390,8 +401,8 @@ router.post('/register', async (req, res) => {
 
     // Criar usuário
     const userResult = await query(
-      `INSERT INTO users (name, email, password_hash) 
-       VALUES ($1, $2, $3) 
+      `INSERT INTO users (name, email, password_hash)
+       VALUES ($1, $2, $3)
        RETURNING id, name, email, created_at`,
       [name, email, passwordHash]
     );
@@ -410,7 +421,7 @@ router.post('/register', async (req, res) => {
 
     // Salvar refresh token
     await query(
-      `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at) 
+      `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at)
        VALUES ($1, $2, $3, NOW() + INTERVAL '30 days')`,
       [user.id, refreshToken, await bcrypt.hash(refreshToken, 10)]
     );
@@ -439,6 +450,7 @@ EOF
 ```
 
 #### 🔴 Passo 6.2: POST /api/auth/login
+
 ```bash
 # 1. Adicionar login ao routes/auth.ts
 cat >> src/routes/auth.ts << 'EOF'
@@ -483,14 +495,14 @@ router.post('/login', async (req, res) => {
 
     // Salvar refresh token
     await query(
-      `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at) 
+      `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at)
        VALUES ($1, $2, $3, NOW() + INTERVAL '30 days')`,
       [user.id, refreshToken, await bcrypt.hash(refreshToken, 10)]
     );
 
     // Log de auditoria
     await query(
-      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, ip_address) 
+      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, ip_address)
        VALUES ($1, 'login', 'User', $1, $2)`,
       [user.id, req.ip]
     );
@@ -517,6 +529,7 @@ EOF
 ```
 
 #### 🔴 Passo 6.3: Integrar Rotas no Servidor
+
 ```bash
 # 1. Atualizar src/index.ts
 cat > src/index.ts << 'EOF'
@@ -565,6 +578,7 @@ EOF
 ```
 
 #### ✅ Passo 6.4: Testar Autenticação
+
 ```bash
 # 1. Reiniciar servidor
 npm run dev
@@ -591,6 +605,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 #### ⏰ Tempo Estimado: 8-12 horas
 
 #### 🔴 Passo 8.1: GET /api/routes
+
 ```bash
 # 1. Criar routes/routes.ts
 cat > src/routes/routes.ts << 'EOF'
@@ -610,7 +625,7 @@ router.get('/', async (req: AuthRequest, res) => {
     const userId = req.user!.id;
 
     let queryText = `
-      SELECT 
+      SELECT
         r.id, r.name, r.description, r.status, r.priority,
         r.estimated_duration, r.estimated_distance, r.estimated_credits,
         r.created_at, r.updated_at, r.scheduled_date,
@@ -637,7 +652,7 @@ router.get('/', async (req: AuthRequest, res) => {
       paramIndex++;
     }
 
-    queryText += ` 
+    queryText += `
       GROUP BY r.id, r.name, r.description, r.status, r.priority,
                r.estimated_duration, r.estimated_distance, r.estimated_credits,
                r.created_at, r.updated_at, r.scheduled_date
@@ -669,6 +684,7 @@ EOF
 ```
 
 #### 🔴 Passo 8.2: POST /api/routes
+
 ```bash
 # 1. Adicionar criação de rota
 cat >> src/routes/routes.ts << 'EOF'
@@ -677,15 +693,15 @@ cat >> src/routes/routes.ts << 'EOF'
 router.post('/', async (req: AuthRequest, res) => {
   try {
     const userId = req.user!.id;
-    const { 
-      name, 
-      description, 
-      responsible, 
+    const {
+      name,
+      description,
+      responsible,
       priority = 'media',
       stops,
       clients,
       routeSet,
-      scheduling 
+      scheduling
     } = req.body;
 
     // Validações
@@ -730,7 +746,7 @@ router.post('/', async (req: AuthRequest, res) => {
           route.id,
           stop.name,
           stop.coordinates[1], // latitude
-          stop.coordinates[0], // longitude  
+          stop.coordinates[0], // longitude
           stop.address,
           i + 1
         ]
@@ -739,7 +755,7 @@ router.post('/', async (req: AuthRequest, res) => {
 
     // Log de auditoria
     await query(
-      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values) 
+      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values)
        VALUES ($1, 'create_route', 'Route', $2, $3)`,
       [userId, route.id, JSON.stringify({ name, stops: stops.length })]
     );
@@ -755,6 +771,7 @@ EOF
 ```
 
 #### 🔴 Passo 8.3: Integrar Rotas no Servidor
+
 ```bash
 # 1. Atualizar src/index.ts para incluir rotas
 cat > src/index.ts << 'EOF'
@@ -809,6 +826,7 @@ EOF
 #### ⏰ Tempo Estimado: 6-8 horas
 
 #### 🔴 Passo 11.1: POST /api/navigation/start
+
 ```bash
 # 1. Criar routes/navigation.ts
 cat > src/routes/navigation.ts << 'EOF'
@@ -869,11 +887,11 @@ router.post('/start', async (req: AuthRequest, res) => {
       const lng1 = stops[i].longitude;
       const lat2 = stops[i + 1].latitude;
       const lng2 = stops[i + 1].longitude;
-      
+
       const distance = Math.sqrt(
         Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2)
       ) * 111000; // Aproximação em metros
-      
+
       totalDistance += distance;
     }
 
@@ -963,6 +981,7 @@ EOF
 ```
 
 #### ✅ Passo 11.2: Testar Endpoints
+
 ```bash
 # 1. Reiniciar servidor
 npm run dev
@@ -979,7 +998,7 @@ ROUTE_ID=$(curl -s -X POST http://localhost:3001/api/routes \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "name": "Rota Teste",
-    "responsible": "João Silva", 
+    "responsible": "João Silva",
     "stops": [
       {"name": "Parada 1", "coordinates": [-46.6333, -23.5505], "address": "São Paulo, SP"},
       {"name": "Parada 2", "coordinates": [-46.6400, -23.5600], "address": "São Paulo, SP"}
@@ -1006,6 +1025,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:3001/api/routes
 #### ⏰ Tempo Estimado: 4-6 horas
 
 #### 🔴 Passo 13.1: Proxy Mapbox
+
 ```bash
 # 1. Criar services/mapbox.ts
 cat > src/services/mapbox.ts << 'EOF'
@@ -1126,6 +1146,7 @@ EOF
 #### ⏰ Tempo Estimado: 4-5 horas
 
 #### 🔴 Passo 15.1: Google OAuth
+
 ```bash
 # 1. Instalar passport
 npm install passport passport-google-oauth20
@@ -1157,7 +1178,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
 
       // Verificar se usuário já existe
       let userResult = await query('SELECT * FROM users WHERE email = $1', [email]);
-      
+
       if (userResult.rows.length === 0) {
         // Criar novo usuário
         userResult = await query(
@@ -1193,14 +1214,14 @@ router.get('/google/callback',
   async (req, res) => {
     try {
       const user = req.user as any;
-      
+
       // Gerar tokens
       const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken();
 
       // Salvar refresh token
       await query(
-        `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at) 
+        `INSERT INTO auth_sessions (user_id, refresh_token, refresh_token_hash, expires_at)
          VALUES ($1, $2, $3, NOW() + INTERVAL '30 days')`,
         [user.id, refreshToken, await bcrypt.hash(refreshToken, 10)]
       );
@@ -1208,7 +1229,7 @@ router.get('/google/callback',
       // Redirect para frontend com tokens
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
       res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&refresh=${refreshToken}`);
-      
+
     } catch (error) {
       console.error('Erro no callback do Google:', error);
       res.redirect('/login?error=oauth_error');
@@ -1227,6 +1248,7 @@ EOF
 #### ⏰ Tempo Estimado: 6-8 horas
 
 #### 🔴 Passo 16.1: Setup Stripe
+
 ```bash
 # 1. Instalar Stripe
 npm install stripe
@@ -1318,7 +1340,7 @@ router.post('/subscribe', async (req: AuthRequest, res) => {
     // Buscar ou criar customer no Stripe
     const userResult = await query('SELECT * FROM users WHERE id = $1', [userId]);
     const user = userResult.rows[0];
-    
+
     const customerId = await createCustomer(user);
 
     // Criar assinatura
@@ -1350,26 +1372,35 @@ EOF
 ### 📅 Semana 7-8: Performance e Analytics
 
 #### Implementar cache Redis (opcional)
+
 #### Adicionar sistema de métricas
+
 #### Otimizar queries do banco
 
 ### 📅 Semana 9: Testes Automatizados
 
 #### Unit tests para utils e services
+
 #### Integration tests para endpoints
+
 #### E2E tests para fluxos principais
 
 ### 📅 Semana 10: Migração Frontend
 
 #### Migrar AuthContext para usar APIs reais
+
 #### Substituir dados mockados por chamadas HTTP
+
 #### Implementar auto-refresh de tokens
 
 ### 📅 Semana 11-12: Deploy e Produção
 
 #### Setup ambiente de produção
+
 #### Configurar monitoramento
+
 #### Migração de dados
+
 #### Documentação final
 
 ---
@@ -1377,18 +1408,21 @@ EOF
 ## ✅ CHECKLIST DE VALIDAÇÃO
 
 ### Banco de Dados
+
 - [ ] Todas as 20 tabelas criadas
 - [ ] Índices aplicados corretamente
 - [ ] Triggers funcionando
 - [ ] Dados iniciais carregados
 
 ### Autenticação
+
 - [ ] JWT generation/validation
 - [ ] Password hashing com bcrypt
 - [ ] Refresh tokens funcionando
 - [ ] Rate limiting ativo
 
 ### APIs
+
 - [ ] POST /api/auth/register
 - [ ] POST /api/auth/login
 - [ ] GET /api/routes
@@ -1396,12 +1430,14 @@ EOF
 - [ ] POST /api/navigation/start
 
 ### Integrações
+
 - [ ] Mapbox geocoding
 - [ ] Mapbox directions
 - [ ] Google OAuth
 - [ ] Stripe basics
 
 ### Security
+
 - [ ] CORS configurado
 - [ ] Helmet ativo
 - [ ] Rate limiting

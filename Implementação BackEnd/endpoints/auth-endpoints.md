@@ -3,6 +3,7 @@
 ## Visão Geral
 
 Todos os endpoints de autenticação estão sob `/api/auth/` e implementam:
+
 - Validação de entrada
 - Rate limiting
 - Hashing seguro de senhas
@@ -14,26 +15,30 @@ Todos os endpoints de autenticação estão sob `/api/auth/` e implementam:
 ## POST /api/auth/register
 
 ### Descrição
+
 Registra um novo usuário no sistema.
 
 ### Request
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
 
 {
   "name": "João Silva",
-  "email": "joao@example.com", 
+  "email": "joao@example.com",
   "password": "MinhaSenh@123"
 }
 ```
 
 ### Validações
+
 - `name`: obrigatório, 2-255 caracteres
 - `email`: obrigatório, formato válido, único
 - `password`: obrigatório, 8+ caracteres, 1 maiúscula, 1 número, 1 especial
 
 ### Response - Sucesso (201)
+
 ```json
 {
   "user": {
@@ -50,6 +55,7 @@ Content-Type: application/json
 ```
 
 ### Response - Erro (400)
+
 ```json
 {
   "error": "Email já está em uso"
@@ -57,30 +63,33 @@ Content-Type: application/json
 ```
 
 ### Implementação
+
 ```typescript
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  
+
   // Validações
   if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
   }
-  
+
   // Verificar email único
-  const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
+  const existing = await query("SELECT id FROM users WHERE email = $1", [
+    email,
+  ]);
   if (existing.rows.length > 0) {
-    return res.status(400).json({ error: 'Email já está em uso' });
+    return res.status(400).json({ error: "Email já está em uso" });
   }
-  
+
   // Hash da senha
   const passwordHash = await bcrypt.hash(password, 12);
-  
+
   // Criar usuário + preferências
   const user = await query(
-    'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
-    [name, email, passwordHash]
+    "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
+    [name, email, passwordHash],
   );
-  
+
   // Gerar tokens e responder
 });
 ```
@@ -90,9 +99,11 @@ router.post('/register', async (req, res) => {
 ## POST /api/auth/login
 
 ### Descrição
+
 Autentica um usuário existente.
 
 ### Request
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -104,15 +115,17 @@ Content-Type: application/json
 ```
 
 ### Validações
+
 - `email`: obrigatório, formato válido
 - `password`: obrigatório
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "user": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "João Silva", 
+    "name": "João Silva",
     "email": "joao@example.com"
   },
   "tokens": {
@@ -124,6 +137,7 @@ Content-Type: application/json
 ```
 
 ### Response - Erro (401)
+
 ```json
 {
   "error": "Email ou senha inválidos"
@@ -131,6 +145,7 @@ Content-Type: application/json
 ```
 
 ### Rate Limiting
+
 - 5 tentativas por IP a cada 15 minutos
 - Após 3 falhas: delay progressivo
 
@@ -139,9 +154,11 @@ Content-Type: application/json
 ## POST /api/auth/refresh
 
 ### Descrição
+
 Renova um access token usando refresh token.
 
 ### Request
+
 ```http
 POST /api/auth/refresh
 Content-Type: application/json
@@ -152,6 +169,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "tokens": {
@@ -162,6 +180,7 @@ Content-Type: application/json
 ```
 
 ### Response - Erro (401)
+
 ```json
 {
   "error": "Refresh token inválido ou expirado"
@@ -173,9 +192,11 @@ Content-Type: application/json
 ## POST /api/auth/logout
 
 ### Descrição
+
 Invalida tokens e encerra sessão.
 
 ### Request
+
 ```http
 POST /api/auth/logout
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -187,6 +208,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "message": "Logout realizado com sucesso"
@@ -198,9 +220,11 @@ Content-Type: application/json
 ## POST /api/auth/forgot-password
 
 ### Descrição
+
 Inicia processo de recuperação de senha.
 
 ### Request
+
 ```http
 POST /api/auth/forgot-password
 Content-Type: application/json
@@ -211,6 +235,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "message": "Se o email existir, você receberá instruções para redefinir a senha"
@@ -218,6 +243,7 @@ Content-Type: application/json
 ```
 
 ### Processo
+
 1. Verificar se email existe
 2. Gerar token seguro (6 dígitos ou UUID)
 3. Salvar token com expiração (1 hora)
@@ -229,9 +255,11 @@ Content-Type: application/json
 ## POST /api/auth/reset-password
 
 ### Descrição
+
 Redefine senha usando token recebido por email.
 
 ### Request
+
 ```http
 POST /api/auth/reset-password
 Content-Type: application/json
@@ -243,6 +271,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "message": "Senha redefinida com sucesso"
@@ -254,9 +283,11 @@ Content-Type: application/json
 ## POST /api/auth/verify-email
 
 ### Descrição
+
 Verifica email usando token enviado no registro.
 
 ### Request
+
 ```http
 POST /api/auth/verify-email
 Content-Type: application/json
@@ -267,6 +298,7 @@ Content-Type: application/json
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "message": "Email verificado com sucesso"
@@ -278,15 +310,18 @@ Content-Type: application/json
 ## GET /api/auth/me
 
 ### Descrição
+
 Retorna dados do usuário autenticado.
 
 ### Request
+
 ```http
 GET /api/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ### Response - Sucesso (200)
+
 ```json
 {
   "user": {
@@ -306,14 +341,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ## GET /api/auth/oauth/google
 
 ### Descrição
+
 Inicia processo de autenticação com Google.
 
 ### Request
+
 ```http
 GET /api/auth/oauth/google
 ```
 
 ### Response
+
 Redirect para Google OAuth com parâmetros corretos.
 
 ---
@@ -321,9 +359,11 @@ Redirect para Google OAuth com parâmetros corretos.
 ## GET /api/auth/oauth/google/callback
 
 ### Descrição
+
 Callback do Google OAuth.
 
 ### Process
+
 1. Receber code do Google
 2. Trocar code por token
 3. Obter dados do usuário
@@ -336,13 +376,18 @@ Callback do Google OAuth.
 ## Middleware de Autenticação
 
 ### authenticateToken
+
 ```typescript
-export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+export const authenticateToken = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
+    return res.status(401).json({ error: "Access token required" });
   }
 
   try {
@@ -354,16 +399,17 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     };
     next();
   } catch (error) {
-    return res.status(403).json({ error: 'Invalid token' });
+    return res.status(403).json({ error: "Invalid token" });
   }
 };
 ```
 
 ### Uso
+
 ```typescript
 // Aplicar em rotas protegidas
-router.use('/api/routes', authenticateToken);
-router.use('/api/user', authenticateToken);
+router.use("/api/routes", authenticateToken);
+router.use("/api/user", authenticateToken);
 ```
 
 ---
@@ -371,17 +417,18 @@ router.use('/api/user', authenticateToken);
 ## Rate Limiting
 
 ### Configuração
+
 ```typescript
 // Auth endpoints - mais restritivo
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 5, // 5 tentativas
-  message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+  message: { error: "Muitas tentativas. Tente novamente em 15 minutos." },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-app.use('/api/auth', authLimiter);
+app.use("/api/auth", authLimiter);
 ```
 
 ---
@@ -389,6 +436,7 @@ app.use('/api/auth', authLimiter);
 ## Segurança
 
 ### Password Hashing
+
 ```typescript
 // Registro/alteração
 const hash = await bcrypt.hash(password, 12);
@@ -398,21 +446,25 @@ const isValid = await bcrypt.compare(password, storedHash);
 ```
 
 ### JWT Tokens
+
 ```typescript
 // Access token - curta duração
-const accessToken = jwt.sign(payload, secret, { expiresIn: '15m' });
+const accessToken = jwt.sign(payload, secret, { expiresIn: "15m" });
 
-// Refresh token - longa duração  
-const refreshToken = jwt.sign({}, secret, { expiresIn: '30d' });
+// Refresh token - longa duração
+const refreshToken = jwt.sign({}, secret, { expiresIn: "30d" });
 ```
 
 ### Headers de Segurança
+
 ```typescript
 app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }),
+);
 ```
 
 ---
@@ -420,12 +472,14 @@ app.use(cors({
 ## Auditoria
 
 ### Log de Eventos
+
 ```sql
 INSERT INTO audit_logs (user_id, action, entity_type, entity_id, ip_address, user_agent)
 VALUES ($1, 'login', 'User', $1, $2, $3);
 ```
 
 ### Eventos Auditados
+
 - `register` - Registro de usuário
 - `login` - Login bem-sucedido
 - `login_failed` - Tentativa de login falhada
@@ -438,6 +492,7 @@ VALUES ($1, 'login', 'User', $1, $2, $3);
 ## Testes
 
 ### Exemplo de Teste
+
 ```bash
 # Registro
 curl -X POST http://localhost:3001/api/auth/register \
@@ -459,7 +514,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:3001/api/auth/me
 ## Próximos Passos
 
 1. ✅ Implementar endpoints básicos
-2. ✅ Adicionar OAuth (Google/Apple)  
+2. ✅ Adicionar OAuth (Google/Apple)
 3. ✅ Sistema de email
 4. ✅ Rate limiting avançado
 5. ✅ 2FA/MFA (futuro)

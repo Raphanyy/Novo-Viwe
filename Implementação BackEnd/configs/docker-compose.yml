@@ -4,7 +4,7 @@
 # OPCIONAL: Use apenas se quiser rodar banco local
 # Recomendado: Use Neon PostgreSQL em produção
 
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Local (alternativa ao Neon)
@@ -89,7 +89,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@viwe.local
       PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
       - "5050:80"
     volumes:
@@ -105,8 +105,8 @@ services:
     container_name: viwe-mailhog
     restart: unless-stopped
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
     networks:
       - viwe-network
 
@@ -122,7 +122,6 @@ volumes:
     name: viwe-redis-data
   pgadmin_data:
     name: viwe-pgadmin-data
-
 # ========================================
 # COMANDOS ÚTEIS
 # ========================================

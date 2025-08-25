@@ -1,6 +1,7 @@
 # 🚀 IMPLEMENTAÇÃO BACKEND - PASSO A PASSO COMPLETO
 
 ## 📋 ÍNDICE RÁPIDO
+
 - [🎯 Visão Geral](#-visão-geral)
 - [📁 Estrutura dos Arquivos](#-estrutura-dos-arquivos)
 - [⚡ INÍCIO RÁPIDO](#-início-rápido)
@@ -17,6 +18,7 @@
 Este diretório contém **TODA A DOCUMENTAÇÃO** necessária para implementar o backend completo da plataforma Viwe, baseado na análise minuciosa de todo o frontend.
 
 ### 📊 ESCOPO TOTAL
+
 - **20 tabelas** de banco de dados
 - **34+ endpoints** de API
 - **6 integrações** externas
@@ -30,7 +32,7 @@ Este diretório contém **TODA A DOCUMENTAÇÃO** necessária para implementar o
 ```
 Implementação BackEnd/
 ├── README.md                    ← VOCÊ ESTÁ AQUI (Guia Principal)
-├── STEP_BY_STEP.md             ← Passo a passo detalhado 
+├── STEP_BY_STEP.md             ← Passo a passo detalhado
 ├── DATABASE_SCHEMA.sql          ← Schema PostgreSQL completo
 ├── DATABASE_ANALYSIS.md         ← Análise completa dos modelos
 ├── AUTH_SYSTEM_ANALYSIS.md      ← Sistema de autenticação
@@ -76,6 +78,7 @@ npm install bcryptjs jsonwebtoken express-rate-limit helmet cors
 ```
 
 ### 🔴 PRÓXIMO PASSO OBRIGATÓRIO
+
 **[Connect to Neon](#open-mcp-popover)** ← Clique aqui AGORA para conectar o banco
 
 ---
@@ -85,6 +88,7 @@ npm install bcryptjs jsonwebtoken express-rate-limit helmet cors
 ### 📚 FASE 1: PREPARAÇÃO (Semana 1)
 
 #### 🗃️ Passo 1.1: Configurar Banco de Dados
+
 ```bash
 # 1.1.1 - Conectar ao Neon
 # Clique em: [Connect to Neon](#open-mcp-popover)
@@ -98,6 +102,7 @@ psql "postgresql://user:pass@host:port/db" -c "\dt"
 ```
 
 #### ⚙️ Passo 1.2: Configurar Environment
+
 ```bash
 # 1.2.1 - Copiar template
 cp configs/environment.env.example .env
@@ -110,6 +115,7 @@ nano .env
 ```
 
 #### 📦 Passo 1.3: Instalar Dependências
+
 ```bash
 # 1.3.1 - Acessar pasta do servidor
 cd server/
@@ -128,11 +134,12 @@ npm install --save-dev typescript ts-node
 ### 🔐 FASE 2: AUTENTICAÇÃO (Semana 2)
 
 #### 🔑 Passo 2.1: Implementar JWT Utils
+
 ```bash
 # 2.1.1 - Criar utils/jwt.ts
 # Ver: AUTH_SYSTEM_ANALYSIS.md seção "JWT Implementation"
 
-# 2.1.2 - Implementar middleware/auth.ts  
+# 2.1.2 - Implementar middleware/auth.ts
 # Ver: AUTH_SYSTEM_ANALYSIS.md seção "AuthMiddleware"
 
 # 2.1.3 - Testar localmente
@@ -140,12 +147,13 @@ curl -X POST http://localhost:3000/api/auth/test
 ```
 
 #### 📡 Passo 2.2: Criar Endpoints de Auth
+
 ```bash
 # 2.2.1 - POST /api/auth/register
 # Ver: endpoints/auth-endpoints.md
 
 # 2.2.2 - POST /api/auth/login
-# Ver: endpoints/auth-endpoints.md  
+# Ver: endpoints/auth-endpoints.md
 
 # 2.2.3 - POST /api/auth/refresh
 # Ver: endpoints/auth-endpoints.md
@@ -154,6 +162,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🗺️ FASE 3: ROTAS E NAVEGAÇÃO (Semana 3-4)
 
 #### 🛣️ Passo 3.1: Endpoints de Rotas
+
 ```bash
 # 3.1.1 - GET /api/routes
 # 3.1.2 - POST /api/routes
@@ -162,6 +171,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ```
 
 #### 🧭 Passo 3.2: Sistema de Navegação
+
 ```bash
 # 3.2.1 - POST /api/navigation/start
 # 3.2.2 - PATCH /api/navigation/:id
@@ -171,6 +181,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🌐 FASE 4: INTEGRAÇÕES (Semana 5)
 
 #### 🗺️ Passo 4.1: Mapbox Backend
+
 ```bash
 # 4.1.1 - Implementar geocoding proxy
 # 4.1.2 - Implementar directions proxy
@@ -178,15 +189,17 @@ curl -X POST http://localhost:3000/api/auth/test
 ```
 
 #### 🔐 Passo 4.2: OAuth
+
 ```bash
 # 4.2.1 - Google OAuth setup
-# 4.2.2 - Apple OAuth setup  
+# 4.2.2 - Apple OAuth setup
 # 4.2.3 - Callbacks e validação
 ```
 
 ### 💳 FASE 5: BILLING (Semana 6)
 
 #### 💰 Passo 5.1: Stripe Integration
+
 ```bash
 # 5.1.1 - Setup Stripe account
 # 5.1.2 - Implementar webhooks
@@ -196,6 +209,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 📊 FASE 6-8: ANALYTICS E PERFORMANCE (Semana 7-8)
 
 #### 📈 Passo 6.1: Sistema de Métricas
+
 ```bash
 # 6.1.1 - Route metrics calculation
 # 6.1.2 - User stats aggregation
@@ -205,6 +219,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🧪 FASE 9: TESTES (Semana 9)
 
 #### ✅ Passo 9.1: Implementar Testes
+
 ```bash
 # 9.1.1 - Unit tests
 # 9.1.2 - Integration tests
@@ -214,6 +229,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🔄 FASE 10: MIGRAÇÃO FRONTEND (Semana 10)
 
 #### 🎨 Passo 10.1: Migrar AuthContext
+
 ```bash
 # 10.1.1 - Substituir simulação por APIs reais
 # 10.1.2 - Implementar auto-refresh
@@ -223,6 +239,7 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🚀 FASE 11-12: DEPLOY (Semana 11-12)
 
 #### 🌍 Passo 11.1: Deploy Produção
+
 ```bash
 # 11.1.1 - Setup Netlify/Vercel
 # 11.1.2 - Configurar variáveis produção
@@ -236,25 +253,29 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 📋 Checklist de Configuração
 
 #### ✅ Banco de Dados
+
 - [ ] Neon PostgreSQL conectado
 - [ ] Schema executado (20 tabelas criadas)
 - [ ] Índices configurados
 - [ ] Triggers ativos
 
 #### ✅ Environment Variables
+
 - [ ] DATABASE_URL configurada
 - [ ] JWT_SECRET gerado (256 bits)
 - [ ] MAPBOX_ACCESS_TOKEN configurado
 - [ ] STRIPE_SECRET_KEY configurado
-- [ ] SMTP_* configurados para email
+- [ ] SMTP\_\* configurados para email
 
 #### ✅ Dependências
+
 - [ ] bcryptjs instalado
-- [ ] jsonwebtoken instalado  
+- [ ] jsonwebtoken instalado
 - [ ] express-rate-limit instalado
 - [ ] winston instalado
 
 #### ✅ Endpoints Testados
+
 - [ ] POST /api/auth/register funciona
 - [ ] POST /api/auth/login funciona
 - [ ] GET /api/user com auth funciona
@@ -267,16 +288,19 @@ curl -X POST http://localhost:3000/api/auth/test
 ### 🔍 Scripts de Validação
 
 #### Testar Conexão Database
+
 ```bash
 node scripts/verify-setup.js database
 ```
 
 #### Testar JWT Generation
+
 ```bash
 node scripts/verify-setup.js jwt
 ```
 
 #### Testar Primeiro Endpoint
+
 ```bash
 curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
@@ -286,12 +310,14 @@ curl -X POST http://localhost:3000/api/auth/register \
 ### 📊 Métricas de Sucesso
 
 #### Banco de Dados
+
 - ✅ Todas as 20 tabelas criadas
 - ✅ 35+ índices aplicados
 - ✅ Triggers funcionando
 - ✅ Views criadas
 
 #### APIs
+
 - ✅ Response time < 200ms
 - ✅ Error rate < 1%
 - ✅ Rate limiting ativo
@@ -304,6 +330,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 ### 📚 Opções de Deploy
 
 #### 🔵 Netlify Functions (Recomendado)
+
 ```bash
 # Deploy automático via Git
 # Serverless functions
@@ -311,13 +338,15 @@ curl -X POST http://localhost:3000/api/auth/register \
 ```
 
 #### 🔵 Vercel Functions
+
 ```bash
-# Deploy automático via Git  
+# Deploy automático via Git
 # Edge functions
 # Integração nativa
 ```
 
 #### 🔵 Railway/Render
+
 ```bash
 # Deploy tradicional
 # Mais controle
@@ -331,16 +360,19 @@ curl -X POST http://localhost:3000/api/auth/register \
 ### 🆘 Em Caso de Problemas
 
 #### 🔴 Problemas de Database
+
 1. Verificar conexão: `node scripts/verify-setup.js database`
 2. Reexecutar schema: `psql $DATABASE_URL -f DATABASE_SCHEMA.sql`
 3. [Get Support](#reach-support)
 
 #### 🔴 Problemas de Auth
+
 1. Verificar JWT secret: `node scripts/verify-setup.js jwt`
 2. Verificar middleware: logs do servidor
 3. Consultar: AUTH_SYSTEM_ANALYSIS.md
 
 #### 🔴 Problemas de Integração
+
 1. Verificar tokens: Mapbox, Stripe
 2. Verificar rate limits
 3. Consultar documentação específica
@@ -363,17 +395,20 @@ curl -X POST http://localhost:3000/api/auth/register \
 ## 🎯 PRÓXIMOS PASSOS CRÍTICOS
 
 ### 🔥 HOJE (Obrigatório)
+
 1. **[Connect to Neon](#open-mcp-popover)** ← PRIMEIRO PASSO
 2. **Executar** `psql $DATABASE_URL -f DATABASE_SCHEMA.sql`
 3. **Configurar** environment variables
 4. **Testar** conexão com `scripts/verify-setup.js`
 
 ### 📅 ESTA SEMANA
+
 1. **Implementar** POST /api/auth/login
 2. **Migrar** AuthContext do frontend
 3. **Testar** fluxo completo de login
 
-### 📅 PRÓXIMAS 2 SEMANAS  
+### 📅 PRÓXIMAS 2 SEMANAS
+
 1. **Implementar** endpoints de rotas
 2. **Integração** Mapbox no backend
 3. **WebSocket** para navegação tempo real
