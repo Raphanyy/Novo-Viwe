@@ -419,7 +419,7 @@ const server = http.createServer(async (req, res) => {
     res.end(
       JSON.stringify({
         error: "Endpoint não encontrado",
-        path: path,
+        path: pathname,
         method: req.method,
         available_endpoints: [
           "/health",
@@ -466,7 +466,7 @@ server.listen(PORT, async () => {
 
         // Verificar tabelas
         const health = await healthCheck();
-        console.log(`��� Tabelas: ${health.tables?.total || 0}/19`);
+        console.log(`📊 Tabelas: ${health.tables?.total || 0}/19`);
       } else {
         console.log(`❌ Falha na conexão Neon`);
       }
