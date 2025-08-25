@@ -172,12 +172,12 @@ const LoginPage: React.FC = () => {
 
                 <div className="text-muted-foreground text-sm">
                   Não tem uma conta?{" "}
-                  <a
-                    href="#"
+                  <Link
+                    to="/signup"
                     className="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200"
                   >
                     Criar conta
-                  </a>
+                  </Link>
                 </div>
               </div>
             </form>
