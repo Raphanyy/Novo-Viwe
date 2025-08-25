@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage";
 import MobileLoginPage from "./pages/MobileLoginPage";
 import EmailLoginPage from "./pages/EmailLoginPage";
 import SignupPage from "./pages/SignupPage";
+import SupabaseDemoPage from "./pages/SupabaseDemoPage";
 
 // Internal Pages
 import DashboardPage from "./pages/internal/DashboardPage";
