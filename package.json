@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "setup": "pnpm install && echo '✅ Dependências instaladas!'",
-    "dev": "concurrently \"vite\" \"node server/src/index.js\"",
+    "dev": "concurrently \"vite\" \"node server/app.js\"",
     "start": "pnpm setup && pnpm dev",
     "build": "vite build",
     "test": "vitest --run",
@@ -16,8 +16,6 @@
     "@types/mapbox-gl": "^3.4.1",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
-    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mapbox-gl": "^3.14.0",
     "pg": "^8.16.3",
