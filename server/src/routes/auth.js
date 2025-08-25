@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { query, transaction } = require('../utils/database');
-const { generateTokenPair } = require('../utils/jwt');
+const { generateTokenPair, verifyRefreshToken } = require('../utils/jwt');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -192,6 +192,83 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
     console.error('Erro no login:', error);
+    res.status(500).json({ 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+/**
+ * POST /api/auth/refresh
+ * Renovar access token usando refresh token
+ */
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ 
+        error: 'Refresh token é obrigatório' 
+      });
+    }
+
+    // Verificar refresh token
+    let decoded;
+    try {
+      decoded = verifyRefreshToken(refreshToken);
+    } catch (error) {
+      return res.status(401).json({ 
+        error: 'Refresh token inválido ou expirado' 
+      });
+    }
+
+    // Buscar sessão ativa
+    const sessionResult = await query(
+      `SELECT s.*, u.id, u.name, u.email, u.is_active 
+       FROM auth_sessions s
+       JOIN users u ON s.user_id = u.id
+       WHERE s.refresh_token = $1 AND s.is_active = true AND s.expires_at > NOW()`,
+      [refreshToken]
+    );
+
+    if (sessionResult.rows.length === 0) {
+      return res.status(401).json({ 
+        error: 'Sessão inválida ou expirada' 
+      });
+    }
+
+    const session = sessionResult.rows[0];
+
+    if (!session.is_active) {
+      return res.status(401).json({ 
+        error: 'Conta desativada' 
+      });
+    }
+
+    // Gerar novo access token
+    const tokens = generateTokenPair({
+      id: session.id,
+      name: session.name,
+      email: session.email
+    });
+
+    // Atualizar última utilização da sessão
+    await query(
+      'UPDATE auth_sessions SET last_used_at = NOW() WHERE id = $1',
+      [session.id]
+    );
+
+    res.json({
+      message: 'Token renovado com sucesso',
+      tokens: {
+        accessToken: tokens.accessToken,
+        accessTokenExpiresAt: tokens.accessTokenExpiresAt,
+        tokenType: tokens.tokenType
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro no refresh:', error);
     res.status(500).json({ 
       error: 'Erro interno do servidor' 
     });
