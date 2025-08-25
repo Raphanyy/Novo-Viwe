@@ -31,7 +31,7 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
               Para usar a autenticação real, configure as variáveis de ambiente do Supabase.
             </p>
           </div>
-          
+
           <div className="flex flex-col gap-2 text-xs text-orange-600 dark:text-orange-400">
             <div>
               <strong>Variáveis necessárias:</strong>
@@ -43,8 +43,8 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
           </div>
 
           <div className="flex gap-2">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
               onClick={() => window.open('https://app.supabase.com', '_blank')}
               className="text-orange-700 border-orange-300 hover:bg-orange-100"
@@ -52,13 +52,13 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
               <ExternalLink className="h-3 w-3 mr-1" />
               Criar projeto Supabase
             </Button>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
-              onClick={() => window.location.href = '/supabase-demo'}
+              onClick={() => window.location.href = '/auth-test'}
               className="text-orange-700 border-orange-300 hover:bg-orange-100"
             >
-              Ver demo
+              Página de Teste
             </Button>
           </div>
         </AlertDescription>
