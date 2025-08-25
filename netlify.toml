@@ -1,0 +1,39 @@
+[build]
+  publish = "dist/spa"
+  command = "pnpm run build:client"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_USE_PRODUCTION = "false"
+
+# Configurações para SPA - todas as rotas redirecionam para index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers de segurança
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# Cache para assets estáticos
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Serverless functions para o backend (opcional para futuro)
+[functions]
+  directory = "netlify/functions"
+  external_node_modules = ["express", "pg", "bcryptjs", "jsonwebtoken"]
+
+# Configurações de desenvolvimento local
+[dev]
+  command = "pnpm dev"
+  port = 8080
+  publish = "dist/spa"
