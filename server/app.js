@@ -15,6 +15,45 @@ const PORT = 8080;
 
 console.log("🚀 Iniciando servidor Viwe...");
 
+// Função para servir arquivos estáticos
+const serveStatic = (req, res, filePath) => {
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.end('Not found');
+      return;
+    }
+
+    const ext = path.extname(filePath);
+    let contentType = 'text/html';
+
+    switch (ext) {
+      case '.js':
+        contentType = 'application/javascript';
+        break;
+      case '.css':
+        contentType = 'text/css';
+        break;
+      case '.json':
+        contentType = 'application/json';
+        break;
+      case '.png':
+        contentType = 'image/png';
+        break;
+      case '.jpg':
+        contentType = 'image/jpg';
+        break;
+      case '.svg':
+        contentType = 'image/svg+xml';
+        break;
+    }
+
+    res.setHeader('Content-Type', contentType);
+    res.writeHead(200);
+    res.end(data);
+  });
+};
+
 const server = http.createServer(async (req, res) => {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
