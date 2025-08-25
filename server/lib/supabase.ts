@@ -33,6 +33,10 @@ export const supabasePublic = supabaseUrl && supabaseAnonKey
 
 // Função helper para criar cliente com token do usuário
 export function createUserClient(accessToken: string) {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Configurações do Supabase não disponíveis');
+  }
+
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: {
