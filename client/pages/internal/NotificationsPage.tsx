@@ -27,98 +27,71 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../components/ui/accordion";
+import { notificationsService, NotificationData } from "../../services/api";
 
 const NotificationsPage: React.FC = () => {
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [selectedNotifications, setSelectedNotifications] = useState<number[]>(
-    [],
-  );
 
-  // Notificações mockadas
-  const notifications = [
-    {
-      id: 1,
-      type: "traffic",
-      title: "Alerta de Trânsito",
-      message:
-        "Congestionamento detectado na Av. Paulista. Rota alternativa disponível com economia de 12 minutos.",
-      details:
-        "Acidente detectado na Av. Paulista altura 1500. Desvio pela Rua Augusta economiza 12 minutos.",
-      time: "2 min atrás",
-      read: false,
-      icon: AlertTriangle,
-      color: "text-red-600 bg-red-100",
-      route: "Casa → Trabalho",
-      actionable: true,
-    },
-    {
-      id: 2,
-      type: "route",
-      title: "Nova Rota Otimizada",
-      message:
-        "Encontramos uma rota 15% mais eficiente para sua viagem recorrente Casa → Trabalho.",
-      details:
-        "Nova rota Casa→Trabalho economiza 8 minutos e 2km. Evita 3 semáforos principais do trajeto atual.",
-      time: "1h atrás",
-      read: false,
-      icon: Route,
-      color: "text-green-600 bg-green-100",
-      route: "Casa → Trabalho",
-      actionable: true,
-    },
-    {
-      id: 3,
-      type: "scheduled",
-      title: "Lembrete de Viagem",
-      message:
-        "Sua viagem para o aeroporto está agendada para amanhã às 15:00.",
-      details:
-        "Viagem de 45 min para aeroporto. Saia às 14:00 com folga. Trânsito normal previsto para amanhã.",
-      time: "3h atrás",
-      read: true,
-      icon: Calendar,
-      color: "text-blue-600 bg-blue-100",
-      route: "Casa → Aeroporto",
-      actionable: true,
-    },
-    {
-      id: 4,
-      type: "achievement",
-      title: "Meta Atingida!",
-      message: "Você economizou 2 horas de trânsito este mês!",
-      details:
-        "Economizou 2h14min e R$ 45,30 em combustível este mês com rotas inteligentes. Parabéns!",
-      time: "1 dia atrás",
-      read: true,
-      icon: Star,
-      color: "text-yellow-600 bg-yellow-100",
-      route: null,
-      actionable: false,
-    },
-    {
-      id: 5,
-      type: "system",
-      title: "Atualização Disponível",
-      message: "Nova versão do app com melhorias na navegação.",
-      details:
-        "Versão 2.1.5 disponível: correções, GPS melhorado e economia de bateria. Atualização em 2 min.",
-      time: "2 dias atrás",
-      read: true,
-      icon: Info,
-      color: "text-purple-600 bg-purple-100",
-      route: null,
-      actionable: true,
-    },
-  ];
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await notificationsService.getNotifications();
+      setNotifications(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const filters = [
-    { id: "all", name: "Todas", count: notifications.length },
-    {
-      id: "unread",
-      name: "Não lidas",
-      count: notifications.filter((n) => !n.read).length,
-    },
-  ];
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await notificationsService.markAsRead(id);
+      fetchNotifications();
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await notificationsService.deleteNotification(id);
+      fetchNotifications();
+    } catch (error) {
+      console.error("Failed to delete notification:", error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await notificationsService.markAllAsRead();
+      fetchNotifications();
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+    }
+  };
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "traffic":
+        return AlertTriangle;
+      case "route":
+        return Route;
+      case "scheduled":
+        return Calendar;
+      case "achievement":
+        return Star;
+      default:
+        return Info;
+    }
+  };
 
   const filteredNotifications = notifications.filter((notification) => {
     if (selectedFilter === "all") return true;
@@ -126,54 +99,25 @@ const NotificationsPage: React.FC = () => {
     return notification.type === selectedFilter;
   });
 
-  const toggleNotificationSelection = (id: number) => {
-    setSelectedNotifications((prev) =>
-      prev.includes(id) ? prev.filter((nId) => nId !== id) : [...prev, id],
-    );
-  };
-
-  const markAsRead = (id: number) => {
-    // Implementar lógica para marcar como lida
-    console.log("Marcar como lida:", id);
-  };
-
-  const markAsUnread = (id: number) => {
-    // Implementar lógica para marcar como não lida
-    console.log("Marcar como não lida:", id);
-  };
-
-  const deleteNotification = (id: number) => {
-    // Implementar lógica para deletar
-    console.log("Deletar notificação:", id);
-  };
-
-  const archiveNotification = (id: number) => {
-    // Implementar lógica para arquivar
-    console.log("Arquivar notificação:", id);
-  };
-
-  const deleteSelected = () => {
-    selectedNotifications.forEach(deleteNotification);
-    setSelectedNotifications([]);
-  };
-
-  const renderActionButtons = (notification: any) => {
-    if (!notification.actionable) return null;
-
+  if (loading) {
     return (
-      <div className="flex items-center gap-2">
-        <button className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap">
-          Ação Principal
-        </button>
-        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
-          Ver Detalhes
-        </button>
-        <button className="text-muted-foreground px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-muted transition-colors duration-200 border border-border whitespace-nowrap">
-          Dispensar
-        </button>
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-lg text-foreground">Carregando notificações...</p>
       </div>
     );
-  };
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="text-destructive mb-4 text-center">
+          <p className="text-xl font-semibold">Erro ao carregar notificações</p>
+          <p className="text-sm text-muted-foreground mt-2">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -181,56 +125,48 @@ const NotificationsPage: React.FC = () => {
       <div className="p-4 border-b border-border bg-card">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-foreground">Notificações</h1>
-          <div className="flex items-center space-x-2">
-            <button className="p-2 hover:bg-muted rounded-xl transition-colors duration-200">
-              <Settings className="h-5 w-5 text-muted-foreground" />
-            </button>
-          </div>
+          <button onClick={handleMarkAllAsRead} className="text-sm text-blue-600">
+            Marcar todas como lidas
+          </button>
         </div>
 
         {/* Filters */}
         <div className="flex space-x-2 overflow-x-auto pb-2">
-          {filters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setSelectedFilter(filter.id)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-full whitespace-nowrap transition-all duration-200 ${
-                selectedFilter === filter.id
-                  ? "bg-blue-100 text-blue-700 border border-blue-200"
-                  : "bg-muted text-muted-foreground hover:bg-secondary"
+          <button
+            onClick={() => setSelectedFilter("all")}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-full whitespace-nowrap transition-all duration-200 ${
+              selectedFilter === "all"
+                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                : "bg-muted text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <span className="text-sm font-medium">Todas</span>
+            <span
+              className={`text-xs px-1.5 py-0.5 rounded-full ${
+                selectedFilter === "all" ? "bg-blue-200" : "bg-border"
               }`}
             >
-              <span className="text-sm font-medium">{filter.name}</span>
-              <span
-                className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  selectedFilter === filter.id ? "bg-blue-200" : "bg-border"
-                }`}
-              >
-                {filter.count}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Bulk Actions */}
-        {selectedNotifications.length > 0 && (
-          <div className="mt-4 p-3 bg-blue-50 rounded-2xl flex items-center justify-between">
-            <span className="text-sm text-blue-700">
-              {selectedNotifications.length} selecionada(s)
+              {notifications.length}
             </span>
-            <div className="flex items-center space-x-2">
-              <button className="p-2 hover:bg-blue-100 rounded-lg transition-colors duration-200">
-                <Archive className="h-4 w-4 text-blue-600" />
-              </button>
-              <button
-                onClick={deleteSelected}
-                className="p-2 hover:bg-red-100 rounded-lg transition-colors duration-200"
-              >
-                <Trash2 className="h-4 w-4 text-red-600" />
-              </button>
-            </div>
-          </div>
-        )}
+          </button>
+          <button
+            onClick={() => setSelectedFilter("unread")}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-full whitespace-nowrap transition-all duration-200 ${
+              selectedFilter === "unread"
+                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                : "bg-muted text-muted-foreground hover:bg-secondary"
+            }`}
+          >
+            <span className="text-sm font-medium">Não lidas</span>
+            <span
+              className={`text-xs px-1.5 py-0.5 rounded-full ${
+                selectedFilter === "unread" ? "bg-blue-200" : "bg-border"
+              }`}
+            >
+              {notifications.filter((n) => !n.read).length}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Notifications List */}
@@ -248,11 +184,7 @@ const NotificationsPage: React.FC = () => {
         ) : (
           <Accordion type="single" collapsible className="space-y-2">
             {filteredNotifications.map((notification) => {
-              const Icon = notification.icon;
-              const isSelected = selectedNotifications.includes(
-                notification.id,
-              );
-
+              const Icon = getIcon(notification.type);
               return (
                 <AccordionItem
                   key={notification.id}
@@ -261,47 +193,25 @@ const NotificationsPage: React.FC = () => {
                     !notification.read
                       ? "border-l-green-500"
                       : "border-l-blue-500"
-                  } ${
-                    isSelected
-                      ? `ring-2 ${!notification.read ? "ring-green-500" : "ring-blue-500"}`
-                      : ""
                   }`}
                 >
-                  {/* Gradient overlay */}
-                  <div
-                    className={`absolute inset-0 pointer-events-none rounded-xl ${
-                      !notification.read
-                        ? "bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent"
-                        : "bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent"
-                    }`}
-                  />
-
                   <AccordionTrigger className="hover:no-underline px-3 py-2 justify-start relative z-10">
                     <div className="flex items-center space-x-3 w-full">
-                      {/* Icon */}
                       <div
-                        className={`p-2 rounded-lg ${notification.color} flex-shrink-0`}
+                        className={`p-2 rounded-lg flex-shrink-0`}
                       >
                         <Icon className="h-5 w-5" />
                       </div>
-
-                      {/* Title and Time */}
                       <div className="flex-1 flex items-center justify-between">
                         <h3
                           className={`font-semibold text-left ${!notification.read ? "text-foreground" : "text-muted-foreground"}`}
                         >
                           {notification.title}
                         </h3>
-
-                        {/* Time indicator */}
                         <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
-                          {notification.read
-                            ? `Visto à ${notification.time}`
-                            : notification.time}
+                          {new Date(notification.timestamp).toLocaleString("pt-BR")}
                         </span>
                       </div>
-
-                      {/* Status indicator */}
                       {!notification.read && (
                         <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full flex-shrink-0 ml-2">
                           Novo
@@ -309,20 +219,20 @@ const NotificationsPage: React.FC = () => {
                       )}
                     </div>
                   </AccordionTrigger>
-
                   <AccordionContent className="px-4 pb-4 relative z-10">
-                    {/* Main Content */}
                     <div className="space-y-4">
-                      {/* Detailed message */}
                       <p className="text-sm text-foreground leading-relaxed">
-                        {notification.details.length > 100
-                          ? notification.details.substring(0, 100) + "..."
-                          : notification.details}
+                        {notification.message}
                       </p>
-
-                      {/* Action buttons */}
-                      <div className="flex justify-start">
-                        {renderActionButtons(notification)}
+                      <div className="flex justify-start gap-2">
+                        {!notification.read && (
+                          <button onClick={() => handleMarkAsRead(notification.id)} className="text-sm text-blue-600">
+                            Marcar como lida
+                          </button>
+                        )}
+                        <button onClick={() => handleDelete(notification.id)} className="text-sm text-red-600">
+                          Excluir
+                        </button>
                       </div>
                     </div>
                   </AccordionContent>
@@ -332,9 +242,6 @@ const NotificationsPage: React.FC = () => {
           </Accordion>
         )}
       </div>
-
-      {/* Bottom padding for mobile navigation */}
-      <div className="h-6 sm:hidden"></div>
     </div>
   );
 };

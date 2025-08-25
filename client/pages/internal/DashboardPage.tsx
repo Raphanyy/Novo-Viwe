@@ -47,107 +47,6 @@ const DashboardPage: React.FC = () => {
     loadDashboardData();
   }, []);
 
-  // Dados mockados para demonstração
-  const recentRoutes = [
-    {
-      id: 1,
-      name: "Casa → Trabalho",
-      duration: "25 min",
-      distance: "12.5 km",
-      savings: "8 min",
-      time: "08:30",
-    },
-    {
-      id: 2,
-      name: "Shopping Center",
-      duration: "18 min",
-      distance: "8.2 km",
-      savings: "5 min",
-      time: "14:15",
-    },
-    {
-      id: 3,
-      name: "Aeroporto",
-      duration: "45 min",
-      distance: "28.7 km",
-      savings: "12 min",
-      time: "Ontem",
-    },
-  ];
-
-  const statistics = [
-    {
-      name: "Rotas este mês",
-      value: "47",
-      change: "+12%",
-      icon: Route,
-      color: "text-blue-600",
-      description: "Total de rotas criadas",
-    },
-    {
-      name: "Tempo economizado",
-      value: "3.2h",
-      change: "+18%",
-      icon: Clock,
-      color: "text-green-600",
-      description: "Otimização de trajetos",
-    },
-    {
-      name: "Distância total",
-      value: "342km",
-      change: "+8%",
-      icon: Car,
-      color: "text-purple-600",
-      description: "Percorridos este m��s",
-    },
-    {
-      name: "Eficiência",
-      value: "89%",
-      change: "+5%",
-      icon: TrendingUp,
-      color: "text-yellow-600",
-      description: "Média de otimização",
-    },
-  ];
-
-  const consumptionData = [
-    {
-      label: "Rotas Permanentes",
-      current: 47,
-      limit: 100,
-      percentage: 47,
-      icon: Route,
-      color: "text-blue-600",
-      description: "47 de 100 rotas utilizadas",
-    },
-    {
-      label: "Rotas Imediatas",
-      current: 23,
-      limit: 50,
-      percentage: 46,
-      icon: Zap,
-      color: "text-yellow-600",
-      description: "23 de 50 rotas utilizadas",
-    },
-    {
-      label: "Conjuntos criados",
-      current: 8,
-      limit: 20,
-      percentage: 40,
-      icon: FolderOpen,
-      color: "text-purple-600",
-      description: "8 de 20 conjuntos criados",
-    },
-    {
-      label: "Clientes Adicionados",
-      current: 156,
-      limit: 500,
-      percentage: 31,
-      icon: Users,
-      color: "text-green-600",
-      description: "156 de 500 clientes",
-    },
-  ];
 
   // Loading state
   if (loading && !dashboardData) {
@@ -220,131 +119,189 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Statistics */}
-        <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Estatísticas
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {statistics.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={stat.name}
-                  className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
-                >
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                  <div className="flex items-center justify-between mb-2 relative z-10">
-                    <Icon className={`h-5 w-5 ${stat.color}`} />
-                    <span className="text-xs text-green-600 font-medium">
-                      {stat.change}
-                    </span>
+        {dashboardData?.stats && (
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-3">
+              Estatísticas
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                {
+                  name: "Rotas este mês",
+                  value: dashboardData.stats.routes.thisMonth,
+                  change: dashboardData.stats.routes.change,
+                  icon: Route,
+                  color: "text-blue-600",
+                  description: "Total de rotas criadas",
+                },
+                {
+                  name: "Tempo economizado",
+                  value: dashboardData.stats.timeSaved.formatted,
+                  change: dashboardData.stats.timeSaved.change,
+                  icon: Clock,
+                  color: "text-green-600",
+                  description: "Otimização de trajetos",
+                },
+                {
+                  name: "Distância total",
+                  value: dashboardData.stats.distance.formatted,
+                  change: dashboardData.stats.distance.change,
+                  icon: Car,
+                  color: "text-purple-600",
+                  description: "Percorridos este mês",
+                },
+                {
+                  name: "Eficiência",
+                  value: dashboardData.stats.efficiency.formatted,
+                  change: dashboardData.stats.efficiency.change,
+                  icon: TrendingUp,
+                  color: "text-yellow-600",
+                  description: "Média de otimização",
+                },
+              ].map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <div
+                    key={stat.name}
+                    className="bg-card rounded-2xl p-4 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                    <div className="flex items-center justify-between mb-2 relative z-10">
+                      <Icon className={`h-5 w-5 ${stat.color}`} />
+                      <span className="text-xs text-green-600 font-medium">
+                        {stat.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-foreground relative z-10">
+                      {stat.value}
+                    </p>
+                    <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
+                      {stat.name}
+                    </h4>
+                    <p className="text-xs text-muted-foreground relative z-10">
+                      {stat.description}
+                    </p>
                   </div>
-                  <p className="text-2xl font-bold text-foreground relative z-10">
-                    {stat.value}
-                  </p>
-                  <h4 className="font-semibold text-foreground text-sm mb-1 relative z-10">
-                    {stat.name}
-                  </h4>
-                  <p className="text-xs text-muted-foreground relative z-10">
-                    {stat.description}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Painel de Consumo */}
-        <div>
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Painel de Consumo
-          </h3>
-          <div className="space-y-4">
-            {consumptionData.map((item) => {
-              const Icon = item.icon;
-              return (
+        {dashboardData?.stats.usage && (
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-3">
+              Painel de Consumo
+            </h3>
+            <div className="space-y-4">
+              {[
+                {
+                  label: "Rotas Permanentes",
+                  current: dashboardData.stats.usage.routes.current,
+                  limit: dashboardData.stats.usage.routes.limit,
+                  percentage: dashboardData.stats.usage.routes.percentage,
+                  icon: Route,
+                  color: "text-blue-600",
+                  description: `${dashboardData.stats.usage.routes.current} de ${dashboardData.stats.usage.routes.limit} rotas utilizadas`,
+                },
+                {
+                  label: "Clientes Adicionados",
+                  current: dashboardData.stats.usage.clients.current,
+                  limit: dashboardData.stats.usage.clients.limit,
+                  percentage: dashboardData.stats.usage.clients.percentage,
+                  icon: Users,
+                  color: "text-green-600",
+                  description: `${dashboardData.stats.usage.clients.current} de ${dashboard.stats.usage.clients.limit} clientes`,
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.label}
+                    className="bg-card rounded-2xl p-5 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <Icon className={`h-5 w-5 ${item.color}`} />
+                          <h4 className="font-semibold text-foreground">
+                            {item.label}
+                          </h4>
+                        </div>
+                        <span className="text-sm font-medium text-foreground">
+                          {item.current}/{item.limit}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        <Progress value={item.percentage} className="h-2" />
+                        <p className="text-xs text-muted-foreground">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Routes */}
+        {dashboardData?.recentRoutes && dashboardData.recentRoutes.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-foreground">
+                Rotas Recentes
+              </h3>
+              <Link
+                to="/app/atividade"
+                className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors duration-200"
+              >
+                Ver todas
+              </Link>
+            </div>
+
+            <div className="space-y-3">
+              {dashboardData.recentRoutes.map((route) => (
                 <div
-                  key={item.label}
-                  className="bg-card rounded-2xl p-5 border border-l-4 border-l-primary border-border relative overflow-hidden"
+                  key={route.id}
+                  className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-l-4 border-l-primary border-border relative overflow-hidden"
                 >
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <Icon className={`h-5 w-5 ${item.color}`} />
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
                         <h4 className="font-semibold text-foreground">
-                          {item.label}
+                          {route.name}
                         </h4>
                       </div>
-                      <span className="text-sm font-medium text-foreground">
-                        {item.current}/{item.limit}
-                      </span>
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                        <span className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4" />
+                          <span>{route.duration}</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <MapPin className="h-4 w-4" />
+                          <span>{route.distance}</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <Calendar className="h-4 w-4" />
+                          <span>{new Date(route.time).toLocaleDateString()}</span>
+                        </span>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Progress value={item.percentage} className="h-2" />
-                      <p className="text-xs text-muted-foreground">
-                        {item.description}
-                      </p>
-                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* Recent Routes */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-foreground">
-              Rotas Recentes
-            </h3>
-            <Link
-              to="/app/atividade"
-              className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors duration-200"
-            >
-              Ver todas
-            </Link>
-          </div>
-
-          <div className="space-y-3">
-            {recentRoutes.map((route) => (
-              <div
-                key={route.id}
-                className="bg-card rounded-2xl p-4 hover:shadow-md transition-shadow duration-200 border border-l-4 border-l-primary border-border relative overflow-hidden"
-              >
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 pointer-events-none rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <h4 className="font-semibold text-foreground">
-                        {route.name}
-                      </h4>
-                    </div>
-                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                      <span className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{route.duration}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <MapPin className="h-4 w-4" />
-                        <span>{route.distance}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{route.time}</span>
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* Tips & Insights */}
         <div className="bg-black rounded-2xl p-6 border border-l-4 border-l-primary border-border relative overflow-hidden">

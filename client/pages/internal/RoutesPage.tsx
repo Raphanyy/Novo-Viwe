@@ -110,9 +110,11 @@ const RoutesPage: React.FC = () => {
       <RouteSettingsPage
         route={selectedRoute}
         onBack={handleBackToList}
-        onSave={(updatedRoute) => {
-          // Aqui você salvaria as alterações
-          console.log("Salvando alterações:", updatedRoute);
+        onSave={async (updatedRoute) => {
+          await execute(() =>
+            routesService.updateRoute(updatedRoute.id, updatedRoute),
+          );
+          loadRoutes();
           handleBackToList();
         }}
       />

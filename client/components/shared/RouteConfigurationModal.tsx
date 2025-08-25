@@ -20,6 +20,7 @@ import {
 import { ViweLoaderInline } from "./ViweLoader";
 import { useTraceRoute, RouteStop } from "../../contexts/TraceRouteContext";
 import { useAddressSearch, SearchResult } from "../../hooks/use-address-search";
+import { routesService } from "../../services/api";
 
 // Enum para os níveis de navegação
 enum NavigationLevel {
@@ -242,13 +243,7 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
   // Envio final com comportamento baseado no contexto
   const handleFinalSubmit = async () => {
-    // Na página do mapa, validar apenas se tem paradas para finalizar o planejamento
-    if (isInMapPage && traceContext.state.isTracing) {
-      if (formData.stops.length < 1) {
-        alert("Adicione pelo menos 1 parada para finalizar o planejamento.");
-        return;
-      }
-    } else if (!isFormValid()) {
+    if (!isFormValid()) {
       alert(
         "Por favor, preencha os campos obrigatórios: Informações da Rota, Paradas e Programação.",
       );
@@ -257,54 +252,28 @@ const RouteConfigurationModal: React.FC<RouteConfigurationModalProps> = ({
 
     setIsLoading(true);
 
+    const payload = {
+      name: formData.info.routeName,
+      responsible: formData.info.responsible,
+      priority: formData.info.priority,
+      description: formData.info.description,
+      stops: formData.stops,
+      clients: formData.clients,
+      routeSet: formData.routeSet,
+      scheduling: formData.scheduling,
+    };
+
     try {
-      if (isInMapPage) {
-        // Na página do mapa: salvar configuraç��es e finalizar planejamento
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Dados da rota salvos (página mapa):", formData);
-
-        // Se estiver no modo de traçamento e tiver paradas suficientes, finalizar planejamento
-        if (traceContext.state.isTracing && formData.stops.length >= 1) {
-          console.log(
-            "Configurações salvas, finalizando planejamento automaticamente...",
-          );
-          // Fechar modal primeiro
-          setIsSuccess(true);
-          setIsLoading(false);
-
-          setTimeout(() => {
-            setIsSuccess(false);
-            onClose();
-            // Finalizar planejamento automaticamente após salvar - traçar rota diretamente
-            console.log(
-              "Configurações salvas, traçando rota automaticamente...",
-            );
-            traceContext.confirmTrace();
-            // confirmTrace() já dispara o evento "traceRoute" - não precisamos duplicar
-          }, 1500);
-
-          return; // Sair early para não executar o resto da função
-        }
-      } else {
-        // Fora da página do mapa: não fazer nada por enquanto
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log(
-          "Dados da rota preparados (fora do mapa) - nenhuma ação tomada:",
-          formData,
-        );
-      }
-
+      await routesService.createRoute(payload);
       setIsSuccess(true);
-      setIsLoading(false);
-
       setTimeout(() => {
         setIsSuccess(false);
-        onClose();
+        onClose(); // This will trigger a re-fetch in RoutesPage
       }, 1500);
     } catch (error) {
-      console.error("Erro ao salvar configurações:", error);
+      console.error("Erro ao criar rota:", error);
+      alert("Erro ao criar rota. Tente novamente.");
       setIsLoading(false);
-      alert("Erro ao salvar configurações. Tente novamente.");
     }
   };
 
