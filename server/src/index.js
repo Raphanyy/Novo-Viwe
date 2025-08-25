@@ -9,6 +9,7 @@ const { healthCheck } = require('./utils/database');
 
 // Importar rotas
 const authRoutes = require('./routes/auth');
+const routeRoutes = require('./routes/routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -94,7 +95,14 @@ app.get('/api', (req, res) => {
         me: 'GET /api/auth/me',
         test: 'GET /api/auth/test'
       },
-      routes: '/api/routes/* (TODO)',
+      routes: {
+        list: 'GET /api/routes',
+        create: 'POST /api/routes',
+        get: 'GET /api/routes/:id',
+        update: 'PATCH /api/routes/:id',
+        delete: 'DELETE /api/routes/:id',
+        stats: 'GET /api/routes/stats'
+      },
       navigation: '/api/navigation/* (TODO)',
       users: '/api/users/* (TODO)',
       mapbox: '/api/mapbox/* (TODO)'
@@ -115,9 +123,9 @@ app.get('/api/test', (req, res) => {
 
 // ROTAS
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/routes', routeRoutes);
 
 // TODO: Adicionar outras rotas quando criadas
-// app.use('/api/routes', routeRoutes);
 // app.use('/api/navigation', navigationRoutes);
 // app.use('/api/users', userRoutes);
 // app.use('/api/mapbox', mapboxRoutes);
@@ -165,7 +173,8 @@ app.use('*', (req, res) => {
     availableEndpoints: {
       health: 'GET /health',
       api_info: 'GET /api',
-      auth: 'GET /api/auth/*'
+      auth: 'GET /api/auth/*',
+      routes: 'GET /api/routes'
     }
   });
 });
@@ -186,6 +195,7 @@ app.listen(PORT, () => {
   console.log(`🌍 Health check: http://localhost:${PORT}/health`);
   console.log(`📚 API info: http://localhost:${PORT}/api`);
   console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/*`);
+  console.log(`🗺️ Routes: http://localhost:${PORT}/api/routes`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
   
   // Log de configurações (sem mostrar secrets)
@@ -198,7 +208,7 @@ app.listen(PORT, () => {
   if (process.env.DATABASE_URL) {
     healthCheck()
       .then(health => {
-        console.log(`�� Database: ${health.status}`);
+        console.log(`💾 Database: ${health.status}`);
         console.log(`📊 Tabelas: ${health.tables?.total || 'N/A'}`);
       })
       .catch(err => {
