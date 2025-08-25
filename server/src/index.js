@@ -185,6 +185,22 @@ app.get("/api", (req, res) => {
         usage: "GET /api/billing/usage",
         webhook: "POST /api/billing/webhooks/stripe",
       },
+      dashboard: {
+        stats: "GET /api/dashboard/stats",
+        recentRoutes: "GET /api/dashboard/recent-routes",
+        consumption: "GET /api/dashboard/consumption",
+        activity: "GET /api/dashboard/activity",
+        insights: "GET /api/dashboard/insights",
+      },
+      pois: {
+        list: "GET /api/pois",
+        categories: "GET /api/pois/categories",
+        get: "GET /api/pois/:id",
+        create: "POST /api/pois",
+        update: "PATCH /api/pois/:id",
+        delete: "DELETE /api/pois/:id",
+        nearby: "GET /api/pois/nearby/:lat/:lng",
+      },
     },
     documentation: "Ver documentação completa em /Implementação BackEnd/",
     features: {
@@ -318,7 +334,7 @@ app.listen(PORT, () => {
   console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/*`);
   console.log(`🗺️ Routes: http://localhost:${PORT}/api/routes`);
   console.log(`🌐 Mapbox: http://localhost:${PORT}/api/mapbox/*`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`�� Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🔧 Trust Proxy: ${app.get("trust proxy")}`);
 
   // Log de configurações (sem mostrar secrets)
