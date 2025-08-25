@@ -25,6 +25,9 @@ import ActivityPage from "./pages/internal/ActivityPage";
 import NotificationsPage from "./pages/internal/NotificationsPage";
 import AjustesPage from "./pages/internal/AjustesPage";
 
+// Navigation
+import NavigationPage from "./components/shared/NavigationPage";
+
 // Adaptive Layouts
 import AdaptiveInternalLayout from "./components/AdaptiveInternalLayout";
 import AdaptivePublicLayout from "./components/AdaptivePublicLayout";
@@ -124,6 +127,16 @@ const AppRoutes = () => {
         <Route path="notificacoes" element={<NotificationsPage />} />
         <Route path="ajustes" element={<AjustesPage />} />
       </Route>
+
+      {/* Navigation Route (full screen) */}
+      <Route
+        path="/navigation/:sessionId"
+        element={
+          <ProtectedRoute>
+            <NavigationPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
