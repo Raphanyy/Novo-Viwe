@@ -95,7 +95,7 @@ router.get("/", async (req, res) => {
 
     // Filtro por categoria
     if (category) {
-      poisQuery += ` AND p.category = $${paramIndex}`;
+      poisQuery += ` AND p.type = $${paramIndex}`;
       params.push(category);
       paramIndex++;
     }
