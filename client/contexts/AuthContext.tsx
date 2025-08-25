@@ -271,13 +271,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
-      const response = await apiRequest("/auth/me");
+      const response = await fetch(`${API_BASE}/auth/me`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
 
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Dados reais do usuário carregados:", data.user);
         setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
       } else {
+        console.log("❌ Falha ao carregar dados do usuário, fazendo logout");
         clearAuth();
       }
     } catch (error) {
