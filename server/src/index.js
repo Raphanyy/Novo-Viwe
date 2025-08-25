@@ -15,6 +15,9 @@ const mapboxRoutes = require('./routes/mapbox');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CONFIGURAÇÃO IMPORTANTE PARA PROXIES (Fly.dev, Vercel, Netlify, etc.)
+app.set('trust proxy', 1); // Trust first proxy
+
 // Middleware de segurança
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
@@ -46,7 +49,8 @@ const limiter = rateLimit({
     error: 'Muitas requisições de este IP, tente novamente em 15 minutos.'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  trustProxy: true // Importante para funcionar atrás de proxy
 });
 app.use(limiter);
 
@@ -57,7 +61,8 @@ const authLimiter = rateLimit({
   message: {
     error: 'Muitas tentativas de login, tente novamente em 15 minutos.'
   },
-  skipSuccessfulRequests: true
+  skipSuccessfulRequests: true,
+  trustProxy: true
 });
 
 // Health check avançado
@@ -74,7 +79,7 @@ app.get('/health', async (req, res) => {
       services: {
         database: dbHealth.status === 'healthy',
         jwt: !!process.env.JWT_SECRET,
-        mapbox: !!process.env.VITE_MAPBOX_ACCESS_TOKEN
+        mapbox: !!(process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN)
       }
     });
   } catch (error) {
@@ -142,12 +147,18 @@ app.get('/api/test', (req, res) => {
     services: {
       database: process.env.DATABASE_URL ? '✅ configurado' : '❌ não configurado',
       jwt: process.env.JWT_SECRET ? '✅ configurado' : '❌ não configurado',
-      mapbox: process.env.VITE_MAPBOX_ACCESS_TOKEN ? '✅ configurado' : '❌ não configurado'
+      mapbox: (process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN) ? '✅ configurado' : '❌ não configurado'
     },
     environment: {
       node_env: process.env.NODE_ENV || 'development',
       port: PORT,
       frontend_url: process.env.FRONTEND_URL || 'http://localhost:8080'
+    },
+    proxy: {
+      trust_proxy: app.get('trust proxy'),
+      x_forwarded_for: req.headers['x-forwarded-for'] || 'not set',
+      real_ip: req.ip,
+      remote_address: req.connection?.remoteAddress
     }
   });
 });
@@ -235,12 +246,13 @@ app.listen(PORT, () => {
   console.log(`🗺️ Routes: http://localhost:${PORT}/api/routes`);
   console.log(`🌐 Mapbox: http://localhost:${PORT}/api/mapbox/*`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔧 Trust Proxy: ${app.get('trust proxy')}`);
   
   // Log de configurações (sem mostrar secrets)
   console.log('📋 Configurações:');
   console.log(`   - Database: ${process.env.DATABASE_URL ? '✅ Configurado' : '❌ Não configurado'}`);
   console.log(`   - JWT: ${process.env.JWT_SECRET ? '✅ Configurado' : '❌ Não configurado'}`);
-  console.log(`   - Mapbox: ${process.env.VITE_MAPBOX_ACCESS_TOKEN ? '✅ Configurado' : '❌ Não configurado'}`);
+  console.log(`   - Mapbox: ${(process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN) ? '✅ Configurado' : '❌ Não configurado'}`);
   
   // Testar conexão com banco na inicialização
   if (process.env.DATABASE_URL) {
@@ -250,7 +262,8 @@ app.listen(PORT, () => {
         console.log(`📊 Tabelas: ${health.tables?.total || 'N/A'}`);
         
         // Teste rápido do Mapbox se configurado
-        if (process.env.VITE_MAPBOX_ACCESS_TOKEN) {
+        const mapboxToken = process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN;
+        if (mapboxToken) {
           console.log('🗺️ Mapbox: Token configurado - serviços disponíveis');
         } else {
           console.log('🗺️ Mapbox: Token não configurado - algumas funcionalidades limitadas');
