@@ -5,7 +5,7 @@ require("dotenv").config();
 // Importar utils do Neon
 const { healthCheck, testConnection, query } = require("./src/utils/neon-database");
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3002;
 
 console.log("🚀 Iniciando servidor Viwe...");
 
