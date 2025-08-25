@@ -9,7 +9,7 @@ const {
   query,
 } = require("./src/utils/neon-database");
 
-const PORT = 3002;
+const PORT = 8080;
 
 console.log("🚀 Iniciando servidor Viwe...");
 
