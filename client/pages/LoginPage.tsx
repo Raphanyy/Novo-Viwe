@@ -12,6 +12,7 @@ import {
   Route,
   Share2,
 } from "lucide-react";
+import { SupabaseConfigCheck } from "../components/SupabaseConfigCheck";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
