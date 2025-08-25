@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { ViweLoaderInline } from "../components/shared/ViweLoader";
+import { SupabaseConfigCheck } from "../components/SupabaseConfigCheck";
 
 const EmailLoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
