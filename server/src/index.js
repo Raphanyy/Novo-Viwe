@@ -370,7 +370,10 @@ app.listen(PORT, () => {
         }
 
         // Mostrar instruções se DATABASE_URL não estiver configurada
-        if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('username:password')) {
+        if (
+          !process.env.DATABASE_URL ||
+          process.env.DATABASE_URL.includes("username:password")
+        ) {
           console.log("\n🔗 Para conectar ao Neon:");
           console.log("   1. Configure sua DATABASE_URL no arquivo .env");
           console.log("   2. Use sua connection string do Neon");
@@ -386,7 +389,9 @@ app.listen(PORT, () => {
   } else {
     console.log("\n⚠️  DATABASE_URL não configurada");
     console.log("🔗 Para conectar ao Neon:");
-    console.log("   1. Adicione DATABASE_URL=sua_connection_string no arquivo .env");
+    console.log(
+      "   1. Adicione DATABASE_URL=sua_connection_string no arquivo .env",
+    );
     console.log("   2. Reinicie o servidor\n");
   }
 });

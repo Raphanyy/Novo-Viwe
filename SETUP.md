@@ -13,11 +13,13 @@ pnpm start
 ## 📊 Verificar se Funcionou
 
 **URLs Principais:**
+
 - 🌍 App: http://localhost:8081
 - ⚙️ API: http://localhost:3002/api
 - 🔍 Health: http://localhost:3002/health
 
 **Testes Rápidos:**
+
 ```bash
 # Ping básico
 curl http://localhost:8081/api/ping
@@ -33,9 +35,11 @@ curl http://localhost:3002/api/test-neon
 
 1. **Obter connection string do Neon**
 2. **Adicionar no `.env`:**
+
 ```bash
 DATABASE_URL=postgresql://user:password@host.neon.tech/dbname
 ```
+
 3. **Reiniciar:** `pnpm dev`
 
 ## ✅ Checklist de Funcionamento
@@ -51,7 +55,7 @@ DATABASE_URL=postgresql://user:password@host.neon.tech/dbname
 
 ```bash
 pnpm start    # Setup + inicialização
-pnpm dev      # Só desenvolvimento  
+pnpm dev      # Só desenvolvimento
 pnpm build    # Build de produção
 pnpm test     # Executar testes
 ```

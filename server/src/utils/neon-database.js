@@ -9,7 +9,9 @@ let pool;
  */
 const initializeNeon = () => {
   if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL não está configurada. Configure sua connection string do Neon.");
+    throw new Error(
+      "DATABASE_URL não está configurada. Configure sua connection string do Neon.",
+    );
   }
 
   // Função SQL para queries simples (usa fetch, mais rápida)
@@ -47,17 +49,17 @@ const initializeNeon = () => {
  */
 const query = async (queryText, params = []) => {
   const start = Date.now();
-  
+
   try {
     const { sql } = initializeNeon();
-    
+
     // Se não há parâmetros, use o template literal
     if (params.length === 0) {
       const result = await sql([queryText]);
       logQuery(queryText, Date.now() - start, result.length);
       return { rows: result };
     }
-    
+
     // Para queries com parâmetros, use o pool
     const client = await pool.connect();
     try {
@@ -69,7 +71,8 @@ const query = async (queryText, params = []) => {
     }
   } catch (error) {
     console.error("❌ Erro na query Neon:", {
-      query: queryText.substring(0, 100) + (queryText.length > 100 ? "..." : ""),
+      query:
+        queryText.substring(0, 100) + (queryText.length > 100 ? "..." : ""),
       duration: `${Date.now() - start}ms`,
       error: error.message,
     });
@@ -84,12 +87,14 @@ const query = async (queryText, params = []) => {
  */
 const transaction = async (queries) => {
   const { sql } = initializeNeon();
-  
+
   try {
-    const results = await sql.transaction(queries.map(q => 
-      Array.isArray(q) ? sql(q[0], ...q.slice(1)) : sql([q])
-    ));
-    
+    const results = await sql.transaction(
+      queries.map((q) =>
+        Array.isArray(q) ? sql(q[0], ...q.slice(1)) : sql([q]),
+      ),
+    );
+
     console.log("✅ Transação Neon executada com sucesso");
     return results;
   } catch (error) {
@@ -136,7 +141,7 @@ const testConnection = async () => {
   try {
     const { sql } = initializeNeon();
     const [result] = await sql`SELECT NOW() as timestamp, version()`;
-    
+
     console.log("✅ Conexão Neon testada com sucesso");
     console.log(`   PostgreSQL: ${result.version.split(" ")[1]}`);
     console.log(`   Timestamp: ${result.timestamp}`);
@@ -161,10 +166,10 @@ const checkTables = async () => {
       ORDER BY table_name
     `;
 
-    const tableNames = tables.map(row => row.table_name);
+    const tableNames = tables.map((row) => row.table_name);
     const expectedTables = [
       "users",
-      "user_preferences", 
+      "user_preferences",
       "auth_sessions",
       "routes",
       "route_stops",
@@ -184,7 +189,9 @@ const checkTables = async () => {
       "audit_logs",
     ];
 
-    const missing = expectedTables.filter(table => !tableNames.includes(table));
+    const missing = expectedTables.filter(
+      (table) => !tableNames.includes(table),
+    );
 
     return {
       total: tableNames.length,

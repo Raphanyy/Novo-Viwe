@@ -14,7 +14,8 @@ pnpm dev
 ```
 
 **Pronto!** O sistema configura tudo automaticamente:
-- ✅ Frontend: http://localhost:8081  
+
+- ✅ Frontend: http://localhost:8081
 - ✅ Backend: http://localhost:3002
 - ✅ Database: Neon PostgreSQL
 - ✅ Auto-conecta frontend + backend
@@ -38,9 +39,11 @@ Se quiser conectar seu próprio Neon:
 
 1. **Copie sua connection string do Neon**
 2. **Configure no `.env`:**
+
 ```bash
 DATABASE_URL=postgresql://user:password@host.neon.tech/dbname
 ```
+
 3. **Reinicie:** `pnpm dev`
 
 ## 📁 Estrutura Simplificada
