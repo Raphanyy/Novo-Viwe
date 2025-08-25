@@ -11,6 +11,9 @@ const { healthCheck } = require("./utils/database");
 const authRoutes = require("./routes/auth");
 const routeRoutes = require("./routes/routes");
 const mapboxRoutes = require("./routes/mapbox");
+const navigationRoutes = require("./routes/navigation");
+const userRoutes = require("./routes/users");
+const clientRoutes = require("./routes/clients");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
