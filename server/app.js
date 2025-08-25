@@ -105,6 +105,41 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // Simple auth login for testing
+    if (path === "/api/auth/login" && req.method === "POST") {
+      let body = "";
+      req.on("data", chunk => {
+        body += chunk.toString();
+      });
+      req.on("end", () => {
+        try {
+          const { email, password } = JSON.parse(body);
+          // Simple mock authentication - accept any email/password for demo
+          res.writeHead(200);
+          res.end(JSON.stringify({
+            message: "Login realizado com sucesso",
+            user: {
+              id: "demo-user-123",
+              name: "Demo User",
+              email: email,
+              isEmailVerified: true,
+            },
+            tokens: {
+              accessToken: "demo-access-token",
+              refreshToken: "demo-refresh-token",
+              accessTokenExpiresAt: new Date(Date.now() + 3600000).toISOString(),
+              refreshTokenExpiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString(),
+              tokenType: "Bearer"
+            }
+          }));
+        } catch (error) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ error: "Invalid JSON" }));
+        }
+      });
+      return;
+    }
+
     // API Info
     if (path === "/api") {
       res.writeHead(200);
