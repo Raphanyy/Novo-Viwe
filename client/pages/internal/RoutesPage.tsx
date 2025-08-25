@@ -359,7 +359,7 @@ const RoutesPage: React.FC = () => {
       {/* Route Configuration Modal */}
       <RouteConfigurationModal
         isOpen={isRouteModalOpen}
-        onClose={closeRouteModal}
+        onClose={handleRouteChange}
       />
     </div>
   );
