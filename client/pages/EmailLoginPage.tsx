@@ -59,6 +59,9 @@ const EmailLoginPage: React.FC = () => {
             </p>
           </div>
 
+          {/* Verificação de configuração Supabase */}
+          <SupabaseConfigCheck />
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
