@@ -225,9 +225,7 @@ app.use("/api/navigation", navigationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/notifications", notificationRoutes);
-
-// TODO: Adicionar outras rotas quando criadas
-// app.use('/api/billing', billingRoutes);
+app.use("/api/billing", billingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
