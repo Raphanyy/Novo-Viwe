@@ -76,6 +76,20 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   try {
+    // Servir aplicação React na rota raiz
+    if (path === "/" && req.method === "GET") {
+      const indexPath = path.join(__dirname, '../index.html');
+      serveStatic(req, res, indexPath);
+      return;
+    }
+
+    // Servir arquivos estáticos
+    if (path.startsWith('/assets/') || path.endsWith('.js') || path.endsWith('.css') || path.endsWith('.svg') || path.endsWith('.png') || path.endsWith('.ico')) {
+      const staticPath = path.join(__dirname, '..', path);
+      serveStatic(req, res, staticPath);
+      return;
+    }
+
     // Health check completo
     if (path === "/health") {
       const dbHealth = await healthCheck();
