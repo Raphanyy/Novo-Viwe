@@ -76,7 +76,7 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   try {
-    // Servir aplica��ão React na rota raiz
+    // Servir aplicação React na rota raiz
     if (pathname === "/" && req.method === "GET") {
       const indexPath = path.join(__dirname, '../index.html');
       serveStatic(req, res, indexPath);
@@ -91,7 +91,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Health check completo
-    if (path === "/health") {
+    if (pathname === "/health") {
       const dbHealth = await healthCheck();
       res.writeHead(200);
       res.end(
@@ -468,7 +468,7 @@ server.listen(PORT, async () => {
         const health = await healthCheck();
         console.log(`📊 Tabelas: ${health.tables?.total || 0}/19`);
       } else {
-        console.log(`❌ Falha na conexão Neon`);
+        console.log(`��� Falha na conexão Neon`);
       }
     } catch (err) {
       console.log(`❌ Erro Neon: ${err.message}`);
