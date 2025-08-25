@@ -1,3 +1,4 @@
+import React from 'react';
 import { ApiResponse } from '@shared/api';
 
 // Base URL da API
