@@ -178,8 +178,8 @@ const DashboardPage: React.FC = () => {
     );
   }
 
-  return (
-    <div className="h-full overflow-auto bg-background">
+    return (
+      <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
         {/* Welcome Section */}
         <div className="bg-black rounded-2xl p-6 text-white border border-l-4 border-l-primary border-border relative overflow-hidden">
