@@ -119,6 +119,35 @@ const RoutesPage: React.FC = () => {
     );
   }
 
+  // Loading state
+  if (loading && routes.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+        <p className="text-lg text-foreground">Carregando suas rotas...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && routes.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-background">
+        <div className="text-destructive mb-4 text-center">
+          <p className="text-xl font-semibold">Erro ao carregar rotas</p>
+          <p className="text-sm text-muted-foreground mt-2">{error}</p>
+        </div>
+        <button
+          onClick={loadRoutes}
+          disabled={loading}
+          className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors disabled:opacity-50"
+        >
+          {loading ? 'Carregando...' : 'Tentar novamente'}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full overflow-auto bg-background">
       <div className="p-4 space-y-6">
