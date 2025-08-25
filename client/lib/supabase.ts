@@ -29,11 +29,13 @@ export type { User, Session } from '@supabase/supabase-js';
 export const auth = {
   // Login com email/senha
   signIn: async (email: string, password: string) => {
+    if (!supabase) throw new Error('Supabase não configurado');
     return await supabase.auth.signInWithPassword({ email, password });
   },
 
   // Registro
   signUp: async (email: string, password: string, metadata?: Record<string, any>) => {
+    if (!supabase) throw new Error('Supabase não configurado');
     return await supabase.auth.signUp({
       email,
       password,
@@ -45,23 +47,27 @@ export const auth = {
 
   // Logout
   signOut: async () => {
+    if (!supabase) throw new Error('Supabase não configurado');
     return await supabase.auth.signOut();
   },
 
   // Obter usuário atual
   getCurrentUser: async () => {
+    if (!supabase) throw new Error('Supabase não configurado');
     const { data: { user }, error } = await supabase.auth.getUser();
     return { user, error };
   },
 
   // Obter sessão atual
   getCurrentSession: async () => {
+    if (!supabase) throw new Error('Supabase não configurado');
     const { data: { session }, error } = await supabase.auth.getSession();
     return { session, error };
   },
 
   // Escutar mudanças de autenticação
   onAuthStateChange: (callback: (event: string, session: any) => void) => {
+    if (!supabase) throw new Error('Supabase não configurado');
     return supabase.auth.onAuthStateChange(callback);
   }
 };
