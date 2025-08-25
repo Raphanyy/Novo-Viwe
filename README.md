@@ -1,74 +1,96 @@
-# Viwe Platform - Full-Stack Route Planner
 
-This is a full-stack route planning application built with React, TypeScript, Express, and PostgreSQL. It provides a complete solution for user authentication, route creation, and map-based visualization.
+# Plataforma Viwe - Planejador de Rotas Full-Stack
 
-## Tech Stack
+Este é um aplicativo full-stack de planejamento de rotas, construído com **React, TypeScript, Express e PostgreSQL**. Ele fornece uma solução completa para **autenticação de usuários, criação de rotas e visualização em mapas**.
 
--   **Workspace Manager**: pnpm
--   **Frontend**: React, TypeScript, Vite, TailwindCSS
--   **Backend**: Node.js, Express, TypeScript
--   **Database**: PostgreSQL (designed for Neon)
--   **Authentication**: JWT (JSON Web Tokens)
--   **Mapping**: Mapbox
+## Stack de Tecnologias
 
-## Prerequisites
+* **Gerenciador de Workspace**: pnpm
+* **Frontend**: React, TypeScript, Vite, TailwindCSS
+* **Backend**: Node.js, Express, TypeScript
+* **Banco de Dados**: PostgreSQL (projetado para Neon)
+* **Autenticação**: JWT (JSON Web Tokens)
+* **Mapeamento**: Mapbox
 
-Before you begin, ensure you have the following installed:
--   [Node.js](https://nodejs.org/) (v16 or higher)
--   [pnpm](https://pnpm.io/installation)
+## Pré-requisitos
 
-## Setup Instructions
+Antes de começar, certifique-se de ter instalado:
 
-Follow these steps to get the development environment up and running:
+* [Node.js](https://nodejs.org/) (v16 ou superior)
+* [pnpm](https://pnpm.io/installation)
 
-**1. Clone the Repository**
+## Instruções de Configuração
+
+Siga os passos abaixo para configurar o ambiente de desenvolvimento:
+
+**1. Clonar o Repositório**
+
 ```bash
 git clone <repository-url>
 cd <repository-name>
 ```
 
-**2. Configure Environment Variables**
-   - Create a `.env` file in the root of the project by copying the example file:
-     ```bash
-     cp .env.example .env
-     ```
-   - Open the `.env` file and fill in the required variables:
-     - **`DATABASE_URL`**: Get your database connection string from your Neon dashboard.
-     - **`VITE_MAPBOX_ACCESS_TOKEN`**: Provide your public Mapbox access token.
-     - **`JWT_SECRET`**: You can generate a new secret by running the following command:
-       ```bash
-       node scripts/generate-jwt-secret.js
-       ```
-       This will automatically add the new secret to your `.env` file.
+**2. Configurar Variáveis de Ambiente**
 
-**3. Install Dependencies**
-   - This project is a pnpm monorepo. To install all dependencies for both the client and server, run the following command from the root directory:
-     ```bash
-     pnpm install
-     ```
+* Crie um arquivo `.env` na raiz do projeto copiando o arquivo de exemplo:
 
-**4. Set Up the Database**
-   - Once your `.env` file is configured with the correct `DATABASE_URL`, run the following command to create all the necessary tables in your database:
-     ```bash
-     pnpm db:setup
-     ```
+```bash
+cp .env.example .env
+```
 
-## Running the Application
+* Abra o arquivo `.env` e preencha as variáveis obrigatórias:
 
-**Development Server**
-   - To start both the frontend and backend servers in development mode, run the following command from the root directory:
-     ```bash
-     pnpm dev
-     ```
-   - The frontend will be available at `http://localhost:3000` (or the next available port).
-   - The backend server will be running on port `3001` and proxied from the frontend.
+  * **`DATABASE_URL`**: Pegue a string de conexão do banco de dados no seu dashboard do Neon.
+  * **`VITE_MAPBOX_ACCESS_TOKEN`**: Insira seu token público de acesso do Mapbox.
+  * **`JWT_SECRET`**: Você pode gerar um novo segredo executando o seguinte comando:
 
-**Available Scripts**
+```bash
+node scripts/generate-jwt-secret.js
+```
 
--   `pnpm setup`: Installs all dependencies for the workspace.
--   `pnpm dev`: Starts the development server for both the client and server.
--   `pnpm db:setup`: Creates the database schema.
--   `pnpm build`: Builds the application for production.
--   `pnpm test`: Runs the tests for all packages.
--   `pnpm format`: Formats the code with Prettier.
--   `pnpm typecheck`: Runs the TypeScript compiler to check for type errors.
+Isso adicionará automaticamente o novo segredo ao seu arquivo `.env`.
+
+**3. Instalar Dependências**
+
+* Este projeto é um monorepo **pnpm**. Para instalar todas as dependências do client e server, execute o seguinte comando na raiz do projeto:
+
+```bash
+pnpm install
+```
+
+**4. Configurar o Banco de Dados**
+
+* Depois de configurar corretamente o `DATABASE_URL` no `.env`, execute o seguinte comando para criar todas as tabelas necessárias no banco de dados:
+
+```bash
+pnpm db:setup
+```
+
+## Executando a Aplicação
+
+**Servidor de Desenvolvimento**
+
+* Para iniciar os servidores de frontend e backend em modo de desenvolvimento, execute o seguinte comando na raiz do projeto:
+
+```bash
+pnpm dev
+```
+
+* O frontend estará disponível em `http://localhost:3000` (ou na próxima porta disponível).
+* O servidor backend estará rodando na porta `3001` e será acessado via proxy pelo frontend.
+
+**Scripts Disponíveis**
+
+* `pnpm setup`: Instala todas as dependências do workspace.
+* `pnpm dev`: Inicia o servidor de desenvolvimento para client e server.
+* `pnpm db:setup`: Cria o schema do banco de dados.
+* `pnpm build`: Constrói a aplicação para produção.
+* `pnpm test`: Executa os testes de todos os pacotes.
+* `pnpm format`: Formata o código com Prettier.
+* `pnpm typecheck`: Executa o compilador TypeScript para verificar erros de tipos.
+
+---
+
+Se você quiser, posso também criar uma **versão resumida em português**, que funcione como README oficial, clara e direta para desenvolvedores novos no projeto.
+
+Quer que eu faça?
