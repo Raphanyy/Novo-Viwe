@@ -75,17 +75,27 @@ export const auth = {
 // Utility functions para operações de dados
 export const db = {
   // Obter dados de uma tabela
-  from: (table: string) => supabase.from(table),
+  from: (table: string) => {
+    if (!supabase) throw new Error('Supabase não configurado');
+    return supabase.from(table);
+  },
 
   // Executar RPC (stored procedures)
-  rpc: (fn: string, args?: Record<string, any>) => supabase.rpc(fn, args),
+  rpc: (fn: string, args?: Record<string, any>) => {
+    if (!supabase) throw new Error('Supabase não configurado');
+    return supabase.rpc(fn, args);
+  },
 
   // Storage
-  storage: supabase.storage
+  get storage() {
+    if (!supabase) throw new Error('Supabase não configurado');
+    return supabase.storage;
+  }
 };
 
 // Helper para obter token de acesso atual (para chamadas ao Express)
 export const getAccessToken = async () => {
+  if (!supabase) return null;
   const { data: { session } } = await supabase.auth.getSession();
   return session?.access_token || null;
 };
