@@ -185,7 +185,7 @@ const LoginPage: React.FC = () => {
             {/* Divider */}
             <div className="mt-8 pt-8 border-t border-border">
               <p className="text-center text-xs text-muted-foreground">
-                Para demonstração, use qualquer email e senha
+                Use suas credenciais reais do Supabase
               </p>
             </div>
           </div>
