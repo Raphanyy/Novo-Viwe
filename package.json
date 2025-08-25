@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "setup": "pnpm install && echo '✅ Dependências instaladas!'",
-    "dev": "concurrently \"vite\" \"node server/src/index.js\"",
+    "dev": "concurrently \"vite\" \"node server/app.js\"",
     "start": "pnpm setup && pnpm dev",
     "build": "vite build",
     "test": "vitest --run",
@@ -14,11 +14,8 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@types/mapbox-gl": "^3.4.1",
-    "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
-    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mapbox-gl": "^3.14.0",
     "pg": "^8.16.3",
@@ -69,7 +66,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
