@@ -24,7 +24,7 @@ sleep 3
 # Voltar para raiz e iniciar frontend na porta 8080
 echo "🌐 Iniciando frontend na porta 8080..."
 cd ../../
-vite &
+pnpm vite &
 FRONTEND_PID=$!
 
 # Aguardar ambos os processos
