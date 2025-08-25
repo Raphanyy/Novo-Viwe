@@ -511,10 +511,10 @@ router.get("/nearby/:lat/:lng", async (req, res) => {
     }
 
     let nearbyQuery = `
-      SELECT 
+      SELECT
         p.id,
         p.name,
-        p.category,
+        p.type as category,
         p.description,
         p.latitude,
         p.longitude,
