@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { dashboardService, DashboardData, useLoading } from "../../services/api";
+import {
+  dashboardService,
+  DashboardData,
+  useLoading,
+} from "../../services/api";
 import {
   MapPin,
   Route,
@@ -26,7 +30,9 @@ import { Progress } from "../../components/ui/progress";
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const { isRouteModalOpen, openRouteModal, closeRouteModal } = useRouteModal();
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const { loading, error, execute } = useLoading();
 
   // Carregar dados do dashboard
@@ -166,7 +172,7 @@ const DashboardPage: React.FC = () => {
           disabled={loading}
           className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors disabled:opacity-50"
         >
-          {loading ? 'Carregando...' : 'Tentar novamente'}
+          {loading ? "Carregando..." : "Tentar novamente"}
         </button>
       </div>
     );

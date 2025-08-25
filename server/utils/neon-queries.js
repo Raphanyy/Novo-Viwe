@@ -1,4 +1,4 @@
-import { sql, withTransaction } from '../config/database.js';
+import { sql, withTransaction } from "../config/database.js";
 
 // Exemplo de queries para o sistema Viwe
 export const userQueries = {
@@ -39,7 +39,7 @@ export const userQueries = {
       RETURNING id, name, email, updated_at
     `;
     return user;
-  }
+  },
 };
 
 // Queries para rotas de navegação
@@ -74,7 +74,7 @@ export const routeQueries = {
       RETURNING id
     `;
     return deletedRoute;
-  }
+  },
 };
 
 // Queries para POIs (Points of Interest)
@@ -103,7 +103,7 @@ export const poiQueries = {
       RETURNING *
     `;
     return poi;
-  }
+  },
 };
 
 // Exemplo de transação complexa
@@ -120,7 +120,7 @@ export const complexTransactions = {
         INSERT INTO user_profiles (user_id, bio, preferences, created_at)
         VALUES (${userData.id}, ${profileData.bio}, ${profileData.preferences}, NOW())
         RETURNING *
-      `
+      `,
     ]);
-  }
+  },
 };

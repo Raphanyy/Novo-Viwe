@@ -20,35 +20,35 @@ const serveStatic = (req, res, filePath) => {
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404);
-      res.end('Not found');
+      res.end("Not found");
       return;
     }
 
     const ext = path.extname(filePath);
-    let contentType = 'text/html';
+    let contentType = "text/html";
 
     switch (ext) {
-      case '.js':
-        contentType = 'application/javascript';
+      case ".js":
+        contentType = "application/javascript";
         break;
-      case '.css':
-        contentType = 'text/css';
+      case ".css":
+        contentType = "text/css";
         break;
-      case '.json':
-        contentType = 'application/json';
+      case ".json":
+        contentType = "application/json";
         break;
-      case '.png':
-        contentType = 'image/png';
+      case ".png":
+        contentType = "image/png";
         break;
-      case '.jpg':
-        contentType = 'image/jpg';
+      case ".jpg":
+        contentType = "image/jpg";
         break;
-      case '.svg':
-        contentType = 'image/svg+xml';
+      case ".svg":
+        contentType = "image/svg+xml";
         break;
     }
 
-    res.setHeader('Content-Type', contentType);
+    res.setHeader("Content-Type", contentType);
     res.writeHead(200);
     res.end(data);
   });
@@ -78,14 +78,21 @@ const server = http.createServer(async (req, res) => {
   try {
     // Servir aplicação React na rota raiz
     if (pathname === "/" && req.method === "GET") {
-      const indexPath = path.join(__dirname, '../dist/client/index.html');
+      const indexPath = path.join(__dirname, "../dist/client/index.html");
       serveStatic(req, res, indexPath);
       return;
     }
 
     // Servir arquivos estáticos
-    if (pathname.startsWith('/assets/') || pathname.endsWith('.js') || pathname.endsWith('.css') || pathname.endsWith('.svg') || pathname.endsWith('.png') || pathname.endsWith('.ico')) {
-      const staticPath = path.join(__dirname, '../dist/client', pathname);
+    if (
+      pathname.startsWith("/assets/") ||
+      pathname.endsWith(".js") ||
+      pathname.endsWith(".css") ||
+      pathname.endsWith(".svg") ||
+      pathname.endsWith(".png") ||
+      pathname.endsWith(".ico")
+    ) {
+      const staticPath = path.join(__dirname, "../dist/client", pathname);
       serveStatic(req, res, staticPath);
       return;
     }
