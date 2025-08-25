@@ -47,6 +47,7 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 // Context
