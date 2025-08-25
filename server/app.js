@@ -75,6 +75,30 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // Debug: List all users (temporary endpoint)
+    if (path === "/api/debug/users") {
+      try {
+        const usersResult = await query(
+          `SELECT id, name, email, created_at, last_login_at, plan_type, is_email_verified
+           FROM users
+           WHERE deleted_at IS NULL
+           ORDER BY created_at DESC`
+        );
+
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          message: "Usuários encontrados no banco",
+          users: usersResult.rows,
+          total: usersResult.rows.length
+        }));
+      } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: "Erro ao buscar usuários" }));
+      }
+      return;
+    }
+
     // Ping simples
     if (path === "/api/ping") {
       res.writeHead(200);
