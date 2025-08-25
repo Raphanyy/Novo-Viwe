@@ -164,14 +164,14 @@ router.get("/", async (req, res) => {
 router.get("/categories", async (req, res) => {
   try {
     const categoriesQuery = `
-      SELECT 
-        category,
+      SELECT
+        type as category,
         COUNT(*) as count,
         AVG(rating) as avg_rating
-      FROM pois 
-      WHERE deleted_at IS NULL AND category IS NOT NULL
-      GROUP BY category
-      ORDER BY count DESC, category ASC
+      FROM pois
+      WHERE deleted_at IS NULL AND type IS NOT NULL
+      GROUP BY type
+      ORDER BY count DESC, type ASC
     `;
 
     const result = await query(categoriesQuery);
