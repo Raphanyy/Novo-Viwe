@@ -63,6 +63,7 @@ import {
   useSearchFilter,
   useStableCallback,
 } from "../../lib/performance-utils";
+import { poiService, PoiData } from "../../services/api";
 
 interface SearchResult {
   id: string;
@@ -145,55 +146,6 @@ const MapPage: React.FC = () => {
     0.0001, // 0.0001 degree tolerance
   );
 
-  // Pontos de interesse com coordenadas reais de São Paulo
-  const pointsOfInterest = [
-    {
-      id: 1,
-      name: "Shopping Center Norte",
-      type: "shopping",
-      distance: "2.3 km",
-      rating: 4.5,
-      coordinates: [-46.6177, -23.5072], // lng, lat
-      color: "bg-blue-500",
-    },
-    {
-      id: 2,
-      name: "Hospital São Paulo",
-      type: "hospital",
-      distance: "1.8 km",
-      rating: 4.2,
-      coordinates: [-46.6444, -23.5505],
-      color: "bg-red-500",
-    },
-    {
-      id: 3,
-      name: "Restaurante Villa",
-      type: "restaurant",
-      distance: "0.8 km",
-      rating: 4.8,
-      coordinates: [-46.6333, -23.5489],
-      color: "bg-yellow-500",
-    },
-    {
-      id: 4,
-      name: "Posto Shell",
-      type: "gas",
-      distance: "1.2 km",
-      rating: 4.0,
-      coordinates: [-46.6511, -23.5575],
-      color: "bg-green-500",
-    },
-    {
-      id: 5,
-      name: "Parque Central",
-      type: "park",
-      distance: "3.1 km",
-      rating: 4.6,
-      coordinates: [-46.6566, -23.5478],
-      color: "bg-green-600",
-    },
-  ];
-
   const filterOptions = [
     { id: "restaurant", name: "Restaurantes", icon: "🍽️" },
     { id: "gas", name: "Postos", icon: "⛽" },
@@ -203,6 +155,41 @@ const MapPage: React.FC = () => {
   ];
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [pois, setPois] = useState<PoiData[]>([]);
+
+  const getPoiColor = (category: string) => {
+    switch (category) {
+      case "shopping":
+        return "bg-blue-500";
+      case "hospital":
+        return "bg-red-500";
+      case "restaurant":
+        return "bg-yellow-500";
+      case "gas":
+        return "bg-green-500";
+      case "park":
+        return "bg-green-600";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  useEffect(() => {
+    const fetchPois = async () => {
+      try {
+        const fetchedPois = await poiService.getPois();
+        const poisWithColors = fetchedPois.map(poi => ({
+          ...poi,
+          color: getPoiColor(poi.category),
+        }));
+        setPois(poisWithColors);
+      } catch (error) {
+        console.error("Failed to fetch POIs:", error);
+      }
+    };
+
+    fetchPois();
+  }, []);
 
   const toggleFilter = useCallback((filterId: string) => {
     setActiveFilters((prev) =>
@@ -215,17 +202,19 @@ const MapPage: React.FC = () => {
   // Otimizar filteredPOIs usando memoização estável
   const filteredPOIs = useStableMemo(
     () => {
-      return pointsOfInterest.filter(
-        (poi) => activeFilters.length === 0 || activeFilters.includes(poi.type),
+      return pois.filter(
+        (poi) => activeFilters.length === 0 || activeFilters.includes(poi.category),
       );
     },
-    [activeFilters],
+    [pois, activeFilters],
     (prev, current) => {
       // Comparação customizada para arrays de filtros
-      const [prevFilters] = prev as [string[]];
-      const [currentFilters] = current as [string[]];
+      const [prevPois, prevFilters] = prev as [PoiData[], string[]];
+      const [currentPois, currentFilters] = current as [PoiData[], string[]];
 
+      if (prevPois.length !== currentPois.length) return false;
       if (prevFilters.length !== currentFilters.length) return false;
+      if (!prevPois.every((poi, index) => poi.id === currentPois[index].id)) return false;
       return prevFilters.every(
         (filter: string, index: number) => filter === currentFilters[index],
       );

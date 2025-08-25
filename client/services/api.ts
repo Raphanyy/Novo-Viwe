@@ -42,6 +42,16 @@ export interface DashboardData {
   notifications: NotificationData[];
 }
 
+export interface PoiData {
+  id: number;
+  name: string;
+  category: string;
+  distance: number | null;
+  rating: number;
+  coordinates: [number, number];
+  color?: string; // Optional, can be added on the client
+}
+
 // Utilitário para fazer requests com tratamento de erro
 async function apiRequest<T>(
   endpoint: string,
@@ -298,10 +308,25 @@ export const useLoading = () => {
   return { loading, error, execute, retry, reset, retryCount };
 };
 
+export const poiService = {
+  async getPois(): Promise<PoiData[]> {
+    const response = await apiRequest<{ pois: any[] }>("/api/pois");
+    return response.pois.map(poi => ({
+      id: poi.id,
+      name: poi.name,
+      category: poi.category,
+      distance: poi.distance,
+      rating: poi.rating,
+      coordinates: poi.coordinates,
+    }));
+  },
+};
+
 export default {
   routes: routesService,
   dashboard: dashboardService,
   notifications: notificationsService,
   user: userService,
   auth: authService,
+  pois: poiService,
 };
