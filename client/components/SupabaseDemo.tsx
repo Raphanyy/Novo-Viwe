@@ -1,50 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/SupabaseAuthContext';
-import { authenticatedFetch, db } from '../lib/supabase';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Alert, AlertDescription } from './ui/alert';
-import { Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/SupabaseAuthContext";
+import { authenticatedFetch, db } from "../lib/supabase";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Loader2 } from "lucide-react";
 
 export const SupabaseDemo: React.FC = () => {
   const { user, signIn, signUp, signOut, loading: authLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [profile, setProfile] = useState<any>(null);
   const [serverHealth, setServerHealth] = useState<any>(null);
 
   // Teste de conectividade com o servidor Express
   const checkServerHealth = async () => {
     try {
-      const response = await fetch('/api/health');
+      const response = await fetch("/api/health");
       const data = await response.json();
       setServerHealth(data);
     } catch (error) {
-      console.error('Erro ao verificar saúde do servidor:', error);
-      setServerHealth({ status: 'error', error: 'Servidor não responsivo' });
+      console.error("Erro ao verificar saúde do servidor:", error);
+      setServerHealth({ status: "error", error: "Servidor não responsivo" });
     }
   };
 
   // Buscar perfil via API do Express (híbrido)
   const fetchProfileViaExpress = async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
-      const response = await authenticatedFetch('/api/users/profile');
+      const response = await authenticatedFetch("/api/users/profile");
       const data = await response.json();
-      
+
       if (response.ok) {
         setProfile(data);
-        setMessage('Perfil carregado via Express + Supabase');
+        setMessage("Perfil carregado via Express + Supabase");
       } else {
         setMessage(`Erro: ${data.error}`);
       }
     } catch (error) {
-      setMessage('Erro ao carregar perfil via Express');
+      setMessage("Erro ao carregar perfil via Express");
       console.error(error);
     } finally {
       setLoading(false);
@@ -54,23 +60,24 @@ export const SupabaseDemo: React.FC = () => {
   // Buscar dados diretamente do Supabase (frontend)
   const fetchDataDirectly = async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       // Exemplo de consulta direta ao Supabase
-      const { data, error } = await db.from('profiles')
-        .select('*')
-        .eq('id', user.id)
+      const { data, error } = await db
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error && error.code !== "PGRST116") {
         setMessage(`Erro Supabase: ${error.message}`);
       } else {
-        setMessage('Dados carregados diretamente do Supabase');
-        console.log('Dados diretos:', data);
+        setMessage("Dados carregados diretamente do Supabase");
+        console.log("Dados diretos:", data);
       }
     } catch (error) {
-      setMessage('Erro ao acessar Supabase diretamente');
+      setMessage("Erro ao acessar Supabase diretamente");
       console.error(error);
     } finally {
       setLoading(false);
@@ -81,11 +88,11 @@ export const SupabaseDemo: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
-    
+    setMessage("");
+
     try {
       await signIn(email, password);
-      setMessage('Login realizado com sucesso!');
+      setMessage("Login realizado com sucesso!");
     } catch (error: any) {
       setMessage(`Erro no login: ${error.message}`);
     } finally {
@@ -97,11 +104,11 @@ export const SupabaseDemo: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
-    
+    setMessage("");
+
     try {
       await signUp(email, password);
-      setMessage('Registro realizado com sucesso! Verifique seu email.');
+      setMessage("Registro realizado com sucesso! Verifique seu email.");
     } catch (error: any) {
       setMessage(`Erro no registro: ${error.message}`);
     } finally {
@@ -115,7 +122,7 @@ export const SupabaseDemo: React.FC = () => {
     try {
       await signOut();
       setProfile(null);
-      setMessage('Logout realizado com sucesso!');
+      setMessage("Logout realizado com sucesso!");
     } catch (error: any) {
       setMessage(`Erro no logout: ${error.message}`);
     } finally {
@@ -153,12 +160,15 @@ export const SupabaseDemo: React.FC = () => {
               <AlertDescription>
                 {serverHealth ? (
                   <div>
-                    <strong>Status:</strong> {serverHealth.status}<br/>
-                    <strong>Supabase Configurado:</strong> {serverHealth.supabase_configured ? '✅ Sim' : '❌ Não'}<br/>
+                    <strong>Status:</strong> {serverHealth.status}
+                    <br />
+                    <strong>Supabase Configurado:</strong>{" "}
+                    {serverHealth.supabase_configured ? "✅ Sim" : "❌ Não"}
+                    <br />
                     <strong>Ambiente:</strong> {serverHealth.environment}
                   </div>
                 ) : (
-                  'Verificando servidor...'
+                  "Verificando servidor..."
                 )}
               </AlertDescription>
             </Alert>
@@ -171,12 +181,15 @@ export const SupabaseDemo: React.FC = () => {
               <AlertDescription>
                 {user ? (
                   <div>
-                    <strong>Usuário:</strong> {user.email}<br/>
-                    <strong>ID:</strong> {user.id}<br/>
-                    <strong>Verificado:</strong> {user.email_confirmed_at ? '✅ Sim' : '❌ Não'}
+                    <strong>Usuário:</strong> {user.email}
+                    <br />
+                    <strong>ID:</strong> {user.id}
+                    <br />
+                    <strong>Verificado:</strong>{" "}
+                    {user.email_confirmed_at ? "✅ Sim" : "❌ Não"}
                   </div>
                 ) : (
-                  'Usuário não autenticado'
+                  "Usuário não autenticado"
                 )}
               </AlertDescription>
             </Alert>
@@ -201,10 +214,17 @@ export const SupabaseDemo: React.FC = () => {
               />
               <div className="flex gap-2">
                 <Button type="submit" disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : null}
                   Login
                 </Button>
-                <Button type="button" variant="outline" onClick={handleRegister} disabled={loading}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleRegister}
+                  disabled={loading}
+                >
                   Registrar
                 </Button>
               </div>
@@ -216,10 +236,18 @@ export const SupabaseDemo: React.FC = () => {
                 <Button onClick={fetchProfileViaExpress} disabled={loading}>
                   Buscar via Express
                 </Button>
-                <Button onClick={fetchDataDirectly} disabled={loading} variant="outline">
+                <Button
+                  onClick={fetchDataDirectly}
+                  disabled={loading}
+                  variant="outline"
+                >
                   Buscar via Supabase Direto
                 </Button>
-                <Button onClick={handleLogout} disabled={loading} variant="destructive">
+                <Button
+                  onClick={handleLogout}
+                  disabled={loading}
+                  variant="destructive"
+                >
                   Logout
                 </Button>
               </div>

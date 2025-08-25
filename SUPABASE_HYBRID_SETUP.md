@@ -68,12 +68,12 @@ CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.
 ### Frontend - Autenticação
 
 ```typescript
-import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from "@/contexts/SupabaseAuthContext";
 
 const { user, signIn, signOut, loading } = useAuth();
 
 // Login
-await signIn('user@example.com', 'password');
+await signIn("user@example.com", "password");
 
 // Logout
 await signOut();
@@ -82,32 +82,32 @@ await signOut();
 ### Frontend - Dados Diretos
 
 ```typescript
-import { db } from '@/lib/supabase';
+import { db } from "@/lib/supabase";
 
 // Consulta direta ao Supabase
-const { data, error } = await db.from('profiles').select('*');
+const { data, error } = await db.from("profiles").select("*");
 ```
 
 ### Frontend - Chamadas para Express
 
 ```typescript
-import { authenticatedFetch } from '@/lib/supabase';
+import { authenticatedFetch } from "@/lib/supabase";
 
 // Chamada autenticada para o Express
-const response = await authenticatedFetch('/api/users/profile');
+const response = await authenticatedFetch("/api/users/profile");
 const data = await response.json();
 ```
 
 ### Backend - Middleware de Auth
 
 ```typescript
-import { authMiddleware, requireAuth } from '@/middleware/auth';
+import { authMiddleware, requireAuth } from "@/middleware/auth";
 
 // Aplicar em todas as rotas
 app.use(authMiddleware);
 
 // Rota protegida
-app.get('/api/protected', requireAuth, (req, res) => {
+app.get("/api/protected", requireAuth, (req, res) => {
   const user = req.user; // Dados do usuário autenticado
   res.json({ message: `Hello ${user.email}` });
 });
@@ -116,37 +116,39 @@ app.get('/api/protected', requireAuth, (req, res) => {
 ### Backend - Operações no Supabase
 
 ```typescript
-import { supabasePublic, supabaseAdmin } from '@/lib/supabase';
+import { supabasePublic, supabaseAdmin } from "@/lib/supabase";
 
 // Cliente público (respeitando RLS)
 const { data } = await supabasePublic
-  .from('profiles')
-  .select('*')
-  .eq('id', userId);
+  .from("profiles")
+  .select("*")
+  .eq("id", userId);
 
 // Cliente admin (ignora RLS)
-const { data } = await supabaseAdmin
-  .from('profiles')
-  .select('*');
+const { data } = await supabaseAdmin.from("profiles").select("*");
 ```
 
 ## 🔧 APIs Disponíveis
 
 ### Autenticação
+
 - `POST /api/auth/login` - Login com email/senha
 - `POST /api/auth/register` - Registro de usuário
 - `POST /api/auth/logout` - Logout
 - `GET /api/auth/status` - Status de autenticação
 
 ### Usuários
+
 - `GET /api/users/profile` - Perfil do usuário atual
 - `PUT /api/users/profile` - Atualizar perfil
 - `GET /api/users/analytics` - Analytics do usuário
 
 ### Admin
+
 - `GET /api/admin/users` - Listar usuários (admin only)
 
 ### Utilitários
+
 - `GET /api/health` - Health check do sistema
 - `GET /api/ping` - Ping simples
 
@@ -160,7 +162,7 @@ Acesse `/supabase-demo` para testar a integração completa.
 
 1. **RLS (Row Level Security)**: Configurado no Supabase
 2. **Middleware de Auth**: Verificação de tokens JWT
-3. **Separação de Chaves**: 
+3. **Separação de Chaves**:
    - `ANON_KEY`: Frontend (segura para exposição)
    - `SERVICE_ROLE_KEY`: Backend (nunca expor)
 4. **Validação no Express**: Para lógica de negócio crítica
@@ -168,12 +170,14 @@ Acesse `/supabase-demo` para testar a integração completa.
 ### Quando Usar Cada Abordagem
 
 **Frontend → Supabase Direto:**
+
 - ✅ CRUD simples de dados do usuário
 - ✅ Autenticação (login/logout)
 - ✅ Realtime subscriptions
 - ✅ Upload de arquivos
 
 **Frontend → Express → Supabase:**
+
 - ✅ Validações complexas de negócio
 - ✅ Operações administrativas
 - ✅ Integração com APIs externas

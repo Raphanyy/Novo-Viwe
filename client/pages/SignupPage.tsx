@@ -40,7 +40,9 @@ const SignupPage: React.FC = () => {
       if (success) {
         // Mostrar mensagem de sucesso e redirecionar para login
         setError(""); // Limpar erro
-        alert("Conta criada com sucesso! Verifique seu email para confirmar a conta.");
+        alert(
+          "Conta criada com sucesso! Verifique seu email para confirmar a conta.",
+        );
         navigate("/login");
       } else {
         setError("Erro ao criar conta. Verifique os dados e tente novamente.");

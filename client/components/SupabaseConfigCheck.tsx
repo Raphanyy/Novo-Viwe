@@ -1,18 +1,18 @@
-import React from 'react';
-import { AlertTriangle, ExternalLink } from 'lucide-react';
-import { Alert, AlertDescription } from './ui/alert';
-import { Button } from './ui/button';
-import { supabase } from '../lib/supabase';
+import React from "react";
+import { AlertTriangle, ExternalLink } from "lucide-react";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Button } from "./ui/button";
+import { supabase } from "../lib/supabase";
 
 interface SupabaseConfigCheckProps {
   showOnlyIfNotConfigured?: boolean;
 }
 
-export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({ 
-  showOnlyIfNotConfigured = true 
+export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
+  showOnlyIfNotConfigured = true,
 }) => {
   const isConfigured = !!supabase;
-  
+
   // Se está configurado e só deve mostrar quando não configurado, não renderiza
   if (isConfigured && showOnlyIfNotConfigured) {
     return null;
@@ -28,7 +28,8 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
               Supabase não configurado
             </strong>
             <p className="text-orange-700 dark:text-orange-300 text-sm mt-1">
-              Para usar a autenticação real, configure as variáveis de ambiente do Supabase.
+              Para usar a autenticação real, configure as variáveis de ambiente
+              do Supabase.
             </p>
           </div>
 
@@ -37,7 +38,8 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
               <strong>Variáveis necessárias:</strong>
             </div>
             <div className="font-mono bg-orange-100 dark:bg-orange-900 p-2 rounded">
-              VITE_SUPABASE_URL=https://your-project.supabase.co<br/>
+              VITE_SUPABASE_URL=https://your-project.supabase.co
+              <br />
               VITE_SUPABASE_ANON_KEY=your-anon-key
             </div>
           </div>
@@ -46,7 +48,7 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
             <Button
               size="sm"
               variant="outline"
-              onClick={() => window.open('https://app.supabase.com', '_blank')}
+              onClick={() => window.open("https://app.supabase.com", "_blank")}
               className="text-orange-700 border-orange-300 hover:bg-orange-100"
             >
               <ExternalLink className="h-3 w-3 mr-1" />
@@ -55,7 +57,7 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
             <Button
               size="sm"
               variant="outline"
-              onClick={() => window.location.href = '/auth-test'}
+              onClick={() => (window.location.href = "/auth-test")}
               className="text-orange-700 border-orange-300 hover:bg-orange-100"
             >
               Página de Teste
@@ -76,7 +78,8 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
             🎉 Supabase Ativado com Sucesso!
           </strong>
           <p className="text-green-700 dark:text-green-300 text-sm mt-1">
-            Autenticação real funcionando. Você pode criar contas e fazer login normalmente.
+            Autenticação real funcionando. Você pode criar contas e fazer login
+            normalmente.
           </p>
         </div>
 
@@ -84,7 +87,7 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => window.location.href = '/auth-test'}
+            onClick={() => (window.location.href = "/auth-test")}
             className="text-green-700 border-green-300 hover:bg-green-100"
           >
             Testar Autenticação
@@ -92,7 +95,7 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => window.location.href = '/supabase-demo'}
+            onClick={() => (window.location.href = "/supabase-demo")}
             className="text-green-700 border-green-300 hover:bg-green-100"
           >
             Ver Demo Completa

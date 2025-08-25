@@ -7,13 +7,13 @@ import {
   loginHandler,
   registerHandler,
   logoutHandler,
-  authStatusHandler
+  authStatusHandler,
 } from "./routes/auth";
 import {
   getProfileHandler,
   updateProfileHandler,
   listUsersHandler,
-  getUserAnalyticsHandler
+  getUserAnalyticsHandler,
 } from "./routes/users";
 
 export function createServer() {
@@ -63,12 +63,12 @@ export function createServer() {
         status: "ok",
         timestamp: new Date().toISOString(),
         supabase_configured: supabaseConfigured,
-        environment: process.env.NODE_ENV || "development"
+        environment: process.env.NODE_ENV || "development",
       });
     } catch (error) {
       res.status(500).json({
         status: "error",
-        error: "Health check failed"
+        error: "Health check failed",
       });
     }
   });
