@@ -14,7 +14,7 @@ const SignupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,15 +34,14 @@ const SignupPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simular cadastro - em uma app real, você faria uma chamada para API de registro
-      // Por enquanto, vamos simular um cadastro bem-sucedido e fazer login automaticamente
-      const success = await login(email, password);
-      if (success) {
+      const result = await register({ name, email, password });
+      if (result.success) {
         navigate("/app");
       } else {
-        setError("Erro ao criar conta. Tente novamente.");
+        setError(result.error || "Erro ao criar conta. Tente novamente.");
       }
     } catch (err) {
+      console.error("Erro no registro:", err);
       setError("Erro ao criar conta. Tente novamente.");
     } finally {
       setIsLoading(false);
