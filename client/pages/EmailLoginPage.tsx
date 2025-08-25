@@ -20,13 +20,14 @@ const EmailLoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
+      const result = await login({ email, password });
+      if (result.success) {
         navigate("/app");
       } else {
-        setError("Email ou senha inválidos. Tente novamente.");
+        setError(result.error || "Email ou senha inválidos. Tente novamente.");
       }
     } catch (err) {
+      console.error("Erro no login:", err);
       setError("Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
