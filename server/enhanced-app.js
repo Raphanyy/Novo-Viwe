@@ -7,7 +7,11 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // Importar utils do Neon
-const { healthCheck, testConnection, query } = require("./src/utils/neon-database");
+const {
+  healthCheck,
+  testConnection,
+  query,
+} = require("./src/utils/neon-database");
 
 const PORT = 8080;
 
@@ -30,7 +34,8 @@ const parseJSON = (req, callback) => {
 };
 
 // JWT Secret (generate if not exists)
-const JWT_SECRET = process.env.JWT_SECRET || "viwe-default-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "viwe-default-secret-key-change-in-production";
 
 // Função para servir arquivos estáticos
 const serveStatic = (req, res, filePath) => {
@@ -106,7 +111,10 @@ const authenticateToken = (req, res, next) => {
 const server = http.createServer(async (req, res) => {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
@@ -145,19 +153,21 @@ const server = http.createServer(async (req, res) => {
     if (pathname === "/health") {
       const dbHealth = await healthCheck();
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        status: "OK",
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || "development",
-        version: "2.0.0",
-        database: dbHealth,
-        services: {
-          database: dbHealth.status === "healthy",
-          neon: true,
-          frontend: "connected",
-          backend: "running",
-        },
-      }));
+      res.end(
+        JSON.stringify({
+          status: "OK",
+          timestamp: new Date().toISOString(),
+          environment: process.env.NODE_ENV || "development",
+          version: "2.0.0",
+          database: dbHealth,
+          services: {
+            database: dbHealth.status === "healthy",
+            neon: true,
+            frontend: "connected",
+            backend: "running",
+          },
+        }),
+      );
       return;
     }
 
@@ -177,7 +187,9 @@ const server = http.createServer(async (req, res) => {
 
         if (!name || !email || !password) {
           res.writeHead(400);
-          res.end(JSON.stringify({ error: "Nome, email e senha são obrigatórios" }));
+          res.end(
+            JSON.stringify({ error: "Nome, email e senha são obrigatórios" }),
+          );
           return;
         }
 
@@ -185,7 +197,7 @@ const server = http.createServer(async (req, res) => {
           // Verificar se usuário já existe
           const existingUser = await query(
             "SELECT id FROM users WHERE email = $1 AND deleted_at IS NULL",
-            [email.toLowerCase()]
+            [email.toLowerCase()],
           );
 
           if (existingUser.rows.length > 0) {
@@ -202,7 +214,7 @@ const server = http.createServer(async (req, res) => {
             `INSERT INTO users (name, email, password_hash, is_email_verified)
              VALUES ($1, $2, $3, $4)
              RETURNING id, name, email, is_email_verified, plan_type, created_at`,
-            [name, email.toLowerCase(), passwordHash, true]
+            [name, email.toLowerCase(), passwordHash, true],
           );
 
           const user = userResult.rows[0];
@@ -215,27 +227,33 @@ const server = http.createServer(async (req, res) => {
           await query(
             `INSERT INTO auth_sessions (user_id, refresh_token, expires_at)
              VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
-            [user.id, refreshToken]
+            [user.id, refreshToken],
           );
 
           res.writeHead(201);
-          res.end(JSON.stringify({
-            message: "Usuário criado com sucesso",
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              isEmailVerified: user.is_email_verified,
-              planType: user.plan_type || "basic",
-            },
-            tokens: {
-              accessToken,
-              refreshToken,
-              accessTokenExpiresAt: new Date(Date.now() + 3600000).toISOString(),
-              refreshTokenExpiresAt: new Date(Date.now() + 30 * 24 * 3600000).toISOString(),
-              tokenType: "Bearer",
-            },
-          }));
+          res.end(
+            JSON.stringify({
+              message: "Usuário criado com sucesso",
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isEmailVerified: user.is_email_verified,
+                planType: user.plan_type || "basic",
+              },
+              tokens: {
+                accessToken,
+                refreshToken,
+                accessTokenExpiresAt: new Date(
+                  Date.now() + 3600000,
+                ).toISOString(),
+                refreshTokenExpiresAt: new Date(
+                  Date.now() + 30 * 24 * 3600000,
+                ).toISOString(),
+                tokenType: "Bearer",
+              },
+            }),
+          );
         } catch (error) {
           console.error("Erro no registro:", error);
           res.writeHead(500);
@@ -267,7 +285,7 @@ const server = http.createServer(async (req, res) => {
             `SELECT id, name, email, password_hash, is_email_verified, plan_type
              FROM users
              WHERE email = $1 AND deleted_at IS NULL`,
-            [email.toLowerCase()]
+            [email.toLowerCase()],
           );
 
           if (userResult.rows.length === 0) {
@@ -279,7 +297,10 @@ const server = http.createServer(async (req, res) => {
           const user = userResult.rows[0];
 
           // Verificar senha
-          const isValidPassword = await bcrypt.compare(password, user.password_hash);
+          const isValidPassword = await bcrypt.compare(
+            password,
+            user.password_hash,
+          );
 
           if (!isValidPassword) {
             res.writeHead(401);
@@ -288,7 +309,9 @@ const server = http.createServer(async (req, res) => {
           }
 
           // Atualizar último login
-          await query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
+          await query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [
+            user.id,
+          ]);
 
           // Gerar tokens
           const accessToken = generateToken(user.id);
@@ -298,27 +321,33 @@ const server = http.createServer(async (req, res) => {
           await query(
             `INSERT INTO auth_sessions (user_id, refresh_token, expires_at)
              VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
-            [user.id, refreshToken]
+            [user.id, refreshToken],
           );
 
           res.writeHead(200);
-          res.end(JSON.stringify({
-            message: "Login realizado com sucesso",
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              isEmailVerified: user.is_email_verified,
-              planType: user.plan_type || "basic",
-            },
-            tokens: {
-              accessToken,
-              refreshToken,
-              accessTokenExpiresAt: new Date(Date.now() + 3600000).toISOString(),
-              refreshTokenExpiresAt: new Date(Date.now() + 30 * 24 * 3600000).toISOString(),
-              tokenType: "Bearer",
-            },
-          }));
+          res.end(
+            JSON.stringify({
+              message: "Login realizado com sucesso",
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isEmailVerified: user.is_email_verified,
+                planType: user.plan_type || "basic",
+              },
+              tokens: {
+                accessToken,
+                refreshToken,
+                accessTokenExpiresAt: new Date(
+                  Date.now() + 3600000,
+                ).toISOString(),
+                refreshTokenExpiresAt: new Date(
+                  Date.now() + 30 * 24 * 3600000,
+                ).toISOString(),
+                tokenType: "Bearer",
+              },
+            }),
+          );
         } catch (error) {
           console.error("Erro no login:", error);
           res.writeHead(500);
@@ -335,7 +364,7 @@ const server = http.createServer(async (req, res) => {
             `SELECT id, name, email, is_email_verified, plan_type, created_at, last_login_at
              FROM users
              WHERE id = $1 AND deleted_at IS NULL`,
-            [req.user.id]
+            [req.user.id],
           );
 
           if (userResult.rows.length === 0) {
@@ -346,17 +375,19 @@ const server = http.createServer(async (req, res) => {
 
           const user = userResult.rows[0];
           res.writeHead(200);
-          res.end(JSON.stringify({
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              isEmailVerified: user.is_email_verified,
-              planType: user.plan_type || "basic",
-              createdAt: user.created_at,
-              lastLoginAt: user.last_login_at,
-            },
-          }));
+          res.end(
+            JSON.stringify({
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isEmailVerified: user.is_email_verified,
+                planType: user.plan_type || "basic",
+                createdAt: user.created_at,
+                lastLoginAt: user.last_login_at,
+              },
+            }),
+          );
         } catch (error) {
           console.error("Erro ao buscar usuário:", error);
           res.writeHead(500);
@@ -372,7 +403,7 @@ const server = http.createServer(async (req, res) => {
           // Invalidar todas as sessões do usuário
           await query(
             "UPDATE auth_sessions SET is_active = FALSE WHERE user_id = $1",
-            [req.user.id]
+            [req.user.id],
           );
 
           res.writeHead(200);
@@ -397,10 +428,10 @@ const server = http.createServer(async (req, res) => {
              WHERE r.user_id = $1 AND r.deleted_at IS NULL
              GROUP BY r.id
              ORDER BY r.created_at DESC`,
-            [req.user.id]
+            [req.user.id],
           );
 
-          const routes = routesResult.rows.map(route => ({
+          const routes = routesResult.rows.map((route) => ({
             id: route.id,
             name: route.name,
             description: route.description,
@@ -448,7 +479,7 @@ const server = http.createServer(async (req, res) => {
               `INSERT INTO routes (name, description, user_id, status, created_at, updated_at)
                VALUES ($1, $2, $3, 'draft', NOW(), NOW())
                RETURNING *`,
-              [name, description, req.user.id]
+              [name, description, req.user.id],
             );
 
             const route = routeResult.rows[0];
@@ -460,27 +491,37 @@ const server = http.createServer(async (req, res) => {
                 await query(
                   `INSERT INTO route_stops (route_id, stop_order, name, address, latitude, longitude, estimated_duration)
                    VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                  [route.id, i + 1, stop.name, stop.address, stop.latitude, stop.longitude, stop.estimatedDuration || 10]
+                  [
+                    route.id,
+                    i + 1,
+                    stop.name,
+                    stop.address,
+                    stop.latitude,
+                    stop.longitude,
+                    stop.estimatedDuration || 10,
+                  ],
                 );
               }
             }
 
             res.writeHead(201);
-            res.end(JSON.stringify({
-              message: "Rota criada com sucesso",
-              route: {
-                id: route.id,
-                name: route.name,
-                description: route.description,
-                status: route.status,
-                stopCount: stops.length,
-                createdAt: route.created_at,
-                estimatedDuration: "N/A",
-                totalDistance: "N/A",
-                isFavorite: false,
-                lastModified: route.updated_at,
-              },
-            }));
+            res.end(
+              JSON.stringify({
+                message: "Rota criada com sucesso",
+                route: {
+                  id: route.id,
+                  name: route.name,
+                  description: route.description,
+                  status: route.status,
+                  stopCount: stops.length,
+                  createdAt: route.created_at,
+                  estimatedDuration: "N/A",
+                  totalDistance: "N/A",
+                  isFavorite: false,
+                  lastModified: route.updated_at,
+                },
+              }),
+            );
           } catch (error) {
             console.error("Erro ao criar rota:", error);
             res.writeHead(500);
@@ -500,18 +541,20 @@ const server = http.createServer(async (req, res) => {
                (SELECT COUNT(*) FROM routes WHERE user_id = $1 AND deleted_at IS NULL) as total_routes,
                (SELECT COUNT(*) FROM routes WHERE user_id = $1 AND status = 'completed' AND deleted_at IS NULL) as completed_routes,
                (SELECT COUNT(*) FROM clients WHERE user_id = $1 AND deleted_at IS NULL) as total_clients`,
-            [req.user.id]
+            [req.user.id],
           );
 
           const stats = statsResult.rows[0];
 
           res.writeHead(200);
-          res.end(JSON.stringify({
-            totalRoutes: parseInt(stats.total_routes),
-            totalDistance: "0 km", // TODO: calcular do banco
-            timeSaved: "0 min", // TODO: calcular do banco
-            fuelSaved: "0 L", // TODO: calcular do banco
-          }));
+          res.end(
+            JSON.stringify({
+              totalRoutes: parseInt(stats.total_routes),
+              totalDistance: "0 km", // TODO: calcular do banco
+              timeSaved: "0 min", // TODO: calcular do banco
+              fuelSaved: "0 L", // TODO: calcular do banco
+            }),
+          );
         } catch (error) {
           console.error("Erro ao buscar estatísticas:", error);
           res.writeHead(500);
@@ -529,10 +572,10 @@ const server = http.createServer(async (req, res) => {
              WHERE user_id = $1 AND deleted_at IS NULL
              ORDER BY created_at DESC
              LIMIT 5`,
-            [req.user.id]
+            [req.user.id],
           );
 
-          const routes = routesResult.rows.map(route => ({
+          const routes = routesResult.rows.map((route) => ({
             id: route.id,
             name: route.name,
             status: route.status,
@@ -556,52 +599,58 @@ const server = http.createServer(async (req, res) => {
     // API Info
     if (pathname === "/api") {
       res.writeHead(200);
-      res.end(JSON.stringify({
-        name: "Viwe API Enhanced",
-        version: "2.0.0",
-        description: "API completa para otimização e navegação de rotas",
-        status: "running",
-        endpoints: {
-          health: "GET /health",
-          auth: {
-            register: "POST /api/auth/register",
-            login: "POST /api/auth/login",
-            logout: "POST /api/auth/logout",
-            me: "GET /api/auth/me",
+      res.end(
+        JSON.stringify({
+          name: "Viwe API Enhanced",
+          version: "2.0.0",
+          description: "API completa para otimização e navegação de rotas",
+          status: "running",
+          endpoints: {
+            health: "GET /health",
+            auth: {
+              register: "POST /api/auth/register",
+              login: "POST /api/auth/login",
+              logout: "POST /api/auth/logout",
+              me: "GET /api/auth/me",
+            },
+            routes: {
+              list: "GET /api/routes",
+              create: "POST /api/routes",
+            },
+            dashboard: {
+              stats: "GET /api/dashboard/stats",
+              recentRoutes: "GET /api/dashboard/recent-routes",
+            },
           },
-          routes: {
-            list: "GET /api/routes",
-            create: "POST /api/routes",
+          database: {
+            type: "Neon PostgreSQL",
+            driver: "neon-serverless",
+            status: process.env.DATABASE_URL ? "configured" : "not_configured",
           },
-          dashboard: {
-            stats: "GET /api/dashboard/stats",
-            recentRoutes: "GET /api/dashboard/recent-routes",
-          },
-        },
-        database: {
-          type: "Neon PostgreSQL",
-          driver: "neon-serverless",
-          status: process.env.DATABASE_URL ? "configured" : "not_configured",
-        },
-      }));
+        }),
+      );
       return;
     }
 
     // 404 para rotas não encontradas
     res.writeHead(404);
-    res.end(JSON.stringify({
-      error: "Endpoint não encontrado",
-      path: pathname,
-      method: req.method,
-    }));
+    res.end(
+      JSON.stringify({
+        error: "Endpoint não encontrado",
+        path: pathname,
+        method: req.method,
+      }),
+    );
   } catch (error) {
     console.error("❌ Erro no servidor:", error);
     res.writeHead(500);
-    res.end(JSON.stringify({
-      error: "Erro interno do servidor",
-      message: error.message,
-      timestamp: new Date().toISOString(),
-    }));
+    res.end(
+      JSON.stringify({
+        error: "Erro interno do servidor",
+        message: error.message,
+        timestamp: new Date().toISOString(),
+      }),
+    );
   }
 });
 
@@ -612,8 +661,12 @@ server.listen(PORT, async () => {
   console.log(`📊 Status: http://localhost:${PORT}/api`);
 
   console.log(`\n📋 Configuração:`);
-  console.log(`   ✅ Neon: ${process.env.DATABASE_URL ? "Conectado" : "⚠️  Não configurado"}`);
-  console.log(`   ✅ JWT: ${JWT_SECRET !== "viwe-default-secret-key-change-in-production" ? "Configurado" : "⚠️ Usando padrão"}`);
+  console.log(
+    `   ✅ Neon: ${process.env.DATABASE_URL ? "Conectado" : "⚠️  Não configurado"}`,
+  );
+  console.log(
+    `   ✅ JWT: ${JWT_SECRET !== "viwe-default-secret-key-change-in-production" ? "Configurado" : "⚠️ Usando padrão"}`,
+  );
   console.log(`   ✅ Frontend: Proxy automático configurado`);
   console.log(`   ✅ Auth: Login/Register/Logout funcionais`);
   console.log(`   ✅ Routes: CRUD básico implementado`);

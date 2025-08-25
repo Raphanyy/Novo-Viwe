@@ -10,7 +10,7 @@ const NavigationPage: React.FC<NavigationPageProps> = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<any>(null);
@@ -56,15 +56,15 @@ const NavigationPage: React.FC<NavigationPageProps> = () => {
           name: "Banco do Brasil",
           address: "Praça da Sé, 111 - Centro, São Paulo - SP",
           latitude: -23.5505,
-          longitude: -46.6440,
+          longitude: -46.644,
           isCompleted: false,
         },
         {
           id: "stop_3",
           name: "Farmácia São Paulo",
           address: "R. Augusta, 850 - Consolação, São Paulo - SP",
-          latitude: -23.5500,
-          longitude: -46.6350,
+          latitude: -23.55,
+          longitude: -46.635,
           isCompleted: false,
         },
         {
@@ -122,13 +122,17 @@ const NavigationPage: React.FC<NavigationPageProps> = () => {
     }
   };
 
-  const handleCompleteStop = (stopId: string, timeSpent: number, notes?: string) => {
+  const handleCompleteStop = (
+    stopId: string,
+    timeSpent: number,
+    notes?: string,
+  ) => {
     setStops((prevStops) =>
       prevStops.map((stop) =>
         stop.id === stopId
           ? { ...stop, isCompleted: true, timeSpent, notes }
-          : stop
-      )
+          : stop,
+      ),
     );
 
     // Avançar para próxima parada

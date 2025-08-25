@@ -15,7 +15,7 @@ interface State {
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -24,10 +24,10 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
-    
+
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Log error to monitoring service in production
@@ -66,7 +66,7 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto">
               <AlertTriangle className="w-8 h-8 text-destructive" />
             </div>
-            
+
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-foreground">
                 Oops! Algo deu errado
@@ -102,7 +102,7 @@ class ErrorBoundary extends Component<Props, State> {
                 <RefreshCw className="w-4 h-4" />
                 <span>Tentar Novamente</span>
               </Button>
-              
+
               <Button
                 onClick={this.handleReload}
                 className="flex items-center space-x-2"
@@ -130,7 +130,7 @@ export default ErrorBoundary;
 export const useErrorHandler = () => {
   const handleError = (error: Error, context?: string) => {
     console.error(`Error in ${context || "unknown context"}:`, error);
-    
+
     // In production, send to error tracking
     if (process.env.NODE_ENV === "production") {
       // TODO: Send to error tracking service

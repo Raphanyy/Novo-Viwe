@@ -78,7 +78,7 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
   // Timer para elapsed time
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (session.status === "active") {
       interval = setInterval(() => {
         setElapsedTime((prev) => prev + 1);
@@ -108,7 +108,7 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 60000,
-        }
+        },
       );
     }
 
@@ -147,12 +147,15 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
                 {session.routeName}
               </h2>
               <p className="text-sm text-muted-foreground">
-                {session.status === "active" ? "Navegando..." : 
-                 session.status === "paused" ? "Pausado" : "Concluído"}
+                {session.status === "active"
+                  ? "Navegando..."
+                  : session.status === "paused"
+                    ? "Pausado"
+                    : "Concluído"}
               </p>
             </div>
           </div>
-          
+
           {/* Controles */}
           <div className="flex space-x-2">
             {session.status === "active" ? (
@@ -164,7 +167,7 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
                 <Play className="h-4 w-4" />
               </Button>
             ) : null}
-            
+
             <Button variant="destructive" size="sm" onClick={onStop}>
               <Square className="h-4 w-4" />
             </Button>
@@ -262,7 +265,7 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
                       <span className="text-sm font-medium">{index + 1}</span>
                     )}
                   </div>
-                  
+
                   <div className="flex-1">
                     <h4 className="font-medium text-foreground">{stop.name}</h4>
                     <p className="text-sm text-muted-foreground">
@@ -279,7 +282,9 @@ const NavigationInterface: React.FC<NavigationInterfaceProps> = ({
                 {index === session.currentStopIndex && !stop.isCompleted && (
                   <Button
                     size="sm"
-                    onClick={() => onCompleteStop(stop.id, 300, "Parada concluída")} // 5 minutes default
+                    onClick={() =>
+                      onCompleteStop(stop.id, 300, "Parada concluída")
+                    } // 5 minutes default
                     className="ml-3"
                   >
                     Concluir

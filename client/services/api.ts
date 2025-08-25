@@ -267,7 +267,8 @@ export const useLoading = () => {
       setRetryCount(0); // Reset retry count on success
       return result;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro desconhecido";
       setError(errorMessage);
 
       // Log error for debugging
