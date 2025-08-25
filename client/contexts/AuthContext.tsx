@@ -171,6 +171,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
+      console.log("🔑 Tentando fazer login com:", credentials.email);
 
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
@@ -181,21 +182,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       const data = await response.json();
+      console.log("📥 Resposta do servidor:", data);
 
       if (response.ok) {
         // Salvar tokens
         saveTokens(data.tokens);
+        console.log("💾 Tokens salvos no localStorage");
 
         // Salvar usuário
+        console.log("👤 Dados do usuário recebidos:", data.user);
         setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
 
         return { success: true };
       } else {
+        console.error("❌ Erro no login:", data.error);
         return { success: false, error: data.error || "Erro no login" };
       }
     } catch (error) {
-      console.error("Erro no login:", error);
+      console.error("❌ Erro no login:", error);
       return { success: false, error: "Erro de conexão" };
     } finally {
       setIsLoading(false);
