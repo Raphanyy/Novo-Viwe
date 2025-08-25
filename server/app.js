@@ -78,14 +78,14 @@ const server = http.createServer(async (req, res) => {
   try {
     // Servir aplicação React na rota raiz
     if (pathname === "/" && req.method === "GET") {
-      const indexPath = path.join(__dirname, '../index.html');
+      const indexPath = path.join(__dirname, '../dist/client/index.html');
       serveStatic(req, res, indexPath);
       return;
     }
 
     // Servir arquivos estáticos
     if (pathname.startsWith('/assets/') || pathname.endsWith('.js') || pathname.endsWith('.css') || pathname.endsWith('.svg') || pathname.endsWith('.png') || pathname.endsWith('.ico')) {
-      const staticPath = path.join(__dirname, '..', pathname);
+      const staticPath = path.join(__dirname, '../dist/client', pathname);
       serveStatic(req, res, staticPath);
       return;
     }
@@ -112,7 +112,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // Teste de conexão Neon
+    // Teste de conex��o Neon
     if (pathname === "/api/test-neon") {
       const connectionOk = await testConnection();
       res.writeHead(connectionOk ? 200 : 500);
