@@ -64,12 +64,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       });
 
       // Salva no backend
-      const response = await fetch('/api/user', {
-        method: 'PATCH',
+      const response = await fetch("/api/user", {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {

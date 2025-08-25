@@ -1,4 +1,5 @@
 # 📋 TarefasMVP - Plataforma Viwe
+
 ## Análise Completa e Roadmap para MVP Funcional
 
 ---
@@ -12,9 +13,11 @@
 ---
 
 ## 🎯 **TAREFAS CRÍTICAS** (Semana 1)
-*Sem essas tarefas, o MVP não funciona*
+
+_Sem essas tarefas, o MVP não funciona_
 
 ### 🗄️ **1. DATABASE & SCHEMA**
+
 - [ ] **1.1** Criar migrations SQL completas para todas as 19 tabelas
   - users, user_preferences, auth_sessions
   - routes, route_stops, route_sets
@@ -33,6 +36,7 @@
 **Tempo estimado:** 12-16 horas
 
 ### 🔌 **2. CONECTAR FRONTEND ↔ BACKEND**
+
 - [ ] **2.1** Substituir dados mock por chamadas API reais
   - RoutesPage: usar GET /api/routes
   - RouteConfigurationModal: usar POST /api/routes
@@ -47,10 +51,11 @@
 **Tempo estimado:** 16-20 horas
 
 ### 🗺️ **3. MAPBOX CONFIGURAÇÃO COMPLETA**
+
 - [ ] **3.1** Configurar token Mapbox em produção
 - [ ] **3.2** Validar todas as APIs Mapbox funcionando
   - Geocoding ✅
-  - Directions ✅ 
+  - Directions ✅
   - Optimization ⚠️ (completar cálculos)
   - Matrix ✅
   - Isochrone ✅
@@ -60,6 +65,7 @@
 **Tempo estimado:** 8-12 horas
 
 ### 🔐 **4. AUTENTICAÇÃO ROBUSTA**
+
 - [ ] **4.1** Implementar middleware requireEmailVerified
 - [ ] **4.2** Sistema de refresh tokens automático
 - [ ] **4.3** Logout em todas as sessões
@@ -71,9 +77,11 @@
 ---
 
 ## ⚡ **TAREFAS ESSENCIAIS** (Semana 2)
-*Core features que definem o produto*
+
+_Core features que definem o produto_
 
 ### 🧭 **5. NAVEGAÇÃO EM TEMPO REAL**
+
 - [ ] **5.1** Implementar WebSocket para updates em tempo real
 - [ ] **5.2** Sistema de tracking de localização GPS
 - [ ] **5.3** Cálculo de ETA dinâmico
@@ -83,6 +91,7 @@
 **Tempo estimado:** 20-24 horas
 
 ### 🗺️ **6. INTERFACE DE NAVEGAÇÃO**
+
 - [ ] **6.1** UI turn-by-turn com instruções visuais
 - [ ] **6.2** Renderização de passos de navegação
 - [ ] **6.3** Indicador de progresso da rota
@@ -93,6 +102,7 @@
 **Tempo estimado:** 16-20 horas
 
 ### 🛣️ **7. SISTEMA DE ROTAS COMPLETO**
+
 - [ ] **7.1** Criar rota com múltiplas paradas
 - [ ] **7.2** Editar rota existente
 - [ ] **7.3** Duplicar e compartilhar rotas
@@ -103,6 +113,7 @@
 **Tempo estimado:** 14-18 horas
 
 ### 📍 **8. PONTOS DE INTERESSE (POIs)**
+
 - [ ] **8.1** Visualização de POIs no mapa
 - [ ] **8.2** Categorias dinâmicas
 - [ ] **8.3** POIs personalizados do usuário
@@ -115,9 +126,11 @@
 ---
 
 ## 🚀 **TAREFAS IMPORTANTES** (Semana 3)
-*Funcionalidades avançadas que agregam valor*
+
+_Funcionalidades avançadas que agregam valor_
 
 ### 💳 **9. SISTEMA DE BILLING & PLANOS**
+
 - [ ] **9.1** Implementar middleware requirePlan
 - [ ] **9.2** Limits por plano (requests/mês)
 - [ ] **9.3** Upgrade/downgrade de planos
@@ -128,6 +141,7 @@
 **Tempo estimado:** 16-20 horas
 
 ### 🔔 **10. SISTEMA DE NOTIFICAÇÕES**
+
 - [ ] **10.1** Notificações push no navegador
 - [ ] **10.2** Notificações por email
 - [ ] **10.3** Central de notificações
@@ -137,6 +151,7 @@
 **Tempo estimado:** 10-14 horas
 
 ### 📊 **11. MÉTRICAS & ANALYTICS**
+
 - [ ] **11.1** Dashboard de estatísticas pessoais
 - [ ] **11.2** Relatórios de uso
 - [ ] **11.3** Métricas de economia (tempo/combustível)
@@ -147,6 +162,7 @@
 **Tempo estimado:** 12-16 horas
 
 ### ⚡ **12. OTIMIZAÇÃO DE ROTAS**
+
 - [ ] **12.1** Algoritmo de otimização multi-critério
 - [ ] **12.2** Cálculo de economia real
 - [ ] **12.3** Sugestões de melhorias
@@ -159,9 +175,11 @@
 ---
 
 ## 💎 **TAREFAS DESEJÁVEIS** (Semana 4)
-*Polimento e produção*
+
+_Polimento e produção_
 
 ### 🧪 **13. TESTES & QUALIDADE**
+
 - [ ] **13.1** Testes unitários backend (80% coverage)
 - [ ] **13.2** Testes de integração API
 - [ ] **13.3** Testes E2E frontend
@@ -172,6 +190,7 @@
 **Tempo estimado:** 16-20 horas
 
 ### 📱 **14. RESPONSIVIDADE & MOBILE**
+
 - [ ] **14.1** Layout mobile-first otimizado
 - [ ] **14.2** Gestos touch no mapa
 - [ ] **14.3** Modo landscape para navegação
@@ -182,6 +201,7 @@
 **Tempo estimado:** 14-18 horas
 
 ### 🔧 **15. INFRAESTRUTURA & MONITORAMENTO**
+
 - [ ] **15.1** Logging estruturado
 - [ ] **15.2** Health checks avançados
 - [ ] **15.3** Monitoramento de performance
@@ -192,6 +212,7 @@
 **Tempo estimado:** 12-16 horas
 
 ### 🎨 **16. UX/UI POLIMENTO**
+
 - [ ] **16.1** Animações e transições
 - [ ] **16.2** Skeleton loading
 - [ ] **16.3** Feedback visual aprimorado
@@ -206,6 +227,7 @@
 ## 🔧 **TAREFAS TÉCNICAS ESPECÍFICAS**
 
 ### 🗃️ **DATABASE MIGRATIONS NECESSÁRIAS**
+
 ```sql
 -- Exemplo da estrutura necessária
 CREATE TABLE users (
@@ -224,6 +246,7 @@ CREATE TABLE users (
 ```
 
 ### 🔌 **ENDPOINTS A IMPLEMENTAR/CORRIGIR**
+
 ```typescript
 // Faltando implementar:
 POST   /api/routes/:id/optimize
@@ -235,14 +258,15 @@ POST   /api/routes/:id/share
 ```
 
 ### 🎯 **COMPONENTES FRONTEND PRIORITÁRIOS**
+
 ```typescript
 // Componentes críticos a criar:
-- NavigationInterface.tsx
-- TurnByTurnInstructions.tsx
-- RouteOptimizationModal.tsx
-- POIDetailsModal.tsx
-- NotificationCenter.tsx
-- BillingDashboard.tsx
+-NavigationInterface.tsx -
+  TurnByTurnInstructions.tsx -
+  RouteOptimizationModal.tsx -
+  POIDetailsModal.tsx -
+  NotificationCenter.tsx -
+  BillingDashboard.tsx;
 ```
 
 ---
@@ -250,20 +274,24 @@ POST   /api/routes/:id/share
 ## 📈 **CRONOGRAMA SUGERIDO**
 
 ### **Semana 1: Fundação** (40h)
+
 - Database & Schema (16h)
 - Frontend ↔ Backend (20h)
 - Mapbox & Auth (4h)
 
 ### **Semana 2: Core Features** (40h)
+
 - Navegação Tempo Real (24h)
 - Interface Navegação (16h)
 
 ### **Semana 3: Features Avançadas** (40h)
+
 - Sistema Rotas (18h)
 - POIs Completo (16h)
 - Billing Básico (6h)
 
 ### **Semana 4: Polimento** (40h)
+
 - Testes (20h)
 - Mobile/Responsivo (12h)
 - Infraestrutura (8h)
@@ -273,16 +301,19 @@ POST   /api/routes/:id/share
 ## ⚠️ **RISCOS & DEPENDÊNCIAS**
 
 ### **🔴 RISCOS ALTOS**
+
 - Schema do banco incompleto pode bloquear desenvolvimento
 - Token Mapbox inválido quebra funcionalidades core
 - WebSocket pode ter complexidade não prevista
 
 ### **🟡 RISCOS MÉDIOS**
+
 - Performance do banco com muitos POIs
 - Rate limits Mapbox em produção
 - Complexidade do billing com Stripe
 
 ### **🟢 RISCOS BAIXOS**
+
 - Testes podem ser feitos após MVP
 - Mobile pode ser otimizado depois
 - Monitoramento não bloqueia funcionamento
@@ -292,6 +323,7 @@ POST   /api/routes/:id/share
 ## 🎯 **CRITÉRIOS DE SUCESSO DO MVP**
 
 ### **✅ MÍNIMO VIÁVEL:**
+
 1. Usuário consegue fazer login/cadastro
 2. Usuário consegue criar uma rota com múltiplas paradas
 3. Usuário consegue iniciar navegação e receber instruções
@@ -300,6 +332,7 @@ POST   /api/routes/:id/share
 6. Sistema funciona no desktop e mobile básico
 
 ### **🏆 IDEAL:**
+
 - Todas as tarefas críticas + essenciais
 - 80% das tarefas importantes
 - Funcionalidade offline básica
@@ -324,4 +357,4 @@ POST   /api/routes/:id/share
 
 ---
 
-*Este documento deve ser revisado semanalmente e atualizado conforme o progresso. Tarefas podem ser repriorizadas baseado em feedback de usuários ou limitações técnicas descobertas durante desenvolvimento.*
+_Este documento deve ser revisado semanalmente e atualizado conforme o progresso. Tarefas podem ser repriorizadas baseado em feedback de usuários ou limitações técnicas descobertas durante desenvolvimento._
