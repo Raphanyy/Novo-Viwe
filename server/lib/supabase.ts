@@ -5,8 +5,9 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-  throw new Error('Variáveis de ambiente SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY são obrigatórias');
+// Verificação mais flexível para permitir builds sem variáveis de ambiente
+if (process.env.NODE_ENV !== 'development' && (!supabaseUrl || !supabaseServiceRoleKey)) {
+  console.warn('Variáveis de ambiente SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY não configuradas');
 }
 
 // Cliente administrativo - para uso apenas no backend
