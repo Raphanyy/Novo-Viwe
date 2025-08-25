@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "setup": "pnpm install && echo '✅ Dependências instaladas!'",
-    "dev": "concurrently \"vite\" \"node server/app.js\"",
+    "dev": "concurrently \"vite\" \"node server/src/index.js\"",
     "start": "pnpm setup && pnpm dev",
     "build": "vite build",
     "test": "vitest --run",
