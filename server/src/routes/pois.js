@@ -26,10 +26,10 @@ router.get("/", async (req, res) => {
     } = req.query;
 
     let poisQuery = `
-      SELECT 
+      SELECT
         p.id,
         p.name,
-        p.category,
+        p.type as category,
         p.description,
         p.latitude,
         p.longitude,
@@ -37,13 +37,15 @@ router.get("/", async (req, res) => {
         p.phone,
         p.website,
         p.rating,
-        p.business_hours,
+        p.hours as business_hours,
         p.metadata,
         p.is_verified,
         p.created_at,
-        CASE 
-          WHEN p.user_id = $1 THEN true 
-          ELSE false 
+        p.color,
+        p.icon,
+        CASE
+          WHEN p.user_id = $1 THEN true
+          ELSE false
         END as is_user_poi
     `;
 
