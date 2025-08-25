@@ -226,6 +226,19 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </button>
+
+      {/* Logout Button */}
+      <div className="mt-4">
+        <button
+          onClick={logout}
+          className="w-full bg-destructive/10 text-destructive rounded-xl p-4 border border-destructive/20 text-center transition-colors hover:bg-destructive/20"
+        >
+          <div className="flex items-center justify-center space-x-2">
+            <LogOut className="h-5 w-5" />
+            <span className="font-medium">Sair</span>
+          </div>
+        </button>
+      </div>
     </div>
   );
 
