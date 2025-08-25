@@ -70,13 +70,34 @@ export const SupabaseConfigCheck: React.FC<SupabaseConfigCheckProps> = ({
   return (
     <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
       <AlertTriangle className="h-4 w-4 text-green-600" />
-      <AlertDescription>
-        <strong className="text-green-800 dark:text-green-200">
-          Supabase configurado
-        </strong>
-        <p className="text-green-700 dark:text-green-300 text-sm mt-1">
-          Autenticação real ativa. Sistema pronto para uso.
-        </p>
+      <AlertDescription className="flex flex-col gap-3">
+        <div>
+          <strong className="text-green-800 dark:text-green-200">
+            🎉 Supabase Ativado com Sucesso!
+          </strong>
+          <p className="text-green-700 dark:text-green-300 text-sm mt-1">
+            Autenticação real funcionando. Você pode criar contas e fazer login normalmente.
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => window.location.href = '/auth-test'}
+            className="text-green-700 border-green-300 hover:bg-green-100"
+          >
+            Testar Autenticação
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => window.location.href = '/supabase-demo'}
+            className="text-green-700 border-green-300 hover:bg-green-100"
+          >
+            Ver Demo Completa
+          </Button>
+        </div>
       </AlertDescription>
     </Alert>
   );
