@@ -108,6 +108,12 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Supabase Demo - accessible without auth for testing */}
+      <Route
+        path="/supabase-demo"
+        element={<SupabaseDemoPage />}
+      />
+
       {/* Protected Internal Routes */}
       <Route
         path="/app"
