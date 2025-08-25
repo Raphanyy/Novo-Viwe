@@ -237,6 +237,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/pois", poisRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
