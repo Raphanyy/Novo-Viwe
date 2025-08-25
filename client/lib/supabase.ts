@@ -12,13 +12,15 @@ if (!isSupabaseConfigured) {
 }
 
 // Cliente público do Supabase para o frontend
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      }
+    })
+  : null;
 
 // Tipos para TypeScript
 export type { User, Session } from '@supabase/supabase-js';
