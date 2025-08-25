@@ -76,16 +76,16 @@ const server = http.createServer(async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   try {
-    // Servir aplicação React na rota raiz
-    if (path === "/" && req.method === "GET") {
+    // Servir aplica��ão React na rota raiz
+    if (pathname === "/" && req.method === "GET") {
       const indexPath = path.join(__dirname, '../index.html');
       serveStatic(req, res, indexPath);
       return;
     }
 
     // Servir arquivos estáticos
-    if (path.startsWith('/assets/') || path.endsWith('.js') || path.endsWith('.css') || path.endsWith('.svg') || path.endsWith('.png') || path.endsWith('.ico')) {
-      const staticPath = path.join(__dirname, '..', path);
+    if (pathname.startsWith('/assets/') || pathname.endsWith('.js') || pathname.endsWith('.css') || pathname.endsWith('.svg') || pathname.endsWith('.png') || pathname.endsWith('.ico')) {
+      const staticPath = path.join(__dirname, '..', pathname);
       serveStatic(req, res, staticPath);
       return;
     }
