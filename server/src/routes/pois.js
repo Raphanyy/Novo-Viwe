@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
       search,
       limit = 20,
       offset = 0,
-      includeUserPois = true
+      includeUserPois = true,
     } = req.query;
 
     let poisQuery = `
@@ -62,7 +62,7 @@ router.get("/", async (req, res) => {
             sin(radians($${paramIndex})) * sin(radians(p.latitude))
           )
         ) as distance`;
-      
+
       params.push(parseFloat(lat), parseFloat(lng));
       paramIndex += 2;
     }
@@ -73,9 +73,9 @@ router.get("/", async (req, res) => {
     `;
 
     // Filtro por POIs do usuário
-    if (includeUserPois === 'false') {
+    if (includeUserPois === "false") {
       poisQuery += ` AND p.user_id IS NULL`;
-    } else if (includeUserPois === 'only') {
+    } else if (includeUserPois === "only") {
       poisQuery += ` AND p.user_id = $1`;
     }
 
@@ -88,7 +88,7 @@ router.get("/", async (req, res) => {
           sin(radians($${paramIndex})) * sin(radians(p.latitude))
         )
       ) <= $${paramIndex + 2}`;
-      
+
       params.push(parseFloat(lat), parseFloat(lng), parseInt(radius));
       paramIndex += 3;
     }
@@ -124,7 +124,7 @@ router.get("/", async (req, res) => {
 
     const result = await query(poisQuery, params);
 
-    const pois = result.rows.map(poi => ({
+    const pois = result.rows.map((poi) => ({
       id: poi.id,
       name: poi.name,
       category: poi.category,
@@ -139,20 +139,20 @@ router.get("/", async (req, res) => {
       isVerified: poi.is_verified,
       isUserPoi: poi.is_user_poi,
       distance: poi.distance ? parseInt(poi.distance) : null,
-      createdAt: poi.created_at
+      createdAt: poi.created_at,
     }));
 
     res.json({
       pois,
       total: pois.length,
-      hasMore: pois.length === parseInt(limit)
+      hasMore: pois.length === parseInt(limit),
     });
-
   } catch (error) {
     console.error("Erro ao listar POIs:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -175,37 +175,47 @@ router.get("/categories", async (req, res) => {
     `;
 
     const result = await query(categoriesQuery);
-    
-    const categories = result.rows.map(cat => ({
+
+    const categories = result.rows.map((cat) => ({
       id: cat.category,
-      name: cat.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      name: cat.category
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase()),
       count: parseInt(cat.count),
-      avgRating: cat.avg_rating ? parseFloat(cat.avg_rating).toFixed(1) : null
+      avgRating: cat.avg_rating ? parseFloat(cat.avg_rating).toFixed(1) : null,
     }));
 
     // Adicionar categorias padrão se não existirem
     const defaultCategories = [
-      'restaurant', 'gas_station', 'hospital', 'shopping', 'park', 
-      'bank', 'pharmacy', 'school', 'hotel', 'tourist_attraction'
+      "restaurant",
+      "gas_station",
+      "hospital",
+      "shopping",
+      "park",
+      "bank",
+      "pharmacy",
+      "school",
+      "hotel",
+      "tourist_attraction",
     ];
 
-    const existingCategories = categories.map(c => c.id);
+    const existingCategories = categories.map((c) => c.id);
     const missingCategories = defaultCategories
-      .filter(cat => !existingCategories.includes(cat))
-      .map(cat => ({
+      .filter((cat) => !existingCategories.includes(cat))
+      .map((cat) => ({
         id: cat,
-        name: cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        name: cat.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
         count: 0,
-        avgRating: null
+        avgRating: null,
       }));
 
     res.json([...categories, ...missingCategories]);
-
   } catch (error) {
     console.error("Erro ao listar categorias:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -256,14 +266,14 @@ router.get("/:id", async (req, res) => {
       isUserPoi: poi.is_user_poi,
       usageCount: parseInt(poi.usage_count) || 0,
       createdAt: poi.created_at,
-      updatedAt: poi.updated_at
+      updatedAt: poi.updated_at,
     });
-
   } catch (error) {
     console.error("Erro ao buscar POI:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -285,19 +295,24 @@ router.post("/", async (req, res) => {
       phone,
       website,
       businessHours,
-      metadata = {}
+      metadata = {},
     } = req.body;
 
     // Validações básicas
     if (!name || !latitude || !longitude) {
-      return res.status(400).json({ 
-        error: "Nome, latitude e longitude são obrigatórios" 
+      return res.status(400).json({
+        error: "Nome, latitude e longitude são obrigatórios",
       });
     }
 
-    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      return res.status(400).json({ 
-        error: "Coordenadas inválidas" 
+    if (
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      return res.status(400).json({
+        error: "Coordenadas inválidas",
       });
     }
 
@@ -315,10 +330,10 @@ router.post("/", async (req, res) => {
     `;
 
     const duplicateResult = await query(duplicateQuery, [latitude, longitude]);
-    
+
     if (duplicateResult.rows.length > 0) {
-      return res.status(409).json({ 
-        error: "Já existe um POI muito próximo a esta localização" 
+      return res.status(409).json({
+        error: "Já existe um POI muito próximo a esta localização",
       });
     }
 
@@ -332,8 +347,17 @@ router.post("/", async (req, res) => {
     `;
 
     const values = [
-      userId, name, category, description, parseFloat(latitude), parseFloat(longitude),
-      address, phone, website, businessHours, JSON.stringify(metadata)
+      userId,
+      name,
+      category,
+      description,
+      parseFloat(latitude),
+      parseFloat(longitude),
+      address,
+      phone,
+      website,
+      businessHours,
+      JSON.stringify(metadata),
     ];
 
     const result = await query(insertQuery, values);
@@ -352,14 +376,14 @@ router.post("/", async (req, res) => {
       metadata: newPoi.metadata,
       isVerified: newPoi.is_verified,
       isUserPoi: true,
-      createdAt: newPoi.created_at
+      createdAt: newPoi.created_at,
     });
-
   } catch (error) {
     console.error("Erro ao criar POI:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -383,37 +407,47 @@ router.patch("/:id", async (req, res) => {
     const checkResult = await query(checkQuery, [id, userId]);
 
     if (checkResult.rows.length === 0) {
-      return res.status(404).json({ 
-        error: "POI não encontrado ou não pertence ao usuário" 
+      return res.status(404).json({
+        error: "POI não encontrado ou não pertence ao usuário",
       });
     }
 
     // Campos permitidos para atualização
     const allowedFields = [
-      'name', 'type', 'description', 'latitude', 'longitude',
-      'address', 'phone', 'website', 'hours', 'metadata'
+      "name",
+      "type",
+      "description",
+      "latitude",
+      "longitude",
+      "address",
+      "phone",
+      "website",
+      "hours",
+      "metadata",
     ];
 
     const updateFields = [];
     const values = [];
     let paramIndex = 1;
 
-    Object.keys(updates).forEach(field => {
+    Object.keys(updates).forEach((field) => {
       if (allowedFields.includes(field) && updates[field] !== undefined) {
         updateFields.push(`${field} = $${paramIndex}`);
-        
-        if (field === 'metadata') {
+
+        if (field === "metadata") {
           values.push(JSON.stringify(updates[field]));
         } else {
           values.push(updates[field]);
         }
-        
+
         paramIndex++;
       }
     });
 
     if (updateFields.length === 0) {
-      return res.status(400).json({ error: "Nenhum campo válido para atualizar" });
+      return res
+        .status(400)
+        .json({ error: "Nenhum campo válido para atualizar" });
     }
 
     updateFields.push(`updated_at = NOW()`);
@@ -421,7 +455,7 @@ router.patch("/:id", async (req, res) => {
 
     const updateQuery = `
       UPDATE pois 
-      SET ${updateFields.join(', ')}
+      SET ${updateFields.join(", ")}
       WHERE id = $${paramIndex} AND user_id = $${paramIndex + 1}
       RETURNING *
     `;
@@ -434,7 +468,10 @@ router.patch("/:id", async (req, res) => {
       name: updatedPoi.name,
       category: updatedPoi.category,
       description: updatedPoi.description,
-      coordinates: [parseFloat(updatedPoi.longitude), parseFloat(updatedPoi.latitude)],
+      coordinates: [
+        parseFloat(updatedPoi.longitude),
+        parseFloat(updatedPoi.latitude),
+      ],
       address: updatedPoi.address,
       phone: updatedPoi.phone,
       website: updatedPoi.website,
@@ -442,14 +479,14 @@ router.patch("/:id", async (req, res) => {
       metadata: updatedPoi.metadata,
       isVerified: updatedPoi.is_verified,
       isUserPoi: true,
-      updatedAt: updatedPoi.updated_at
+      updatedAt: updatedPoi.updated_at,
     });
-
   } catch (error) {
     console.error("Erro ao atualizar POI:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -472,8 +509,8 @@ router.delete("/:id", async (req, res) => {
     const checkResult = await query(checkQuery, [id, userId]);
 
     if (checkResult.rows.length === 0) {
-      return res.status(404).json({ 
-        error: "POI não encontrado ou não pertence ao usuário" 
+      return res.status(404).json({
+        error: "POI não encontrado ou não pertence ao usuário",
       });
     }
 
@@ -487,12 +524,12 @@ router.delete("/:id", async (req, res) => {
     await query(deleteQuery, [id, userId]);
 
     res.json({ message: "POI excluído com sucesso" });
-
   } catch (error) {
     console.error("Erro ao excluir POI:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -507,7 +544,9 @@ router.get("/nearby/:lat/:lng", async (req, res) => {
     const { radius = 1000, category, limit = 10 } = req.query;
 
     if (!lat || !lng) {
-      return res.status(400).json({ error: "Latitude e longitude são obrigatórias" });
+      return res
+        .status(400)
+        .json({ error: "Latitude e longitude são obrigatórias" });
     }
 
     let nearbyQuery = `
@@ -553,7 +592,7 @@ router.get("/nearby/:lat/:lng", async (req, res) => {
 
     const result = await query(nearbyQuery, params);
 
-    const nearbyPois = result.rows.map(poi => ({
+    const nearbyPois = result.rows.map((poi) => ({
       id: poi.id,
       name: poi.name,
       category: poi.category,
@@ -562,16 +601,16 @@ router.get("/nearby/:lat/:lng", async (req, res) => {
       address: poi.address,
       rating: poi.rating,
       isVerified: poi.is_verified,
-      distance: parseInt(poi.distance)
+      distance: parseInt(poi.distance),
     }));
 
     res.json(nearbyPois);
-
   } catch (error) {
     console.error("Erro ao buscar POIs próximos:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });

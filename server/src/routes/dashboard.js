@@ -85,13 +85,19 @@ router.get("/stats", async (req, res) => {
         AND deleted_at IS NULL
         AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
     `;
-    
+
     const lastMonthResult = await query(lastMonthQuery, [userId]);
     const lastMonthRoutes = lastMonthResult.rows[0]?.routes_last_month || 0;
-    
-    const routeChange = lastMonthRoutes > 0 
-      ? Math.round(((stats.routes_this_month - lastMonthRoutes) / lastMonthRoutes) * 100)
-      : stats.routes_this_month > 0 ? 100 : 0;
+
+    const routeChange =
+      lastMonthRoutes > 0
+        ? Math.round(
+            ((stats.routes_this_month - lastMonthRoutes) / lastMonthRoutes) *
+              100,
+          )
+        : stats.routes_this_month > 0
+          ? 100
+          : 0;
 
     // Formatar resposta
     const response = {
@@ -99,37 +105,46 @@ router.get("/stats", async (req, res) => {
         total: parseInt(stats.total_routes) || 0,
         thisMonth: parseInt(stats.routes_this_month) || 0,
         completed: parseInt(stats.completed_routes) || 0,
-        change: `${routeChange >= 0 ? '+' : ''}${routeChange}%`
+        change: `${routeChange >= 0 ? "+" : ""}${routeChange}%`,
       },
       timeSaved: {
         totalMinutes: parseFloat(stats.time_saved_minutes) || 0,
-        totalHours: Math.round((parseFloat(stats.time_saved_minutes) || 0) / 60 * 10) / 10,
+        totalHours:
+          Math.round(((parseFloat(stats.time_saved_minutes) || 0) / 60) * 10) /
+          10,
         change: "+18%", // Simulated - could be calculated from previous months
-        formatted: `${Math.round((parseFloat(stats.time_saved_minutes) || 0) / 60 * 10) / 10}h`
+        formatted: `${Math.round(((parseFloat(stats.time_saved_minutes) || 0) / 60) * 10) / 10}h`,
       },
       distance: {
         totalMeters: parseInt(stats.total_distance_meters) || 0,
-        totalKm: Math.round((parseInt(stats.total_distance_meters) || 0) / 1000 * 10) / 10,
+        totalKm:
+          Math.round(
+            ((parseInt(stats.total_distance_meters) || 0) / 1000) * 10,
+          ) / 10,
         change: "+8%", // Simulated
-        formatted: `${Math.round((parseInt(stats.total_distance_meters) || 0) / 1000)}km`
+        formatted: `${Math.round((parseInt(stats.total_distance_meters) || 0) / 1000)}km`,
       },
       efficiency: {
         average: Math.round(parseFloat(stats.avg_efficiency) || 89),
         change: "+5%", // Simulated
-        formatted: `${Math.round(parseFloat(stats.avg_efficiency) || 89)}%`
+        formatted: `${Math.round(parseFloat(stats.avg_efficiency) || 89)}%`,
       },
       usage: {
         routes: {
           current: parseInt(stats.routes_this_month) || 0,
           limit: parseInt(stats.max_routes_monthly) || 100,
-          percentage: Math.round(((parseInt(stats.routes_this_month) || 0) / (parseInt(stats.max_routes_monthly) || 100)) * 100)
+          percentage: Math.round(
+            ((parseInt(stats.routes_this_month) || 0) /
+              (parseInt(stats.max_routes_monthly) || 100)) *
+              100,
+          ),
         },
         clients: {
           current: 0, // Will be calculated separately
           limit: parseInt(stats.max_clients) || 500,
-          percentage: 0
-        }
-      }
+          percentage: 0,
+        },
+      },
     };
 
     // Buscar contagem de clientes
@@ -138,19 +153,22 @@ router.get("/stats", async (req, res) => {
       FROM clients
       WHERE user_id = $1 AND deleted_at IS NULL
     `;
-    
+
     const clientsResult = await query(clientsQuery, [userId]);
     const clientCount = parseInt(clientsResult.rows[0]?.client_count) || 0;
-    
+
     response.usage.clients.current = clientCount;
-    response.usage.clients.percentage = Math.round((clientCount / response.usage.clients.limit) * 100);
+    response.usage.clients.percentage = Math.round(
+      (clientCount / response.usage.clients.limit) * 100,
+    );
 
     res.json(response);
   } catch (error) {
     console.error("Erro ao buscar estatísticas:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -187,31 +205,34 @@ router.get("/recent-routes", async (req, res) => {
     `;
 
     const result = await query(routesQuery, [userId, parseInt(limit)]);
-    
-    const routes = result.rows.map(route => ({
+
+    const routes = result.rows.map((route) => ({
       id: route.id,
       name: route.name,
       status: route.status,
       stopCount: parseInt(route.stop_count) || 0,
-      duration: route.actual_duration 
+      duration: route.actual_duration
         ? `${Math.round(route.actual_duration / 60)} min`
         : route.estimated_duration || "N/A",
-      distance: route.actual_distance 
-        ? `${Math.round(route.actual_distance / 1000 * 10) / 10} km`
-        : route.estimated_distance ? `${Math.round(route.estimated_distance / 1000 * 10) / 10} km` : "N/A",
-      savings: route.time_savings 
+      distance: route.actual_distance
+        ? `${Math.round((route.actual_distance / 1000) * 10) / 10} km`
+        : route.estimated_distance
+          ? `${Math.round((route.estimated_distance / 1000) * 10) / 10} km`
+          : "N/A",
+      savings: route.time_savings
         ? `${Math.round(route.time_savings / 60)} min`
         : null,
       time: route.updated_at,
-      createdAt: route.created_at
+      createdAt: route.created_at,
     }));
 
     res.json(routes);
   } catch (error) {
     console.error("Erro ao buscar rotas recentes:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -266,46 +287,63 @@ router.get("/consumption", async (req, res) => {
         label: "Rotas Permanentes",
         current: parseInt(data.routes_this_month) || 0,
         limit: parseInt(data.max_routes_monthly) || 100,
-        percentage: Math.round(((parseInt(data.routes_this_month) || 0) / (parseInt(data.max_routes_monthly) || 100)) * 100),
+        percentage: Math.round(
+          ((parseInt(data.routes_this_month) || 0) /
+            (parseInt(data.max_routes_monthly) || 100)) *
+            100,
+        ),
         icon: "Route",
         color: "text-blue-600",
-        description: `${data.routes_this_month || 0} de ${data.max_routes_monthly || 100} rotas utilizadas`
+        description: `${data.routes_this_month || 0} de ${data.max_routes_monthly || 100} rotas utilizadas`,
       },
       {
         label: "Rotas Imediatas",
         current: parseInt(data.immediate_routes_this_month) || 0,
         limit: parseInt(data.max_immediate_routes) || 50,
-        percentage: Math.round(((parseInt(data.immediate_routes_this_month) || 0) / (parseInt(data.max_immediate_routes) || 50)) * 100),
+        percentage: Math.round(
+          ((parseInt(data.immediate_routes_this_month) || 0) /
+            (parseInt(data.max_immediate_routes) || 50)) *
+            100,
+        ),
         icon: "Zap",
         color: "text-yellow-600",
-        description: `${data.immediate_routes_this_month || 0} de ${data.max_immediate_routes || 50} rotas utilizadas`
+        description: `${data.immediate_routes_this_month || 0} de ${data.max_immediate_routes || 50} rotas utilizadas`,
       },
       {
         label: "Conjuntos criados",
         current: parseInt(data.total_sets) || 0,
         limit: parseInt(data.max_route_sets) || 20,
-        percentage: Math.round(((parseInt(data.total_sets) || 0) / (parseInt(data.max_route_sets) || 20)) * 100),
+        percentage: Math.round(
+          ((parseInt(data.total_sets) || 0) /
+            (parseInt(data.max_route_sets) || 20)) *
+            100,
+        ),
         icon: "FolderOpen",
         color: "text-purple-600",
-        description: `${data.total_sets || 0} de ${data.max_route_sets || 20} conjuntos criados`
+        description: `${data.total_sets || 0} de ${data.max_route_sets || 20} conjuntos criados`,
       },
       {
         label: "Clientes Adicionados",
         current: parseInt(data.total_clients) || 0,
         limit: parseInt(data.max_clients) || 500,
-        percentage: Math.round(((parseInt(data.total_clients) || 0) / (parseInt(data.max_clients) || 500)) * 100),
+        percentage: Math.round(
+          ((parseInt(data.total_clients) || 0) /
+            (parseInt(data.max_clients) || 500)) *
+            100,
+        ),
         icon: "Users",
         color: "text-green-600",
-        description: `${data.total_clients || 0} de ${data.max_clients || 500} clientes`
-      }
+        description: `${data.total_clients || 0} de ${data.max_clients || 500} clientes`,
+      },
     ];
 
     res.json(consumption);
   } catch (error) {
     console.error("Erro ao buscar dados de consumo:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -365,22 +403,23 @@ router.get("/activity", async (req, res) => {
     `;
 
     const result = await query(activityQuery, [userId, parseInt(limit)]);
-    
-    const activities = result.rows.map(activity => ({
+
+    const activities = result.rows.map((activity) => ({
       id: `${activity.type}_${activity.timestamp}`,
       type: activity.type,
       title: activity.title,
       description: activity.description,
       timestamp: activity.timestamp,
-      metadata: activity.metadata
+      metadata: activity.metadata,
     }));
 
     res.json(activities);
   } catch (error) {
     console.error("Erro ao buscar atividades:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
@@ -435,54 +474,60 @@ router.get("/insights", async (req, res) => {
 
     if (data && data.peak_hour !== null) {
       const hour = parseInt(data.peak_hour);
-      const timeOfDay = hour < 12 ? 'manhã' : hour < 18 ? 'tarde' : 'noite';
-      
+      const timeOfDay = hour < 12 ? "manhã" : hour < 18 ? "tarde" : "noite";
+
       insights.push({
-        type: 'tip',
-        title: 'Dica do Dia',
+        type: "tip",
+        title: "Dica do Dia",
         message: `Você costuma viajar mais na ${timeOfDay} (${hour}h). Considere rotas alternativas para evitar trânsito intenso.`,
-        icon: 'Clock',
-        priority: 'medium'
+        icon: "Clock",
+        priority: "medium",
       });
     }
 
-    if (data && data.recent_efficiency !== null && data.recent_efficiency < 70) {
+    if (
+      data &&
+      data.recent_efficiency !== null &&
+      data.recent_efficiency < 70
+    ) {
       insights.push({
-        type: 'warning',
-        title: 'Eficiência em baixa',
+        type: "warning",
+        title: "Eficiência em baixa",
         message: `Sua eficiência média caiu para ${Math.round(data.recent_efficiency)}%. Que tal otimizar suas rotas?`,
-        icon: 'TrendingDown',
-        priority: 'high'
+        icon: "TrendingDown",
+        priority: "high",
       });
     }
 
     if (data && data.recent_route_count > 10) {
       insights.push({
-        type: 'achievement',
-        title: 'Excelente atividade!',
+        type: "achievement",
+        title: "Excelente atividade!",
         message: `Você completou ${data.recent_route_count} rotas esta semana. Continue assim!`,
-        icon: 'Trophy',
-        priority: 'low'
+        icon: "Trophy",
+        priority: "low",
       });
     }
 
     // Insight padrão se não houver dados suficientes
     if (insights.length === 0) {
       insights.push({
-        type: 'tip',
-        title: 'Dica do Dia',
-        message: 'Evite a Rua das Palmeiras entre 17h-19h. Trânsito intenso pode aumentar seu tempo de viagem em até 15 minutos.',
-        icon: 'Zap',
-        priority: 'medium'
+        type: "tip",
+        title: "Dica do Dia",
+        message:
+          "Evite a Rua das Palmeiras entre 17h-19h. Trânsito intenso pode aumentar seu tempo de viagem em até 15 minutos.",
+        icon: "Zap",
+        priority: "medium",
       });
     }
 
     res.json(insights);
   } catch (error) {
     console.error("Erro ao buscar insights:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Erro interno do servidor",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });

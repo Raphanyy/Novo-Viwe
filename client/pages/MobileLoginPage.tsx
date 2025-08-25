@@ -9,7 +9,10 @@ const MobileLoginPage: React.FC = () => {
   const handleGoogleLogin = async () => {
     // Simulação de login com Google
     try {
-      const result = await login({ email: "google@example.com", password: "password" });
+      const result = await login({
+        email: "google@example.com",
+        password: "password",
+      });
       if (result.success) {
         navigate("/app");
       }
@@ -21,7 +24,10 @@ const MobileLoginPage: React.FC = () => {
   const handleAppleLogin = async () => {
     // Simulação de login com Apple
     try {
-      const result = await login({ email: "apple@example.com", password: "password" });
+      const result = await login({
+        email: "apple@example.com",
+        password: "password",
+      });
       if (result.success) {
         navigate("/app");
       }
