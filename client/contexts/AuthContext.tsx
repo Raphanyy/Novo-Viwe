@@ -14,6 +14,9 @@ interface User {
   avatarUrl?: string;
   isEmailVerified: boolean;
   planType: "basic" | "premium" | "interactive";
+  company?: string;
+  country?: string;
+  city?: string;
 }
 
 interface LoginCredentials {
