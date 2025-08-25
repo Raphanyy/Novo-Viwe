@@ -14,6 +14,9 @@ interface User {
   avatarUrl?: string;
   isEmailVerified: boolean;
   planType: "basic" | "premium" | "interactive";
+  company?: string;
+  country?: string;
+  city?: string;
 }
 
 interface LoginCredentials {
@@ -47,6 +50,7 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 // Context
@@ -171,6 +175,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
+      console.log("🔑 Tentando fazer login com:", credentials.email);
 
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
@@ -181,21 +186,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       const data = await response.json();
+      console.log("📥 Resposta do servidor:", data);
 
       if (response.ok) {
         // Salvar tokens
         saveTokens(data.tokens);
+        console.log("💾 Tokens salvos no localStorage");
 
         // Salvar usuário
+        console.log("👤 Dados do usuário recebidos:", data.user);
         setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
 
         return { success: true };
       } else {
+        console.error("❌ Erro no login:", data.error);
         return { success: false, error: data.error || "Erro no login" };
       }
     } catch (error) {
-      console.error("Erro no login:", error);
+      console.error("❌ Erro no login:", error);
       return { success: false, error: "Erro de conexão" };
     } finally {
       setIsLoading(false);
@@ -262,6 +271,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return refreshTokenInternal();
   };
 
+  // Atualizar dados do usuário
+  const updateUser = (updates: Partial<User>) => {
+    if (!user) return;
+
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+    console.log("👤 Usuário atualizado:", updatedUser);
+  };
+
   // Verificar usuário atual
   const checkCurrentUser = async () => {
     try {
@@ -271,13 +290,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
-      const response = await apiRequest("/auth/me");
+      const response = await fetch(`${API_BASE}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Dados reais do usuário carregados:", data.user);
         setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
       } else {
+        console.log("❌ Falha ao carregar dados do usuário, fazendo logout");
         clearAuth();
       }
     } catch (error) {
@@ -331,6 +357,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     register,
     logout,
     refreshToken,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

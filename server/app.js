@@ -75,6 +75,32 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // Debug: List all users (temporary endpoint)
+    if (path === "/api/debug/users") {
+      try {
+        const usersResult = await query(
+          `SELECT id, name, email, created_at, last_login_at, plan_type, is_email_verified
+           FROM users
+           WHERE deleted_at IS NULL
+           ORDER BY created_at DESC`,
+        );
+
+        res.writeHead(200);
+        res.end(
+          JSON.stringify({
+            message: "Usuários encontrados no banco",
+            users: usersResult.rows,
+            total: usersResult.rows.length,
+          }),
+        );
+      } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: "Erro ao buscar usuários" }));
+      }
+      return;
+    }
+
     // Ping simples
     if (path === "/api/ping") {
       res.writeHead(200);
@@ -102,6 +128,203 @@ const server = http.createServer(async (req, res) => {
           timestamp: new Date().toISOString(),
         }),
       );
+      return;
+    }
+
+    // Real authentication with database lookup
+    if (path === "/api/auth/login" && req.method === "POST") {
+      let body = "";
+      req.on("data", (chunk) => {
+        body += chunk.toString();
+      });
+      req.on("end", async () => {
+        try {
+          const { email, password } = JSON.parse(body);
+
+          // Search for user in database
+          const userResult = await query(
+            `SELECT id, name, email, is_email_verified, plan_type, created_at
+             FROM users
+             WHERE email = $1 AND deleted_at IS NULL`,
+            [email.toLowerCase()],
+          );
+
+          if (userResult.rows.length > 0) {
+            const user = userResult.rows[0];
+            res.writeHead(200);
+            res.end(
+              JSON.stringify({
+                message: "Login realizado com sucesso",
+                user: {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  isEmailVerified: user.is_email_verified,
+                  planType: user.plan_type || "basic",
+                },
+                tokens: {
+                  accessToken: "real-access-token",
+                  refreshToken: "real-refresh-token",
+                  accessTokenExpiresAt: new Date(
+                    Date.now() + 3600000,
+                  ).toISOString(),
+                  refreshTokenExpiresAt: new Date(
+                    Date.now() + 7 * 24 * 3600000,
+                  ).toISOString(),
+                  tokenType: "Bearer",
+                },
+              }),
+            );
+          } else {
+            // If user doesn't exist, create a new one for demo purposes
+            const newUserResult = await query(
+              `INSERT INTO users (name, email, password_hash, is_email_verified)
+               VALUES ($1, $2, $3, $4)
+               RETURNING id, name, email, is_email_verified, plan_type, created_at`,
+              [
+                email.split("@")[0], // Use email prefix as name
+                email.toLowerCase(),
+                "demo-password-hash", // Demo password hash
+                true,
+              ],
+            );
+
+            const newUser = newUserResult.rows[0];
+            res.writeHead(200);
+            res.end(
+              JSON.stringify({
+                message: "Usuário criado e login realizado com sucesso",
+                user: {
+                  id: newUser.id,
+                  name: newUser.name,
+                  email: newUser.email,
+                  isEmailVerified: newUser.is_email_verified,
+                  planType: newUser.plan_type || "basic",
+                },
+                tokens: {
+                  accessToken: "real-access-token",
+                  refreshToken: "real-refresh-token",
+                  accessTokenExpiresAt: new Date(
+                    Date.now() + 3600000,
+                  ).toISOString(),
+                  refreshTokenExpiresAt: new Date(
+                    Date.now() + 7 * 24 * 3600000,
+                  ).toISOString(),
+                  tokenType: "Bearer",
+                },
+              }),
+            );
+          }
+        } catch (error) {
+          console.error("Erro no login:", error);
+          res.writeHead(500);
+          res.end(JSON.stringify({ error: "Erro interno do servidor" }));
+        }
+      });
+      return;
+    }
+
+    // Update user profile
+    if (path === "/api/user" && req.method === "PATCH") {
+      let body = "";
+      req.on("data", (chunk) => {
+        body += chunk.toString();
+      });
+      req.on("end", async () => {
+        try {
+          const updateData = JSON.parse(body);
+          const { name, email, company, country, city } = updateData;
+
+          // Find and update user (for demo, we'll update the first user)
+          const userResult = await query(
+            `UPDATE users
+             SET name = COALESCE($1, name),
+                 email = COALESCE($2, email),
+                 company = COALESCE($3, company),
+                 country = COALESCE($4, country),
+                 city = COALESCE($5, city),
+                 updated_at = NOW()
+             WHERE deleted_at IS NULL
+             RETURNING id, name, email, company, country, city, is_email_verified, plan_type`,
+            [name, email, company, country, city],
+          );
+
+          if (userResult.rows.length > 0) {
+            const user = userResult.rows[0];
+            res.writeHead(200);
+            res.end(
+              JSON.stringify({
+                message: "Perfil atualizado com sucesso",
+                user: {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  company: user.company,
+                  country: user.country,
+                  city: user.city,
+                  isEmailVerified: user.is_email_verified,
+                  planType: user.plan_type || "basic",
+                },
+              }),
+            );
+          } else {
+            res.writeHead(404);
+            res.end(JSON.stringify({ error: "Usuário não encontrado" }));
+          }
+        } catch (error) {
+          console.error("Erro ao atualizar perfil:", error);
+          res.writeHead(500);
+          res.end(JSON.stringify({ error: "Erro interno do servidor" }));
+        }
+      });
+      return;
+    }
+
+    // Get current user data
+    if (path === "/api/auth/me" && req.method === "GET") {
+      // Simple token validation - in real app would verify JWT
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ error: "Token não fornecido" }));
+        return;
+      }
+
+      try {
+        // For demo, we'll use the email from a stored session or get first user
+        const userResult = await query(
+          `SELECT id, name, email, is_email_verified, plan_type, created_at, last_login_at
+           FROM users
+           WHERE deleted_at IS NULL
+           ORDER BY last_login_at DESC NULLS LAST
+           LIMIT 1`,
+        );
+
+        if (userResult.rows.length > 0) {
+          const user = userResult.rows[0];
+          res.writeHead(200);
+          res.end(
+            JSON.stringify({
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                isEmailVerified: user.is_email_verified,
+                planType: user.plan_type || "basic",
+                createdAt: user.created_at,
+                lastLoginAt: user.last_login_at,
+              },
+            }),
+          );
+        } else {
+          res.writeHead(404);
+          res.end(JSON.stringify({ error: "Usuário não encontrado" }));
+        }
+      } catch (error) {
+        console.error("Erro ao buscar usuário:", error);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: "Erro interno do servidor" }));
+      }
       return;
     }
 

@@ -53,23 +53,46 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Atualiza o usuário no contexto
-    updateUser({
-      name: formData.name,
-      email: formData.email,
-    });
+    try {
+      // Atualiza o usuário no contexto localmente
+      updateUser({
+        name: formData.name,
+        email: formData.email,
+      });
 
-    // Chama callback personalizado se fornecido
-    if (onSave) {
-      onSave(formData);
+      // Salva no backend
+      const response = await fetch("/api/user", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("✅ Perfil salvo no backend:", data.user);
+
+        // Atualiza com dados do backend
+        updateUser(data.user);
+      } else {
+        console.error("❌ Erro ao salvar perfil no backend");
+      }
+
+      // Chama callback personalizado se fornecido
+      if (onSave) {
+        onSave(formData);
+      }
+
+      // Mostra mensagem de sucesso
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
+    } catch (error) {
+      console.error("Erro ao salvar perfil:", error);
     }
-
-    // Mostra mensagem de sucesso
-    setShowSuccessMessage(true);
-    setTimeout(() => setShowSuccessMessage(false), 3000);
   };
 
   return (

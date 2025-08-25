@@ -1,7 +1,7 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const { authenticateToken } = require("../middleware/auth");
-const { query } = require("../utils/database");
+const { query } = require("../utils/neon-database");
 const {
   geocoding,
   reverseGeocoding,
