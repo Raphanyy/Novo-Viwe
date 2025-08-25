@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"node server/simple-server.js\"",
+    "dev": "concurrently \"vite\" \"node server/minimal-server.js\"",
     "dev:frontend": "vite",
     "dev:backend": "node server/src/index.js",
     "start": "vite",
