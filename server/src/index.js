@@ -164,6 +164,15 @@ app.get("/api", (req, res) => {
         stats: "GET /api/clients/stats",
         nearby: "GET /api/clients/:id/nearby",
       },
+      notifications: {
+        list: "GET /api/notifications",
+        markRead: "POST /api/notifications/:id/read",
+        markAllRead: "POST /api/notifications/mark-all-read",
+        archive: "POST /api/notifications/:id/archive",
+        delete: "DELETE /api/notifications/:id",
+        create: "POST /api/notifications/create",
+        stats: "GET /api/notifications/stats",
+      },
     },
     documentation: "Ver documentação completa em /Implementação BackEnd/",
     features: {
