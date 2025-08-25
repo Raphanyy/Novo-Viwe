@@ -4,6 +4,12 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+// Importar utils
+const { healthCheck } = require('./utils/database');
+
+// Importar rotas
+const authRoutes = require('./routes/auth');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -52,14 +58,25 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
-  });
+// Health check avançado
+app.get('/health', async (req, res) => {
+  try {
+    const dbHealth = await healthCheck();
+    
+    res.json({ 
+      status: 'OK', 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      version: '1.0.0',
+      database: dbHealth
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: 'Database connection failed'
+    });
+  }
 });
 
 // API Info
@@ -70,11 +87,17 @@ app.get('/api', (req, res) => {
     description: 'API para otimização e navegação de rotas',
     endpoints: {
       health: '/health',
-      auth: '/api/auth/*',
-      routes: '/api/routes/*',
-      navigation: '/api/navigation/*',
-      users: '/api/users/*',
-      mapbox: '/api/mapbox/*'
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        logout: 'POST /api/auth/logout',
+        me: 'GET /api/auth/me',
+        test: 'GET /api/auth/test'
+      },
+      routes: '/api/routes/* (TODO)',
+      navigation: '/api/navigation/* (TODO)',
+      users: '/api/users/* (TODO)',
+      mapbox: '/api/mapbox/* (TODO)'
     },
     documentation: 'Ver arquivo README.md'
   });
@@ -90,14 +113,10 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// TODO: Importar e usar rotas quando criadas
-// const authRoutes = require('./routes/auth');
-// const routeRoutes = require('./routes/routes');
-// const navigationRoutes = require('./routes/navigation');
-// const userRoutes = require('./routes/users');
-// const mapboxRoutes = require('./routes/mapbox');
+// ROTAS
+app.use('/api/auth', authLimiter, authRoutes);
 
-// app.use('/api/auth', authLimiter, authRoutes);
+// TODO: Adicionar outras rotas quando criadas
 // app.use('/api/routes', routeRoutes);
 // app.use('/api/navigation', navigationRoutes);
 // app.use('/api/users', userRoutes);
@@ -126,6 +145,10 @@ app.use((err, req, res, next) => {
     return res.status(409).json({ error: 'Dados já existem' });
   }
   
+  if (err.code === 'ECONNREFUSED') {
+    return res.status(503).json({ error: 'Falha na conexão com banco de dados' });
+  }
+  
   // Default error
   res.status(500).json({ 
     error: 'Erro interno do servidor',
@@ -138,7 +161,12 @@ app.use('*', (req, res) => {
   res.status(404).json({ 
     error: 'Endpoint não encontrado',
     path: req.originalUrl,
-    method: req.method
+    method: req.method,
+    availableEndpoints: {
+      health: 'GET /health',
+      api_info: 'GET /api',
+      auth: 'GET /api/auth/*'
+    }
   });
 });
 
@@ -157,6 +185,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Servidor Viwe rodando na porta ${PORT}`);
   console.log(`🌍 Health check: http://localhost:${PORT}/health`);
   console.log(`📚 API info: http://localhost:${PORT}/api`);
+  console.log(`🔐 Auth: http://localhost:${PORT}/api/auth/*`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
   
   // Log de configurações (sem mostrar secrets)
@@ -164,6 +193,18 @@ app.listen(PORT, () => {
   console.log(`   - Database: ${process.env.DATABASE_URL ? '✅ Configurado' : '❌ Não configurado'}`);
   console.log(`   - JWT: ${process.env.JWT_SECRET ? '✅ Configurado' : '❌ Não configurado'}`);
   console.log(`   - Mapbox: ${process.env.VITE_MAPBOX_ACCESS_TOKEN ? '✅ Configurado' : '❌ Não configurado'}`);
+  
+  // Testar conexão com banco na inicialização
+  if (process.env.DATABASE_URL) {
+    healthCheck()
+      .then(health => {
+        console.log(`�� Database: ${health.status}`);
+        console.log(`📊 Tabelas: ${health.tables?.total || 'N/A'}`);
+      })
+      .catch(err => {
+        console.error('❌ Erro na conexão inicial com banco:', err.message);
+      });
+  }
 });
 
 module.exports = app;
