@@ -8,17 +8,25 @@ const MobileLoginPage: React.FC = () => {
 
   const handleGoogleLogin = async () => {
     // Simulação de login com Google
-    const success = await login("google@example.com", "password");
-    if (success) {
-      navigate("/app");
+    try {
+      const result = await login({ email: "google@example.com", password: "password" });
+      if (result.success) {
+        navigate("/app");
+      }
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
     }
   };
 
   const handleAppleLogin = async () => {
     // Simulação de login com Apple
-    const success = await login("apple@example.com", "password");
-    if (success) {
-      navigate("/app");
+    try {
+      const result = await login({ email: "apple@example.com", password: "password" });
+      if (result.success) {
+        navigate("/app");
+      }
+    } catch (error) {
+      console.error("Erro no login com Apple:", error);
     }
   };
 
