@@ -15,7 +15,7 @@ pnpm dev
 
 **Pronto!** O sistema configura tudo automaticamente:
 - ✅ Frontend: http://localhost:8081  
-- ✅ Backend: http://localhost:3001
+- ✅ Backend: http://localhost:3002
 - ✅ Database: Neon PostgreSQL
 - ✅ Auto-conecta frontend + backend
 
@@ -23,13 +23,13 @@ pnpm dev
 
 ```bash
 # Health check completo
-curl http://localhost:3001/health
+curl http://localhost:3002/health
 
-# Status do sistema  
-curl http://localhost:3001/api/status
+# Status do sistema
+curl http://localhost:3002/api/status
 
 # Teste Neon
-curl http://localhost:3001/api/test-neon
+curl http://localhost:3002/api/test-neon
 ```
 
 ## 🗄️ Configurar Neon (Opcional)
