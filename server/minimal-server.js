@@ -5,7 +5,7 @@ require("dotenv").config();
 // Importar utils do Neon
 const { healthCheck, testConnection } = require("./src/utils/neon-database");
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 const server = http.createServer(async (req, res) => {
   // CORS headers
