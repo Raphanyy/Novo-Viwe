@@ -113,7 +113,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Teste de conexão Neon
-    if (path === "/api/test-neon") {
+    if (pathname === "/api/test-neon") {
       const connectionOk = await testConnection();
       res.writeHead(connectionOk ? 200 : 500);
       res.end(
@@ -131,7 +131,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Debug: List all users (temporary endpoint)
-    if (path === "/api/debug/users") {
+    if (pathname === "/api/debug/users") {
       try {
         const usersResult = await query(
           `SELECT id, name, email, created_at, last_login_at, plan_type, is_email_verified
@@ -157,7 +157,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Ping simples
-    if (path === "/api/ping") {
+    if (pathname === "/api/ping") {
       res.writeHead(200);
       res.end(
         JSON.stringify({
@@ -170,7 +170,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Status do sistema
-    if (path === "/api/status") {
+    if (pathname === "/api/status") {
       const dbHealth = await healthCheck();
       res.writeHead(200);
       res.end(
@@ -187,7 +187,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Real authentication with database lookup
-    if (path === "/api/auth/login" && req.method === "POST") {
+    if (pathname === "/api/auth/login" && req.method === "POST") {
       let body = "";
       req.on("data", (chunk) => {
         body += chunk.toString();
@@ -280,7 +280,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Update user profile
-    if (path === "/api/user" && req.method === "PATCH") {
+    if (pathname === "/api/user" && req.method === "PATCH") {
       let body = "";
       req.on("data", (chunk) => {
         body += chunk.toString();
@@ -336,7 +336,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Get current user data
-    if (path === "/api/auth/me" && req.method === "GET") {
+    if (pathname === "/api/auth/me" && req.method === "GET") {
       // Simple token validation - in real app would verify JWT
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -384,7 +384,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // API Info
-    if (path === "/api") {
+    if (pathname === "/api") {
       res.writeHead(200);
       res.end(
         JSON.stringify({
@@ -466,9 +466,9 @@ server.listen(PORT, async () => {
 
         // Verificar tabelas
         const health = await healthCheck();
-        console.log(`📊 Tabelas: ${health.tables?.total || 0}/19`);
+        console.log(`��� Tabelas: ${health.tables?.total || 0}/19`);
       } else {
-        console.log(`��� Falha na conexão Neon`);
+        console.log(`❌ Falha na conexão Neon`);
       }
     } catch (err) {
       console.log(`❌ Erro Neon: ${err.message}`);
