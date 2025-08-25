@@ -3,6 +3,10 @@
 # Script para rodar backend e frontend em paralelo
 echo "🚀 Iniciando servidores de desenvolvimento..."
 
+# Definir diretório base
+BASE_DIR="/app/code"
+cd "$BASE_DIR"
+
 # Função para cleanup ao sair
 cleanup() {
     echo "🔄 Encerrando servidores..."
@@ -15,7 +19,7 @@ trap cleanup SIGINT SIGTERM
 
 # Iniciar backend na porta 3001 (em background)
 echo "📡 Iniciando backend na porta 3001..."
-cd server/src && node index.js &
+cd "$BASE_DIR/server/src" && node index.js &
 BACKEND_PID=$!
 
 # Aguardar um pouco para backend inicializar
@@ -23,7 +27,7 @@ sleep 3
 
 # Voltar para raiz e iniciar frontend na porta 8080
 echo "🌐 Iniciando frontend na porta 8080..."
-cd ../../
+cd "$BASE_DIR"
 pnpm vite &
 FRONTEND_PID=$!
 
