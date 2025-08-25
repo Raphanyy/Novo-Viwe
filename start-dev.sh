@@ -1,43 +1,23 @@
 #!/bin/bash
 
-# Script para rodar backend e frontend em paralelo
-echo "🚀 Iniciando servidores de desenvolvimento..."
+echo "🌟 VIWE - Setup Automático"
+echo "=========================="
 
-# Definir diretório base
-BASE_DIR="/app/code"
-cd "$BASE_DIR"
+# Instalar dependências
+echo "📦 Instalando dependências..."
+pnpm install
 
-# Função para cleanup ao sair
-cleanup() {
-    echo "🔄 Encerrando servidores..."
-    kill %1 %2 2>/dev/null
-    exit 0
-}
+# Verificar .env
+if [ ! -f .env ]; then
+    echo "⚠️  Arquivo .env não encontrado, criando template..."
+    cp .env.example .env 2>/dev/null || echo "DATABASE_URL=sua_connection_string_aqui" > .env
+fi
 
-# Configurar trap para cleanup
-trap cleanup SIGINT SIGTERM
-
-# Iniciar backend na porta 3001 (em background)
-echo "📡 Iniciando backend na porta 3001..."
-cd "$BASE_DIR/server/src" && node index.js &
-BACKEND_PID=$!
-
-# Aguardar um pouco para backend inicializar
-sleep 3
-
-# Voltar para raiz e iniciar frontend na porta 8080
-echo "🌐 Iniciando frontend na porta 8080..."
-cd "$BASE_DIR"
-pnpm vite &
-FRONTEND_PID=$!
-
-# Aguardar ambos os processos
-echo "✅ Servidores rodando:"
-echo "   - Backend:  http://localhost:3001"
-echo "   - Frontend: http://localhost:8080"
-echo "   - Health:   http://localhost:3001/health"
+# Iniciar desenvolvimento
+echo "🚀 Iniciando desenvolvimento..."
+echo "   Frontend: http://localhost:8081"
+echo "   Backend:  http://localhost:3002"
+echo "   Health:   http://localhost:3002/health"
 echo ""
-echo "Pressione Ctrl+C para parar os servidores"
 
-# Aguardar qualquer um dos processos terminar
-wait
+pnpm dev

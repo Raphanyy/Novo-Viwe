@@ -5,7 +5,7 @@ const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
 // Importar utils
-const { healthCheck } = require("./utils/database");
+const { healthCheck } = require("./utils/neon-database");
 
 // Importar rotas
 const authRoutes = require("./routes/auth");
@@ -340,7 +340,7 @@ app.listen(PORT, () => {
   // Log de configurações (sem mostrar secrets)
   console.log("📋 Configurações:");
   console.log(
-    `   - Database: ${process.env.DATABASE_URL ? "✅ Configurado" : "❌ Não configurado"}`,
+    `   - Database (Neon): ${process.env.DATABASE_URL ? "✅ Configurado" : "❌ Não configurado"}`,
   );
   console.log(
     `   - JWT: ${process.env.JWT_SECRET ? "✅ Configurado" : "❌ Não configurado"}`,
@@ -349,12 +349,13 @@ app.listen(PORT, () => {
     `   - Mapbox: ${process.env.VITE_MAPBOX_ACCESS_TOKEN || process.env.MAPBOX_ACCESS_TOKEN ? "✅ Configurado" : "❌ Não configurado"}`,
   );
 
-  // Testar conexão com banco na inicialização
+  // Testar conexão com Neon na inicialização
   if (process.env.DATABASE_URL) {
     healthCheck()
       .then((health) => {
-        console.log(`💾 Database: ${health.status}`);
+        console.log(`💾 Neon Database: ${health.status}`);
         console.log(`📊 Tabelas: ${health.tables?.total || "N/A"}`);
+        console.log(`⚡ Driver: ${health.driver}`);
 
         // Teste rápido do Mapbox se configurado
         const mapboxToken =
@@ -367,10 +368,31 @@ app.listen(PORT, () => {
             "🗺️ Mapbox: Token não configurado - algumas funcionalidades limitadas",
           );
         }
+
+        // Mostrar instruções se DATABASE_URL não estiver configurada
+        if (
+          !process.env.DATABASE_URL ||
+          process.env.DATABASE_URL.includes("username:password")
+        ) {
+          console.log("\n🔗 Para conectar ao Neon:");
+          console.log("   1. Configure sua DATABASE_URL no arquivo .env");
+          console.log("   2. Use sua connection string do Neon");
+          console.log("   3. Reinicie o servidor\n");
+        }
       })
       .catch((err) => {
-        console.error("❌ Erro na conexão inicial com banco:", err.message);
+        console.error("❌ Erro na conexão inicial com Neon:", err.message);
+        console.log("\n🔗 Para configurar o Neon:");
+        console.log("   1. Adicione sua DATABASE_URL no arquivo .env");
+        console.log("   2. Use a connection string fornecida pelo Neon\n");
       });
+  } else {
+    console.log("\n⚠️  DATABASE_URL não configurada");
+    console.log("🔗 Para conectar ao Neon:");
+    console.log(
+      "   1. Adicione DATABASE_URL=sua_connection_string no arquivo .env",
+    );
+    console.log("   2. Reinicie o servidor\n");
   }
 });
 

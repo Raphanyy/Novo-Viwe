@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { query, transaction } = require("../utils/database");
+const { query, manualTransaction } = require("../utils/neon-database");
 const { generateTokenPair, verifyRefreshToken } = require("../utils/jwt");
 const { authenticateToken } = require("../middleware/auth");
 
