@@ -12,6 +12,7 @@ import {
   Route,
   Share2,
 } from "lucide-react";
+import { SupabaseConfigCheck } from "../components/SupabaseConfigCheck";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -83,6 +84,9 @@ const LoginPage: React.FC = () => {
                 Faça login para continuar sua jornada
               </p>
             </div>
+
+            {/* Verificação de configuração Supabase */}
+            <SupabaseConfigCheck />
 
             {/* Formulário */}
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,12 +176,12 @@ const LoginPage: React.FC = () => {
 
                 <div className="text-muted-foreground text-sm">
                   Não tem uma conta?{" "}
-                  <a
-                    href="#"
+                  <Link
+                    to="/signup"
                     className="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-200"
                   >
                     Criar conta
-                  </a>
+                  </Link>
                 </div>
               </div>
             </form>
@@ -185,7 +189,7 @@ const LoginPage: React.FC = () => {
             {/* Divider */}
             <div className="mt-8 pt-8 border-t border-border">
               <p className="text-center text-xs text-muted-foreground">
-                Para demonstração, use qualquer email e senha
+                Use suas credenciais reais do Supabase
               </p>
             </div>
           </div>

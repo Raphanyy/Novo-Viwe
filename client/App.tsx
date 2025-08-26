@@ -15,6 +15,8 @@ import LoginPage from "./pages/LoginPage";
 import MobileLoginPage from "./pages/MobileLoginPage";
 import EmailLoginPage from "./pages/EmailLoginPage";
 import SignupPage from "./pages/SignupPage";
+import SupabaseDemoPage from "./pages/SupabaseDemoPage";
+import AuthTestPage from "./pages/AuthTestPage";
 
 // Internal Pages
 import DashboardPage from "./pages/internal/DashboardPage";
@@ -106,6 +108,12 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
+      {/* Supabase Demo - accessible without auth for testing */}
+      <Route path="/supabase-demo" element={<SupabaseDemoPage />} />
+
+      {/* Auth Test Page - accessible without auth for testing */}
+      <Route path="/auth-test" element={<AuthTestPage />} />
 
       {/* Protected Internal Routes */}
       <Route

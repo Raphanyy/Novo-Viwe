@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, User } from "lucide-react";
 import { ViweLoaderInline } from "../components/shared/ViweLoader";
+import { SupabaseConfigCheck } from "../components/SupabaseConfigCheck";
 
 const SignupPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -14,7 +15,7 @@ const SignupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,16 +35,20 @@ const SignupPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simular cadastro - em uma app real, você faria uma chamada para API de registro
-      // Por enquanto, vamos simular um cadastro bem-sucedido e fazer login automaticamente
-      const success = await login(email, password);
+      // Registro real com Supabase
+      const success = await register(email, password);
       if (success) {
-        navigate("/app");
+        // Mostrar mensagem de sucesso e redirecionar para login
+        setError(""); // Limpar erro
+        alert(
+          "Conta criada com sucesso! Verifique seu email para confirmar a conta.",
+        );
+        navigate("/login");
       } else {
-        setError("Erro ao criar conta. Tente novamente.");
+        setError("Erro ao criar conta. Verifique os dados e tente novamente.");
       }
-    } catch (err) {
-      setError("Erro ao criar conta. Tente novamente.");
+    } catch (err: any) {
+      setError(err.message || "Erro ao criar conta. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +78,9 @@ const SignupPage: React.FC = () => {
               Preencha os dados para se cadastrar
             </p>
           </div>
+
+          {/* Verificação de configuração Supabase */}
+          <SupabaseConfigCheck />
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Field */}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { ViweLoaderInline } from "../components/shared/ViweLoader";
+import { SupabaseConfigCheck } from "../components/SupabaseConfigCheck";
 
 const EmailLoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -57,6 +58,9 @@ const EmailLoginPage: React.FC = () => {
               Digite seus dados para acessar
             </p>
           </div>
+
+          {/* Verificação de configuração Supabase */}
+          <SupabaseConfigCheck />
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
@@ -145,10 +149,10 @@ const EmailLoginPage: React.FC = () => {
             </div>
           </form>
 
-          {/* Demo Info */}
+          {/* Auth Info */}
           <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-border">
             <p className="text-center text-xs text-muted-foreground">
-              💡 Para demonstração, use qualquer email e senha
+              🔐 Sistema de autenticação real com Supabase
             </p>
           </div>
         </div>
